@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة العلوم — اختر مادتك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  --bg:#0A0A0F;
+  --surface:rgba(255,255,255,.04);
+  --border:rgba(255,255,255,.08);
+  --text:#F0EDE8;
+  --muted:rgba(240,237,232,.45);
+  --sans:'Tajawal',sans-serif;
+  --display:'Playfair Display',serif;
+
+  /* subject colors */
+  --math:#C8A96E;
+  --math-bg:rgba(200,169,110,.08);
+  --physics:#6EC8C8;
+  --physics-bg:rgba(110,200,200,.08);
+  --arabic:#C86E6E;
+  --arabic-bg:rgba(200,110,110,.08);
+  --chemistry:#8EC86E;
+  --chemistry-bg:rgba(142,200,110,.08);
+}
+
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px;
+}
+
+/* ── AMBIENT GLOWS ── */
+.glow-container{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.glow{position:absolute;border-radius:50%;filter:blur(120px);opacity:.12;animation:drift 18s ease-in-out infinite}
+.glow-1{width:600px;height:600px;background:var(--math);top:-200px;right:-100px;animation-delay:0s}
+.glow-2{width:500px;height:500px;background:var(--physics);bottom:-150px;left:-100px;animation-delay:-6s}
+.glow-3{width:400px;height:400px;background:var(--arabic);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-12s}
+@keyframes drift{
+  0%,100%{transform:translateY(0) scale(1)}
+  33%{transform:translateY(-40px) scale(1.05)}
+  66%{transform:translateY(20px) scale(.96)}
+}
+.glow-1{animation:drift1 20s ease-in-out infinite}
+.glow-2{animation:drift2 24s ease-in-out infinite}
+.glow-3{animation:drift3 16s ease-in-out infinite;transform:translate(-50%,-50%)}
+@keyframes drift1{0%,100%{top:-200px;right:-100px}50%{top:-100px;right:0px}}
+@keyframes drift2{0%,100%{bottom:-150px;left:-100px}50%{bottom:-50px;left:0px}}
+@keyframes drift3{0%,100%{opacity:.08}50%{opacity:.15}}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 40px;
+  background:rgba(10,10,15,.6);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:var(--sans);
+  font-size:1.3rem;
+  font-weight:900;
+  letter-spacing:1px;
+  color:var(--text);
+}
+.nav-logo span{
+  background:linear-gradient(135deg,var(--math),var(--physics));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.nav-actions{display:flex;gap:12px;align-items:center}
+.nav-btn{
+  padding:9px 22px;border-radius:8px;font-family:var(--sans);font-size:.85rem;font-weight:700;
+  cursor:pointer;transition:all .2s;border:none;
+  display:flex;align-items:center;gap:7px;
+}
+.nav-btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.nav-btn-ghost:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
+.nav-btn-primary{background:var(--math);color:#0A0A0F;font-weight:800}
+.nav-btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.nav-user{display:flex;align-items:center;gap:10px;cursor:pointer}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--math),var(--physics));display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#0A0A0F}
+.nav-user-name{font-size:.85rem;font-weight:600;color:var(--text)}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:120px 40px 60px;
+  text-align:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(200,169,110,.1);border:1px solid rgba(200,169,110,.2);
+  border-radius:100px;padding:7px 18px;
+  font-size:.78rem;font-weight:700;color:var(--math);
+  margin-bottom:28px;letter-spacing:1px;
+  animation:fadeUp .6s ease both;
+}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--math);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero-title{
+  font-family:var(--sans);
+  font-size:clamp(2.8rem,7vw,5.5rem);
+  font-weight:900;
+  line-height:1.1;
+  margin-bottom:20px;
+  animation:fadeUp .6s .1s ease both;
+}
+.hero-title .line2{
+  background:linear-gradient(135deg,var(--math) 0%,var(--physics) 50%,var(--arabic) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;
+}
+.hero-sub{
+  font-size:clamp(1rem,2vw,1.2rem);
+  color:var(--muted);
+  max-width:560px;
+  line-height:1.8;
+  margin-bottom:60px;
+  font-weight:400;
+  animation:fadeUp .6s .2s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SUBJECTS GRID ── */
+.subjects-label{
+  font-size:.72rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:24px;
+  animation:fadeUp .6s .3s ease both;
+}
+.subjects-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  max-width:860px;
+  width:100%;
+  animation:fadeUp .6s .35s ease both;
+}
+
+.subject-card{
+  position:relative;overflow:hidden;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:36px 32px;
+  cursor:pointer;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  text-align:right;
+  display:flex;align-items:flex-start;gap:20px;
+  text-decoration:none;color:inherit;
+}
+.subject-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--card-gradient,transparent);
+  opacity:0;transition:opacity .35s;border-radius:inherit;
+}
+.subject-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  border-color:var(--card-accent);
+  box-shadow:0 20px 60px var(--card-shadow),0 0 0 1px var(--card-accent);
+}
+.subject-card:hover::before{opacity:1}
+
+/* Math */
+.card-math{
+  --card-accent:rgba(200,169,110,.4);
+  --card-gradient:radial-gradient(ellipse at top right,rgba(200,169,110,.1),transparent 70%);
+  --card-shadow:rgba(200,169,110,.15);
+}
+/* Physics */
+.card-physics{
+  --card-accent:rgba(110,200,200,.4);
+  --card-gradient:radial-gradient(ellipse at top right,rgba(110,200,200,.1),transparent 70%);
+  --card-shadow:rgba(110,200,200,.15);
+}
+/* Arabic */
+.card-arabic{
+  --card-accent:rgba(200,110,110,.4);
+  --card-gradient:radial-gradient(ellipse at top right,rgba(200,110,110,.1),transparent 70%);
+  --card-shadow:rgba(200,110,110,.15);
+}
+/* Chemistry */
+.card-chemistry{
+  --card-accent:rgba(142,200,110,.4);
+  --card-gradient:radial-gradient(ellipse at top right,rgba(142,200,110,.1),transparent 70%);
+  --card-shadow:rgba(142,200,110,.15);
+}
+
+.card-icon-wrap{
+  width:64px;height:64px;border-radius:18px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  transition:all .35s;
+}
+.subject-card:hover .card-icon-wrap{
+  background:var(--card-gradient);
+  border-color:var(--card-accent);
+  transform:scale(1.08) rotate(-3deg);
+}
+.card-content{flex:1;min-width:0}
+.card-name-ar{
+  font-size:1.5rem;font-weight:900;
+  margin-bottom:4px;
+  transition:color .25s;
+}
+.card-math .card-name-ar{color:var(--math)}
+.card-physics .card-name-ar{color:var(--physics)}
+.card-arabic .card-name-ar{color:var(--arabic)}
+.card-chemistry .card-name-ar{color:var(--chemistry)}
+
+.card-name-en{
+  font-size:.78rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;
+}
+.card-teachers{
+  display:flex;align-items:center;gap:8px;
+  font-size:.8rem;color:var(--muted);font-weight:500;
+}
+.card-teachers-count{
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  border-radius:20px;padding:3px 10px;
+  font-size:.72rem;font-weight:700;
+}
+.card-arrow{
+  position:absolute;bottom:24px;left:24px;
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateX(8px);
+  transition:all .3s;
+  font-size:.9rem;
+}
+.subject-card:hover .card-arrow{opacity:1;transform:translateX(0)}
+
+/* ── STATS BAR ── */
+.stats-bar{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  gap:0;
+  max-width:700px;margin:60px auto 0;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  animation:fadeUp .6s .5s ease both;
+}
+.stat-item{
+  flex:1;padding:22px 24px;text-align:center;
+  border-left:1px solid var(--border);
+}
+.stat-item:last-child{border-left:none}
+.stat-num{
+  font-size:1.8rem;font-weight:900;
+  background:linear-gradient(135deg,var(--math),var(--physics));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;margin-bottom:4px;
+}
+.stat-lbl{font-size:.75rem;color:var(--muted);font-weight:600}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  text-align:center;padding:32px;
+  border-top:1px solid var(--border);
+  font-size:.78rem;color:var(--muted);
+  margin-top:60px;
+}
+
+/* ── LOADING ── */
+#pageLoader{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:opacity .4s;
+}
+.loader-logo{font-size:2rem;font-weight:900;font-family:var(--sans);color:var(--text)}
+.loader-logo span{
+  background:linear-gradient(135deg,var(--math),var(--physics));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.loader-bar{width:140px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.loader-fill{height:100%;background:linear-gradient(90deg,var(--math),var(--physics));animation:loadAnim 1.2s ease infinite}
+@keyframes loadAnim{0%{width:0;margin-left:0}50%{width:80%;margin-left:0}100%{width:0;margin-left:100%}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  nav{padding:16px 20px}
+  .nav-logo{font-size:1.1rem}
+  .hero{padding:100px 20px 40px}
+  .subjects-grid{grid-template-columns:1fr;gap:14px}
+  .subject-card{padding:24px 20px}
+  .card-icon-wrap{width:52px;height:52px;font-size:1.6rem}
+  .card-name-ar{font-size:1.25rem}
+  .stats-bar{flex-direction:column;gap:0;margin:40px 20px 0}
+  .stat-item{border-left:none;border-top:1px solid var(--border);padding:16px}
+  .stat-item:first-child{border-top:none}
+  footer{margin-top:30px}
+}
+@media(max-width:400px){
+  .hero-title{font-size:2.2rem}
+  nav .nav-actions .nav-btn-ghost{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-logo">مسار<span>العلوم</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<div class="glow-container">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">مسار<span>العلوم</span></div>
+  <div class="nav-actions" id="navActions">
+    <button class="nav-btn nav-btn-ghost" onclick="location.href='/auth'">تسجيل الدخول</button>
+    <button class="nav-btn nav-btn-primary" onclick="location.href='/auth?mode=register'">ابدأ الآن</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🎓 منصة تعليمية متكاملة</div>
+  <h1 class="hero-title">
+    تعلّم بذكاء،
+    <span class="line2">تفوّق بثقة</span>
+  </h1>
+  <p class="hero-sub">
+    اختر مادتك وابدأ رحلتك مع أفضل المدرسين — محتوى مخصوص، امتحانات تفاعلية، ومتابعة لحظة بلحظة.
+  </p>
+
+  <div class="subjects-label">اختر مادتك</div>
+
+  <div class="subjects-grid">
+
+    <!-- MATH -->
+    <a class="subject-card card-math" href="/subject?s=math">
+      <div class="card-icon-wrap">📐</div>
+      <div class="card-content">
+        <div class="card-name-ar">الرياضيات</div>
+        <div class="card-name-en">Mathematics</div>
+        <div class="card-teachers">
+          <span>👨‍🏫</span>
+          <span class="card-teachers-count" id="count-math">—</span>
+          <span>مدرس متاح</span>
+        </div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- PHYSICS -->
+    <a class="subject-card card-physics" href="/subject?s=physics">
+      <div class="card-icon-wrap">⚡</div>
+      <div class="card-content">
+        <div class="card-name-ar">الفيزياء</div>
+        <div class="card-name-en">Physics</div>
+        <div class="card-teachers">
+          <span>👨‍🏫</span>
+          <span class="card-teachers-count" id="count-physics">—</span>
+          <span>مدرس متاح</span>
+        </div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- ARABIC -->
+    <a class="subject-card card-arabic" href="/subject?s=arabic">
+      <div class="card-icon-wrap">📖</div>
+      <div class="card-content">
+        <div class="card-name-ar">اللغة العربية</div>
+        <div class="card-name-en">Arabic Language</div>
+        <div class="card-teachers">
+          <span>👨‍🏫</span>
+          <span class="card-teachers-count" id="count-arabic">—</span>
+          <span>مدرس متاح</span>
+        </div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- CHEMISTRY -->
+    <a class="subject-card card-chemistry" href="/subject?s=chemistry">
+      <div class="card-icon-wrap">🧪</div>
+      <div class="card-content">
+        <div class="card-name-ar">الكيمياء</div>
+        <div class="card-name-en">Chemistry</div>
+        <div class="card-teachers">
+          <span>👨‍🏫</span>
+          <span class="card-teachers-count" id="count-chemistry">—</span>
+          <span>مدرس متاح</span>
+        </div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="statTeachers">—</div>
+      <div class="stat-lbl">مدرس متخصص</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statLessons">—</div>
+      <div class="stat-lbl">حصة منشورة</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statStudents">—</div>
+      <div class="stat-lbl">طالب مسجّل</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4</div>
+      <div class="stat-lbl">مواد دراسية</div>
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  © 2025 مسار العلوم — جميع الحقوق محفوظة
+</footer>
+
+<script>
+const SUPABASE_URL = "https://kspfjzewkpfoeyocbzbm.supabase.co";
+const SUPABASE_ANON = "sb_publishable_4RiANbDn7lrulIbcXHS_3A_ANMSwaYp";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+/* ── Hide loader ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('pageLoader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 400);
+  }, 600);
+});
+
+/* ── Check auth ── */
+async function checkAuth() {
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    const nav = document.getElementById('navActions');
+    const name = session.user.user_metadata?.name || session.user.email.split('@')[0];
+    const initial = name.charAt(0).toUpperCase();
+    nav.innerHTML = `
+      <div class="nav-user" onclick="location.href='/dashboard'">
+        <div class="nav-avatar">${initial}</div>
+        <span class="nav-user-name">${name}</span>
+      </div>
+    `;
+  }
+}
+
+/* ── Load stats ── */
+async function loadStats() {
+  try {
+    const [
+      { count: teachersCount },
+      { count: lessonsCount },
+      { count: studentsCount },
+      { data: teachers }
+    ] = await Promise.all([
+      db.from('teachers').select('*', { count: 'exact', head: true }).eq('is_active', true),
+      db.from('lessons').select('*', { count: 'exact', head: true }),
+      db.from('users').select('*', { count: 'exact', head: true }),
+      db.from('teachers').select('subject_id, subjects(slug)').eq('is_active', true)
+    ]);
+
+    document.getElementById('statTeachers').textContent = teachersCount || 0;
+    document.getElementById('statLessons').textContent = lessonsCount || 0;
+    document.getElementById('statStudents').textContent = studentsCount || 0;
+
+    /* Count per subject */
+    const slugs = ['math', 'physics', 'arabic', 'chemistry'];
+    slugs.forEach(slug => {
+      const count = (teachers || []).filter(t => t.subjects?.slug === slug).length;
+      const el = document.getElementById('count-' + slug);
+      if (el) el.textContent = count || '0';
+    });
+  } catch (e) {
+    console.error(e);
+    /* Set zeros on error */
+    ['statTeachers','statLessons','statStudents'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = '0';
+    });
+    ['math','physics','arabic','chemistry'].forEach(slug => {
+      const el = document.getElementById('count-' + slug);
+      if (el) el.textContent = '0';
+    });
+  }
+}
+
+checkAuth();
+loadStats();
+</script>
+</body>
+</html>
