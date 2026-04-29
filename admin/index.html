@@ -1,869 +1,345 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kalawy Admin Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kalawy | Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 :root{
-  --gold:#C8A96E;--gold2:#E2C98A;--green:#2D5A3D;--teal:#5BBFBF;
-  --red:#D46B6B;--blue:#6EA7D4;--lime:#8EC86E;
-  --font:'Tajawal',sans-serif;--display:'Syne',sans-serif;
+  --bg:#F5F0E8;--bg2:#EDE7DB;--surface:#FAF7F2;--surface2:#F7F2EA;
+  --navy:#2C2418;--green:#2D5A3D;--green2:#3A7550;--green3:#4A9060;--green4:#7AA88A;
+  --green-light:rgba(45,90,61,.09);--green-light2:rgba(45,90,61,.14);
+  --border:rgba(44,36,24,.10);--border2:rgba(44,36,24,.20);
+  --text:#2C2418;--muted:#6B5E4E;--muted2:#9B8E7A;
+  --red:#A33B2E;--red-bg:rgba(163,59,46,.08);--amber:#C4654A;--amber-bg:rgba(196,101,74,.10);
+  --shadow:0 8px 28px rgba(44,36,24,.07);--shadow2:0 20px 54px rgba(44,36,24,.12);
+  --sans:'DM Sans',sans-serif;--display:'Cormorant Garamond',serif;--mono:'JetBrains Mono',monospace;
+  --sidebar-w:248px;--bottom-nav-h:64px;--topbar-h:56px;
 }
-[data-theme="dark"]{
-  --bg:#080810;--bg2:#0D0D18;--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.07);
-  --text:#F2EFE9;--sub:#A6A09A;--muted:rgba(242,239,233,.45);
-  --border:rgba(255,255,255,.1);--border2:rgba(255,255,255,.18);
-  --input:rgba(255,255,255,.06);--nav:rgba(8,8,16,.82);--shadow:rgba(0,0,0,.28);
-}
-[data-theme="light"]{
-  --bg:#F4F1EB;--bg2:#EDE9DF;--card:rgba(255,255,255,.82);--card2:rgba(0,0,0,.045);
-  --text:#17140F;--sub:#6B6560;--muted:rgba(24,22,15,.48);
-  --border:rgba(0,0,0,.1);--border2:rgba(0,0,0,.17);
-  --input:rgba(255,255,255,.95);--nav:rgba(244,241,235,.86);--shadow:rgba(0,0,0,.09);
-}
-body{
-  min-height:100vh;font-family:var(--font);color:var(--text);
-  background:
-    radial-gradient(circle at 10% -10%,rgba(200,169,110,.18),transparent 30%),
-    radial-gradient(circle at 90% 20%,rgba(91,191,191,.12),transparent 28%),
-    radial-gradient(circle at 50% 105%,rgba(45,90,61,.16),transparent 35%),
-    var(--bg);
-  overflow-x:hidden;
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:260px;
-}
-button,input,textarea,select{font-family:var(--font)}
-button{cursor:pointer}
-.hide{display:none!important}
-.app{position:relative;z-index:1;display:grid;grid-template-columns:285px minmax(0,1fr);min-height:100vh}
-.sidebar{
-  position:sticky;top:0;height:100vh;padding:20px 16px;background:var(--nav);backdrop-filter:blur(22px);
-  border-left:1px solid var(--border);display:flex;flex-direction:column;gap:18px;
-}
-.logo{display:flex;align-items:center;gap:12px;padding:7px 8px 16px;border-bottom:1px solid var(--border)}
-.logo-mark{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,rgba(200,169,110,.25),rgba(91,191,191,.15));display:grid;place-items:center;border:1px solid var(--border)}
-.logo-k{font-family:var(--display);font-size:1.35rem;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
-.logo-title{font-weight:900;font-size:1.18rem;line-height:1}
-.logo-sub{font-family:var(--display);font-size:.62rem;letter-spacing:2px;color:var(--muted);margin-top:4px}
-.nav-list{display:flex;flex-direction:column;gap:7px}
-.nav-btn{
-  border:1px solid transparent;background:transparent;color:var(--sub);font-weight:900;font-size:.93rem;
-  padding:12px 13px;border-radius:16px;text-align:right;display:flex;align-items:center;gap:10px;transition:.2s;
-}
-.nav-btn:hover{background:var(--card2);border-color:var(--border);color:var(--text)}
-.nav-btn.active{background:linear-gradient(135deg,rgba(200,169,110,.18),rgba(91,191,191,.09));border-color:rgba(200,169,110,.32);color:var(--gold)}
-.side-bottom{margin-top:auto;display:grid;gap:9px}
-.pill{border:1px solid var(--border);background:var(--card2);color:var(--sub);border-radius:999px;padding:9px 11px;font-size:.78rem;font-weight:900;display:flex;align-items:center;gap:8px;min-width:0}
-.pill span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.main{min-width:0}
-.topbar{
-  position:sticky;top:0;z-index:5;background:var(--nav);backdrop-filter:blur(22px);border-bottom:1px solid var(--border);
-  padding:16px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px;
-}
-.top-title h1{font-size:1.35rem;font-weight:900}
-.top-title p{color:var(--muted);font-size:.84rem;margin-top:3px}
-.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.btn,.btn2,.btn-red,.btn-gold{
-  border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:14px;
-  padding:10px 13px;font-weight:900;font-size:.84rem;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:7px;
-}
-.btn:hover,.btn2:hover{border-color:var(--border2);transform:translateY(-1px)}
-.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0B0B10;border:0}
-.btn-red{background:rgba(212,107,107,.12);border-color:rgba(212,107,107,.28);color:var(--red)}
-.icon-btn{width:42px;height:42px;border-radius:50%;padding:0}
-.mobile-menu{display:none}
-.content{padding:26px;display:grid;gap:20px}
-.section{display:none;gap:20px;animation:fade .25s ease both}
-.section.active{display:grid}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.grid{display:grid;gap:16px}
-.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:26px;padding:20px;
-  box-shadow:0 22px 60px var(--shadow);backdrop-filter:blur(12px);overflow:hidden;
-}
-.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
-.card h2{font-size:1.08rem;font-weight:900}
-.desc{color:var(--muted);font-size:.83rem;line-height:1.7;margin-top:4px}
-.stat{min-height:124px;position:relative}
-.stat-icon{font-size:1.9rem;margin-bottom:12px}
-.stat-num{font-family:var(--display);font-size:2.1rem;font-weight:800}
-.stat-label{color:var(--sub);font-weight:900;font-size:.86rem}
-.stat::after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;background:rgba(200,169,110,.08);left:-42px;bottom:-55px}
-.field{display:grid;gap:7px;margin-bottom:13px}
-label{color:var(--sub);font-weight:900;font-size:.78rem}
-input,select,textarea{
-  width:100%;border:1px solid var(--border2);background:var(--input);color:var(--text);
-  padding:12px 13px;border-radius:14px;outline:none;font-size:.92rem;transition:.2s;
-}
-select option{color:#111}
-textarea{min-height:98px;resize:vertical;line-height:1.7}
-input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,169,110,.12)}
-.form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.form-row-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.checks{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0 15px}
-.check{border:1px solid var(--border);background:var(--card2);border-radius:14px;padding:9px 10px;display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--sub);font-weight:900}
-.check input{width:auto;accent-color:var(--gold)}
-.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:18px}
-table{width:100%;border-collapse:collapse;min-width:760px}
-th,td{padding:12px 13px;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle;font-size:.88rem}
-th{background:var(--card2);color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.4px}
-td{color:var(--sub)}
-tr:hover td{background:rgba(200,169,110,.035);color:var(--text)}
-.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--card2);border-radius:999px;padding:6px 9px;font-weight:900;font-size:.72rem;white-space:nowrap;color:var(--sub)}
-.badge.ok{color:var(--lime);border-color:rgba(142,200,110,.28);background:rgba(142,200,110,.1)}
-.badge.bad{color:var(--red);border-color:rgba(212,107,107,.28);background:rgba(212,107,107,.1)}
-.badge.warn{color:var(--gold);border-color:rgba(200,169,110,.3);background:rgba(200,169,110,.1)}
-.msg{display:none;border-radius:16px;padding:12px 14px;font-weight:900;font-size:.86rem;line-height:1.7}
-.msg.show{display:block}
-.msg.ok{background:rgba(142,200,110,.11);border:1px solid rgba(142,200,110,.24);color:var(--lime)}
-.msg.err{background:rgba(212,107,107,.11);border:1px solid rgba(212,107,107,.24);color:var(--red)}
-.msg.info{background:rgba(110,167,212,.11);border:1px solid rgba(110,167,212,.24);color:var(--blue)}
-.warning{background:rgba(200,169,110,.09);border:1px dashed rgba(200,169,110,.35);color:var(--gold);padding:13px;border-radius:18px;line-height:1.8;font-weight:900;font-size:.84rem}
-.empty{padding:22px;text-align:center;color:var(--muted);font-weight:900}
-.question{border:1px solid var(--border);background:var(--card2);border-radius:18px;padding:14px;display:grid;gap:9px}
-.question strong{color:var(--gold)}
-.ltr{direction:ltr;text-align:left}
-.loader-screen{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;text-align:center;padding:20px}
-.loader-card{max-width:430px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:26px;padding:28px;box-shadow:0 25px 80px var(--shadow)}
-.spinner{width:36px;height:36px;border:4px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 15px}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:1050px){
-  .app{grid-template-columns:1fr}
-  .sidebar{position:fixed;right:0;top:0;bottom:0;width:285px;z-index:30;transform:translateX(110%);transition:.25s}
-  .sidebar.open{transform:translateX(0)}
-  .mobile-menu{display:inline-flex}
-  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr}
-  .content{padding:18px}
-}
-@media(max-width:620px){
-  .topbar{padding:13px 16px}
-  .top-title h1{font-size:1.08rem}
-  .top-title p{display:none}
-  .form-row,.form-row-3{grid-template-columns:1fr}
-  .card{border-radius:22px;padding:16px}
-  table{min-width:680px}
-}
+body{font-family:var(--sans);background:radial-gradient(circle at top left,rgba(196,168,130,.12),transparent 24%),var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px 256px}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+.hidden{display:none!important}.ltr{direction:ltr;text-align:left;font-family:var(--mono)}
+button,input,select,textarea{font-family:var(--sans)}button{cursor:pointer}.arabic{font-family:'Arial',sans-serif;direction:rtl}.hide{display:none!important}
+#toast-container{position:fixed;top:12px;right:12px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:calc(100vw - 24px)}
+.toast{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:12px 14px;min-width:240px;max-width:330px;box-shadow:var(--shadow2);pointer-events:all;animation:toastIn .3s both;border-left:3px solid var(--green)}
+.toast.error{border-left-color:var(--red)}.toast.info{border-left-color:#3b82f6}.toast.warning{border-left-color:var(--amber)}
+.toast-icon{font-size:15px;flex-shrink:0;margin-top:1px}.toast-body{flex:1;min-width:0}.toast-title{font-weight:700;font-size:.8rem;margin-bottom:2px}.toast-msg{font-size:.72rem;color:var(--muted);word-break:break-word}.toast-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;flex-shrink:0;padding:0 2px;min-width:20px;min-height:20px}.toast-exit{animation:toastOut .25s both}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}@keyframes toastOut{to{opacity:0;transform:translateX(16px)}}
+.secure-layer{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px}.spin-ring{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.secure-txt{font-family:var(--mono);font-size:.68rem;color:var(--green);letter-spacing:1px}
+.login-screen{position:fixed;inset:0;z-index:998;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:22px}.login-card{width:100%;max-width:430px;background:var(--surface);border:1px solid var(--border2);border-radius:22px;box-shadow:var(--shadow2);padding:26px}.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:18px}.login-logo .mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--display);font-weight:800}.login-title{font-family:var(--display);font-size:1.45rem;font-weight:800}.login-sub{font-size:.72rem;color:var(--muted);font-family:var(--mono);letter-spacing:1px}.login-card p{color:var(--muted);font-size:.84rem;line-height:1.7;margin-bottom:14px}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:linear-gradient(180deg,rgba(44,36,24,.98),rgba(44,36,24,.94));box-shadow:18px 0 44px rgba(44,36,24,.12);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:50;overflow-y:auto;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.sb-logo{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+.sb-logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green2));box-shadow:0 8px 20px rgba(45,90,61,.24);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:.95rem;color:#fff;flex-shrink:0}.sb-logo-name{font-family:var(--display);font-size:1rem;font-weight:800;color:#fff}.sb-logo-name span{color:var(--green3)}.sb-badge{font-size:.5rem;font-weight:700;background:rgba(34,197,94,.15);color:var(--green3);border:1px solid rgba(34,197,94,.25);border-radius:5px;padding:2px 7px;font-family:var(--mono);letter-spacing:1px;margin-top:2px;display:inline-block}.sb-section{font-size:.56rem;font-weight:800;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1.5px;padding:16px 18px 4px;font-family:var(--mono)}
+.sb-nav{flex:1;padding:6px 10px}.sb-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;margin-bottom:3px;border:1px solid transparent;background:none;font-family:var(--sans);width:100%;text-align:left;min-height:44px}.sb-link:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.08)}.sb-link.active{background:var(--green);color:#fff;font-weight:700}.sb-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;background:rgba(255,255,255,.06);transition:all .2s}.sb-link.active .sb-icon{background:rgba(255,255,255,.15)}.sb-footer{padding:14px;border-top:1px solid rgba(255,255,255,.07)}.sb-user{font-size:.63rem;color:rgba(255,255,255,.46);font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:8px}.sb-logout{width:100%;display:flex;align-items:center;gap:8px;justify-content:center;padding:12px;background:var(--red-bg);border:1px solid rgba(220,38,38,.2);border-radius:10px;color:var(--red);font-family:var(--sans);font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;min-height:44px}.sb-logout:hover{background:rgba(220,38,38,.12)}
+.main-area{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1}.topbar{background:rgba(250,247,242,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--border2);padding:0 28px;height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;box-shadow:0 2px 12px rgba(13,31,20,.05)}.topbar-left{display:flex;align-items:center;gap:10px}.topbar-title{font-family:var(--display);font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px}.topbar-title::before{content:'';width:3px;height:16px;background:var(--green);border-radius:3px;flex-shrink:0}.teacher-pill{display:flex;align-items:center;gap:7px;background:rgba(45,90,61,.08);border:1px solid var(--border2);border-radius:20px;padding:6px 12px;font-size:.72rem;font-weight:700;color:var(--green2);white-space:nowrap}.teacher-dot{width:6px;height:6px;background:var(--green3);border-radius:50%;animation:blink 2s infinite;flex-shrink:0}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.content{padding:24px 28px 60px;flex:1}.section-page{display:none;animation:fadeIn .25s ease both}.section-page.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.stat-c{background:rgba(250,247,242,.92);border:1px solid var(--border);border-radius:18px;padding:18px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);transition:all .25s}.stat-c:hover{border-color:var(--green);transform:translateY(-2px)}.stat-icon{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--green-light),rgba(196,168,130,.12));border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}.stat-val{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--green);line-height:1}.stat-lbl{font-size:.63rem;color:var(--muted);font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.8px}
+.card{background:rgba(250,247,242,.92);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:18px}.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:linear-gradient(180deg,rgba(237,231,219,.8),rgba(250,247,242,.92))}.card-title{font-family:var(--display);font-size:.92rem;font-weight:700;display:flex;align-items:center;gap:7px}.card-desc{font-size:.74rem;color:var(--muted);line-height:1.6;margin-top:3px}.card-body{padding:20px}.grid{display:grid;gap:14px}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.fw{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}.flbl{font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;font-family:var(--mono)}.finp{width:100%;background:var(--bg2);border:1.5px solid var(--border);color:var(--text);padding:12px 14px;border-radius:10px;font-family:var(--sans);font-size:.88rem;outline:none;transition:all .2s;-webkit-appearance:none;appearance:none;min-height:44px}.finp:focus{border-color:var(--green);background:var(--surface);box-shadow:0 0 0 3px rgba(22,163,74,.1)}.finp::placeholder{color:var(--muted2)}select.finp{color:var(--muted);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B5E4E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}textarea.finp{resize:vertical;min-height:90px;line-height:1.6}.checks{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px}.check{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.76rem;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:7px}.check input{accent-color:var(--green)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:10px;border:none;font-family:var(--sans);font-weight:700;font-size:.82rem;cursor:pointer;transition:all .22s;white-space:nowrap;min-height:44px;-webkit-tap-highlight-color:transparent}.btn-primary{background:var(--green);color:#fff;box-shadow:0 4px 14px rgba(22,163,74,.3)}.btn-primary:hover,.btn-primary:active{background:var(--green2)}.btn-ghost{background:var(--bg2);border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover,.btn-ghost:active{border-color:var(--green);color:var(--green)}.btn-danger{background:var(--red-bg);border:1px solid rgba(220,38,38,.2);color:var(--red)}.btn-danger:hover,.btn-danger:active{background:rgba(220,38,38,.12)}.btn-full{width:100%}.btn-sm{padding:8px 12px;font-size:.74rem;min-height:36px}
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);-webkit-overflow-scrolling:touch}table{width:100%;border-collapse:collapse;text-align:left;min-width:650px}thead{background:var(--bg2)}thead th{padding:11px 16px;font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-family:var(--mono);border-bottom:1px solid var(--border2);white-space:nowrap}tbody tr{border-bottom:1px solid var(--border);transition:background .18s}tbody tr:hover{background:var(--bg2)}tbody tr:last-child{border-bottom:none}tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}.td-name{font-weight:700;color:var(--text)}.td-email{font-family:var(--mono);font-size:.65rem;color:var(--muted)}.td-green{color:var(--green);font-weight:700}.td-score{display:inline-flex;align-items:center;background:var(--green-light);border:1px solid var(--border2);color:var(--green);padding:3px 9px;border-radius:6px;font-family:var(--mono);font-size:.68rem;font-weight:800}.td-date{font-family:var(--mono);font-size:.65rem;color:var(--muted);white-space:nowrap}.td-empty{padding:40px;text-align:center;color:var(--muted);font-size:.86rem}.badge{font-size:.62rem;font-weight:800;padding:4px 10px;border-radius:8px;border:none;font-family:var(--sans);transition:all .2s;display:inline-flex;align-items:center;gap:5px}.badge-active{background:var(--green-light);color:var(--green);border:1px solid var(--border2)}.badge-expired{background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.2)}.badge-warn{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(196,101,74,.2)}.search-wrap{position:relative;width:100%;max-width:320px}.search-wrap input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px 14px 10px 38px;border-radius:10px;font-family:var(--sans);font-size:.84rem;outline:none;transition:all .2s;min-height:44px}.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}.q-block{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}.q-block-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.q-num-badge{font-family:var(--mono);font-size:.6rem;color:var(--green);background:var(--green-light);border:1px solid var(--border2);padding:3px 10px;border-radius:20px;font-weight:700}.warning{background:var(--amber-bg);border:1px dashed rgba(196,101,74,.28);padding:14px 16px;border-radius:14px;color:var(--amber);font-size:.78rem;line-height:1.7;font-weight:700}
+.bottom-nav,.mob-header,.more-drawer{display:none}
+@media(max-width:900px){.sidebar{display:none}.main-area{margin-left:0}.topbar{display:none}.mob-header{display:flex;position:sticky;top:0;z-index:40;background:rgba(250,247,242,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--border2);height:54px;align-items:center;padding:0 16px;justify-content:space-between;box-shadow:0 2px 10px rgba(13,31,20,.05)}.mob-logo{display:flex;align-items:center;gap:9px}.mob-logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:.78rem;color:#fff}.mob-logo-name{font-family:var(--display);font-size:.9rem;font-weight:800;color:var(--text)}.mob-logo-name span{color:var(--green2)}.mob-section-name{font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:20px;border:1px solid var(--border2)}.bottom-nav{display:block;position:fixed;bottom:0;left:0;right:0;z-index:90;background:rgba(44,36,24,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.1);height:var(--bottom-nav-h);padding:0 4px;padding-bottom:env(safe-area-inset-bottom)}.bottom-nav-inner{display:flex;align-items:center;justify-content:space-around;height:100%;max-width:600px;margin:0 auto}.bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;cursor:pointer;padding:6px 4px;border-radius:12px;transition:all .2s;border:none;background:none;color:rgba(255,255,255,.45);font-family:var(--sans);-webkit-tap-highlight-color:transparent;min-width:0}.bn-item.active{color:#fff}.bn-icon{font-size:1.2rem;line-height:1;position:relative}.bn-item.active .bn-icon::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--green3);border-radius:50%}.bn-label{font-size:.54rem;font-weight:700;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52px;text-align:center}.content{padding:14px 14px calc(var(--bottom-nav-h) + 14px)}.stats-row{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.grid-2,.fg2,.fg3{grid-template-columns:1fr}.stat-c{padding:14px;border-radius:14px}.stat-icon{width:38px;height:38px;border-radius:10px}.stat-val{font-size:1.4rem}.card{border-radius:16px;margin-bottom:12px}.card-head{padding:12px 14px;gap:8px}.card-body{padding:14px}.card-title{font-size:.86rem}.btn{min-height:44px;font-size:.82rem}.btn-sm{min-height:38px}table{min-width:540px}thead th{padding:10px 12px;font-size:.58rem}tbody td{padding:11px 12px;font-size:.78rem}.search-wrap{max-width:none}}
+@media(max-width:480px){.stats-row{grid-template-columns:1fr}.mob-section-name{display:none}.card-head{flex-direction:column;align-items:flex-start}.card-head .btn{align-self:flex-end}}
+@media screen and (-webkit-min-device-pixel-ratio:0){.finp,.search-wrap input{font-size:16px}}
 </style>
 </head>
 <body>
+<div id="toast-container"></div>
+<div id="secureLayer" class="secure-layer">
+  <div class="spin-ring"></div>
+  <div class="secure-txt">Verifying admin access…</div>
+</div>
 
-<div id="loader" class="loader-screen">
-  <div class="loader-card">
-    <div class="spinner"></div>
-    <h2>جاري التحقق...</h2>
-    <p class="desc">لو مش عامل تسجيل دخول، هتتحول لصفحة الدخول.</p>
+<div id="loginScreen" class="login-screen hidden">
+  <div class="login-card">
+    <div class="login-logo"><div class="mark">K</div><div><div class="login-title">Kalawy<span style="color:var(--green2)"> Admin</span></div><div class="login-sub">CONTROL CENTER</div></div></div>
+    <p>Sign in with your admin account. Teachers and students will be redirected automatically.</p>
+    <div class="fw"><label class="flbl">Email</label><input id="loginEmail" class="finp" type="email" value="kevin.hani@hotmail.com" autocomplete="email"></div>
+    <div class="fw"><label class="flbl">Password</label><input id="loginPassword" class="finp" type="password" autocomplete="current-password"></div>
+    <button class="btn btn-primary btn-full" onclick="adminLogin()">Sign In</button>
+    <p class="warning" style="margin-top:14px">Admin email is hidden from student signup. If this account is not admin yet, update role='admin' in your users table.</p>
   </div>
 </div>
 
-<div id="app" class="app hide">
-  <aside id="sidebar" class="sidebar">
-    <div class="logo">
-      <div class="logo-mark"><span class="logo-k">K</span></div>
-      <div>
-        <div class="logo-title">Kalawy</div>
-        <div class="logo-sub">ADMIN PANEL</div>
+<aside class="sidebar" id="sidebarEl">
+  <div class="sb-logo"><div class="sb-logo-mark">K</div><div><div class="sb-logo-name">Kala<span>wy</span></div><div class="sb-badge">ADMIN</div></div></div>
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <button class="sb-link active" data-section="overview" onclick="showSection('overview',this)"><div class="sb-icon">📊</div>Overview</button>
+    <div class="sb-section">People</div>
+    <button class="sb-link" data-section="teachers" onclick="showSection('teachers',this)"><div class="sb-icon">👨‍🏫</div>Teachers</button>
+    <button class="sb-link" data-section="students" onclick="showSection('students',this)"><div class="sb-icon">👥</div>Students</button>
+    <div class="sb-section">Content</div>
+    <button class="sb-link" data-section="subjects" onclick="showSection('subjects',this)"><div class="sb-icon">📚</div>Subjects</button>
+    <button class="sb-link" data-section="lessons" onclick="showSection('lessons',this)"><div class="sb-icon">🎬</div>Courses & Lessons</button>
+    <button class="sb-link" data-section="exams" onclick="showSection('exams',this)"><div class="sb-icon">📝</div>Exams</button>
+    <div class="sb-section">Tools</div>
+    <button class="sb-link" data-section="codes" onclick="showSection('codes',this)"><div class="sb-icon">🎫</div>Codes</button>
+    <button class="sb-link" data-section="results" onclick="showSection('results',this)"><div class="sb-icon">📈</div>Results</button>
+  </nav>
+  <div class="sb-footer"><div class="sb-user" id="adminEmailLabel">admin</div><button class="sb-logout" onclick="signOut()">↪ Sign Out</button></div>
+</aside>
+
+<div class="mob-header" id="mobHeader"><div class="mob-logo"><div class="mob-logo-mark">K</div><div class="mob-logo-name">Kala<span>wy</span></div></div><div class="mob-section-name" id="mobSectionName">Overview</div></div>
+<nav class="bottom-nav"><div class="bottom-nav-inner">
+  <button class="bn-item active" id="bn-overview" onclick="showSection('overview',null,'overview')"><div class="bn-icon">📊</div><div class="bn-label">Overview</div></button>
+  <button class="bn-item" id="bn-teachers" onclick="showSection('teachers',null,'teachers')"><div class="bn-icon">👨‍🏫</div><div class="bn-label">Teachers</div></button>
+  <button class="bn-item" id="bn-lessons" onclick="showSection('lessons',null,'lessons')"><div class="bn-icon">🎬</div><div class="bn-label">Lessons</div></button>
+  <button class="bn-item" id="bn-students" onclick="showSection('students',null,'students')"><div class="bn-icon">👥</div><div class="bn-label">Students</div></button>
+  <button class="bn-item" id="bn-codes" onclick="showSection('codes',null,'codes')"><div class="bn-icon">🎫</div><div class="bn-label">Codes</div></button>
+</div></nav>
+
+<div class="main-area" id="appShell">
+  <div class="topbar"><div class="topbar-left"><div class="topbar-title" id="topbarTitle">Overview</div></div><div class="teacher-pill"><div class="teacher-dot"></div>Kalawy Command</div></div>
+  <div class="content">
+    <div class="section-page active" id="sec-overview">
+      <div class="stats-row">
+        <div class="stat-c"><div class="stat-icon">👨‍🏫</div><div><div class="stat-val" id="statTeachers">—</div><div class="stat-lbl">Teachers</div></div></div>
+        <div class="stat-c"><div class="stat-icon">📚</div><div><div class="stat-val" id="statSubjects">—</div><div class="stat-lbl">Subjects</div></div></div>
+        <div class="stat-c"><div class="stat-icon">🎬</div><div><div class="stat-val" id="statLessons">—</div><div class="stat-lbl">Courses</div></div></div>
+        <div class="stat-c"><div class="stat-icon">👥</div><div><div class="stat-val" id="statStudents">—</div><div class="stat-lbl">Students</div></div></div>
+      </div>
+      <div class="card"><div class="card-head"><div class="card-title">📊 Recent Results</div><button class="btn btn-ghost btn-sm" onclick="loadAll()">Refresh</button></div><div style="padding:4px"><div class="table-wrap" style="max-height:340px;overflow:auto"><table><thead><tr><th>Student</th><th>Lesson</th><th>Score</th><th>Date</th></tr></thead><tbody id="ovBody"><tr><td colspan="4" class="td-empty">Loading…</td></tr></tbody></table></div></div></div>
+    </div>
+
+    <div class="section-page" id="sec-teachers">
+      <div class="grid-2">
+        <div class="card"><div class="card-head"><div><div class="card-title">👨‍🏫 Add / Edit Teacher</div><div class="card-desc">Admin adds teachers and gives dashboard access.</div></div></div><div class="card-body">
+          <input id="teacherId" type="hidden">
+          <div class="fw"><label class="flbl">Teacher Name</label><input id="teacherName" class="finp" placeholder="Mr Ahmed"></div>
+          <div class="fg2"><div class="fw"><label class="flbl">Email</label><input id="teacherEmail" class="finp" type="email" placeholder="teacher@email.com"></div><div class="fw"><label class="flbl">Phone</label><input id="teacherPhone" class="finp" maxlength="11" placeholder="01012345678"></div></div>
+          <div class="fg2"><div class="fw"><label class="flbl">Subject</label><select id="teacherSubject" class="finp"></select></div><div class="fw"><label class="flbl">Status</label><select id="teacherActive" class="finp"><option value="true">Active</option><option value="false">Blocked</option></select></div></div>
+          <div class="fw"><label class="flbl">Bio</label><textarea id="teacherBio" class="finp" placeholder="Short teacher bio"></textarea></div>
+          <label class="flbl">Permissions</label><div class="checks"><label class="check"><input type="checkbox" id="canAdd" checked> Add Lesson</label><label class="check"><input type="checkbox" id="canEdit" checked> Edit Lesson</label><label class="check"><input type="checkbox" id="canDelete"> Delete Lesson</label><label class="check"><input type="checkbox" id="canExam" checked> Create Exam</label></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onclick="saveTeacher()">Save Teacher</button><button class="btn btn-ghost" onclick="clearTeacherForm()">Clear</button></div>
+        </div></div>
+        <div class="card"><div class="card-head"><div class="card-title">⚠️ Important</div></div><div class="card-body"><p class="card-desc">The teacher must have a Supabase Auth user with the same email. This page sets role=teacher and connects him to a subject.</p><div class="warning" style="margin-top:14px">Do not put Service Role Key inside HTML. Use Supabase Dashboard or Edge Function to create teacher Auth accounts.</div></div></div>
+      </div>
+      <div class="card"><div class="card-head"><div class="card-title">👨‍🏫 Teachers List</div></div><div style="padding:4px"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Status</th><th>Permissions</th><th>Actions</th></tr></thead><tbody id="teachersRows"></tbody></table></div></div></div>
+    </div>
+
+    <div class="section-page" id="sec-subjects">
+      <div class="grid-2">
+        <div class="card"><div class="card-head"><div><div class="card-title">📚 Add Subject</div><div class="card-desc">Add subjects that teachers can own.</div></div></div><div class="card-body">
+          <div class="fw"><label class="flbl">Slug</label><input id="subjectSlug" class="finp ltr" placeholder="biology"></div>
+          <div class="fg2"><div class="fw"><label class="flbl">Arabic Name</label><input id="subjectAr" class="finp arabic" placeholder="الأحياء"></div><div class="fw"><label class="flbl">English Name</label><input id="subjectEn" class="finp" placeholder="Biology"></div></div>
+          <div class="fg2"><div class="fw"><label class="flbl">Icon</label><input id="subjectIcon" class="finp" placeholder="🧬"></div><div class="fw"><label class="flbl">Color</label><input id="subjectColor" class="finp ltr" placeholder="#2D5A3D"></div></div>
+          <button class="btn btn-primary" onclick="saveSubject()">Save Subject</button>
+        </div></div>
+        <div class="card"><div class="card-head"><div class="card-title">📚 Subjects</div></div><div style="padding:4px"><div class="table-wrap"><table><thead><tr><th>Subject</th><th>Slug</th><th>Color</th></tr></thead><tbody id="subjectsRows"></tbody></table></div></div></div>
       </div>
     </div>
 
-    <div class="nav-list">
-      <button class="nav-btn active" data-section="overview" onclick="showSection('overview')">📊 الرئيسية</button>
-      <button class="nav-btn" data-section="teachers" onclick="showSection('teachers')">👨‍🏫 المدرسين</button>
-      <button class="nav-btn" data-section="subjects" onclick="showSection('subjects')">📚 المواد</button>
-      <button class="nav-btn" data-section="lessons" onclick="showSection('lessons')">🎬 الحصص</button>
-      <button class="nav-btn" data-section="exams" onclick="showSection('exams')">📝 الامتحانات</button>
-      <button class="nav-btn" data-section="students" onclick="showSection('students')">🎒 الطلاب</button>
-      <button class="nav-btn" data-section="codes" onclick="showSection('codes')">🔑 الأكواد</button>
-      <button class="nav-btn" data-section="results" onclick="showSection('results')">🏆 النتائج</button>
-    </div>
-
-    <div class="side-bottom">
-      <div class="pill">👤 <span id="adminEmail">Admin</span></div>
-      <button class="btn-red" onclick="logout()">تسجيل الخروج</button>
-    </div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <button class="btn icon-btn mobile-menu" onclick="toggleSidebar()">☰</button>
-      <div class="top-title">
-        <h1 id="pageTitle">لوحة تحكم الأدمن</h1>
-        <p id="pageSub">إدارة المدرسين والطلاب والحصص والامتحانات.</p>
+    <div class="section-page" id="sec-lessons">
+      <div class="grid-2">
+        <div class="card"><div class="card-head"><div><div class="card-title">🎬 New Course / Lesson</div><div class="card-desc">Choose teacher; subject is detected from teacher.</div></div></div><div class="card-body">
+          <div class="fw"><label class="flbl">Teacher</label><select id="lessonTeacher" class="finp"></select></div>
+          <div class="fg2"><div class="fw"><label class="flbl">Lesson Name</label><input id="lessonName" class="finp" placeholder="Lesson one"></div><div class="fw"><label class="flbl">Grade</label><input id="lessonGrade" class="finp" placeholder="3 Secondary"></div></div>
+          <div class="fg3"><div class="fw"><label class="flbl">Price</label><input id="lessonPrice" class="finp" type="number" value="0"></div><div class="fw"><label class="flbl">Validity Days</label><input id="lessonValidity" class="finp" type="number" value="90"></div><div class="fw"><label class="flbl">Exam Duration</label><input id="lessonExamDuration" class="finp" type="number" value="40"></div></div>
+          <div class="fw"><label class="flbl">About</label><textarea id="lessonAbout" class="finp"></textarea></div>
+          <div class="fg2"><div class="fw"><label class="flbl">Image URL</label><input id="lessonImage" class="finp" placeholder="https://..."></div><div class="fw"><label class="flbl">PDF URL</label><input id="lessonPdf" class="finp" placeholder="https://..."></div></div>
+          <div class="fw"><label class="flbl">Video URL</label><input id="lessonVideo" class="finp" placeholder="YouTube / Drive / mp4"></div>
+          <button class="btn btn-primary" onclick="saveLesson()">Publish Course</button>
+        </div></div>
+        <div class="card"><div class="card-head"><div class="card-title">🎬 Published Courses</div></div><div style="padding:4px"><div class="table-wrap"><table><thead><tr><th>Course</th><th>Teacher</th><th>Price</th><th>Actions</th></tr></thead><tbody id="lessonsRows"></tbody></table></div></div></div>
       </div>
-      <div class="actions">
-        <button class="btn" onclick="loadAll()">↻ تحديث</button>
-        <button class="btn icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
-      </div>
-    </header>
-
-    <div class="content">
-      <div id="globalMsg" class="msg"></div>
-
-      <section id="overview" class="section active">
-        <div class="grid grid-4">
-          <div class="card stat"><div class="stat-icon">👨‍🏫</div><div id="countTeachers" class="stat-num">0</div><div class="stat-label">مدرسين</div></div>
-          <div class="card stat"><div class="stat-icon">🎬</div><div id="countLessons" class="stat-num">0</div><div class="stat-label">حصص</div></div>
-          <div class="card stat"><div class="stat-icon">🎒</div><div id="countStudents" class="stat-num">0</div><div class="stat-label">طلاب</div></div>
-          <div class="card stat"><div class="stat-icon">🔑</div><div id="countCodes" class="stat-num">0</div><div class="stat-label">أكواد</div></div>
-        </div>
-        <div class="card">
-          <div class="card-head">
-            <div>
-              <h2>نظام الإدارة</h2>
-              <p class="desc">الأدمن يضيف المدرس، يحدد مادته وصلاحياته، والمدرس يدخل من صفحة Auth العادية بدون أي Signup خاص.</p>
-            </div>
-          </div>
-          <div class="warning">
-            مهم: لا تضع Service Role Key داخل HTML. لو عايز تعمل حساب Auth للمدرس من داخل الأدمن بكلمة مرور، اعمله بـ Supabase Edge Function لاحقًا. هذه الصفحة تدير بيانات المدرس وصلاحياته داخل الجداول.
-          </div>
-        </div>
-      </section>
-
-      <section id="teachers" class="section">
-        <div class="grid grid-2">
-          <div class="card">
-            <div class="card-head">
-              <div>
-                <h2>إضافة / تعديل مدرس</h2>
-                <p class="desc">اكتب إيميل المدرس الذي سيستخدمه في تسجيل الدخول، وحدد المادة والصلاحيات.</p>
-              </div>
-            </div>
-            <input type="hidden" id="teacherId">
-            <div class="field"><label>اسم المدرس</label><input id="teacherName" placeholder="Mr Ahmed"></div>
-            <div class="form-row">
-              <div class="field"><label>إيميل المدرس</label><input id="teacherEmail" type="email" placeholder="teacher@email.com"></div>
-              <div class="field"><label>رقم التليفون</label><input id="teacherPhone" maxlength="11" placeholder="01012345678"></div>
-            </div>
-            <div class="form-row">
-              <div class="field"><label>المادة</label><select id="teacherSubject"></select></div>
-              <div class="field"><label>الحالة</label><select id="teacherActive"><option value="true">Active</option><option value="false">Blocked</option></select></div>
-            </div>
-            <div class="field"><label>نبذة</label><textarea id="teacherBio" placeholder="نبذة قصيرة"></textarea></div>
-            <label>الصلاحيات</label>
-            <div class="checks">
-              <label class="check"><input type="checkbox" id="canAdd" checked> إضافة حصة</label>
-              <label class="check"><input type="checkbox" id="canEdit" checked> تعديل حصة</label>
-              <label class="check"><input type="checkbox" id="canDelete"> حذف حصة</label>
-              <label class="check"><input type="checkbox" id="canExam" checked> إنشاء امتحان</label>
-            </div>
-            <div class="actions">
-              <button class="btn-gold" onclick="saveTeacher()">حفظ المدرس</button>
-              <button class="btn" onclick="clearTeacherForm()">تفريغ</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>مهم للمدرس</h2>
-            <p class="desc">لو المدرس مش موجود في Supabase Auth، اعمله حساب من Authentication → Users أو خلّيه يعمل Signup عادي، وبعدها أنت غير دوره من هنا إلى Teacher.</p>
-            <div class="warning" style="margin-top:14px">
-              المدرس مش هيظهر له أي حاجة خاصة في صفحة الدخول. يدخل بنفس صفحة Auth العادية، وبعدها يتحول تلقائيًا إلى Teacher Dashboard حسب role.
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head"><div><h2>قائمة المدرسين</h2><p class="desc">كل المدرسين وصلاحياتهم.</p></div></div>
-          <div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الإيميل</th><th>المادة</th><th>الحالة</th><th>الصلاحيات</th><th>تحكم</th></tr></thead><tbody id="teachersRows"></tbody></table></div>
-        </div>
-      </section>
-
-      <section id="subjects" class="section">
-        <div class="grid grid-2">
-          <div class="card">
-            <h2>إضافة مادة</h2>
-            <p class="desc">تقدر تزود مواد جديدة غير Math / Physics / Arabic / Chemistry.</p>
-            <div class="field"><label>Slug</label><input id="subjectSlug" class="ltr" placeholder="biology"></div>
-            <div class="form-row">
-              <div class="field"><label>اسم عربي</label><input id="subjectAr" placeholder="الأحياء"></div>
-              <div class="field"><label>اسم إنجليزي</label><input id="subjectEn" placeholder="Biology"></div>
-            </div>
-            <div class="form-row">
-              <div class="field"><label>Icon</label><input id="subjectIcon" placeholder="🧬"></div>
-              <div class="field"><label>Color</label><input id="subjectColor" placeholder="#2D5A3D"></div>
-            </div>
-            <button class="btn-gold" onclick="saveSubject()">حفظ المادة</button>
-          </div>
-          <div class="card">
-            <h2>المواد</h2>
-            <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>المادة</th><th>Slug</th><th>لون</th></tr></thead><tbody id="subjectsRows"></tbody></table></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="lessons" class="section">
-        <div class="grid grid-2">
-          <div class="card">
-            <div class="card-head"><div><h2>إضافة حصة</h2><p class="desc">اختار المدرس، والمادة تتحط من المدرس تلقائيًا.</p></div></div>
-            <div class="field"><label>المدرس</label><select id="lessonTeacher"></select></div>
-            <div class="form-row">
-              <div class="field"><label>اسم الحصة</label><input id="lessonName" placeholder="الدرس الأول"></div>
-              <div class="field"><label>الصف</label><input id="lessonGrade" placeholder="3 Secondary"></div>
-            </div>
-            <div class="form-row-3">
-              <div class="field"><label>السعر</label><input id="lessonPrice" type="number" value="0"></div>
-              <div class="field"><label>الصلاحية بالأيام</label><input id="lessonValidity" type="number" value="90"></div>
-              <div class="field"><label>مدة الامتحان</label><input id="lessonExamDuration" type="number" value="40"></div>
-            </div>
-            <div class="field"><label>عن الحصة</label><textarea id="lessonAbout"></textarea></div>
-            <div class="form-row">
-              <div class="field"><label>رابط صورة</label><input id="lessonImage" placeholder="https://..."></div>
-              <div class="field"><label>رابط PDF</label><input id="lessonPdf" placeholder="https://..."></div>
-            </div>
-            <div class="field"><label>رابط الفيديو</label><input id="lessonVideo" placeholder="YouTube / Drive / mp4"></div>
-            <button class="btn-gold" onclick="saveLesson()">إضافة الحصة</button>
-          </div>
-
-          <div class="card">
-            <h2>الحصص</h2>
-            <p class="desc">الحذف من هنا. التعديل التفصيلي ممكن يتضاف في نسخة تانية.</p>
-            <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>الحصة</th><th>المدرس</th><th>السعر</th><th>تحكم</th></tr></thead><tbody id="lessonsRows"></tbody></table></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="exams" class="section">
-        <div class="card">
-          <div class="card-head">
-            <div><h2>إنشاء امتحان للحصة</h2><p class="desc">الأسئلة تتحفظ في حقل questions داخل جدول lessons.</p></div>
-          </div>
-          <div class="form-row">
-            <div class="field"><label>الحصة</label><select id="examLesson"></select></div>
-            <div class="field"><label>مدة الامتحان بالدقائق</label><input id="examDuration" type="number" value="40"></div>
-          </div>
-          <div class="card" style="box-shadow:none;background:var(--card2)">
-            <h2 style="font-size:1rem;margin-bottom:12px">إضافة سؤال</h2>
-            <div class="field"><label>السؤال</label><textarea id="qText" placeholder="اكتب السؤال"></textarea></div>
-            <div class="form-row">
-              <div class="field"><label>A</label><input id="qA"></div>
-              <div class="field"><label>B</label><input id="qB"></div>
-            </div>
-            <div class="form-row">
-              <div class="field"><label>C</label><input id="qC"></div>
-              <div class="field"><label>D</label><input id="qD"></div>
-            </div>
-            <div class="form-row">
-              <div class="field"><label>الإجابة الصحيحة</label><select id="qCorrect"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div>
-              <div class="field"><label>شرح اختياري</label><input id="qExplain"></div>
-            </div>
-            <button class="btn" onclick="addQuestion()">+ إضافة السؤال</button>
-          </div>
-          <div id="questionsPreview" class="grid" style="margin:16px 0"></div>
-          <button class="btn-gold" onclick="saveExam()">حفظ الامتحان</button>
-        </div>
-      </section>
-
-      <section id="students" class="section">
-        <div class="card">
-          <div class="card-head">
-            <div><h2>الطلاب</h2><p class="desc">عرض الطلاب وحظر أو إلغاء حظر الحساب.</p></div>
-            <input id="studentSearch" placeholder="بحث..." style="max-width:260px" oninput="renderStudents()">
-          </div>
-          <div class="table-wrap"><table><thead><tr><th>الطالب</th><th>الإيميل</th><th>التليفون</th><th>الصف</th><th>الحالة</th><th>تحكم</th></tr></thead><tbody id="studentsRows"></tbody></table></div>
-        </div>
-      </section>
-
-      <section id="codes" class="section">
-        <div class="grid grid-2">
-          <div class="card">
-            <h2>إنشاء كود دفع</h2>
-            <p class="desc">الكود يرتبط بحصة.</p>
-            <div class="field"><label>الحصة</label><select id="codeLesson"></select></div>
-            <div class="form-row">
-              <div class="field"><label>الكود</label><input id="codeValue" class="ltr" placeholder="KALAWY-XXXX"></div>
-              <div class="field"><label>ينتهي بعد كام يوم</label><input id="codeDays" type="number" value="90"></div>
-            </div>
-            <div class="actions">
-              <button class="btn" onclick="generateCode()">توليد كود</button>
-              <button class="btn-gold" onclick="saveCode()">حفظ الكود</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>الأكواد</h2>
-            <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>الكود</th><th>الحصة</th><th>مستخدم؟</th><th>بواسطة</th></tr></thead><tbody id="codesRows"></tbody></table></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="results" class="section">
-        <div class="card">
-          <div class="card-head"><div><h2>نتائج الطلاب</h2><p class="desc">آخر نتائج الامتحانات.</p></div></div>
-          <div class="table-wrap"><table><thead><tr><th>الطالب</th><th>الحصة</th><th>الدرجة</th><th>التاريخ</th></tr></thead><tbody id="resultsRows"></tbody></table></div>
-        </div>
-      </section>
-
     </div>
-  </main>
+
+    <div class="section-page" id="sec-exams">
+      <div class="card"><div class="card-head"><div><div class="card-title">📝 Create Exam</div><div class="card-desc">Questions are saved inside the selected lesson.</div></div></div><div class="card-body">
+        <div class="fg2"><div class="fw"><label class="flbl">Lesson</label><select id="examLesson" class="finp"></select></div><div class="fw"><label class="flbl">Duration Minutes</label><input id="examDuration" class="finp" type="number" value="40"></div></div>
+        <div class="q-block"><div class="q-block-head"><span class="q-num-badge">New Question</span></div><div class="fw"><label class="flbl">Question</label><textarea id="qText" class="finp" placeholder="Write question"></textarea></div><div class="fg2"><div class="fw"><label class="flbl">A</label><input id="qA" class="finp"></div><div class="fw"><label class="flbl">B</label><input id="qB" class="finp"></div></div><div class="fg2"><div class="fw"><label class="flbl">C</label><input id="qC" class="finp"></div><div class="fw"><label class="flbl">D</label><input id="qD" class="finp"></div></div><div class="fg2"><div class="fw"><label class="flbl">Correct Answer</label><select id="qCorrect" class="finp"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div><div class="fw"><label class="flbl">Explanation</label><input id="qExplain" class="finp"></div></div><button class="btn btn-ghost" onclick="addQuestion()">+ Add Question</button></div>
+        <div id="questionsPreview"></div><button class="btn btn-primary btn-full" onclick="saveExam()">Save Exam</button>
+      </div></div>
+    </div>
+
+    <div class="section-page" id="sec-students">
+      <div class="card"><div class="card-head"><div><div class="card-title">👥 Students</div><div class="card-desc">View all students and block/unblock access.</div></div><div class="search-wrap"><span class="search-icon">⌕</span><input id="studentSearch" placeholder="Search students…" oninput="renderStudents()"></div></div><div style="padding:4px"><div class="table-wrap"><table><thead><tr><th>Student</th><th>Email</th><th>Phone</th><th>Grade</th><th>Status</th><th>Actions</th></tr></thead><tbody id="studentsRows"></tbody></table></div></div></div>
+    </div>
+
+    <div class="section-page" id="sec-codes">
+      <div class="grid-2">
+        <div class="card"><div class="card-head"><div><div class="card-title">🎫 Generate Payment Code</div><div class="card-desc">Code connects to a lesson. When student uses it, he is paid.</div></div></div><div class="card-body"><div class="fw"><label class="flbl">Lesson</label><select id="codeLesson" class="finp"></select></div><div class="fg2"><div class="fw"><label class="flbl">Code</label><input id="codeValue" class="finp ltr" placeholder="KALAWY-XXXX"></div><div class="fw"><label class="flbl">Expires After Days</label><input id="codeDays" class="finp" type="number" value="90"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost" onclick="generateCode()">Generate</button><button class="btn btn-primary" onclick="saveCode()">Save Code</button></div></div></div>
+        <div class="card"><div class="card-head"><div class="card-title">🎫 Latest Codes</div></div><div style="padding:4px"><div class="table-wrap"><table><thead><tr><th>Code</th><th>Lesson</th><th>Status</th><th>Used By</th></tr></thead><tbody id="codesRows"></tbody></table></div></div></div>
+      </div>
+    </div>
+
+    <div class="section-page" id="sec-results">
+      <div class="card"><div class="card-head"><div class="card-title">📈 Student Results</div></div><div style="padding:4px"><div class="table-wrap"><table><thead><tr><th>Student</th><th>Lesson</th><th>Score</th><th>Date</th></tr></thead><tbody id="resultsRows"></tbody></table></div></div></div>
+    </div>
+  </div>
 </div>
 
 <script>
+(function(){
+'use strict';
 const SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
-
 const ADMIN_EMAILS = ["kevin.hani@hotmail.com"];
-const AUTH_URL = "/auth";
-const STUDENT_URL = "/dashboard";
-const TEACHER_URL = "/teacher-dashboard";
-
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-const state = {
-  user:null, profile:null, subjects:[], teachers:[], lessons:[], students:[], codes:[], results:[], questions:[]
-};
-
+const AUTH_ROUTE = "/auth";
+const TEACHER_ROUTE = "/teacher-dashboard";
+const STUDENT_ROUTE = "/dashboard";
+const ADMIN_ROUTE = "/admin";
+const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const state = { user:null, profile:null, subjects:[], teachers:[], lessons:[], students:[], codes:[], results:[], questions:[] };
 const $ = id => document.getElementById(id);
+const labels = {overview:'Overview',teachers:'Teachers',subjects:'Subjects',lessons:'Courses & Lessons',exams:'Exams',students:'Students',codes:'Codes',results:'Results'};
 
-init();
-
-async function init(){
-  const theme = localStorage.getItem("kalawy-theme") || "dark";
-  document.documentElement.setAttribute("data-theme", theme);
-  $("themeBtn").textContent = theme === "dark" ? "🌙" : "☀️";
-  await checkAdmin();
+function toast(type,title,msg='',dur=4200){
+ const icons={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'}; const wrap=$('toast-container'); if(!wrap)return;
+ const t=document.createElement('div'); t.className='toast '+(type==='error'?'error':type==='warning'?'warning':type==='info'?'info':'');
+ t.innerHTML=`<span class="toast-icon">${icons[type]||'ℹ️'}</span><div class="toast-body"><div class="toast-title">${escapeHtml(title)}</div>${msg?`<div class="toast-msg">${escapeHtml(msg)}</div>`:''}</div><button class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+ wrap.appendChild(t); setTimeout(()=>{t.classList.add('toast-exit');setTimeout(()=>t.remove(),260)},dur);
 }
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function normalizePhone(v){let p=String(v||'').trim().replace(/\s+/g,'');p=p.replace(/^\+20/,'0').replace(/^20/,'0');return p||null;}
+function formatDate(v){if(!v)return '-';try{return new Date(v).toLocaleDateString('en-GB',{year:'numeric',month:'short',day:'numeric'})}catch{return String(v)}}
+function subjectLabel(s){return s?.name_en||s?.name_ar||s?.name||s?.title||s?.subject_name||s?.subject||s?.label||s?.slug||'Subject';}
+function subjectIcon(s){return s?.icon||'📚'}
+function teacherById(id){return state.teachers.find(t=>String(t.id)===String(id));}
+function lessonById(id){return state.lessons.find(l=>String(l.id)===String(id));}
+function lessonName(l){return l?.name||l?.title||l?.lesson_name||'Untitled';}
+function relationLesson(c){return c?.lessons||c?.lesson||null;}
+function relationTeacher(l){return l?.teachers||l?.teacher||null;}
+function relationSubject(t){return t?.subjects||t?.subject||null;}
 
-async function checkAdmin(){
-  const { data:{ user } } = await db.auth.getUser();
-
-  if(!user){
-    location.href = AUTH_URL + "?msg=login";
-    return;
-  }
-
-  state.user = user;
-  $("adminEmail").textContent = user.email || "admin";
-
-  const { data: profile } = await db.from("users")
-    .select("*")
-    .or(`auth_user_id.eq.${user.id},email.eq.${user.email}`)
-    .maybeSingle();
-
-  state.profile = profile || null;
-  const emailOk = ADMIN_EMAILS.includes(String(user.email || "").toLowerCase());
-  const role = emailOk ? "admin" : (profile?.role || user.user_metadata?.role || "student");
-
-  if(profile?.is_blocked){
-    await db.auth.signOut();
-    location.href = AUTH_URL + "?msg=blocked";
-    return;
-  }
-
-  if(role !== "admin"){
-    location.href = role === "teacher" ? TEACHER_URL : STUDENT_URL;
-    return;
-  }
-
-  $("loader").classList.add("hide");
-  $("app").classList.remove("hide");
-  await loadAll();
+async function safeQuery(name, primary, fallback){
+ const first = await primary();
+ if(!first.error) return first.data || [];
+ const second = fallback ? await fallback() : first;
+ if(second.error){ toast('error', name+' Error', second.error.message); return []; }
+ return second.data || [];
 }
-
-function toggleTheme(){
-  const h = document.documentElement;
-  const next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  h.setAttribute("data-theme", next);
-  localStorage.setItem("kalawy-theme", next);
-  $("themeBtn").textContent = next === "dark" ? "🌙" : "☀️";
+async function checkSession(){
+ $('secureLayer').classList.remove('hidden');
+ const { data:{ user } } = await dbClient.auth.getUser();
+ if(!user){ $('secureLayer').classList.add('hidden'); $('loginScreen').classList.remove('hidden'); return; }
+ state.user=user; $('adminEmailLabel').textContent=user.email||'admin';
+ const { data: profile } = await dbClient.from('users').select('*').or(`auth_user_id.eq.${user.id},email.eq.${user.email}`).maybeSingle();
+ state.profile=profile||null;
+ if(profile?.is_blocked){ await dbClient.auth.signOut(); location.href=AUTH_ROUTE+'?msg=blocked'; return; }
+ const emailOk=ADMIN_EMAILS.includes(String(user.email||'').toLowerCase());
+ const role=emailOk?'admin':(profile?.role||user.user_metadata?.role||'student');
+ if(role!=='admin'){ location.href=role==='teacher'?TEACHER_ROUTE:STUDENT_ROUTE; return; }
+ $('loginScreen').classList.add('hidden'); $('secureLayer').classList.add('hidden');
+ await loadAll();
 }
-
-function toggleSidebar(){
-  $("sidebar").classList.toggle("open");
+async function adminLogin(){
+ const email=$('loginEmail').value.trim(); const password=$('loginPassword').value;
+ if(!email||!password){toast('warning','Missing fields','Type email and password.');return;}
+ $('secureLayer').classList.remove('hidden');
+ const {error}=await dbClient.auth.signInWithPassword({email,password});
+ if(error){$('secureLayer').classList.add('hidden');toast('error','Login Error',error.message);return;}
+ await checkSession();
 }
-
-function showSection(id){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-  $(id).classList.add("active");
-  document.querySelector(`[data-section="${id}"]`)?.classList.add("active");
-  $("sidebar").classList.remove("open");
-  const titles = {
-    overview:["لوحة تحكم الأدمن","إدارة المدرسين والطلاب والحصص والامتحانات."],
-    teachers:["إدارة المدرسين","إضافة مدرس وتحديد المادة والصلاحيات."],
-    subjects:["إدارة المواد","إضافة وتعديل المواد."],
-    lessons:["إدارة الحصص","إضافة الحصص وربطها بالمدرس."],
-    exams:["إنشاء الامتحانات","حفظ أسئلة الامتحان داخل الحصة."],
-    students:["إدارة الطلاب","عرض وحظر الطلاب."],
-    codes:["أكواد الدفع","إنشاء ومتابعة الأكواد."],
-    results:["نتائج الطلاب","متابعة درجات الامتحانات."]
-  };
-  $("pageTitle").textContent = titles[id][0];
-  $("pageSub").textContent = titles[id][1];
-}
-
-function msg(text,type="ok"){
-  const m = $("globalMsg");
-  m.textContent = text;
-  m.className = `msg ${type} show`;
-  setTimeout(()=>m.classList.remove("show"), 5000);
-}
-
-async function logout(){
-  await db.auth.signOut();
-  location.href = AUTH_URL;
-}
-
-function normalizePhone(v){
-  let p = String(v || "").trim().replace(/\s+/g,"");
-  p = p.replace(/^\+20/,"0").replace(/^20/,"0");
-  return p || null;
-}
-
-function escapeHtml(v){
-  return String(v ?? "").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-}
-
-function formatDate(v){
-  if(!v) return "-";
-  try{return new Date(v).toLocaleString("ar-EG")}catch{return v}
-}
-
-function teacherById(id){return state.teachers.find(t=>t.id===id)}
-function lessonById(id){return state.lessons.find(l=>l.id===id)}
+async function signOut(){await dbClient.auth.signOut(); location.href=AUTH_ROUTE;}
 
 async function loadAll(){
-  await Promise.all([loadSubjects(),loadTeachers(),loadLessons(),loadStudents(),loadCodes(),loadResults()]);
-  fillSelects();
-  renderAll();
-  updateCounts();
+ $('secureLayer').classList.remove('hidden');
+ await Promise.all([loadSubjects(),loadTeachers(),loadLessons(),loadStudents(),loadCodes(),loadResults()]);
+ fillSelects(); renderAll(); updateStats();
+ $('secureLayer').classList.add('hidden');
 }
-
 async function loadSubjects(){
-  const { data,error } = await db.from("subjects").select("*").order("created_at",{ascending:true});
-  if(error) return msg("خطأ تحميل المواد: " + error.message,"err");
-  state.subjects = data || [];
+ state.subjects = await safeQuery('Subjects',()=>dbClient.from('subjects').select('*').order('created_at',{ascending:true}),()=>dbClient.from('subjects').select('*'));
 }
-
 async function loadTeachers(){
-  const { data,error } = await db.from("teachers").select("*, subjects(id,slug,name_ar,name_en,icon)").order("created_at",{ascending:false});
-  if(error) return msg("خطأ تحميل المدرسين: " + error.message,"err");
-  state.teachers = data || [];
+ state.teachers = await safeQuery('Teachers',()=>dbClient.from('teachers').select('*, subjects(*)').order('created_at',{ascending:false}),()=>dbClient.from('teachers').select('*'));
 }
-
 async function loadLessons(){
-  const { data,error } = await db.from("lessons").select("*, teachers(id,name,email), subjects(id,slug,name_ar,name_en)").order("created_at",{ascending:false});
-  if(error) return msg("خطأ تحميل الحصص: " + error.message,"err");
-  state.lessons = data || [];
+ state.lessons = await safeQuery('Lessons',()=>dbClient.from('lessons').select('*, teachers(*), subjects(*)').order('created_at',{ascending:false}),()=>dbClient.from('lessons').select('*'));
 }
-
 async function loadStudents(){
-  const { data,error } = await db.from("users").select("*").order("created_at",{ascending:false});
-  if(error) return msg("خطأ تحميل الطلاب: " + error.message,"err");
-  state.students = (data || []).filter(u => !u.role || u.role === "student");
+ const rows = await safeQuery('Students',()=>dbClient.from('users').select('*').order('created_at',{ascending:false}),()=>dbClient.from('users').select('*'));
+ state.students = rows.filter(u => !u.role || u.role === 'student');
 }
-
 async function loadCodes(){
-  const { data,error } = await db.from("codes").select("*, lessons(id,name)").order("created_at",{ascending:false}).limit(100);
-  if(error) return msg("خطأ تحميل الأكواد: " + error.message,"err");
-  state.codes = data || [];
+ state.codes = await safeQuery('Codes',()=>dbClient.from('codes').select('*, lessons(*)').order('created_at',{ascending:false}).limit(150),()=>dbClient.from('codes').select('*').limit(150));
 }
-
 async function loadResults(){
-  const { data,error } = await db.from("results").select("*").order("date",{ascending:false}).limit(100);
-  if(error) return msg("خطأ تحميل النتائج: " + error.message,"err");
-  state.results = data || [];
+ state.results = await safeQuery('Results',()=>dbClient.from('results').select('*').order('date',{ascending:false}).limit(150),()=>dbClient.from('results').select('*').limit(150));
 }
-
-function updateCounts(){
-  $("countTeachers").textContent = state.teachers.length;
-  $("countLessons").textContent = state.lessons.length;
-  $("countStudents").textContent = state.students.length;
-  $("countCodes").textContent = state.codes.length;
+function updateStats(){
+ $('statTeachers').textContent=state.teachers.length; $('statSubjects').textContent=state.subjects.length; $('statLessons').textContent=state.lessons.length; $('statStudents').textContent=state.students.length;
 }
-
 function fillSelects(){
-  $("teacherSubject").innerHTML = state.subjects.map(s=>`<option value="${s.id}">${escapeHtml(s.icon||"")} ${escapeHtml(s.name_ar)} / ${escapeHtml(s.name_en)}</option>`).join("") || `<option value="">لا توجد مواد</option>`;
-  $("lessonTeacher").innerHTML = state.teachers.map(t=>`<option value="${t.id}">${escapeHtml(t.name)} — ${escapeHtml(t.subjects?.name_ar || "")}</option>`).join("") || `<option value="">لا يوجد مدرسين</option>`;
-  const lessonOptions = state.lessons.map(l=>`<option value="${l.id}">${escapeHtml(l.name)} — ${escapeHtml(l.teachers?.name || "")}</option>`).join("") || `<option value="">لا توجد حصص</option>`;
-  $("examLesson").innerHTML = lessonOptions;
-  $("codeLesson").innerHTML = lessonOptions;
+ const subjectOptions = state.subjects.map(s=>`<option value="${escapeHtml(s.id)}">${escapeHtml(subjectIcon(s))} ${escapeHtml(subjectLabel(s))}</option>`).join('') || '<option value="">No subjects</option>';
+ $('teacherSubject').innerHTML=subjectOptions;
+ $('lessonTeacher').innerHTML=state.teachers.map(t=>`<option value="${escapeHtml(t.id)}">${escapeHtml(t.name||t.email||'Teacher')} — ${escapeHtml(subjectLabel(relationSubject(t)||state.subjects.find(s=>s.id===t.subject_id)))}</option>`).join('') || '<option value="">No teachers</option>';
+ const lessonOptions=state.lessons.map(l=>`<option value="${escapeHtml(l.id)}">${escapeHtml(lessonName(l))}</option>`).join('') || '<option value="">No lessons</option>';
+ $('examLesson').innerHTML=lessonOptions; $('codeLesson').innerHTML=lessonOptions;
 }
-
-function renderAll(){
-  renderSubjects();renderTeachers();renderLessons();renderStudents();renderCodes();renderResults();renderQuestions();
+function renderAll(){renderOverview();renderSubjects();renderTeachers();renderLessons();renderStudents();renderCodes();renderResults();renderQuestions();}
+function renderOverview(){
+ $('ovBody').innerHTML=state.results.slice(0,10).map(r=>`<tr><td class="td-email">${escapeHtml(r.email||r.student_email||r.student||'-')}</td><td class="td-name">${escapeHtml(r.lesson||r.lesson_name||'-')}</td><td><span class="td-score">${Number(r.score||0)} / ${Number(r.total||0)}</span></td><td class="td-date">${formatDate(r.date||r.created_at)}</td></tr>`).join('') || '<tr><td colspan="4" class="td-empty">No results yet.</td></tr>';
 }
-
-async function saveSubject(){
-  const payload = {
-    slug:$("subjectSlug").value.trim().toLowerCase(),
-    name_ar:$("subjectAr").value.trim(),
-    name_en:$("subjectEn").value.trim(),
-    icon:$("subjectIcon").value.trim(),
-    color:$("subjectColor").value.trim() || "#2D5A3D"
-  };
-  if(!payload.slug || !payload.name_ar || !payload.name_en) return msg("كمل بيانات المادة","err");
-  const { data: existing } = await db.from("subjects").select("id").eq("slug",payload.slug).maybeSingle();
-  const res = existing?.id
-    ? await db.from("subjects").update(payload).eq("id",existing.id)
-    : await db.from("subjects").insert(payload);
-  if(res.error) return msg(res.error.message,"err");
-  msg("تم حفظ المادة");
-  ["subjectSlug","subjectAr","subjectEn","subjectIcon","subjectColor"].forEach(id=>$(id).value="");
-  await loadAll();
-}
-
 function renderSubjects(){
-  $("subjectsRows").innerHTML = state.subjects.map(s=>`<tr>
-    <td><strong>${escapeHtml(s.icon||"")} ${escapeHtml(s.name_ar)}</strong><br><span class="badge">${escapeHtml(s.name_en)}</span></td>
-    <td class="ltr">${escapeHtml(s.slug)}</td>
-    <td><span class="badge" style="border-color:${escapeHtml(s.color||"#999")}">${escapeHtml(s.color||"-")}</span></td>
-  </tr>`).join("") || `<tr><td colspan="3" class="empty">لا توجد مواد</td></tr>`;
+ $('subjectsRows').innerHTML=state.subjects.map(s=>`<tr><td><div class="td-name">${escapeHtml(subjectIcon(s))} ${escapeHtml(subjectLabel(s))}</div><div class="td-email arabic">${escapeHtml(s.name_ar||'')}</div></td><td class="td-email">${escapeHtml(s.slug||'-')}</td><td><span class="badge badge-active">${escapeHtml(s.color||'#2D5A3D')}</span></td></tr>`).join('') || '<tr><td colspan="3" class="td-empty">No subjects.</td></tr>';
 }
-
-async function saveTeacher(){
-  const id = $("teacherId").value;
-  const name = $("teacherName").value.trim();
-  const email = $("teacherEmail").value.trim().toLowerCase();
-  const phone = normalizePhone($("teacherPhone").value);
-  const subject_id = $("teacherSubject").value;
-  if(!name || !email || !subject_id) return msg("اكتب اسم المدرس والإيميل والمادة","err");
-
-  const userPayload = { email, name, phone, role:"teacher", is_blocked:$("teacherActive").value !== "true" };
-  let userRes = await saveByEmail("users", userPayload);
-  if(userRes.error){
-    delete userPayload.phone;
-    userRes = await saveByEmail("users", userPayload);
-  }
-  if(userRes.error) return msg("خطأ حفظ المستخدم: " + userRes.error.message,"err");
-
-  const payload = {
-    email,name,phone,subject_id,
-    bio:$("teacherBio").value.trim(),
-    is_active:$("teacherActive").value === "true",
-    can_add_lessons:$("canAdd").checked,
-    can_edit_lessons:$("canEdit").checked,
-    can_delete_lessons:$("canDelete").checked,
-    can_create_exams:$("canExam").checked
-  };
-
-  const res = id
-    ? await db.from("teachers").update(payload).eq("id",id)
-    : await saveByEmail("teachers", payload);
-
-  if(res.error) return msg("خطأ حفظ المدرس: " + res.error.message,"err");
-  msg("تم حفظ المدرس");
-  clearTeacherForm();
-  await loadAll();
-}
-
-async function saveByEmail(table,payload){
-  const { data: existing, error:e1 } = await db.from(table).select("id").eq("email",payload.email).maybeSingle();
-  if(e1) return { error:e1 };
-  if(existing?.id) return await db.from(table).update(payload).eq("id",existing.id);
-  return await db.from(table).insert(payload);
-}
-
-function clearTeacherForm(){
-  $("teacherId").value="";
-  ["teacherName","teacherEmail","teacherPhone","teacherBio"].forEach(id=>$(id).value="");
-  $("teacherActive").value="true";
-  $("canAdd").checked=true;$("canEdit").checked=true;$("canDelete").checked=false;$("canExam").checked=true;
-}
-
-function editTeacher(id){
-  const t = teacherById(id); if(!t) return;
-  $("teacherId").value=t.id;
-  $("teacherName").value=t.name||"";
-  $("teacherEmail").value=t.email||"";
-  $("teacherPhone").value=t.phone||"";
-  $("teacherSubject").value=t.subject_id||"";
-  $("teacherBio").value=t.bio||"";
-  $("teacherActive").value=String(t.is_active!==false);
-  $("canAdd").checked=t.can_add_lessons!==false;
-  $("canEdit").checked=t.can_edit_lessons!==false;
-  $("canDelete").checked=!!t.can_delete_lessons;
-  $("canExam").checked=t.can_create_exams!==false;
-  msg("تم تحميل بيانات المدرس في الفورم","info");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function deleteTeacher(id){
-  if(!confirm("حذف المدرس؟")) return;
-  const { error } = await db.from("teachers").delete().eq("id",id);
-  if(error) return msg(error.message,"err");
-  msg("تم حذف المدرس");
-  await loadAll();
-}
-
 function renderTeachers(){
-  $("teachersRows").innerHTML = state.teachers.map(t=>{
-    const perms = [
-      t.can_add_lessons ? "إضافة" : "",
-      t.can_edit_lessons ? "تعديل" : "",
-      t.can_delete_lessons ? "حذف" : "",
-      t.can_create_exams ? "امتحان" : ""
-    ].filter(Boolean).join(" / ") || "بدون";
-    return `<tr>
-      <td><strong>${escapeHtml(t.name||"-")}</strong></td>
-      <td class="ltr">${escapeHtml(t.email||"-")}</td>
-      <td>${escapeHtml(t.subjects?.name_ar||"-")}</td>
-      <td>${t.is_active!==false?'<span class="badge ok">Active</span>':'<span class="badge bad">Blocked</span>'}</td>
-      <td><span class="badge warn">${perms}</span></td>
-      <td><button class="btn" onclick="editTeacher('${t.id}')">تعديل</button> <button class="btn-red" onclick="deleteTeacher('${t.id}')">حذف</button></td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="6" class="empty">لا يوجد مدرسين</td></tr>`;
+ $('teachersRows').innerHTML=state.teachers.map(t=>{
+  const subj=relationSubject(t)||state.subjects.find(s=>String(s.id)===String(t.subject_id));
+  const perms=[t.can_add_lessons?'Add':'',t.can_edit_lessons?'Edit':'',t.can_delete_lessons?'Delete':'',t.can_create_exams?'Exam':''].filter(Boolean).join(' / ')||'None';
+  return `<tr><td><div class="td-name">${escapeHtml(t.name||'-')}</div><div class="td-email">${escapeHtml(t.phone||'')}</div></td><td class="td-email">${escapeHtml(t.email||'-')}</td><td>${escapeHtml(subjectLabel(subj))}</td><td>${t.is_active===false?'<span class="badge badge-expired">Blocked</span>':'<span class="badge badge-active">Active</span>'}</td><td><span class="badge badge-warn">${perms}</span></td><td><button class="btn btn-ghost btn-sm" onclick="editTeacher('${t.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteTeacher('${t.id}')">Delete</button></td></tr>`;
+ }).join('') || '<tr><td colspan="6" class="td-empty">No teachers.</td></tr>';
 }
-
-async function saveLesson(){
-  const teacher = teacherById($("lessonTeacher").value);
-  if(!teacher) return msg("اختار مدرس","err");
-  const name = $("lessonName").value.trim();
-  if(!name) return msg("اكتب اسم الحصة","err");
-  const payload = {
-    name,
-    grade:$("lessonGrade").value.trim(),
-    price:Number($("lessonPrice").value||0),
-    validitydays:Number($("lessonValidity").value||90),
-    examduration:Number($("lessonExamDuration").value||40),
-    about:$("lessonAbout").value.trim(),
-    image:$("lessonImage").value.trim(),
-    pdf:$("lessonPdf").value.trim(),
-    video:$("lessonVideo").value.trim(),
-    videos:[],
-    questions:[],
-    subject_id:teacher.subject_id,
-    teacher_id:teacher.id
-  };
-  const { error } = await db.from("lessons").insert(payload);
-  if(error) return msg(error.message,"err");
-  msg("تم إضافة الحصة");
-  ["lessonName","lessonGrade","lessonAbout","lessonImage","lessonPdf","lessonVideo"].forEach(id=>$(id).value="");
-  $("lessonPrice").value=0;$("lessonValidity").value=90;$("lessonExamDuration").value=40;
-  await loadAll();
-}
-
-async function deleteLesson(id){
-  if(!confirm("حذف الحصة؟")) return;
-  const { error } = await db.from("lessons").delete().eq("id",id);
-  if(error) return msg(error.message,"err");
-  msg("تم حذف الحصة");
-  await loadAll();
-}
-
 function renderLessons(){
-  $("lessonsRows").innerHTML = state.lessons.map(l=>`<tr>
-    <td><strong>${escapeHtml(l.name||"-")}</strong><br><span class="badge">${escapeHtml(l.grade||"-")}</span></td>
-    <td>${escapeHtml(l.teachers?.name||"-")}</td>
-    <td>${Number(l.price||0)} EGP</td>
-    <td><button class="btn-red" onclick="deleteLesson('${l.id}')">حذف</button></td>
-  </tr>`).join("") || `<tr><td colspan="4" class="empty">لا توجد حصص</td></tr>`;
+ $('lessonsRows').innerHTML=state.lessons.map(l=>{const teacher=relationTeacher(l)||state.teachers.find(t=>String(t.id)===String(l.teacher_id));return `<tr><td><div class="td-name">${escapeHtml(lessonName(l))}</div><div class="td-email">${escapeHtml(l.grade||'')}</div></td><td>${escapeHtml(teacher?.name||'-')}</td><td><span class="td-score">${Number(l.price||0)} EGP</span></td><td><button class="btn btn-danger btn-sm" onclick="deleteLesson('${l.id}')">Delete</button></td></tr>`}).join('') || '<tr><td colspan="4" class="td-empty">No lessons.</td></tr>';
 }
-
-function addQuestion(){
-  const q = $("qText").value.trim();
-  const a = $("qA").value.trim();
-  const b = $("qB").value.trim();
-  const c = $("qC").value.trim();
-  const d = $("qD").value.trim();
-  if(!q || !a || !b || !c || !d) return msg("كمل السؤال والاختيارات","err");
-  state.questions.push({ q, choices:[a,b,c,d], correct:Number($("qCorrect").value), explain:$("qExplain").value.trim() });
-  ["qText","qA","qB","qC","qD","qExplain"].forEach(id=>$(id).value="");
-  $("qCorrect").value="0";
-  renderQuestions();
-}
-
-function removeQuestion(i){
-  state.questions.splice(i,1);
-  renderQuestions();
-}
-
-function renderQuestions(){
-  $("questionsPreview").innerHTML = state.questions.map((q,i)=>`
-    <div class="question">
-      <strong>${i+1}. ${escapeHtml(q.q)}</strong>
-      <div>${q.choices.map((c,idx)=>`<span class="badge ${idx===q.correct?'ok':''}">${String.fromCharCode(65+idx)}: ${escapeHtml(c)}</span>`).join(" ")}</div>
-      <button class="btn-red" onclick="removeQuestion(${i})">حذف السؤال</button>
-    </div>
-  `).join("") || `<div class="empty">لم تضف أسئلة بعد</div>`;
-}
-
-async function saveExam(){
-  const lessonId = $("examLesson").value;
-  if(!lessonId) return msg("اختار حصة","err");
-  if(!state.questions.length) return msg("أضف سؤال واحد على الأقل","err");
-  const { error } = await db.from("lessons").update({
-    questions: state.questions,
-    examduration:Number($("examDuration").value||40)
-  }).eq("id",lessonId);
-  if(error) return msg(error.message,"err");
-  state.questions=[];
-  renderQuestions();
-  msg("تم حفظ الامتحان");
-  await loadAll();
-}
-
 function renderStudents(){
-  const q = String($("studentSearch").value||"").toLowerCase().trim();
-  const rows = state.students.filter(s => `${s.name||""} ${s.email||""} ${s.phone||""} ${s.grade||""}`.toLowerCase().includes(q));
-  $("studentsRows").innerHTML = rows.map(s=>`<tr>
-    <td><strong>${escapeHtml(s.name||"-")}</strong><br><span class="badge">${escapeHtml(s.studentid||"")}</span></td>
-    <td class="ltr">${escapeHtml(s.email||"-")}</td>
-    <td class="ltr">${escapeHtml(s.phone||s.parentphone||"-")}</td>
-    <td>${escapeHtml(s.grade||"-")}</td>
-    <td>${s.is_blocked?'<span class="badge bad">Blocked</span>':'<span class="badge ok">Active</span>'}</td>
-    <td><button class="${s.is_blocked?'btn':'btn-red'}" onclick="toggleStudentBlock('${s.id}',${!s.is_blocked})">${s.is_blocked?'إلغاء الحظر':'حظر'}</button></td>
-  </tr>`).join("") || `<tr><td colspan="6" class="empty">لا يوجد طلاب</td></tr>`;
+ const q=String($('studentSearch')?.value||'').toLowerCase().trim();
+ const rows=state.students.filter(s=>`${s.name||''} ${s.email||''} ${s.phone||''} ${s.grade||''}`.toLowerCase().includes(q));
+ $('studentsRows').innerHTML=rows.map(s=>`<tr><td><div class="td-name">${escapeHtml(s.name||'-')}</div><div class="td-email">${escapeHtml(s.studentid||'')}</div></td><td class="td-email">${escapeHtml(s.email||'-')}</td><td class="td-email">${escapeHtml(s.phone||s.parentphone||s.parent_phone||'-')}</td><td>${escapeHtml(s.grade||'-')}</td><td>${s.is_blocked?'<span class="badge badge-expired">Blocked</span>':'<span class="badge badge-active">Active</span>'}</td><td><button class="btn ${s.is_blocked?'btn-ghost':'btn-danger'} btn-sm" onclick="toggleStudentBlock('${s.id}',${!s.is_blocked})">${s.is_blocked?'Unblock':'Block'}</button></td></tr>`).join('') || '<tr><td colspan="6" class="td-empty">No students.</td></tr>';
 }
-
-async function toggleStudentBlock(id,blocked){
-  const { error } = await db.from("users").update({is_blocked:blocked}).eq("id",id);
-  if(error) return msg(error.message,"err");
-  msg(blocked ? "تم حظر الطالب" : "تم إلغاء الحظر");
-  await loadStudents();
-  renderStudents();
-}
-
-function generateCode(){
-  $("codeValue").value = "KALAWY-" + Math.random().toString(36).slice(2,8).toUpperCase();
-}
-
-async function saveCode(){
-  const lessonid = $("codeLesson").value;
-  const code = $("codeValue").value.trim().toUpperCase();
-  if(!lessonid || !code) return msg("اختار الحصة واكتب الكود","err");
-  const lesson = lessonById(lessonid);
-  const days = Number($("codeDays").value||90);
-  const payload = {
-    code, lessonid, used:false,
-    expiryat:Date.now() + days*24*60*60*1000,
-    subject_id:lesson?.subject_id || null,
-    teacher_id:lesson?.teacher_id || null
-  };
-  const { error } = await db.from("codes").insert(payload);
-  if(error) return msg(error.message,"err");
-  msg("تم حفظ الكود");
-  $("codeValue").value="";
-  await loadCodes();
-  renderCodes();
-  updateCounts();
-}
-
 function renderCodes(){
-  $("codesRows").innerHTML = state.codes.map(c=>`<tr>
-    <td class="ltr"><strong>${escapeHtml(c.code||"-")}</strong></td>
-    <td>${escapeHtml(c.lessons?.name||"-")}</td>
-    <td>${c.used?'<span class="badge ok">Used</span>':'<span class="badge warn">New</span>'}</td>
-    <td class="ltr">${escapeHtml(c.usedby||"-")}</td>
-  </tr>`).join("") || `<tr><td colspan="4" class="empty">لا توجد أكواد</td></tr>`;
+ $('codesRows').innerHTML=state.codes.map(c=>{const l=relationLesson(c)||state.lessons.find(x=>String(x.id)===String(c.lessonid||c.lesson_id));return `<tr><td class="td-email"><strong>${escapeHtml(c.code||'-')}</strong></td><td>${escapeHtml(lessonName(l)||'-')}</td><td>${c.used||c.is_used?'<span class="badge badge-active">Used</span>':'<span class="badge badge-warn">New</span>'}</td><td class="td-email">${escapeHtml(c.usedby||c.used_by||'-')}</td></tr>`}).join('') || '<tr><td colspan="4" class="td-empty">No codes.</td></tr>';
 }
-
 function renderResults(){
-  $("resultsRows").innerHTML = state.results.map(r=>`<tr>
-    <td class="ltr">${escapeHtml(r.email||"-")}</td>
-    <td>${escapeHtml(r.lesson||"-")}</td>
-    <td><span class="badge ok">${Number(r.score||0)} / ${Number(r.total||0)}</span></td>
-    <td>${formatDate(r.date)}</td>
-  </tr>`).join("") || `<tr><td colspan="4" class="empty">لا توجد نتائج</td></tr>`;
+ $('resultsRows').innerHTML=state.results.map(r=>`<tr><td class="td-email">${escapeHtml(r.email||r.student_email||r.student||'-')}</td><td>${escapeHtml(r.lesson||r.lesson_name||'-')}</td><td><span class="td-score">${Number(r.score||0)} / ${Number(r.total||0)}</span></td><td class="td-date">${formatDate(r.date||r.created_at)}</td></tr>`).join('') || '<tr><td colspan="4" class="td-empty">No results.</td></tr>';
 }
+async function saveSubject(){
+ const payload={slug:$('subjectSlug').value.trim().toLowerCase(),name_ar:$('subjectAr').value.trim(),name_en:$('subjectEn').value.trim(),icon:$('subjectIcon').value.trim(),color:$('subjectColor').value.trim()||'#2D5A3D'};
+ if(!payload.slug||(!payload.name_ar&&!payload.name_en)){toast('warning','Missing data','Add slug and subject name.');return;}
+ const {data:existing}=await dbClient.from('subjects').select('id').eq('slug',payload.slug).maybeSingle();
+ const res=existing?.id?await dbClient.from('subjects').update(payload).eq('id',existing.id):await dbClient.from('subjects').insert(payload);
+ if(res.error){toast('error','Subject Error',res.error.message);return;} toast('success','Subject Saved'); ['subjectSlug','subjectAr','subjectEn','subjectIcon','subjectColor'].forEach(id=>$(id).value=''); await loadAll();
+}
+async function saveByEmail(table,payload){const {data:existing,error:e1}=await dbClient.from(table).select('id').eq('email',payload.email).maybeSingle(); if(e1)return {error:e1}; if(existing?.id)return await dbClient.from(table).update(payload).eq('id',existing.id); return await dbClient.from(table).insert(payload);}
+async function saveTeacher(){
+ const id=$('teacherId').value; const name=$('teacherName').value.trim(); const email=$('teacherEmail').value.trim().toLowerCase(); const phone=normalizePhone($('teacherPhone').value); const subject_id=$('teacherSubject').value;
+ if(!name||!email||!subject_id){toast('warning','Missing data','Teacher name, email and subject are required.');return;}
+ let userPayload={email,name,phone,role:'teacher',is_blocked:$('teacherActive').value!=='true'};
+ let userRes=await saveByEmail('users',userPayload); if(userRes.error){delete userPayload.phone; userRes=await saveByEmail('users',userPayload);} if(userRes.error){toast('error','User Error',userRes.error.message);return;}
+ const payload={email,name,phone,subject_id,bio:$('teacherBio').value.trim(),is_active:$('teacherActive').value==='true',can_add_lessons:$('canAdd').checked,can_edit_lessons:$('canEdit').checked,can_delete_lessons:$('canDelete').checked,can_create_exams:$('canExam').checked};
+ const res=id?await dbClient.from('teachers').update(payload).eq('id',id):await saveByEmail('teachers',payload);
+ if(res.error){toast('error','Teacher Error',res.error.message);return;} toast('success','Teacher Saved'); clearTeacherForm(); await loadAll();
+}
+function clearTeacherForm(){ $('teacherId').value=''; ['teacherName','teacherEmail','teacherPhone','teacherBio'].forEach(id=>$(id).value=''); $('teacherActive').value='true'; $('canAdd').checked=true;$('canEdit').checked=true;$('canDelete').checked=false;$('canExam').checked=true; }
+function editTeacher(id){const t=teacherById(id); if(!t)return; $('teacherId').value=t.id;$('teacherName').value=t.name||'';$('teacherEmail').value=t.email||'';$('teacherPhone').value=t.phone||'';$('teacherSubject').value=t.subject_id||'';$('teacherBio').value=t.bio||'';$('teacherActive').value=String(t.is_active!==false);$('canAdd').checked=t.can_add_lessons!==false;$('canEdit').checked=t.can_edit_lessons!==false;$('canDelete').checked=!!t.can_delete_lessons;$('canExam').checked=t.can_create_exams!==false;showSection('teachers');window.scrollTo({top:0,behavior:'smooth'});toast('info','Loaded','Teacher data loaded in form.');}
+async function deleteTeacher(id){if(!confirm('Delete teacher?'))return; const {error}=await dbClient.from('teachers').delete().eq('id',id); if(error){toast('error','Delete Error',error.message);return;} toast('success','Deleted'); await loadAll();}
+async function saveLesson(){const teacher=teacherById($('lessonTeacher').value); if(!teacher){toast('warning','Choose teacher');return;} const name=$('lessonName').value.trim(); if(!name){toast('warning','Missing name','Lesson name is required.');return;} const payload={name,grade:$('lessonGrade').value.trim(),price:Number($('lessonPrice').value||0),validitydays:Number($('lessonValidity').value||90),examduration:Number($('lessonExamDuration').value||40),about:$('lessonAbout').value.trim(),image:$('lessonImage').value.trim(),pdf:$('lessonPdf').value.trim(),video:$('lessonVideo').value.trim(),videos:[],questions:[],subject_id:teacher.subject_id,teacher_id:teacher.id}; const {error}=await dbClient.from('lessons').insert(payload); if(error){toast('error','Lesson Error',error.message);return;} toast('success','Course Published'); ['lessonName','lessonGrade','lessonAbout','lessonImage','lessonPdf','lessonVideo'].forEach(id=>$(id).value='');$('lessonPrice').value=0;$('lessonValidity').value=90;$('lessonExamDuration').value=40; await loadAll();}
+async function deleteLesson(id){if(!confirm('Delete lesson?'))return; const {error}=await dbClient.from('lessons').delete().eq('id',id); if(error){toast('error','Delete Error',error.message);return;} toast('success','Deleted'); await loadAll();}
+function addQuestion(){const q=$('qText').value.trim(),a=$('qA').value.trim(),b=$('qB').value.trim(),c=$('qC').value.trim(),d=$('qD').value.trim(); if(!q||!a||!b||!c||!d){toast('warning','Complete question','Question and all answers are required.');return;} state.questions.push({q,choices:[a,b,c,d],correct:Number($('qCorrect').value),explain:$('qExplain').value.trim()}); ['qText','qA','qB','qC','qD','qExplain'].forEach(id=>$(id).value=''); $('qCorrect').value='0'; renderQuestions();}
+function removeQuestion(i){state.questions.splice(i,1);renderQuestions();}
+function renderQuestions(){ $('questionsPreview').innerHTML=state.questions.map((q,i)=>`<div class="q-block"><div class="q-block-head"><span class="q-num-badge">Question ${i+1}</span><button class="btn btn-danger btn-sm" onclick="removeQuestion(${i})">Delete</button></div><div class="td-name">${escapeHtml(q.q)}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${q.choices.map((c,idx)=>`<span class="badge ${idx===q.correct?'badge-active':'badge-warn'}">${String.fromCharCode(65+idx)}: ${escapeHtml(c)}</span>`).join('')}</div></div>`).join('') || '<div class="td-empty" style="padding:22px">No questions added.</div>'; }
+async function saveExam(){const lessonId=$('examLesson').value; if(!lessonId){toast('warning','Choose lesson');return;} if(!state.questions.length){toast('warning','No questions','Add at least one question.');return;} const {error}=await dbClient.from('lessons').update({questions:state.questions,examduration:Number($('examDuration').value||40)}).eq('id',lessonId); if(error){toast('error','Exam Error',error.message);return;} state.questions=[];renderQuestions();toast('success','Exam Saved');await loadAll();}
+async function toggleStudentBlock(id,blocked){const {error}=await dbClient.from('users').update({is_blocked:blocked}).eq('id',id); if(error){toast('error','Student Error',error.message);return;} toast('success',blocked?'Student Blocked':'Student Unblocked'); await loadStudents(); renderStudents(); updateStats();}
+function generateCode(){ $('codeValue').value='KALAWY-'+Math.random().toString(36).slice(2,8).toUpperCase(); }
+async function saveCode(){const lessonid=$('codeLesson').value; const code=$('codeValue').value.trim().toUpperCase(); if(!lessonid||!code){toast('warning','Missing data','Choose lesson and code.');return;} const lesson=lessonById(lessonid); const days=Number($('codeDays').value||90); const payload={code,lessonid,used:false,expiryat:Date.now()+days*24*60*60*1000,subject_id:lesson?.subject_id||null,teacher_id:lesson?.teacher_id||null}; const {error}=await dbClient.from('codes').insert(payload); if(error){toast('error','Code Error',error.message);return;} toast('success','Code Saved'); $('codeValue').value=''; await loadCodes(); renderCodes();}
+function showSection(id,el,bottomId){
+ document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active')); $('sec-'+id)?.classList.add('active');
+ document.querySelectorAll('.sb-link').forEach(b=>b.classList.remove('active')); (el||document.querySelector(`.sb-link[data-section="${id}"]`))?.classList.add('active');
+ document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active')); $('bn-'+(bottomId||id))?.classList.add('active');
+ $('topbarTitle').textContent=labels[id]||id; $('mobSectionName').textContent=labels[id]||id; window.scrollTo({top:0,behavior:'smooth'});
+}
+Object.assign(window,{adminLogin,signOut,loadAll,showSection,saveSubject,saveTeacher,clearTeacherForm,editTeacher,deleteTeacher,saveLesson,deleteLesson,addQuestion,removeQuestion,saveExam,renderStudents,toggleStudentBlock,generateCode,saveCode});
+checkSession();
+})();
 </script>
 </body>
 </html>
