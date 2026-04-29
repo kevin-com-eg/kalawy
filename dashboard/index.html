@@ -215,6 +215,25 @@ function hideLoader(){const s=document.getElementById('loadingScreen');s.style.o
 function safeText(v){return String(v ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
 function priceText(value){const n=Number(value||0);return n>0?`${n} EGP`:'Free';}
 
+function firstValue(row, keys, fallback=''){
+  if(!row) return fallback;
+  for(const key of keys){
+    const v = row[key];
+    if(v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();
+  }
+  return fallback;
+}
+function subjectLabel(row){return firstValue(row, ['name','title','subject_name','subject','label','slug'], 'Untitled Subject');}
+function teacherLabel(row){return firstValue(row, ['name','title','teacher_name','full_name','display_name','label','slug'], 'Untitled Teacher');}
+function lessonLabel(row){return firstValue(row, ['title','name','lesson_title','lesson_name','label','slug'], 'Untitled Lesson');}
+function sortByLabel(list, labelFn){return [...(list||[])].sort((a,b)=>labelFn(a).localeCompare(labelFn(b), undefined, {numeric:true, sensitivity:'base'}));}
+function sortLessons(list){return [...(list||[])].sort((a,b)=>{
+  const ad = a.created_at ? new Date(a.created_at).getTime() : 0;
+  const bd = b.created_at ? new Date(b.created_at).getTime() : 0;
+  if(ad || bd) return bd - ad;
+  return lessonLabel(a).localeCompare(lessonLabel(b), undefined, {numeric:true, sensitivity:'base'});
+});}
+
 function updateSidebar(step){
   [1,2,3,4].forEach(s=>{
     const li=document.getElementById(`li-step${s}`);
@@ -235,22 +254,23 @@ function updateStats(){
 
 async function loadSubjects(){
   showLoader('Loading your courses…');
-  const { data, error } = await db.from('subjects').select('*').order('name', { ascending: true });
+  const { data, error } = await db.from('subjects').select('*');
   if(error){
     renderEmpty('subjectsGrid','❌','Could not load subjects. Check your Supabase table/RLS.');
     showToast('error','Subjects Error',error.message);
     hideLoader();return;
   }
-  allSubjects = data || [];
+  allSubjects = sortByLabel(data || [], subjectLabel);
   updateStats();
   const grid=document.getElementById('subjectsGrid');
   grid.innerHTML='';
   if(!allSubjects.length){renderEmpty('subjectsGrid','🔭','No subjects available yet.');hideLoader();return;}
   allSubjects.forEach(sub=>{
+    const subName = subjectLabel(sub);
     const btn=document.createElement('button');
     btn.className='choice-btn';
-    btn.innerHTML=`<span><span class="choice-name">${safeText(sub.name)}</span><span class="choice-meta">Choose subject</span></span><span class="choice-icon"><i class="fa-solid fa-chevron-right"></i></span>`;
-    btn.onclick=()=>selectSubject(sub.id, sub.name);
+    btn.innerHTML=`<span><span class="choice-name">${safeText(subName)}</span><span class="choice-meta">Choose subject</span></span><span class="choice-icon"><i class="fa-solid fa-chevron-right"></i></span>`;
+    btn.onclick=()=>selectSubject(sub.id, subName);
     grid.appendChild(btn);
   });
   hideLoader();
@@ -263,22 +283,23 @@ async function selectSubject(subId, subName=''){
   document.getElementById('step2').classList.remove('hidden');
   document.getElementById('step3').classList.add('hidden');
   updateSidebar(2);
-  const { data, error } = await db.from('teachers').select('*').eq('subject_id', subId).order('name', { ascending: true });
+  const { data, error } = await db.from('teachers').select('*').eq('subject_id', subId);
   if(error){
-    renderEmpty('teachersGrid','❌','Could not load teachers.');
+    renderEmpty('teachersGrid','❌','Could not load teachers. Check teachers.subject_id or RLS.');
     showToast('error','Teachers Error',error.message);
     hideLoader();return;
   }
-  allTeachers = data || [];
+  allTeachers = sortByLabel(data || [], teacherLabel);
   updateStats();
   const grid=document.getElementById('teachersGrid');
   grid.innerHTML='';
   if(!allTeachers.length){renderEmpty('teachersGrid','👨‍🏫',`No teachers found for ${safeText(subName)}.`);hideLoader();return;}
   allTeachers.forEach(t=>{
+    const tName = teacherLabel(t);
     const btn=document.createElement('button');
     btn.className='choice-btn';
-    btn.innerHTML=`<span style="display:flex;align-items:center;gap:12px"><span class="choice-icon"><i class="fa-solid fa-chalkboard-user"></i></span><span><span class="choice-name">${safeText(t.name)}</span><span class="choice-meta">View lessons</span></span></span><i class="fa-solid fa-chevron-right"></i>`;
-    btn.onclick=()=>selectTeacher(t.id, t.name);
+    btn.innerHTML=`<span style="display:flex;align-items:center;gap:12px"><span class="choice-icon"><i class="fa-solid fa-chalkboard-user"></i></span><span><span class="choice-name">${safeText(tName)}</span><span class="choice-meta">View lessons</span></span></span><i class="fa-solid fa-chevron-right"></i>`;
+    btn.onclick=()=>selectTeacher(t.id, tName);
     grid.appendChild(btn);
   });
   document.getElementById('step2').scrollIntoView({behavior:'smooth', block:'start'});
@@ -290,19 +311,19 @@ async function selectTeacher(teacherId, teacherName=''){
   hideActivation();
   document.getElementById('step3').classList.remove('hidden');
   updateSidebar(3);
-  const { data, error } = await db.from('lessons').select('*').eq('teacher_id', teacherId).order('created_at', { ascending: false });
+  const { data, error } = await db.from('lessons').select('*').eq('teacher_id', teacherId);
   if(error){
-    renderEmpty('lessonsGrid','❌','Could not load lessons.');
+    renderEmpty('lessonsGrid','❌','Could not load lessons. Check lessons.teacher_id or RLS.');
     showToast('error','Lessons Error',error.message);
     hideLoader();return;
   }
-  allLessons = data || [];
+  allLessons = sortLessons(data || []);
   updateStats();
   const grid=document.getElementById('lessonsGrid');
   grid.innerHTML='';
   if(!allLessons.length){renderEmpty('lessonsGrid','🎬',`No lessons found for ${safeText(teacherName)}.`);hideLoader();return;}
   allLessons.forEach(lesson=>{
-    const title = lesson.title || lesson.name || 'Untitled Lesson';
+    const title = lessonLabel(lesson);
     const row=document.createElement('div');
     row.className='lesson-row';
     row.innerHTML=`
@@ -310,9 +331,10 @@ async function selectTeacher(teacherId, teacherName=''){
         <div class="lesson-title">${safeText(title)}</div>
         <span class="lesson-price">${priceText(lesson.price)}</span>
       </div>
-      <button class="lesson-btn" onclick="showActivation('${safeText(lesson.id)}','${safeText(title).replace(/'/g,'&#39;')}')">
+      <button class="lesson-btn" type="button">
         <i class="fa-solid fa-cart-plus"></i> Add / Activate
       </button>`;
+    row.querySelector('.lesson-btn').onclick = () => showActivation(lesson.id, title);
     grid.appendChild(row);
   });
   document.getElementById('step3').scrollIntoView({behavior:'smooth', block:'start'});
