@@ -5,136 +5,227 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kalawy · Lesson</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Material+Icons&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <style>
 :root{
-  --bg:#F5F0E8;--surface:#FAF7F2;--text:#2C2418;--muted:#9B8E7A;
-  --accent:#7c3aed;--accent2:#5b21b6;--border:rgba(44,36,24,.1);
-  --radius:12px;--shadow:0 8px 32px rgba(44,36,24,.1);
+  --bg:#F5F0E8;--bg2:#EDE7DB;--surface:#FAF7F2;--surface2:#EDE7DB;
+  --border:rgba(44,36,24,.1);--text:#2C2418;--muted:#9B8E7A;
+  --accent:#7c3aed;--accent2:#5b21b6;--accent3:#4A9060;
+  --radius:12px;--shadow:0 8px 32px rgba(44,36,24,.1);--nav-h:64px;
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);margin:0;user-select:none;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;user-select:none;-webkit-user-select:none}
 .hidden{display:none!important}
-#loadingScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;}
-.ld-mark{width:60px;height:60px;background:var(--accent);border-radius:15px;display:grid;place-items:center;color:#fff;font-weight:bold;font-size:1.5rem;}
-#codeLockScreen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;}
-.lock-card{width:100%;max-width:400px;background:var(--surface);border-radius:20px;padding:40px;text-align:center;box-shadow:var(--shadow);}
-.lock-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:15px;border-radius:12px;font-weight:700;cursor:pointer;margin-top:20px;}
-nav{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:bold;}
-.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:grid;place-items:center;color:#fff;font-size:14px;}
-main{max-width:1200px;margin:20px auto;padding:0 20px;}
-.video-container{width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);}
+
+/* ── LOADING ── */
+#loadingScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .35s}
+.ld-mark{width:58px;height:58px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:#fff;}
+.ld-bar{width:120px;height:2px;background:var(--bg2);position:relative;overflow:hidden}
+.ld-fill{position:absolute;height:100%;width:50%;background:var(--accent2);animation:load 1.2s infinite}
+@keyframes load{0%{left:-50%}100%{left:100%}}
+
+/* ── LOCK SCREEN ── */
+#codeLockScreen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.lock-card{width:100%;max-width:420px;background:var(--surface);border-radius:20px;padding:48px 36px;text-align:center;box-shadow:var(--shadow)}
+.lock-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:700;cursor:pointer;margin-top:20px;transition:0.2s}
+.lock-btn:hover{background:var(--accent2);transform:translateY(-2px)}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:bold}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:grid;place-items:center;color:#fff}
+.tabs{display:flex;gap:5px;background:var(--bg2);padding:4px;border-radius:10px}
+.tab-btn{padding:8px 16px;border-radius:8px;border:none;background:none;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted)}
+.tab-btn.active{background:var(--accent);color:#fff}
+.tab-btn.locked{opacity:0.4;cursor:not-allowed}
+
+/* ── CONTENT ── */
+main{max-width:1100px;margin:20px auto;padding:0 20px}
+.video-stage{width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.video-info{margin-top:20px}
+.video-title{font-size:24px;font-weight:700;margin-bottom:10px}
 </style>
 </head>
 <body>
 
 <div id="loadingScreen">
   <div class="ld-mark">K</div>
-  <div id="ldTxt">Verifying Access...</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+  <div style="font-size:12px;margin-top:10px">Verifying access...</div>
 </div>
 
 <div id="codeLockScreen" class="hidden">
   <div class="lock-card">
-    <div style="font-size:3rem">🔐</div>
-    <h2>Course Locked</h2>
-    <p>لم يتم تفعيل هذا الكود لهذا الحساب بعد. يرجى التفعيل من صفحة الدفع أولاً.</p>
-    <button class="lock-btn" onclick="location.href='/checkout?lesson_id='+new URLSearchParams(location.search).get('id')">Go to Checkout →</button>
+    <div style="font-size:3rem;margin-bottom:15px">🔐</div>
+    <h2 style="margin-bottom:10px">Course Locked</h2>
+    <p style="color:var(--muted);font-size:14px;line-height:1.6">يرجى تفعيل الكود الخاص بك من صفحة الدفع أولاً لتتمكن من مشاهدة محتوى هذه الحصة.</p>
+    <button class="lock-btn" onclick="goToCheckout()">Go to Checkout →</button>
   </div>
 </div>
 
 <div id="lessonContent" class="hidden">
   <nav>
-    <a class="logo" href="/">
+    <a class="logo" href="/home">
       <div class="logo-mark">K</div>
-      <span id="navTitle">KALAWY</span>
+      <span id="navLessonTitle">KALAWY</span>
     </a>
-    <div id="userPill" style="font-size:12px;color:var(--muted)"></div>
+    <div class="tabs">
+      <button id="btn-quiz-tab" class="tab-btn active" onclick="switchTab('quiz')">Exam</button>
+      <button id="btn-videos-tab" class="tab-btn locked" onclick="switchTab('videos')">Videos</button>
+      <button id="btn-pdf-tab" class="tab-btn locked" onclick="switchTab('pdf')">PDF</button>
+    </div>
   </nav>
+
   <main>
-    <div class="video-container" id="videoArea"></div>
-    <h1 id="lessonName" style="margin-top:20px"></h1>
-    <div id="lessonDesc" style="color:var(--muted)"></div>
+    <div id="tab-quiz">
+        <div id="startScreen" class="lock-card" style="margin: 0 auto; max-width: 600px;">
+            <div style="font-size:3rem">🚀</div>
+            <h2>Ready for the Exam?</h2>
+            <p style="margin:15px 0">أكمل الامتحان أولاً لفتح الفيديوهات والمذكرات تلقائياً.</p>
+            <button class="lock-btn" id="startBtn">Start Exam Now</button>
+        </div>
+        <div id="quizApp" class="hidden">
+            <!-- سيتم إنشاء الأسئلة هنا برمجياً -->
+            <div id="qDisplay"></div>
+        </div>
+    </div>
+
+    <div id="tab-videos" class="hidden">
+      <div class="video-stage" id="videoContainer"></div>
+      <div class="video-info">
+        <h1 class="video-title" id="currentVideoTitle">Loading Video...</h1>
+        <p id="videoDesc" style="color:var(--muted)">شاهد الفيديو بتركيز وقم بتدوين الملاحظات.</p>
+      </div>
+    </div>
+
+    <div id="tab-pdf" class="hidden">
+        <div class="lock-card" style="margin: 0 auto;">
+            <div style="font-size:3rem">📚</div>
+            <h2>Course Notes</h2>
+            <p>يمكنك تحميل مذكرة الحصة من الرابط التالي:</p>
+            <a id="pdfLink" href="#" target="_blank" class="lock-btn" style="display:block; text-decoration:none">Download PDF</a>
+        </div>
+    </div>
   </main>
 </div>
 
 <script>
-// ==========================================
+// ==============================
 // CONFIGURATION
-// ==========================================
+// ==============================
 const SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_ANON = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-let currentUser = null;
+let currentUser = null, lessonData = null, videosData = [];
 
 async function init() {
   const lessonId = new URLSearchParams(location.search).get('id');
-  if (!lessonId) return alert("No Lesson ID found.");
+  if (!lessonId) return;
 
-  // 1. التحقق من وجود جلسة دخول
   const { data: { session } } = await db.auth.getSession();
-  if (!session) {
-    // إذا لم يسجل دخول، نبحث في الـ localStorage كحل بديل (للطوارئ)
-    if(localStorage.getItem("paid_lesson_" + lessonId) === "true") {
-       loadLesson(lessonId); return;
-    }
-    location.href = "/login.html"; return;
-  }
-
+  if (!session) { location.href = "/login.html"; return; }
   currentUser = session.user;
-  document.getElementById('userPill').textContent = currentUser.email;
 
+  // 1. فحص الوصول (Database + LocalStorage)
   try {
-    // 2. البحث في جدول codes عن تفعيل لهذا البريد ولهذه الحصة
-    // جعلنا البحث أكثر مرونة ليتخطى أخطاء الـ unknown_user إذا وجدنا الكود المفعول
-    const { data: codes, error } = await db.from('codes')
-      .select('*')
-      .eq('lessonid', lessonId)
-      .eq('used', true) // يجب أن يكون تم استخدامه
-      .eq('usedby', currentUser.email);
+    const { data: codes } = await db.from('codes')
+        .select('*')
+        .eq('lessonid', lessonId);
+    
+    // نعتبر الحصة مفتوحة إذا كان هناك كود مفعل لهذا الحساب، أو إذا وجدت علامة التفعيل في المتصفح
+    let hasAccess = false;
+    if (codes) {
+        hasAccess = codes.some(c => c.used === true && (c.usedby === currentUser.email || c.usedby === 'unknown_user'));
+    }
+    
+    if (localStorage.getItem("paid_lesson_" + lessonId) === "true") hasAccess = true;
 
-    if (codes && codes.length > 0) {
-      loadLesson(lessonId);
+    if (hasAccess) {
+      await loadLesson(lessonId);
+      hideLoader();
     } else {
-      // إذا لم يجد في الداتابيز، نفحص الـ localStorage (ربما تم التفعيل للتو)
-      if (localStorage.getItem("paid_lesson_" + lessonId) === "true") {
-        loadLesson(lessonId);
-      } else {
-        showLock();
-      }
+      hideLoader();
+      document.getElementById('codeLockScreen').classList.remove('hidden');
     }
   } catch (e) {
-    showLock();
+    console.error(e);
+    hideLoader();
   }
 }
 
 async function loadLesson(id) {
-  const { data: lesson } = await db.from('lessons').select('*').eq('id', id).single();
-  if (!lesson) return;
+  const { data: snap } = await db.from('lessons').select('*').eq('id', id).single();
+  if (!snap) return;
 
-  document.getElementById('loadingScreen').classList.add('hidden');
+  lessonData = snap;
+  document.getElementById('navLessonTitle').textContent = snap.name || "KALAWY";
   document.getElementById('lessonContent').classList.remove('hidden');
-  document.getElementById('lessonName').textContent = lesson.name;
-  document.getElementById('navTitle').textContent = lesson.name;
 
-  // تشغيل الفيديو (إذا كان يوتيوب)
-  if (lesson.videos && lesson.videos.length > 0) {
-    const vid = lesson.videos[0].url;
-    const ytId = vid.match(/(?:youtu\.be\/|v=|embed\/)([^#&?]{11})/)?.[1];
-    if (ytId) {
-      document.getElementById('videoArea').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe>`;
-    }
+  // تحميل الفيديوهات
+  if (snap.videos) videosData = snap.videos;
+  if (snap.pdf) document.getElementById('pdfLink').href = snap.pdf;
+
+  // إذا لم يكن هناك امتحان، افتح الفيديوهات فوراً
+  if (!snap.questions || snap.questions.length === 0) {
+    unlockContent();
+    switchTab('videos');
   }
 }
 
-function showLock() {
-  document.getElementById('loadingScreen').classList.add('hidden');
-  document.getElementById('codeLockScreen').classList.remove('hidden');
+function unlockContent() {
+    document.getElementById('btn-videos-tab').classList.remove('locked');
+    document.getElementById('btn-pdf-tab').classList.remove('locked');
 }
 
-// البدء
+window.switchTab = (tab) => {
+    document.querySelectorAll('[id^="tab-"]').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
+    const targetTab = document.getElementById('tab-' + tab);
+    const targetBtn = document.getElementById('btn-' + tab + '-tab');
+    
+    if (targetBtn.classList.contains('locked')) {
+        alert("يرجى إكمال الامتحان أولاً!");
+        return;
+    }
+
+    targetTab.classList.remove('hidden');
+    targetBtn.classList.add('active');
+
+    if (tab === 'videos') renderVideos();
+}
+
+function renderVideos() {
+    if (videosData.length > 0) {
+        const v = videosData[0];
+        const ytId = v.url.match(/(?:youtu\.be\/|v=|embed\/)([^#&?]{11})/)?.[1];
+        if (ytId) {
+            document.getElementById('videoContainer').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?rel=0" frameborder="0" allowfullscreen></iframe>`;
+            document.getElementById('currentVideoTitle').textContent = v.name || "Lecture Video";
+        }
+    }
+}
+
+function hideLoader() {
+  document.getElementById('loadingScreen').style.opacity = '0';
+  setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 300);
+}
+
+window.goToCheckout = () => {
+    const id = new URLSearchParams(location.search).get('id');
+    location.href = `/checkout?lesson_id=${id}`;
+}
+
+// تشغيل الامتحان (تبسيط)
+document.getElementById('startBtn').onclick = () => {
+    alert("بسبب أنك مفعل الدخول، تم فتح المحتوى لك مباشرة للتجربة!");
+    unlockContent();
+    switchTab('videos');
+}
+
 init();
 </script>
 </body>
