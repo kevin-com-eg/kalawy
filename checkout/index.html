@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,558 +9,515 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root {
-      --primary: #7c3aed;
-      --primary2: #5b21b6;
-      --bg: #f7f2ff;
-      --card: #ffffff;
-      --text: #21143f;
-      --muted: #8777aa;
-      --border: #e9ddff;
-      --danger: #ef1d1d;
-      --success: #14a44d;
+    :root{
+      --bg:#f6f0ff;
+      --panel:#ffffff;
+      --panel2:#fbf8ff;
+      --text:#241744;
+      --muted:#8778aa;
+      --line:#eadfff;
+      --primary:#7c3aed;
+      --primary2:#5b21b6;
+      --danger:#ef1d1d;
+      --success:#16a34a;
+      --shadow:0 25px 70px rgba(73,35,132,.13);
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: Inter, Arial, sans-serif;
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 15% 0%, #efe5ff 0 30%, transparent 45%),
+        linear-gradient(120deg,#fbf8ff,#fff);
+      color:var(--text);
     }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top left, #eee5ff 0, #fbf8ff 42%, #ffffff 100%);
-      color: var(--text);
+    .page{
+      width:min(1120px,calc(100% - 28px));
+      margin:auto;
+      padding:26px 0;
     }
 
-    .page {
-      width: min(1100px, calc(100% - 24px));
-      margin: 0 auto;
-      padding: 28px 0;
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
     }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 20px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:24px;
+      font-weight:1000;
+      letter-spacing:.5px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 900;
-      font-size: 22px;
-      letter-spacing: .5px;
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      background:linear-gradient(135deg,var(--primary),#a78bfa);
+      box-shadow:0 16px 32px rgba(124,58,237,.25);
+      font-weight:1000;
     }
 
-    .logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #b794f6);
-      color: white;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 16px 35px rgba(124,58,237,.25);
+    .back{
+      text-decoration:none;
+      background:#fff;
+      color:var(--primary2);
+      border:1px solid var(--line);
+      padding:12px 16px;
+      border-radius:16px;
+      font-weight:900;
+      box-shadow:0 8px 22px rgba(73,35,132,.07);
     }
 
-    .back {
-      border: 1px solid var(--border);
-      background: white;
-      color: var(--primary2);
-      text-decoration: none;
-      font-weight: 800;
-      padding: 11px 15px;
-      border-radius: 14px;
+    .grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:20px;
+      align-items:start;
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 20px;
+    .card{
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--line);
+      border-radius:30px;
+      box-shadow:var(--shadow);
+      padding:28px;
+      backdrop-filter:blur(18px);
     }
 
-    .card {
-      background: rgba(255,255,255,.85);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      box-shadow: 0 20px 60px rgba(82, 45, 145, .10);
-      padding: 26px;
-      backdrop-filter: blur(18px);
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(30px,4vw,48px);
+      line-height:1;
+      letter-spacing:-1px;
     }
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: clamp(28px, 4vw, 44px);
-      line-height: 1.05;
+    .desc{
+      margin:0;
+      color:var(--muted);
+      font-weight:800;
+      line-height:1.6;
     }
 
-    .sub {
-      color: var(--muted);
-      font-weight: 700;
-      line-height: 1.6;
-      margin: 0 0 20px;
+    .methods{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin:24px 0;
     }
 
-    .methods {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin: 22px 0;
+    .method{
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:18px;
+      min-height:122px;
+      background:linear-gradient(180deg,#fff,var(--panel2));
     }
 
-    .method {
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 18px;
-      background: #fff;
-      min-height: 120px;
+    .method .icon{
+      font-size:22px;
+      margin-bottom:10px;
+      color:var(--primary);
     }
 
-    .method strong {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--primary2);
-      font-size: 16px;
+    .method b{
+      display:block;
+      color:var(--primary2);
+      margin-bottom:8px;
+      font-size:16px;
     }
 
-    .method span {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.45;
+    .method span{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      line-height:1.45;
     }
 
-    .codeBox {
-      margin-top: 26px;
-      border-top: 1px solid var(--border);
-      padding-top: 24px;
+    .activation{
+      border-top:1px solid var(--line);
+      padding-top:24px;
+      margin-top:8px;
     }
 
-    label {
-      display: block;
-      color: #483585;
-      font-weight: 900;
-      font-size: 14px;
-      letter-spacing: .5px;
-      margin-bottom: 12px;
-      text-transform: uppercase;
+    label{
+      display:block;
+      text-transform:uppercase;
+      font-size:14px;
+      letter-spacing:.6px;
+      font-weight:1000;
+      color:#493583;
+      margin-bottom:13px;
     }
 
-    .codeRow {
-      display: grid;
-      grid-template-columns: 1fr 128px;
-      gap: 12px;
-      align-items: center;
+    .code-row{
+      display:grid;
+      grid-template-columns:1fr 132px;
+      gap:12px;
+      align-items:center;
     }
 
-    input {
-      width: 100%;
-      height: 68px;
-      border-radius: 18px;
-      border: 2px solid var(--border);
-      outline: none;
-      padding: 0 20px;
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: .8px;
-      color: var(--text);
-      background: #fff;
-      text-transform: uppercase;
-      transition: .2s;
+    #paymentCodeInput{
+      width:100%;
+      height:68px;
+      border:2px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      padding:0 20px;
+      outline:none;
+      color:var(--text);
+      font-size:18px;
+      font-weight:1000;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      transition:.2s ease;
     }
 
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 5px rgba(124, 58, 237, .10);
+    #paymentCodeInput:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 6px rgba(124,58,237,.10);
     }
 
-    input.error {
-      border-color: var(--danger);
-      background: #fff7f7;
+    #paymentCodeInput.is-error{
+      border-color:var(--danger);
+      background:#fff7f7;
     }
 
-    button {
-      height: 68px;
-      border: 0;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--primary), #8b5cf6);
-      color: white;
-      font-size: 16px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 16px 30px rgba(124, 58, 237, .24);
-      transition: .2s;
+    #activateBtn{
+      height:68px;
+      border:none;
+      border-radius:18px;
+      background:linear-gradient(135deg,var(--primary),#8b5cf6);
+      color:white;
+      font-weight:1000;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow:0 16px 32px rgba(124,58,237,.24);
+      transition:.2s ease;
     }
 
-    button:hover {
-      transform: translateY(-1px);
+    #activateBtn:hover{transform:translateY(-1px)}
+    #activateBtn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+
+    #codeMessage{
+      min-height:25px;
+      margin-top:14px;
+      font-weight:1000;
     }
 
-    button:disabled {
-      opacity: .65;
-      cursor: not-allowed;
-      transform: none;
+    #codeMessage.error{color:var(--danger)}
+    #codeMessage.success{color:var(--success)}
+
+    .summary-title{
+      font-size:21px;
+      font-weight:1000;
+      margin-bottom:18px;
     }
 
-    .message {
-      min-height: 24px;
-      margin-top: 14px;
-      font-weight: 900;
+    .line{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      padding:16px 0;
+      border-bottom:1px solid var(--line);
+      color:var(--muted);
+      font-weight:900;
     }
 
-    .message.error {
-      color: var(--danger);
+    .line b{color:var(--text)}
+
+    .success-box{
+      display:none;
+      margin-top:18px;
+      border-radius:18px;
+      padding:14px 16px;
+      background:#eafff1;
+      border:1px solid #bbf7d0;
+      color:#126b35;
+      font-weight:1000;
     }
 
-    .message.success {
-      color: var(--success);
+    .note{
+      margin:18px 0 0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:13px;
+      font-weight:800;
     }
 
-    .summaryTitle {
-      font-size: 20px;
-      font-weight: 900;
-      margin-bottom: 18px;
+    @media(max-width:900px){
+      .grid{grid-template-columns:1fr}
+      .methods{grid-template-columns:1fr}
     }
 
-    .summaryLine {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
-      font-weight: 900;
-    }
-
-    .summaryLine b {
-      color: var(--text);
-    }
-
-    .paidBadge {
-      display: none;
-      margin-top: 18px;
-      padding: 14px;
-      border-radius: 18px;
-      background: #eafff1;
-      color: #116b36;
-      font-weight: 900;
-      border: 1px solid #bff2d0;
-    }
-
-    .hint {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 850px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .methods {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .card {
-        padding: 20px;
-        border-radius: 22px;
-      }
-
-      .codeRow {
-        grid-template-columns: 1fr;
-      }
-
-      input,
-      button {
-        height: 62px;
-      }
+    @media(max-width:540px){
+      .page{width:min(100% - 18px,1120px)}
+      .card{padding:20px;border-radius:24px}
+      .code-row{grid-template-columns:1fr}
+      #paymentCodeInput,#activateBtn{height:62px}
+      .topbar{align-items:flex-start}
+      .brand{font-size:20px}
     }
   </style>
 </head>
 
 <body>
   <main class="page">
-    <div class="topbar">
+    <header class="topbar">
       <div class="brand">
         <div class="logo">K</div>
         <span>KALAWY</span>
       </div>
+      <a class="back" href="/dashboard">Dashboard</a>
+    </header>
 
-      <a class="back" href="/dashboard">Back to dashboard</a>
-    </div>
-
-    <section class="layout">
+    <section class="grid">
       <div class="card">
         <h1>Checkout</h1>
-        <p class="sub">
-          Activate your lesson using the payment code from admin. This version fixes the problem where the code exists in Supabase but still shows invalid.
+        <p class="desc">
+          Pay by code, Vodafone Cash, or InstaPay. Enter your admin code to activate the lesson.
         </p>
 
         <div class="methods">
           <div class="method">
-            <strong>Code Payment</strong>
-            <span>Enter the access code you received from admin.</span>
+            <div class="icon">🔑</div>
+            <b>Code</b>
+            <span>Use the access code sent by admin.</span>
           </div>
-
           <div class="method">
-            <strong>Vodafone Cash</strong>
-            <span>Transfer to 01064233004, then use the access code you receive.</span>
+            <div class="icon">🏦</div>
+            <b>InstaPay</b>
+            <span>Transfer, then use the access code you receive.</span>
           </div>
-
           <div class="method">
-            <strong>Instapay / Visa</strong>
-            <span>Instapay is available. Visa/Card payment is not working now.</span>
+            <div class="icon">💳</div>
+            <b>Visa</b>
+            <span>Visa/Card payment is not working now.</span>
           </div>
         </div>
 
-        <div class="codeBox">
+        <div class="activation">
           <label for="paymentCodeInput">Activation / Payment Code</label>
-
-          <div class="codeRow">
+          <div class="code-row">
             <input id="paymentCodeInput" placeholder="KALAWY-XXXXX" autocomplete="off" />
             <button id="activateBtn" type="button">Activate</button>
           </div>
-
-          <div id="codeMessage" class="message"></div>
-
-          <div id="paidBadge" class="paidBadge">
-            Payment activated successfully. Opening your lesson...
-          </div>
+          <div id="codeMessage"></div>
+          <div id="successBox" class="success-box">Payment activated successfully. Opening lesson...</div>
         </div>
       </div>
 
       <aside class="card">
-        <div class="summaryTitle">Order Summary</div>
-
-        <div class="summaryLine">
+        <div class="summary-title">Order Summary</div>
+        <div class="line">
           <span>Lesson</span>
-          <b id="lessonName">Selected lesson</b>
+          <b id="lessonTitle">Selected lesson</b>
         </div>
-
-        <div class="summaryLine">
+        <div class="line">
           <span>Subtotal</span>
-          <b id="priceValue">150 EGP</b>
+          <b id="lessonPrice">150 EGP</b>
         </div>
-
-        <div class="summaryLine">
+        <div class="line">
           <span>Payment method</span>
           <b>Code</b>
         </div>
-
-        <p class="hint">
-          Important: The code will open the lesson connected to its <b>lessonid</b> in Supabase. It no longer rejects the code because of a wrong checkout lesson ID.
+        <p class="note">
+          Fixed version: no duplicate Supabase variable, no old lesson-id rejection.
         </p>
       </aside>
     </section>
   </main>
 
   <script>
-    // ==========================
-    // 1) SUPABASE CONFIG
-    // ==========================
-    const SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
+    (function () {
+      // ==============================
+      // SUPABASE - SAFE VERSION
+      // No "const supabase =" here, so it will not conflict with old code.
+      // ==============================
+      window.KALAWY_SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
+      window.KALAWY_SUPABASE_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
+      window.KALAWY_PAYMENT_CODES_TABLE = "paymentcodes";
 
-    // Your publishable / anon key. Replace only if you changed the project key.
-    const SUPABASE_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
+      if (!window.KALAWY_DB) {
+        window.KALAWY_DB = window.supabase.createClient(
+          window.KALAWY_SUPABASE_URL,
+          window.KALAWY_SUPABASE_KEY
+        );
+      }
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      var urlParams = new URLSearchParams(window.location.search);
 
-    // Change this only if your table name is different.
-    const PAYMENT_CODES_TABLE = "paymentcodes";
+      var currentLessonId =
+        urlParams.get("lesson_id") ||
+        urlParams.get("lessonid") ||
+        urlParams.get("lessonId") ||
+        urlParams.get("id") ||
+        localStorage.getItem("kalawy_checkout_lessonid") ||
+        "";
 
-    // ==========================
-    // 2) PAGE DATA
-    // ==========================
-    const params = new URLSearchParams(window.location.search);
+      var title =
+        urlParams.get("title") ||
+        localStorage.getItem("kalawy_checkout_title") ||
+        "Selected lesson";
 
-    const currentLessonId =
-      params.get("lessonid") ||
-      params.get("lessonId") ||
-      params.get("id") ||
-      localStorage.getItem("kalawy_checkout_lessonid") ||
-      "";
+      var price =
+        urlParams.get("price") ||
+        localStorage.getItem("kalawy_checkout_price") ||
+        "150";
 
-    const lessonName =
-      params.get("title") ||
-      localStorage.getItem("kalawy_checkout_title") ||
-      "Selected lesson";
+      document.getElementById("lessonTitle").textContent = title;
+      document.getElementById("lessonPrice").textContent = price + " EGP";
 
-    const price =
-      params.get("price") ||
-      localStorage.getItem("kalawy_checkout_price") ||
-      "150";
+      function normalizeCode(value) {
+        return String(value || "").trim().toUpperCase().replace(/\s+/g, "");
+      }
 
-    document.getElementById("lessonName").textContent = lessonName;
-    document.getElementById("priceValue").textContent = `${price} EGP`;
+      function showMessage(text, type) {
+        var msg = document.getElementById("codeMessage");
+        var input = document.getElementById("paymentCodeInput");
 
-    // ==========================
-    // 3) HELPERS
-    // ==========================
-    function getUserIdentifier() {
-      const possibleKeys = [
-        "kalawy_user",
-        "user",
-        "currentUser",
-        "student",
-        "studentData"
-      ];
+        msg.textContent = text || "";
+        msg.className = type || "";
 
-      for (const key of possibleKeys) {
+        if (type === "error") input.classList.add("is-error");
+        else input.classList.remove("is-error");
+      }
+
+      function getUsedBy() {
+        var jsonKeys = ["kalawy_user", "student", "studentData", "currentUser", "user"];
+
+        for (var i = 0; i < jsonKeys.length; i++) {
+          try {
+            var value = JSON.parse(localStorage.getItem(jsonKeys[i]) || "null");
+            if (value) {
+              var found = value.email || value.phone || value.mobile || value.name || value.id;
+              if (found) return String(found);
+            }
+          } catch(e) {}
+        }
+
+        return (
+          localStorage.getItem("student_email") ||
+          localStorage.getItem("kalawy_email") ||
+          localStorage.getItem("email") ||
+          localStorage.getItem("phone") ||
+          "unknown_user"
+        );
+      }
+
+      function redirectToLesson(lessonId) {
+        // لو صفحة الحصة عندك مش هنا، غيّر السطر ده فقط
+        return "/lesson.html?id=" + encodeURIComponent(lessonId);
+      }
+
+      window.activatePaymentCode = async function () {
+        var input = document.getElementById("paymentCodeInput");
+        var btn = document.getElementById("activateBtn");
+        var codeValue = normalizeCode(input.value);
+
+        if (!codeValue) {
+          showMessage("Please enter your code.", "error");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Checking...";
+        showMessage("Checking code...", "");
+
         try {
-          const value = JSON.parse(localStorage.getItem(key) || "null");
-          if (value) {
-            return (
-              value.email ||
-              value.phone ||
-              value.mobile ||
-              value.name ||
-              value.id ||
-              ""
-            );
+          // No .eq("lessonid", currentLessonId)
+          // This fixes "Invalid code for this lesson".
+          var selectResult = await window.KALAWY_DB
+            .from(window.KALAWY_PAYMENT_CODES_TABLE)
+            .select("id, code, used, usedby, lessonid")
+            .eq("code", codeValue)
+            .eq("used", false)
+            .maybeSingle();
+
+          if (selectResult.error) {
+            console.error("SELECT ERROR:", selectResult.error);
+            showMessage("Code check failed. Check Supabase RLS select policy.", "error");
+            return;
           }
-        } catch (e) {}
-      }
 
-      return localStorage.getItem("kalawy_email") ||
-        localStorage.getItem("student_email") ||
-        localStorage.getItem("phone") ||
-        "unknown_user";
-    }
+          var codeRow = selectResult.data;
 
-    function setMessage(text, type) {
-      const msg = document.getElementById("codeMessage");
-      const input = document.getElementById("paymentCodeInput");
+          if (!codeRow) {
+            showMessage("Invalid code or already used.", "error");
+            return;
+          }
 
-      msg.textContent = text;
-      msg.className = `message ${type || ""}`;
+          if (!codeRow.lessonid) {
+            showMessage("Code found, but lessonid is empty in Supabase.", "error");
+            return;
+          }
 
-      if (type === "error") {
-        input.classList.add("error");
-      } else {
-        input.classList.remove("error");
-      }
-    }
+          var usedBy = getUsedBy();
 
-    function normalizeCode(code) {
-      return String(code || "")
-        .trim()
-        .toUpperCase()
-        .replace(/\s+/g, "");
-    }
+          var updateResult = await window.KALAWY_DB
+            .from(window.KALAWY_PAYMENT_CODES_TABLE)
+            .update({
+              used: true,
+              usedby: usedBy
+            })
+            .eq("id", codeRow.id)
+            .eq("used", false);
 
-    function buildLessonRedirect(lessonId) {
-      // If your lesson page path is different, change this line only.
-      return `/lesson.html?id=${encodeURIComponent(lessonId)}`;
-    }
+          if (updateResult.error) {
+            console.error("UPDATE ERROR:", updateResult.error);
+            showMessage("Code found, but activation failed. Check Supabase RLS update policy.", "error");
+            return;
+          }
 
-    // ==========================
-    // 4) FIXED CODE ACTIVATION
-    // ==========================
-    async function activatePaymentCode() {
-      const input = document.getElementById("paymentCodeInput");
-      const btn = document.getElementById("activateBtn");
-      const codeValue = normalizeCode(input.value);
+          localStorage.setItem("paid_lesson_" + codeRow.lessonid, "true");
+          localStorage.setItem("kalawy_paid_lesson", codeRow.lessonid);
+          localStorage.setItem("kalawy_last_paid_code", codeRow.code);
+          localStorage.setItem("kalawy_payment_method", "code");
 
-      if (!codeValue) {
-        setMessage("Please enter your code.", "error");
-        return;
-      }
+          if (currentLessonId) {
+            localStorage.setItem("paid_lesson_" + currentLessonId, "true");
+          }
 
-      btn.disabled = true;
-      btn.textContent = "Checking...";
-      setMessage("Checking code...", "");
+          showMessage("Payment activated successfully.", "success");
+          document.getElementById("successBox").style.display = "block";
 
-      try {
-        // IMPORTANT FIX:
-        // We search by code + used=false only.
-        // We do NOT search by current lesson id, because your checkout lesson id is different from the code lessonid.
-        const { data: codeRow, error: selectError } = await supabase
-          .from(PAYMENT_CODES_TABLE)
-          .select("id, code, used, usedby, lessonid")
-          .eq("code", codeValue)
-          .eq("used", false)
-          .maybeSingle();
+          setTimeout(function () {
+            window.location.href = redirectToLesson(codeRow.lessonid);
+          }, 750);
 
-        if (selectError) {
-          console.error("Supabase select error:", selectError);
-          setMessage("Code check failed. Check table name or RLS select policy.", "error");
-          return;
+        } catch (err) {
+          console.error("UNEXPECTED ERROR:", err);
+          showMessage("Unexpected error. Check console.", "error");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Activate";
         }
+      };
 
-        if (!codeRow) {
-          setMessage("Invalid code or already used.", "error");
-          return;
-        }
+      document.getElementById("activateBtn").onclick = window.activatePaymentCode;
 
-        if (!codeRow.lessonid) {
-          setMessage("Code found, but it has no lessonid in Supabase.", "error");
-          return;
-        }
+      document.getElementById("paymentCodeInput").onkeydown = function(e) {
+        if (e.key === "Enter") window.activatePaymentCode();
+      };
 
-        const usedBy = getUserIdentifier();
-
-        const { error: updateError } = await supabase
-          .from(PAYMENT_CODES_TABLE)
-          .update({
-            used: true,
-            usedby: usedBy
-          })
-          .eq("id", codeRow.id)
-          .eq("used", false);
-
-        if (updateError) {
-          console.error("Supabase update error:", updateError);
-          setMessage("Code found, but activation failed. Check RLS update policy.", "error");
-          return;
-        }
-
-        // Save many keys so dashboard / lesson pages can detect payment.
-        localStorage.setItem("paid_lesson_" + codeRow.lessonid, "true");
-        localStorage.setItem("kalawy_paid_lesson", codeRow.lessonid);
-        localStorage.setItem("kalawy_last_paid_code", codeRow.code);
-        localStorage.setItem("kalawy_payment_method", "code");
-
-        // Optional: also mark current checkout lesson as paid if it exists.
-        // This prevents old dashboard logic from asking for code again.
-        if (currentLessonId) {
-          localStorage.setItem("paid_lesson_" + currentLessonId, "true");
-        }
-
-        setMessage("Payment activated successfully.", "success");
-        document.getElementById("paidBadge").style.display = "block";
-
-        setTimeout(() => {
-          window.location.href = buildLessonRedirect(codeRow.lessonid);
-        }, 900);
-      } catch (err) {
-        console.error(err);
-        setMessage("Unexpected error. Open console and check details.", "error");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Activate";
-      }
-    }
-
-    document.getElementById("activateBtn").addEventListener("click", activatePaymentCode);
-
-    document.getElementById("paymentCodeInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") activatePaymentCode();
-    });
-
-    document.getElementById("paymentCodeInput").addEventListener("input", (e) => {
-      e.target.value = normalizeCode(e.target.value);
-      setMessage("", "");
-    });
+      document.getElementById("paymentCodeInput").oninput = function(e) {
+        e.target.value = normalizeCode(e.target.value);
+        showMessage("", "");
+      };
+    })();
   </script>
 </body>
 </html>
