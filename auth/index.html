@@ -54,11 +54,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
     <section id="formLogin">
       <div class="auth-heading"><span class="i18n-ar">أهلاً بعودتك 👋</span><span class="i18n-en">Welcome back 👋</span></div>
-      <p class="auth-sub"><span class="i18n-ar">ادخل برقم الموبايل وكمل مذاكرتك من حيث توقفت</span><span class="i18n-en">Sign in with your phone number and continue learning</span></p>
+      <p class="auth-sub"><span class="i18n-ar">ادخل بالإيميل أو رقم الموبايل وكمل مذاكرتك من حيث توقفت</span><span class="i18n-en">Sign in with email or phone and continue learning</span></p>
 
       <div class="field">
-        <label class="field-label"><span class="i18n-ar">رقم الموبايل</span><span class="i18n-en">Phone number</span></label>
-        <input type="tel" inputmode="numeric" maxlength="11" class="field-input" id="loginPhone" placeholder="01012345678" autocomplete="tel" />
+        <label class="field-label"><span class="i18n-ar">الإيميل أو رقم الموبايل</span><span class="i18n-en">Email or phone</span></label>
+        <input type="text" class="field-input" id="loginIdentity" placeholder="you@example.com أو 01012345678" autocomplete="username" />
         <div class="hint"><span class="i18n-ar">اكتب الرقم المصري 11 رقم بدون +20</span><span class="i18n-en">Enter Egyptian phone as 11 digits without +20</span></div>
       </div>
 
@@ -74,7 +74,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
     <section id="formRegister" style="display:none">
       <div class="auth-heading"><span class="i18n-ar">انضم لكلاوي 🚀</span><span class="i18n-en">Join Kalawy 🚀</span></div>
-      <p class="auth-sub"><span class="i18n-ar">سجل برقم موبايلك، وسيتم حفظ بياناتك في جدول users</span><span class="i18n-en">Register with your phone number and save your profile in users</span></p>
+      <p class="auth-sub"><span class="i18n-ar">سجل بإيميلك ورقم موبايلك، وبعدها تقدر تدخل بالإيميل أو التليفون</span><span class="i18n-en">Register with email and phone, then sign in using either email or phone</span></p>
 
       <div class="field">
         <label class="field-label"><span class="i18n-ar">أنا...</span><span class="i18n-en">I am a...</span></label>
@@ -103,7 +103,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
       <div class="field teacher-only"><label class="field-label"><span class="i18n-ar">المادة</span><span class="i18n-en">Subject</span></label><select class="field-select" id="regSubject"><option value="">جاري تحميل المواد...</option></select></div>
 
-      <div class="field"><label class="field-label"><span class="i18n-ar">البريد الإلكتروني <span class="optional">اختياري للطالب / مطلوب للمدرس</span></span><span class="i18n-en">Email <span class="optional">optional for student / required for teacher</span></span></label><input type="email" class="field-input" id="regEmail" placeholder="you@example.com" autocomplete="email" /></div>
+      <div class="field"><label class="field-label"><span class="i18n-ar">البريد الإلكتروني <span class="optional">مطلوب للتسجيل</span></span><span class="i18n-en">Email <span class="optional">required</span></span></label><input type="email" class="field-input" id="regEmail" placeholder="you@example.com" autocomplete="email" /></div>
 
       <div class="field"><label class="field-label"><span class="i18n-ar">كلمة المرور</span><span class="i18n-en">Password</span></label><div class="pw-wrap"><input type="password" class="field-input" id="regPassword" placeholder="••••••••" autocomplete="new-password" /><button class="pw-toggle" onclick="togglePw('regPassword',this)" type="button">👁</button></div><div class="hint"><span class="i18n-ar">على الأقل 6 أحرف</span><span class="i18n-en">At least 6 characters</span></div></div>
 
@@ -198,6 +198,28 @@ function toE164(v){
   return n.startsWith('+') ? n : '+20' + n;
 }
 function normalizeEmail(v){return (v || '').trim().toLowerCase() || null}
+function isEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || '').trim())}
+async function getEmailByPhone(phone){
+  // الأفضل تعمل RPC باسم get_login_email_by_phone لتفادي كشف جدول users كاملاً.
+  // لو RPC مش موجودة، الكود هيجرب direct select حسب RLS policies عندك.
+  try {
+    const { data: rpcData, error: rpcError } = await db.rpc('get_login_email_by_phone', { p_phone: phone });
+    if (!rpcError && rpcData) {
+      if (typeof rpcData === 'string') return rpcData;
+      if (Array.isArray(rpcData) && rpcData[0]?.email) return rpcData[0].email;
+      if (rpcData.email) return rpcData.email;
+    }
+  } catch (_) {}
+
+  const { data, error } = await db
+    .from('users')
+    .select('email')
+    .eq('phone', phone)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data?.email || null;
+}
 
 async function loadSubjects(){
   const select = document.getElementById('regSubject');
@@ -226,17 +248,45 @@ async function checkExistingSession(){
 }
 
 async function doLogin(){
-  const phone = cleanPhone(document.getElementById('loginPhone').value);
+  const identityRaw = document.getElementById('loginIdentity').value.trim();
   const password = document.getElementById('loginPassword').value;
-  if (!isEgyptPhone(phone) || !password) {
-    showErr(t('اكتب رقم موبايل مصري صحيح 11 رقم وكلمة المرور', 'Enter a valid Egyptian 11-digit phone and password'));
+  if (!identityRaw || !password) {
+    showErr(t('اكتب الإيميل أو رقم الموبايل وكلمة المرور', 'Enter email or phone and password'));
     return;
   }
+
+  let emailForLogin = null;
   setLoading('btnLogin','spinLogin',true); clearMsg();
-  const { data, error } = await db.auth.signInWithPassword({ phone: toE164(phone), password });
-  setLoading('btnLogin','spinLogin',false);
-  if (error) { showErr(t('رقم الموبايل أو كلمة المرور غير صحيحة', 'Invalid phone number or password')); return; }
-  await redirectByRole(data.user);
+
+  try {
+    if (isEmail(identityRaw)) {
+      emailForLogin = normalizeEmail(identityRaw);
+    } else {
+      const phone = cleanPhone(identityRaw);
+      if (!isEgyptPhone(phone)) {
+        setLoading('btnLogin','spinLogin',false);
+        showErr(t('اكتب إيميل صحيح أو رقم موبايل مصري صحيح 11 رقم', 'Enter a valid email or Egyptian 11-digit phone'));
+        return;
+      }
+      emailForLogin = await getEmailByPhone(phone);
+      if (!emailForLogin) {
+        setLoading('btnLogin','spinLogin',false);
+        showErr(t('رقم الموبايل غير موجود. سجل الحساب بالإيميل والرقم الأول.', 'Phone number not found. Register with email and phone first.'));
+        return;
+      }
+    }
+
+    const { data, error } = await db.auth.signInWithPassword({ email: emailForLogin, password });
+    setLoading('btnLogin','spinLogin',false);
+    if (error) {
+      showErr(t('الإيميل/رقم الموبايل أو كلمة المرور غير صحيحة', 'Invalid email/phone or password'));
+      return;
+    }
+    await redirectByRole(data.user);
+  } catch (err) {
+    setLoading('btnLogin','spinLogin',false);
+    showErr(t('تعذر الدخول برقم الموبايل. راجع RLS أو RPC: ', 'Could not sign in with phone. Check RLS or RPC: ') + (err.message || err));
+  }
 }
 
 async function doRegister(){
@@ -251,8 +301,8 @@ async function doRegister(){
   const password = document.getElementById('regPassword').value;
   const subjectId = document.getElementById('regSubject').value || null;
 
-  if (!name || !isEgyptPhone(phone) || !password) {
-    showErr(t('الاسم ورقم الموبايل الصحيح وكلمة المرور مطلوبين', 'Name, valid phone, and password are required'));
+  if (!name || !email || !isEmail(email) || !isEgyptPhone(phone) || !password) {
+    showErr(t('الاسم والإيميل الصحيح ورقم الموبايل الصحيح وكلمة المرور مطلوبين', 'Name, valid email, valid phone, and password are required'));
     return;
   }
   if (parentPhone && !isEgyptPhone(parentPhone)) {
@@ -263,17 +313,19 @@ async function doRegister(){
     showErr(t('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'Password must be at least 6 characters'));
     return;
   }
-  if (selectedRole === 'teacher' && (!email || !subjectId)) {
-    showErr(t('للمدرس: البريد الإلكتروني والمادة مطلوبين', 'For teachers: email and subject are required'));
+  if (selectedRole === 'teacher' && !subjectId) {
+    showErr(t('للمدرس: المادة مطلوبة', 'For teachers: subject is required'));
     return;
   }
 
   setLoading('btnRegister','spinRegister',true); clearMsg();
 
   const { data, error } = await db.auth.signUp({
-    phone: toE164(phone),
+    email,
     password,
-    options: { data: { name, role: selectedRole, phone, email, grade } }
+    options: {
+      data: { name, role: selectedRole, phone, phone_e164: toE164(phone), grade, parent_phone: parentPhone || null, birth_date: birthDate, governorate, area, subject_id: subjectId }
+    }
   });
 
   if (error) {
@@ -285,7 +337,7 @@ async function doRegister(){
   const user = data.user;
   if (!user) {
     setLoading('btnRegister','spinRegister',false);
-    showOk(t('تم إرسال كود تأكيد للموبايل. فعّل الحساب ثم سجل دخول.', 'Confirmation code sent. Confirm then sign in.'));
+    showOk(t('تم إرسال رابط تأكيد على الإيميل. فعّل الحساب ثم سجل دخول.', 'Confirmation email sent. Confirm then sign in.'));
     return;
   }
 
