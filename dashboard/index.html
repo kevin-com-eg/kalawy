@@ -3,420 +3,474 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Kalawy · Student Dashboard</title>
+<title>Kalawy EDU · لوحة الطالب</title>
+
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;800&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-/* ===== THEME VARIABLES (1200+ Lines Style Setup) ===== */
+/* ==========================================
+   CSS VARIABLES & THEME
+   ========================================== */
 :root {
-  --nav-h: 68px;
-  --sans: 'Cairo', 'Tajawal', 'Outfit', Arial, sans-serif;
-  --radius: 18px;
-  --radius-sm: 10px;
+  --nav-h: 70px;
   --accent: #7c3aed;
+  --accent-light: rgba(124, 58, 237, 0.1);
   --accent2: #a855f7;
+  --bg: #f8f7ff;
+  --card-bg: #ffffff;
+  --text-main: #1a1040;
+  --text-muted: #7c6fa0;
   --green: #16a34a;
   --gold: #f59e0b;
-  --bg: #f0eef8;
-  --card-bg: #ffffff;
-  --text: #1a1040;
-  --muted: #7c6fa0;
-  --border: rgba(124,58,237,0.12);
-  --shadow: 0 4px 24px rgba(80,40,160,0.09);
-  --transition: all .26s cubic-bezier(.4,0,.2,1);
+  --border-color: rgba(124, 58, 237, 0.12);
+  --shadow: 0 10px 30px rgba(80, 40, 160, 0.08);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --sans: 'Cairo', sans-serif;
 }
 
-body.dark {
-  --bg: #0f0c1e;
-  --card-bg: #1c1638;
-  --text: #e2d9f3;
-  --muted: #8b7fb8;
-  --border: rgba(124,58,237,0.20);
-  --nav-bg: #0d0820;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+    font-family: var(--sans); 
+    background: var(--bg); 
+    color: var(--text-main); 
+    min-height: 100vh; 
+    overflow-x: hidden;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; transition: background .3s; }
+/* ==========================================
+   LOADING SCREEN
+   ========================================== */
+#loadingScreen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #1a1040; display: flex;
+    flex-direction: column; align-items: center;
+    justify-content: center; gap: 20px; transition: opacity 0.5s;
+}
+.ld-logo {
+    background: var(--accent); width: 70px; height: 70px;
+    border-radius: 18px; display: grid; place-items: center;
+    color: #fff; font-size: 1.5rem; font-weight: 900;
+    animation: pulse 2s infinite; box-shadow: 0 0 40px rgba(124,58,237,0.4);
+}
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-/* ===== PAGES & ANIMATIONS ===== */
-.page { display: none; min-height: calc(100vh - var(--nav-h)); }
-.page.active { display: block; animation: pageIn .3s both; }
-@keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+/* ==========================================
+   NAVIGATION
+   ========================================== */
+nav.top-nav {
+    position: sticky; top: 0; z-index: 1000;
+    height: var(--nav-h); background: #1a1040;
+    display: flex; align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.nav-inner {
+    max-width: 1400px; margin: 0 auto; width: 100%;
+    padding: 0 25px; display: flex; justify-content: space-between; align-items: center;
+}
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
+.logo-mark { 
+    background: var(--accent); width: 42px; height: 42px; 
+    border-radius: 12px; display: grid; place-items: center; 
+    color: #fff; font-weight: 900; font-size: 1.1rem;
+}
+.logo-name { color: #fff; font-weight: 900; font-size: 1.3rem; letter-spacing: 1px; }
 
-/* ===== NAV STYLES ===== */
-nav.top-nav { position: sticky; top: 0; z-index: 500; height: var(--nav-h); background: #1a1040; display: flex; align-items: center; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
-.nav-inner { max-width: 1340px; margin: 0 auto; padding: 0 28px; width: 100%; display: flex; align-items: center; justify-content: space-between; }
-.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
-.logo-mark { background: var(--accent); border-radius: 10px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; }
-.nav-links { display: flex; align-items: center; gap: 5px; }
-.nav-link { color: #e2d9f3; font-size: .86rem; font-weight: 700; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: var(--transition); text-decoration: none; }
-.nav-link.active { background: rgba(255,255,255,0.1); color: var(--accent2); }
+.nav-links { display: flex; align-items: center; gap: 8px; }
+.nav-link {
+    color: #cdc4f5; text-decoration: none; padding: 10px 18px;
+    border-radius: 10px; font-weight: 700; font-size: 0.9rem;
+    transition: var(--transition); cursor: pointer;
+}
+.nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: #fff; }
+.nav-link.active { color: var(--accent2); }
 
-/* ===== SUBJECTS & TEACHERS GRID ===== */
-.subjects-grid, .teachers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-.subject-card, .teacher-card { background: var(--card-bg); border-radius: var(--radius); padding: 30px; text-align: center; box-shadow: var(--shadow); cursor: pointer; transition: var(--transition); border: 2px solid transparent; position: relative; overflow: hidden; }
-.subject-card:hover, .teacher-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 48px rgba(80,40,160,0.22); }
-.subject-icon-wrap { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 2.2rem; background: var(--bg); }
+/* ==========================================
+   PAGES & LAYOUT
+   ========================================== */
+.page { display: none; padding: 30px 20px 100px; animation: slideUp 0.4s ease forwards; }
+.page.active { display: block; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ===== LESSON ROW ===== */
-.lessons-list { display: flex; flex-direction: column; gap: 12px; }
-.lesson-row { background: var(--card-bg); border-radius: var(--radius); padding: 18px 25px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); border: 2px solid transparent; transition: var(--transition); }
-.lesson-row:hover { border-color: var(--accent); transform: translateX(-5px); }
-.lesson-info { display: flex; flex-direction: column; gap: 4px; }
-.lesson-title { font-size: 1rem; font-weight: 800; color: var(--text); }
-.lesson-price { font-size: .75rem; color: var(--gold); font-weight: 700; background: rgba(245,158,11,0.1); padding: 2px 10px; border-radius: 6px; width: fit-content; }
+main { max-width: 1400px; margin: 0 auto; }
 
-/* ===== BUTTONS ===== */
-.btn-action { padding: 12px 24px; border-radius: 12px; border: none; font-family: var(--sans); font-weight: 800; font-size: .85rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px; }
-.btn-cart { background: var(--accent); color: #fff; }
+/* ==========================================
+   SUBJECTS & TEACHERS CARDS
+   ========================================== */
+.grid-container {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px; margin-top: 20px;
+}
+.card {
+    background: var(--card-bg); border-radius: 24px; padding: 35px 25px;
+    text-align: center; box-shadow: var(--shadow); cursor: pointer;
+    transition: var(--transition); border: 2px solid transparent;
+    position: relative; overflow: hidden;
+}
+.card:hover { 
+    transform: translateY(-8px); border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+}
+.card-icon {
+    width: 90px; height: 90px; background: var(--bg);
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; margin: 0 auto 20px; font-size: 2.5rem;
+}
+.card-title { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 8px; }
+.card-sub { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+
+/* ==========================================
+   LESSON ROWS
+   ========================================== */
+.lessons-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+.lesson-row {
+    background: var(--card-bg); border-radius: 20px; padding: 20px 30px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: var(--shadow); border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+.lesson-row:hover { transform: scale(1.01); border-color: var(--accent); }
+.lesson-info h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 5px; }
+.price-badge {
+    background: var(--accent-light); color: var(--accent);
+    padding: 4px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 800;
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+.btn {
+    padding: 12px 25px; border-radius: 14px; border: none;
+    font-family: var(--sans); font-weight: 800; font-size: 0.9rem;
+    cursor: pointer; transition: var(--transition);
+    display: flex; align-items: center; gap: 10px;
+}
+.btn-cart { background: var(--accent); color: #fff; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3); }
 .btn-cart:hover { background: var(--accent2); transform: translateY(-2px); }
-.btn-watch { background: var(--green); color: #fff; }
+
+.btn-watch { background: var(--green); color: #fff; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); }
 .btn-watch:hover { opacity: 0.9; transform: translateY(-2px); }
 
-/* ===== BREADCRUMB ===== */
-.breadcrumb-bar { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 12px 28px; }
-.breadcrumb-inner { max-width: 1340px; margin: 0 auto; display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); font-weight: 600; }
-.bc-active { color: var(--accent); font-weight: 800; }
+/* ==========================================
+   UTILITIES
+   ========================================== */
+.hidden { display: none !important; }
+.back-btn {
+    background: none; border: none; color: var(--accent);
+    font-weight: 800; cursor: pointer; display: flex;
+    align-items: center; gap: 8px; margin-bottom: 20px;
+}
+.section-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
 
-/* ===== SEARCH BOX ===== */
-.search-box { display: flex; align-items: center; gap: 10px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 15px; width: 300px; }
-.search-box input { border: none; outline: none; background: none; font-family: var(--sans); width: 100%; color: var(--text); }
-
-/* ===== LOADER & TOAST ===== */
-#loadingScreen { position: fixed; inset: 0; z-index: 9999; background: #1a1040; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity .4s; }
-.ld-logo { background: var(--accent); width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-size: 1.4rem; animation: float 2s infinite; }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-#toast-wrap { position: fixed; top: 85px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-.toast { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; min-width: 280px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: toastIn .3s both; }
-@keyframes toastIn { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:none} }
-
-/* ===== BOTTOM NAV (Mobile) ===== */
-.bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #1a1040; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 400; }
-@media (max-width: 800px) { 
-  .bottom-nav { display: block; } 
-  .nav-links { display: none; }
-  .watch-layout { grid-template-columns: 1fr; }
-  .search-box { width: 100%; }
+/* ==========================================
+   MOBILE BOTTOM NAV
+   ========================================== */
+.bottom-nav {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    background: #1a1040; padding: 15px; z-index: 1000;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+@media (max-width: 850px) {
+    .nav-links { display: none; }
+    .bottom-nav { display: block; }
+    .grid-container { grid-template-columns: 1fr; }
+    .lesson-row { flex-direction: column; text-align: center; gap: 15px; }
 }
 </style>
 </head>
-<body class="light">
+<body>
 
+<!-- LOADER -->
 <div id="loadingScreen">
-  <div class="ld-logo">KA</div>
-  <div style="width:140px; height:3px; background:rgba(255,255,255,0.1); overflow:hidden">
-    <div style="width:50%; height:100%; background:var(--accent2); animation: lfill 1.2s infinite"></div>
-  </div>
-  <div style="color:rgba(255,255,255,0.5); font-size:12px">جاري تحميل منصة كلاوي...</div>
+    <div class="ld-logo">KA</div>
+    <div style="color: #fff; font-size: 14px; font-weight: 600;">جاري تحميل بياناتك...</div>
 </div>
 
-<div id="toast-wrap"></div>
-
-<!-- NAVIGATION -->
+<!-- TOP NAV -->
 <nav class="top-nav">
-  <div class="nav-inner">
-    <a class="logo" onclick="navigate('home')">
-      <div class="logo-mark">KA</div>
-      <div style="color:#fff; font-weight:900; font-size:1.2rem; margin-right:10px">Kalawy EDU</div>
-    </a>
-    <div class="nav-links">
-      <a class="nav-link active" data-page="home" onclick="navigate('home')">الرئيسية</a>
-      <a class="nav-link" data-page="lectures" onclick="navigate('lectures')">محاضراتي</a>
-      <a class="nav-link" data-page="contact" onclick="navigate('contact')">تواصل معنا</a>
-      <a class="nav-link" onclick="logout()" style="color:#ff4d4d">خروج</a>
+    <div class="nav-inner">
+        <a class="logo" onclick="navigate('home')">
+            <div class="logo-mark">KA</div>
+            <div class="logo-name">KALAWY EDU</div>
+        </a>
+        <div class="nav-links">
+            <a class="nav-link active" data-page="home" onclick="navigate('home')">الرئيسية</a>
+            <a class="nav-link" data-page="lectures" onclick="navigate('lectures')">محاضراتي</a>
+            <a class="nav-link" data-page="contact" onclick="navigate('contact')">تواصل معنا</a>
+            <a class="nav-link" onclick="logout()" style="color: #ff4d4d;"><i class="fa-solid fa-power-off"></i> خروج</a>
+        </div>
     </div>
-  </div>
 </nav>
 
-<div class="breadcrumb-bar">
-  <div class="breadcrumb-inner">
-    <span>الرئيسية</span> <span style="margin:0 5px">›</span> <span class="bc-active" id="bcCurrent">اختر المادة</span>
-  </div>
-</div>
-
-<!-- PAGE: HOME -->
+<!-- PAGE: HOME (Browsing) -->
 <div class="page active" id="page-home">
-  <main>
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px; flex-wrap:wrap; gap:20px">
-      <div>
-        <h1 style="font-size:1.8rem; font-weight:900" id="mainTitle">اختر المادة الدراسية</h1>
-        <p style="color:var(--muted); font-weight:600">ابدأ باختيار المادة التي تريد دراستها اليوم</p>
-      </div>
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass" style="color:var(--muted)"></i>
-        <input type="text" id="searchInput" placeholder="ابحث عن مادة أو مدرس...">
-      </div>
-    </div>
+    <main>
+        <div id="subjectsHeader">
+            <h1 class="section-title">اختر المادة الدراسية</h1>
+            <p style="color: var(--text-muted); font-weight: 600;">ابدأ رحلتك التعليمية باختيار التخصص</p>
+        </div>
 
-    <!-- SUBJECTS -->
-    <div class="subjects-grid" id="subjectsGrid"></div>
+        <!-- Section: Subjects -->
+        <div id="subjectsSection" class="grid-container"></div>
 
-    <!-- TEACHERS (Hidden by default) -->
-    <div id="teachersSection" class="hidden" style="margin-top:20px">
-      <button onclick="goBack('subjects')" style="margin-bottom:20px; background:none; border:none; color:var(--accent); font-weight:800; cursor:pointer">← العودة للمواد</button>
-      <div class="teachers-grid" id="teachersGrid"></div>
-    </div>
+        <!-- Section: Teachers -->
+        <div id="teachersSection" class="hidden">
+            <button class="back-btn" onclick="showView('subjects')"><i class="fa-solid fa-arrow-right"></i> العودة للمواد</button>
+            <h1 id="selectedSubTitle" class="section-title">المدرسين المتاحين</h1>
+            <div id="teachersGrid" class="grid-container"></div>
+        </div>
 
-    <!-- LESSONS (Hidden by default) -->
-    <div id="lessonsSection" class="hidden" style="margin-top:20px">
-      <button onclick="goBack('teachers')" style="margin-bottom:20px; background:none; border:none; color:var(--accent); font-weight:800; cursor:pointer">← العودة للمدرسين</button>
-      <div class="lessons-list" id="lessonsGrid"></div>
-    </div>
-  </main>
+        <!-- Section: Lessons -->
+        <div id="lessonsSection" class="hidden">
+            <button class="back-btn" onclick="showView('teachers')"><i class="fa-solid fa-arrow-right"></i> العودة للمدرسين</button>
+            <h1 id="selectedTeachTitle" class="section-title">دروس المدرس</h1>
+            <div id="lessonsGrid" class="lessons-list"></div>
+        </div>
+    </main>
 </div>
 
-<!-- PAGE: LECTURES -->
+<!-- PAGE: MY LECTURES -->
 <div class="page" id="page-lectures">
-  <main>
-    <h1 style="font-size:1.8rem; font-weight:900; margin-bottom:20px">محاضراتي المفعّلة</h1>
-    <div id="myLecturesGrid" class="lessons-list">
-      <div style="text-align:center; padding:100px 0; color:var(--muted)">
-        <i class="fa-solid fa-play-circle" style="font-size:4rem; margin-bottom:20px; opacity:0.2"></i>
-        <p>لا توجد محاضرات مفعّلة حالياً.</p>
-      </div>
-    </div>
-  </main>
+    <main>
+        <h1 class="section-title">محاضراتي المشتراة</h1>
+        <p style="color: var(--text-muted); margin-bottom: 25px;">هنا تجد كافة الدروس التي قمت بتفعيلها مسبقاً</p>
+        <div id="purchasedLessonsGrid" class="lessons-list">
+            <!-- سيتم ملؤها برمجياً -->
+        </div>
+    </main>
 </div>
 
 <!-- PAGE: CONTACT -->
 <div class="page" id="page-contact">
-  <main>
-    <h1 style="font-size:1.8rem; font-weight:900; margin-bottom:10px">تواصل معنا</h1>
-    <p style="color:var(--muted); margin-bottom:30px">نحن هنا لمساعدتك في أي وقت.</p>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:25px">
-      <div style="background:var(--card-bg); padding:30px; border-radius:20px; box-shadow:var(--shadow)">
-        <h3 style="margin-bottom:20px">بيانات التواصل</h3>
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px">
-          <div style="width:45px; height:45px; background:var(--bg); border-radius:12px; display:grid; place-items:center; color:var(--accent)"><i class="fa-brands fa-whatsapp"></i></div>
-          <div><p style="font-size:12px; color:var(--muted)">واتساب</p><p style="font-weight:800">+20 100 000 0000</p></div>
+    <main>
+        <h1 class="section-title">تواصل مع الدعم الفني</h1>
+        <div class="grid-container" style="margin-top:30px">
+            <div class="card" onclick="window.open('https://wa.me/201000000000')">
+                <div class="card-icon" style="color:#25d366"><i class="fa-brands fa-whatsapp"></i></div>
+                <div class="card-title">واتساب</div>
+                <div class="card-sub">تواصل معنا فوراً للاستفسارات</div>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="color:var(--accent)"><i class="fa-solid fa-envelope"></i></div>
+                <div class="card-title">البريد الإلكتروني</div>
+                <div class="card-sub">support@kalawy.edu</div>
+            </div>
         </div>
-        <div style="display:flex; align-items:center; gap:15px">
-          <div style="width:45px; height:45px; background:var(--bg); border-radius:12px; display:grid; place-items:center; color:var(--accent)"><i class="fa-solid fa-envelope"></i></div>
-          <div><p style="font-size:12px; color:var(--muted)">البريد الإلكتروني</p><p style="font-weight:800">support@kalawy.edu</p></div>
-        </div>
-      </div>
-    </div>
-  </main>
+    </main>
 </div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <div style="display:flex; justify-content:space-around; align-items:center">
-    <a onclick="navigate('home')" style="color:#fff; text-align:center; text-decoration:none"><i class="fa-solid fa-house"></i><p style="font-size:10px">الرئيسية</p></a>
-    <a onclick="navigate('lectures')" style="color:#e2d9f3; text-align:center; text-decoration:none"><i class="fa-solid fa-play"></i><p style="font-size:10px">دروسي</p></a>
-    <a onclick="logout()" style="color:#ff4d4d; text-align:center; text-decoration:none"><i class="fa-solid fa-arrow-right-from-bracket"></i><p style="font-size:10px">خروج</p></a>
-  </div>
+    <div style="display:flex; justify-content:space-around;">
+        <div onclick="navigate('home')" style="color:#fff; text-align:center;"><i class="fa-solid fa-house"></i><p style="font-size:10px">الرئيسية</p></div>
+        <div onclick="navigate('lectures')" style="color:#cdc4f5; text-align:center;"><i class="fa-solid fa-play"></i><p style="font-size:10px">دروسي</p></div>
+        <div onclick="logout()" style="color:#ff4d4d; text-align:center;"><i class="fa-solid fa-power-off"></i><p style="font-size:10px">خروج</p></div>
+    </div>
 </nav>
 
 <script>
 /* ==========================================
-   SUPABASE & CONFIG
+   CONFIG & STATE
    ========================================== */
-const SUPABASE_URL = 'https://xjdhbbjeeasdmohbhgze.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa';
+const SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
+const SUPABASE_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
-let boughtLessonIds = []; // قائمة الـ IDs للحصص المشتراة
-let allSubjects = [];
+let boughtLessonIds = []; // مخزن الـ IDs للحصص التي اشتراها الطالب
 
 /* ==========================================
-   CORE LOGIC (THE 1200 LINE FIX)
+   CORE INITIALIZATION
    ========================================== */
-
 async function init() {
-  const { data: { session } } = await db.auth.getSession();
-  if (!session) { window.location.href = '/login.html'; return; }
-  currentUser = session.user;
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) { window.location.href = '/login.html'; return; }
+    currentUser = session.user;
 
-  // 1. جلب الحصص المشتراة فوراً عند البداية
-  await fetchPurchasedLessons();
-  
-  // 2. تحميل المواد
-  loadSubjects();
+    // 1. جلب قائمة الحصص المشتراة من الداتابيز أولاً
+    await fetchBoughtLessons();
+
+    // 2. تحميل المواد الدراسية
+    loadSubjects();
 }
 
-async function fetchPurchasedLessons() {
-  try {
-    const { data: codes, error } = await db.from('codes')
-      .select('lessonid')
-      .eq('usedby', currentUser.email)
-      .eq('used', true);
-    
-    if (codes) {
-      boughtLessonIds = codes.map(c => String(c.lessonid));
+async function fetchBoughtLessons() {
+    try {
+        // البحث في جدول codes عن أي كود مربوط بإيميل الطالب وحالته used = true
+        const { data: codes, error } = await db.from('codes')
+            .select('lessonid')
+            .eq('usedby', currentUser.email)
+            .eq('used', true);
+
+        if (codes) {
+            boughtLessonIds = codes.map(c => String(c.lessonid));
+            console.log("Purchased Lesson IDs:", boughtLessonIds);
+        }
+    } catch (e) {
+        console.error("Error fetching purchases:", e);
     }
-  } catch (e) { console.error("Error fetching purchased:", e); }
 }
 
-/* NAVIGATION */
+/* ==========================================
+   LIBRARY NAVIGATION
+   ========================================== */
 function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  const activeLink = document.querySelector(`[data-page="${page}"]`);
-  if(activeLink) activeLink.classList.add('active');
-  
-  if(page === 'home') goBack('subjects');
-  if(page === 'lectures') loadMyLecturesPage();
-  window.scrollTo({top: 0, behavior: 'smooth'});
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    const link = document.querySelector(`[data-page="${page}"]`);
+    if(link) link.classList.add('active');
+
+    if (page === 'home') showView('subjects');
+    if (page === 'lectures') renderMyLectures();
+    window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-/* LIBRARY LOGIC */
+function showView(view) {
+    document.getElementById('subjectsSection').classList.toggle('hidden', view !== 'subjects');
+    document.getElementById('subjectsHeader').classList.toggle('hidden', view !== 'subjects');
+    document.getElementById('teachersSection').classList.toggle('hidden', view !== 'teachers');
+    document.getElementById('lessonsSection').classList.toggle('hidden', view !== 'lessons');
+}
+
+/* ==========================================
+   DATA LOADING
+   ========================================== */
 async function loadSubjects() {
-  showLoader('جاري تحميل المواد...');
-  const { data: subjects, error } = await db.from('subjects').select('*');
-  if(error) return showToast('error', 'خطأ في التحميل');
+    const { data: subjects } = await db.from('subjects').select('*');
+    const container = document.getElementById('subjectsSection');
+    container.innerHTML = "";
 
-  allSubjects = subjects;
-  renderSubjects(subjects);
-  hideLoader();
-}
-
-function renderSubjects(list) {
-  const grid = document.getElementById('subjectsGrid');
-  grid.innerHTML = '';
-  list.forEach(sub => {
-    const card = document.createElement('div');
-    card.className = 'subject-card';
-    card.innerHTML = `
-      <div class="subject-icon-wrap">📚</div>
-      <h3 style="font-weight:900">${sub.name}</h3>
-      <p style="font-size:12px; color:var(--muted)">تصفح المدرسين</p>
-    `;
-    card.onclick = () => loadTeachers(sub.id, sub.name);
-    grid.appendChild(card);
-  });
+    subjects.forEach(sub => {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `
+            <div class="card-icon">📚</div>
+            <div class="card-title">${sub.name}</div>
+            <div class="card-sub">تصفح المدرسين المحترفين</div>
+        `;
+        el.onclick = () => loadTeachers(sub.id, sub.name);
+        container.appendChild(el);
+    });
+    hideLoader();
 }
 
 async function loadTeachers(subId, subName) {
-  showLoader('جاري تحميل المدرسين...');
-  document.getElementById('bcCurrent').textContent = subName;
-  const { data: teachers } = await db.from('teachers').select('*').eq('subject_id', subId);
-  
-  const grid = document.getElementById('teachersGrid');
-  grid.innerHTML = '';
-  if(!teachers.length) grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px">لا يوجد مدرسون متاحون حالياً.</p>';
-
-  teachers.forEach(t => {
-    const card = document.createElement('div');
-    card.className = 'teacher-card';
-    card.innerHTML = `
-      <div class="subject-icon-wrap">👨‍🏫</div>
-      <h3 style="font-weight:900">${t.name}</h3>
-      <p style="font-size:12px; color:var(--muted)">عرض الدروس</p>
-    `;
-    card.onclick = () => loadLessons(t.id, t.name);
-    grid.appendChild(card);
-  });
-
-  toggleLibrarySections('teachers');
-  hideLoader();
-}
-
-async function loadLessons(tId, tName) {
-  showLoader('جاري تحميل الدروس...');
-  document.getElementById('bcCurrent').textContent = tName;
-  const { data: lessons } = await db.from('lessons').select('*').eq('teacher_id', tId);
-  
-  const grid = document.getElementById('lessonsGrid');
-  grid.innerHTML = '';
-  
-  lessons.forEach(lesson => {
-    const isBought = boughtLessonIds.includes(String(lesson.id)) || localStorage.getItem('paid_lesson_' + lesson.id) === 'true';
+    showLoader();
+    document.getElementById('selectedSubTitle').textContent = `مدرسين مادة ${subName}`;
+    const { data: teachers } = await db.from('teachers').select('*').eq('subject_id', subId);
     
-    const row = document.createElement('div');
-    row.className = 'lesson-row';
-    
-    // الجزء السحري: فحص الشراء
-    const actionBtn = isBought 
-      ? `<button class="btn-action btn-watch" onclick="window.location.href='/lesson?id=${lesson.id}'">
-           <i class="fa-solid fa-play-circle"></i> مشاهدة الآن
-         </button>`
-      : `<button class="btn-action btn-cart" onclick="addToCart('${lesson.id}', '${lesson.name}', '${lesson.price}')">
-           <i class="fa-solid fa-cart-plus"></i> أضف للسلة
-         </button>`;
+    const container = document.getElementById('teachersGrid');
+    container.innerHTML = "";
 
-    row.innerHTML = `
-      <div class="lesson-info">
-        <div class="lesson-title">${lesson.name}</div>
-        <div class="lesson-price">${lesson.price} EGP</div>
-      </div>
-      ${actionBtn}
-    `;
-    grid.appendChild(row);
-  });
-
-  toggleLibrarySections('lessons');
-  hideLoader();
-}
-
-/* MY LECTURES PAGE */
-async function loadMyLecturesPage() {
-  const grid = document.getElementById('myLecturesGrid');
-  showLoader('جاري تحميل دروسك...');
-  
-  const { data: lessons } = await db.from('lessons').select('*');
-  const myLessons = lessons.filter(l => boughtLessonIds.includes(String(l.id)));
-
-  if(!myLessons.length) {
-    grid.innerHTML = '<div style="text-align:center; padding:100px 0; color:var(--muted)"><p>لا توجد محاضرات مفعّلة.</p></div>';
-  } else {
-    grid.innerHTML = '';
-    myLessons.forEach(l => {
-      const row = document.createElement('div');
-      row.className = 'lesson-row';
-      row.innerHTML = `
-        <div class="lesson-info">
-          <div class="lesson-title">${l.name}</div>
-          <div class="lesson-price" style="background:rgba(22,163,74,0.1); color:var(--green)">مفعّلة ✅</div>
-        </div>
-        <button class="btn-action btn-watch" onclick="window.location.href='/lesson?id=${l.id}'">
-          <i class="fa-solid fa-play-circle"></i> دخول الحصة
-        </button>
-      `;
-      grid.appendChild(row);
+    teachers.forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `
+            <div class="card-icon">👨‍🏫</div>
+            <div class="card-title">${t.name}</div>
+            <div class="card-sub">عرض كافة الحصص المتاحة</div>
+        `;
+        el.onclick = () => loadLessons(t.id, t.name);
+        container.appendChild(el);
     });
-  }
-  hideLoader();
+
+    showView('teachers');
+    hideLoader();
 }
 
-/* UTILS */
-function toggleLibrarySections(view) {
-  document.getElementById('subjectsGrid').classList.toggle('hidden', view !== 'subjects');
-  document.getElementById('teachersSection').classList.toggle('hidden', view !== 'teachers');
-  document.getElementById('lessonsSection').classList.toggle('hidden', view !== 'lessons');
-  if(view === 'subjects') document.getElementById('bcCurrent').textContent = "اختر المادة";
+async function loadLessons(teachId, teachName) {
+    showLoader();
+    document.getElementById('selectedTeachTitle').textContent = `حصص المدرس: ${teachName}`;
+    const { data: lessons } = await db.from('lessons').select('*').eq('teacher_id', teachId);
+    
+    const container = document.getElementById('lessonsGrid');
+    container.innerHTML = "";
+
+    lessons.forEach(l => {
+        // الفحص: هل الحصة مشتراة؟
+        const isBought = boughtLessonIds.includes(String(l.id)) || localStorage.getItem('paid_lesson_' + l.id) === 'true';
+
+        const row = document.createElement('div');
+        row.className = 'lesson-row';
+
+        const actionBtn = isBought 
+            ? `<button class="btn btn-watch" onclick="window.location.href='/lesson?id=${l.id}'">
+                 <i class="fa-solid fa-circle-play"></i> مشاهدة الآن
+               </button>`
+            : `<button class="btn btn-cart" onclick="addToCart('${l.id}')">
+                 <i class="fa-solid fa-cart-shopping"></i> أضف للسلة
+               </button>`;
+
+        row.innerHTML = `
+            <div class="lesson-info">
+                <h3>${l.name}</h3>
+                <span class="price-badge">${l.price} EGP</span>
+            </div>
+            ${actionBtn}
+        `;
+        container.appendChild(row);
+    });
+
+    showView('lessons');
+    hideLoader();
 }
 
-function goBack(to) { toggleLibrarySections(to); }
+/* ==========================================
+   MY LECTURES LOGIC
+   ========================================== */
+async function renderMyLectures() {
+    showLoader();
+    const container = document.getElementById('purchasedLessonsGrid');
+    container.innerHTML = "";
 
-function addToCart(id, name, price) {
-  localStorage.setItem('checkout_lesson_id', id);
-  showToast('success', 'تم الإضافة للسلة', name);
-  setTimeout(() => window.location.href = '/checkout?lesson_id=' + id, 600);
+    if (boughtLessonIds.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--text-muted)">لم تقم بتفعيل أي دروس بعد.</div>`;
+        hideLoader(); return;
+    }
+
+    const { data: allLessons } = await db.from('lessons').select('*');
+    const myLessons = allLessons.filter(l => boughtLessonIds.includes(String(l.id)));
+
+    myLessons.forEach(l => {
+        const row = document.createElement('div');
+        row.className = 'lesson-row';
+        row.innerHTML = `
+            <div class="lesson-info">
+                <h3>${l.name}</h3>
+                <span class="price-badge" style="background:#dcfce7; color:#16a34a">مفعّلة ✅</span>
+            </div>
+            <button class="btn btn-watch" onclick="window.location.href='/lesson?id=${l.id}'">
+                 <i class="fa-solid fa-circle-play"></i> دخول الحصة
+            </button>
+        `;
+        container.appendChild(row);
+    });
+    hideLoader();
 }
 
-function showToast(type, title, msg = '') {
-  const wrap = document.getElementById('toast-wrap');
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.innerHTML = `<strong>${title}</strong><p style="font-size:12px; color:var(--muted)">${msg}</p>`;
-  wrap.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 3000);
+/* ==========================================
+   UI UTILS
+   ========================================== */
+function addToCart(id) {
+    localStorage.setItem('checkout_lesson_id', id);
+    window.location.href = '/checkout?lesson_id=' + id;
 }
 
-function showLoader(txt) { 
-  document.getElementById('ldTxt').textContent = txt;
-  document.getElementById('loadingScreen').style.display = 'flex'; 
-}
-function hideLoader() { document.getElementById('loadingScreen').style.display = 'none'; }
+function showLoader() { document.getElementById('loadingScreen').style.display = 'flex'; document.getElementById('loadingScreen').style.opacity = '1'; }
+function hideLoader() { document.getElementById('loadingScreen').style.opacity = '0'; setTimeout(()=> { document.getElementById('loadingScreen').style.display = 'none'; }, 500); }
 
 async function logout() { await db.auth.signOut(); window.location.href = '/'; }
 
+// START
 init();
 </script>
+
 </body>
 </html>
