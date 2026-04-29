@@ -590,6 +590,7 @@ html[lang="en"] .contact-page, html[lang="en"] main { direction: ltr; }
         <a class="nav-link active" data-page="home" onclick="navigate('home')" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
         <a class="nav-link" data-page="lectures" onclick="navigate('lectures')" data-ar="محاضرات" data-en="Lectures">محاضرات</a>
         <a class="nav-link" data-page="packages" onclick="navigate('packages')" data-ar="الباقات" data-en="Packages">الباقات</a>
+        <a class="nav-link" onclick="openCheckout()" data-ar="Checkout" data-en="Checkout">Checkout</a>
         <a class="nav-link" data-page="contact" onclick="navigate('contact')" data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</a>
       </div>
     </div>
@@ -830,6 +831,10 @@ html[lang="en"] .contact-page, html[lang="en"] main { direction: ltr; }
       <i class="fa-solid fa-box-open"></i>
       <span data-ar="الباقات" data-en="Packages">الباقات</span>
     </button>
+    <button class="bn-btn" id="bn-checkout" onclick="openCheckout()">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span data-ar="Checkout" data-en="Checkout">Checkout</span>
+    </button>
     <button class="bn-btn" id="bn-contact" onclick="navigate('contact')">
       <i class="fa-solid fa-headset"></i>
       <span data-ar="تواصل" data-en="Contact">تواصل</span>
@@ -849,6 +854,7 @@ html[lang="en"] .contact-page, html[lang="en"] main { direction: ltr; }
 const SUPABASE_URL = 'https://xjdhbbjeeasdmohbhgze.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const CHECKOUT_PATH = '/dashboard/checkout';
 
 /* ===== STATE ===== */
 let currentLessonId = null;
@@ -960,6 +966,38 @@ function subjectLabel(r){ return firstValue(r,['name','title','subject_name','su
 function teacherLabel(r){ return firstValue(r,['name','title','teacher_name','full_name','display_name','label','slug'],'مدرس'); }
 function lessonLabel(r){ return firstValue(r,['title','name','lesson_title','lesson_name','label','slug'],'درس'); }
 function sortByLabel(list, fn){ return [...(list||[])].sort((a,b)=>fn(a).localeCompare(fn(b),undefined,{numeric:true,sensitivity:'base'})); }
+function getCheckoutUrl(lessonId=''){ return lessonId ? `${CHECKOUT_PATH}?lesson_id=${encodeURIComponent(lessonId)}` : CHECKOUT_PATH; }
+
+window.openCheckout = function(){
+  const lessonId = localStorage.getItem('kalawy_checkout_lesson_id') || localStorage.getItem('checkout_lesson_id');
+  if(!lessonId){
+    showToast('info', currentLang==='ar'?'اختار حصة الأول':'Choose a lesson first', currentLang==='ar'?'اضغط Add to Cart على أي حصة وبعدها هتدخل Checkout':'Click Add to Cart on any lesson, then Checkout will open.');
+    navigate('home');
+    return;
+  }
+  window.location.href = getCheckoutUrl(lessonId);
+};
+
+window.addToCartLesson = function(lesson){
+  if(!lesson || !lesson.id){
+    showToast('error', currentLang==='ar'?'خطأ':'Error', currentLang==='ar'?'بيانات الحصة ناقصة':'Lesson data is missing');
+    return;
+  }
+  const title = lessonLabel(lesson);
+  const item = {
+    id: String(lesson.id),
+    title,
+    name: title,
+    price: Number(lesson.price || 0),
+    added_at: new Date().toISOString()
+  };
+  localStorage.setItem('kalawy_checkout_lesson_id', item.id);
+  localStorage.setItem('checkout_lesson_id', item.id);
+  localStorage.setItem('kalawy_cart', JSON.stringify([item]));
+  localStorage.setItem('mp_cart', JSON.stringify([item.id]));
+  showToast('success', currentLang==='ar'?'اتضافت للسلة ✅':'Added to cart ✅', title, 1200);
+  setTimeout(()=>{ window.location.href = getCheckoutUrl(item.id); }, 450);
+};
 
 /* ===== SUBJECT ICONS ===== */
 const ICONS = {
@@ -1158,9 +1196,9 @@ async function selectTeacher(teacherId, teacherName){
           <span class="lesson-price${price===0?' free':''}">${priceText(lesson.price)}</span>
         </div>
         <button class="activate-btn" type="button">
-          <i class="fa-solid fa-cart-plus"></i> ${currentLang==='ar'?'تفعيل':'Activate'}
+          <i class="fa-solid fa-cart-plus"></i> ${currentLang==='ar'?'أضف للسلة':'Add to Cart'}
         </button>`;
-      row.querySelector('.activate-btn').onclick = () => showActivation(lesson.id, title);
+      row.querySelector('.activate-btn').onclick = () => addToCartLesson(lesson);
       grid.appendChild(row);
     });
   }
