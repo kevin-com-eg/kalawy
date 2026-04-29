@@ -552,43 +552,13 @@ async function doRegister(){
       return;
     }
 
-    const userId = data?.user?.id || null;
-
-    // Extra upsert so users table is ready immediately if email confirmation is off.
-    const payload = {
-      auth_user_id:userId,
-      email,
-      name,
-      phone,
-      studentid:phone,
-      grade,
-      parentphone:parentPhone,
-      parent_phone:parentPhone,
-      birth_date:birthDate || null,
-      governorate,
-      area,
-      role:"student",
-      is_blocked:false
-    };
-
-    let save = await db.from("users").upsert(payload, { onConflict:"email" });
-
-    // fallback if auth_user_id conflict/policy differs
-    if(save.error){
-      const fallback = {...payload};
-      delete fallback.auth_user_id;
-      save = await db.from("users").upsert(fallback, { onConflict:"email" });
-    }
-
-    if(save.error){
-      showInfo(lang === "ar"
-        ? "اتعمل حسابك، لكن حفظ بيانات الطالب محتاج مراجعة RLS في Supabase."
-        : "Account created, but student profile save needs RLS review.");
-    } else {
-      showOk(lang === "ar"
-        ? "تم إنشاء حساب الطالب. لو التفعيل بالبريد شغال، افتح الإيميل للتأكيد."
-        : "Student account created. Confirm your email if email confirmation is enabled.");
-    }
+    // Important:
+    // Do NOT save public.users from the browser here.
+    // Supabase trigger public.handle_new_auth_user() creates the profile safely.
+    // This avoids RLS errors when Email Confirmation is enabled and there is no session yet.
+    showOk(lang === "ar"
+      ? "تم إنشاء الحساب بنجاح. لو التفعيل بالبريد شغال، افتح الإيميل للتأكيد ثم سجل دخول."
+      : "Account created successfully. If email confirmation is enabled, confirm your email then sign in.");
 
     // If Supabase returned a session, redirect directly.
     const { data:{ user } } = await db.auth.getUser();
