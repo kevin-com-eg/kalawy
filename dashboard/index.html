@@ -5,165 +5,227 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kalawy · Student Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+/* ===== THEME VARIABLES ===== */
 :root {
-  --nav-bg: #1a1040;
-  --nav-accent: #7c3aed;
-  --nav-text: #e2d9f3;
-  --bg: #f0eef8;
-  --card-bg: #ffffff;
-  --card-hover: #1a1040;
-  --card-shadow: 0 4px 24px rgba(80,40,160,0.10);
-  --card-shadow-hover: 0 8px 40px rgba(80,40,160,0.22);
-  --text: #1a1040;
-  --muted: #7c6fa0;
+  --nav-h: 68px;
+  --sans: 'Cairo', 'Tajawal', 'Outfit', Arial, sans-serif;
+  --radius: 18px;
+  --radius-sm: 10px;
+  --radius-xs: 7px;
   --accent: #7c3aed;
   --accent2: #a855f7;
+  --accent3: #c4b5fd;
   --gold: #f59e0b;
-  --radius: 16px;
-  --radius-sm: 10px;
-  --nav-h: 68px;
-  --sans: 'Cairo', 'Tajawal', Arial, sans-serif;
+  --green: #22c55e;
+  --transition: all .26s cubic-bezier(.4,0,.2,1);
 }
+
+/* LIGHT MODE */
+body {
+  --nav-bg: #1a1040;
+  --nav-text: #e2d9f3;
+  --bg: #f0eef8;
+  --bg2: #e8e4f5;
+  --card-bg: #ffffff;
+  --card-hover-bg: #1a1040;
+  --card-shadow: 0 4px 24px rgba(80,40,160,0.09);
+  --card-shadow-hover: 0 10px 48px rgba(80,40,160,0.22);
+  --text: #1a1040;
+  --text2: #3d2f7a;
+  --muted: #7c6fa0;
+  --muted2: #b0a4cc;
+  --border: rgba(124,58,237,0.12);
+  --input-bg: #ffffff;
+  --input-border: rgba(124,58,237,0.22);
+  --panel-bg: linear-gradient(135deg,#1a1040 0%,#2e1065 100%);
+  --separator: rgba(124,58,237,0.08);
+  --page-tag-bg: rgba(124,58,237,0.10);
+  --page-tag-border: rgba(124,58,237,0.18);
+  --toast-bg: #fff;
+  --bn-bg: #1a1040;
+}
+
+/* DARK MODE */
+body.dark {
+  --nav-bg: #0d0820;
+  --nav-text: #c4b5fd;
+  --bg: #0f0c1e;
+  --bg2: #13102a;
+  --card-bg: #1c1638;
+  --card-hover-bg: #110d28;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  --card-shadow-hover: 0 10px 48px rgba(124,58,237,0.25);
+  --text: #e2d9f3;
+  --text2: #c4b5fd;
+  --muted: #8b7fb8;
+  --muted2: #5c4f8a;
+  --border: rgba(124,58,237,0.20);
+  --input-bg: rgba(255,255,255,0.05);
+  --input-border: rgba(124,58,237,0.35);
+  --panel-bg: linear-gradient(135deg,#0d0820 0%,#1a0d3a 100%);
+  --separator: rgba(124,58,237,0.12);
+  --page-tag-bg: rgba(124,58,237,0.15);
+  --page-tag-border: rgba(124,58,237,0.25);
+  --toast-bg: #1c1638;
+  --bn-bg: #0d0820;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background .3s, color .3s;
+}
+
+/* ===== PAGES ===== */
+.page { display: none; min-height: calc(100vh - var(--nav-h)); }
+.page.active { display: block; animation: pageIn .3s both; }
+@keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
 
 /* ===== NAV ===== */
 nav.top-nav {
   position: sticky; top: 0; z-index: 500;
   height: var(--nav-h);
   background: var(--nav-bg);
-  box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.30);
   display: flex; align-items: center;
+  transition: background .3s;
 }
 .nav-inner {
-  max-width: 1300px; margin: 0 auto; padding: 0 28px;
+  max-width: 1340px; margin: 0 auto; padding: 0 28px;
   width: 100%; display: flex; align-items: center;
-  justify-content: space-between; gap: 16px;
+  justify-content: space-between; gap: 14px;
 }
 .logo {
   display: flex; align-items: center; gap: 10px;
-  text-decoration: none; cursor: pointer;
+  text-decoration: none; cursor: pointer; flex-shrink: 0;
 }
 .logo-mark {
-  background: var(--accent);
-  border-radius: 10px; width: 40px; height: 40px;
+  background: var(--accent); border-radius: 10px;
+  width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 1rem; color: #fff; letter-spacing: .04em;
+  font-weight: 900; font-size: 1rem; color: #fff;
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.28);
 }
-.logo-name {
-  font-weight: 900; font-size: 1.3rem; color: #fff; letter-spacing: .01em;
-}
+.logo-name { font-weight: 900; font-size: 1.25rem; color: #fff; }
 .logo-name em { color: var(--accent2); font-style: normal; }
 
-.nav-links {
-  display: flex; align-items: center; gap: 4px;
-}
+.nav-links { display: flex; align-items: center; gap: 3px; }
 .nav-link {
   background: none; border: none; color: var(--nav-text);
-  font-family: var(--sans); font-size: .88rem; font-weight: 700;
-  padding: 8px 16px; border-radius: 8px; cursor: pointer;
-  transition: all .18s; text-decoration: none; display: inline-block;
+  font-family: var(--sans); font-size: .86rem; font-weight: 700;
+  padding: 8px 15px; border-radius: 8px; cursor: pointer;
+  transition: var(--transition); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
 }
 .nav-link:hover, .nav-link.active {
   background: rgba(255,255,255,0.10); color: #fff;
 }
+.nav-link.active { color: var(--accent2); }
 
-.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-right { display: flex; align-items: center; gap: 8px; }
 
-.user-badge {
-  display: flex; align-items: center; gap: 10px;
+/* Theme & Lang toggles */
+.icon-btn {
+  width: 38px; height: 38px;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 10px; padding: 6px 14px 6px 8px;
-  cursor: pointer;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--nav-text); cursor: pointer; transition: var(--transition);
+  font-size: .9rem; flex-shrink: 0;
 }
+.icon-btn:hover { background: rgba(255,255,255,0.16); color: #fff; }
+
+.lang-btn {
+  padding: 0 12px; width: auto;
+  font-family: var(--sans); font-size: .76rem; font-weight: 800;
+  letter-spacing: .05em;
+}
+
+.user-badge {
+  display: flex; align-items: center; gap: 9px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 10px; padding: 5px 12px 5px 7px;
+  cursor: pointer; transition: var(--transition);
+}
+.user-badge:hover { background: rgba(255,255,255,0.13); }
 .user-av {
-  width: 36px; height: 36px; border-radius: 8px; object-fit: cover;
-  border: 2px solid var(--accent2);
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 2px solid var(--accent2); object-fit: cover;
 }
 .user-info { text-align: right; }
-.user-name { font-size: .82rem; font-weight: 800; color: #fff; line-height: 1.2; }
-.user-sub { font-size: .68rem; color: var(--accent2); font-weight: 600; }
+.user-name { font-size: .8rem; font-weight: 800; color: #fff; line-height: 1.2; }
+.user-sub { font-size: .66rem; color: var(--accent2); font-weight: 600; }
 
-.notif-btn {
-  width: 40px; height: 40px; background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12); border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--nav-text); cursor: pointer; transition: all .18s;
-  font-size: .95rem; position: relative;
-}
-.notif-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.notif-btn { position: relative; }
 .notif-dot {
   position: absolute; top: 6px; right: 6px;
-  width: 8px; height: 8px; background: var(--gold);
+  width: 7px; height: 7px; background: var(--gold);
   border-radius: 50%; border: 2px solid var(--nav-bg);
 }
 
-.select-teacher-btn {
-  background: var(--accent); color: #fff; border: none;
-  border-radius: 9px; padding: 9px 18px;
-  font-family: var(--sans); font-size: .85rem; font-weight: 800;
-  cursor: pointer; transition: all .2s; white-space: nowrap;
-}
-.select-teacher-btn:hover { background: var(--accent2); }
-
 /* ===== BREADCRUMB ===== */
 .breadcrumb-bar {
-  background: #fff; border-bottom: 1px solid rgba(124,58,237,0.08);
-  padding: 12px 28px;
+  background: var(--card-bg); border-bottom: 1px solid var(--separator);
+  padding: 11px 28px; transition: background .3s;
 }
 .breadcrumb-inner {
-  max-width: 1300px; margin: 0 auto;
-  display: flex; align-items: center; gap: 8px;
-  font-size: .8rem; color: var(--muted); font-weight: 600;
+  max-width: 1340px; margin: 0 auto;
+  display: flex; align-items: center; gap: 7px;
+  font-size: .78rem; color: var(--muted); font-weight: 600;
 }
-.bc-sep { color: #c4b5fd; }
+.bc-sep { color: var(--accent3); }
 .bc-active { color: var(--accent); font-weight: 800; }
 
-/* ===== MAIN ===== */
-main { max-width: 1300px; margin: 0 auto; padding: 36px 28px 80px; }
+/* ===== MAIN WRAPPER ===== */
+main { max-width: 1340px; margin: 0 auto; padding: 36px 28px 90px; }
 
 /* ===== PAGE HEADER ===== */
 .page-hdr {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 30px; gap: 16px; flex-wrap: wrap;
 }
-.page-hdr-left {}
 .page-tag {
   display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(124,58,237,0.10); border: 1px solid rgba(124,58,237,0.18);
+  background: var(--page-tag-bg); border: 1px solid var(--page-tag-border);
   border-radius: 20px; padding: 4px 12px;
-  font-size: .72rem; font-weight: 800; color: var(--accent);
+  font-size: .7rem; font-weight: 800; color: var(--accent);
   letter-spacing: .06em; text-transform: uppercase; margin-bottom: 10px;
 }
-.page-title {
-  font-size: 1.7rem; font-weight: 900; color: var(--text); line-height: 1.1;
-}
-.page-sub { font-size: .88rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
+.page-title { font-size: 1.65rem; font-weight: 900; color: var(--text); line-height: 1.15; }
+.page-sub { font-size: .86rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
 
 .search-box {
-  display: flex; align-items: center; gap: 10px;
-  background: #fff; border: 1.5px solid rgba(124,58,237,0.18);
-  border-radius: 12px; padding: 10px 16px; min-width: 240px;
+  display: flex; align-items: center; gap: 9px;
+  background: var(--card-bg); border: 1.5px solid var(--input-border);
+  border-radius: 12px; padding: 10px 15px; min-width: 230px;
+  transition: border-color .2s, background .3s; flex-shrink: 0;
 }
-.search-box i { color: var(--muted); font-size: .85rem; }
+.search-box:focus-within { border-color: var(--accent); }
+.search-box i { color: var(--muted); font-size: .82rem; }
 .search-box input {
   background: none; border: none; outline: none;
-  font-family: var(--sans); font-size: .88rem; color: var(--text);
+  font-family: var(--sans); font-size: .86rem; color: var(--text);
   flex: 1; font-weight: 600; direction: rtl;
 }
-.search-box input::placeholder { color: #c4b5fd; }
+.search-box input::placeholder { color: var(--muted2); }
 
 /* ===== SUBJECTS GRID ===== */
 .subjects-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 18px;
 }
 
 .subject-card {
@@ -171,178 +233,169 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px 28px 80px; }
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   cursor: pointer;
-  transition: all .28s cubic-bezier(.4,0,.2,1);
+  transition: var(--transition);
   overflow: hidden;
   position: relative;
   border: 2px solid transparent;
   display: flex; flex-direction: column; align-items: center;
-  padding: 28px 16px 22px;
+  padding: 28px 14px 22px;
   text-align: center;
   animation: cardIn .35s both;
 }
-.subject-card:hover {
-  background: var(--card-hover);
+.subject-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  opacity: 0; transition: opacity .26s;
+  border-radius: calc(var(--radius) - 2px);
+}
+.subject-card:hover::after, .subject-card.selected::after { opacity: 1; }
+.subject-card > * { position: relative; z-index: 1; }
+
+.subject-card:hover, .subject-card.selected {
   box-shadow: var(--card-shadow-hover);
   border-color: var(--accent);
-  transform: translateY(-4px) scale(1.02);
-}
-.subject-card.selected {
-  background: var(--card-hover);
-  border-color: var(--accent2);
-  box-shadow: var(--card-shadow-hover);
-  transform: translateY(-2px);
+  transform: translateY(-5px) scale(1.02);
 }
 
 @keyframes cardIn {
-  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  from { opacity: 0; transform: translateY(18px) scale(.96); }
   to { opacity: 1; transform: none; }
 }
 
 .subject-icon-wrap {
-  width: 80px; height: 80px; border-radius: 50%;
+  width: 78px; height: 78px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 16px; font-size: 2.2rem;
-  position: relative; overflow: hidden;
-  flex-shrink: 0;
+  margin-bottom: 15px; font-size: 2rem;
+  position: relative; overflow: hidden; flex-shrink: 0;
+  transition: transform .26s;
 }
-.subject-icon-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.subject-card:hover .subject-icon-wrap { transform: scale(1.08) rotate(-4deg); }
 .subject-icon-fallback {
   width: 100%; height: 100%; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; font-weight: 900;
+  font-size: 1.9rem; font-weight: 900;
 }
 
 .subject-name {
-  font-size: 1.05rem; font-weight: 900; color: var(--text);
-  margin-bottom: 6px; line-height: 1.3;
+  font-size: 1rem; font-weight: 900; color: var(--text);
+  margin-bottom: 5px; line-height: 1.3;
   transition: color .22s;
 }
 .subject-card:hover .subject-name,
 .subject-card.selected .subject-name { color: #fff; }
 
-.subject-meta {
-  font-size: .76rem; color: var(--muted); font-weight: 700;
-  transition: color .22s;
-}
+.subject-meta { font-size: .74rem; color: var(--muted); font-weight: 700; transition: color .22s; }
 .subject-card:hover .subject-meta,
-.subject-card.selected .subject-meta { color: rgba(255,255,255,0.65); }
+.subject-card.selected .subject-meta { color: rgba(255,255,255,0.72); }
 
-.subject-count-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  margin-top: 4px;
-}
 .count-num { color: var(--accent2); font-weight: 900; }
 .subject-card:hover .count-num,
-.subject-card.selected .count-num { color: #c4b5fd; }
+.subject-card.selected .count-num { color: #e9d5ff; }
 
-/* Empty / Loading */
+/* Empty */
 .empty-grid {
   grid-column: 1/-1;
   text-align: center; padding: 60px 24px;
-  color: var(--muted); font-size: .95rem; font-weight: 700;
+  color: var(--muted); font-size: .92rem; font-weight: 700;
 }
 .empty-ico { font-size: 2.8rem; margin-bottom: 12px; }
 
-/* ===== TEACHER SECTION ===== */
-.section-block {
-  margin-top: 40px; animation: cardIn .35s both;
-}
+/* ===== SECTION BLOCK ===== */
+.section-block { margin-top: 40px; animation: cardIn .35s both; }
 .section-label {
   display: flex; align-items: center; gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 20px; flex-wrap: wrap;
 }
-.section-label-txt {
-  font-size: 1.15rem; font-weight: 900; color: var(--text);
-}
+.section-label-txt { font-size: 1.12rem; font-weight: 900; color: var(--text); }
 .back-link {
   display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.15);
+  background: var(--page-tag-bg); border: 1px solid var(--page-tag-border);
   color: var(--accent); border-radius: 8px;
-  padding: 6px 14px; font-size: .8rem; font-weight: 800;
-  cursor: pointer; transition: all .18s; margin-right: auto;
+  padding: 6px 14px; font-size: .78rem; font-weight: 800;
+  cursor: pointer; transition: var(--transition); margin-right: auto;
+  font-family: var(--sans);
 }
-.back-link:hover { background: rgba(124,58,237,0.15); }
+.back-link:hover { background: rgba(124,58,237,0.18); }
 
-/* Teacher cards */
-.teachers-grid {
-  display: grid; grid-template-columns: repeat(4,1fr); gap: 18px;
-}
+/* ===== TEACHERS ===== */
+.teachers-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
 .teacher-card {
-  background: #fff; border-radius: var(--radius);
-  box-shadow: var(--card-shadow);
-  border: 2px solid transparent;
-  cursor: pointer; transition: all .25s;
-  padding: 22px 14px 18px;
+  background: var(--card-bg); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 2px solid transparent;
+  cursor: pointer; transition: var(--transition);
+  padding: 24px 14px 18px;
   display: flex; flex-direction: column; align-items: center; text-align: center;
-  animation: cardIn .3s both;
+  animation: cardIn .3s both; position: relative; overflow: hidden;
 }
-.teacher-card:hover {
-  background: var(--card-hover); border-color: var(--accent);
-  transform: translateY(-3px); box-shadow: var(--card-shadow-hover);
+.teacher-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  opacity: 0; transition: opacity .26s;
 }
+.teacher-card:hover::after { opacity: 1; }
+.teacher-card > * { position: relative; z-index: 1; }
+.teacher-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
 .teacher-card:hover .teacher-name { color: #fff; }
-.teacher-card:hover .teacher-sub { color: rgba(255,255,255,.6); }
-.teacher-av {
-  width: 64px; height: 64px; border-radius: 14px; object-fit: cover;
-  border: 3px solid rgba(124,58,237,0.15); margin-bottom: 12px;
-}
+.teacher-card:hover .teacher-sub { color: rgba(255,255,255,.65); }
 .teacher-av-fallback {
   width: 64px; height: 64px; border-radius: 14px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-size: 1.5rem; font-weight: 900;
-  margin-bottom: 12px;
+  margin-bottom: 12px; transition: transform .26s;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.35);
 }
-.teacher-name { font-size: .95rem; font-weight: 900; color: var(--text); margin-bottom: 4px; }
-.teacher-sub { font-size: .72rem; color: var(--muted); font-weight: 700; }
+.teacher-card:hover .teacher-av-fallback { transform: scale(1.08); }
+.teacher-name { font-size: .93rem; font-weight: 900; color: var(--text); margin-bottom: 4px; transition: color .22s; }
+.teacher-sub { font-size: .7rem; color: var(--muted); font-weight: 700; transition: color .22s; }
 
-/* Lessons list */
-.lessons-list { display: flex; flex-direction: column; gap: 14px; }
+/* ===== LESSONS ===== */
+.lessons-list { display: flex; flex-direction: column; gap: 12px; }
 .lesson-row {
-  background: #fff; border-radius: var(--radius);
-  box-shadow: var(--card-shadow);
-  border: 2px solid transparent;
+  background: var(--card-bg); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 2px solid transparent;
   display: grid; grid-template-columns: 56px 1fr auto;
   align-items: center; gap: 16px; padding: 16px 20px;
-  transition: all .22s; animation: cardIn .3s both;
+  transition: var(--transition); animation: cardIn .3s both;
 }
-.lesson-row:hover { border-color: var(--accent); transform: translateX(-4px); }
+.lesson-row:hover { border-color: var(--accent); transform: translateX(-5px); box-shadow: var(--card-shadow-hover); }
 .lesson-num {
   width: 42px; height: 42px; border-radius: 10px;
-  background: rgba(124,58,237,0.10);
+  background: var(--page-tag-bg);
   display: flex; align-items: center; justify-content: center;
-  font-size: .9rem; font-weight: 900; color: var(--accent);
+  font-size: .88rem; font-weight: 900; color: var(--accent);
 }
-.lesson-title { font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+.lesson-title { font-size: .97rem; font-weight: 800; color: var(--text); margin-bottom: 5px; }
 .lesson-price {
   display: inline-flex; align-items: center; gap: 4px;
-  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.22);
   color: var(--gold); border-radius: 6px; padding: 2px 9px;
-  font-size: .72rem; font-weight: 900;
+  font-size: .7rem; font-weight: 900;
 }
-.lesson-price.free { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.2); color: #16a34a; }
+.lesson-price.free { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.22); color: #16a34a; }
 .activate-btn {
   background: var(--accent); color: #fff; border: none;
-  border-radius: 10px; padding: 10px 20px;
-  font-family: var(--sans); font-size: .82rem; font-weight: 800;
-  cursor: pointer; transition: all .2s; white-space: nowrap;
+  border-radius: 10px; padding: 10px 18px;
+  font-family: var(--sans); font-size: .8rem; font-weight: 800;
+  cursor: pointer; transition: var(--transition); white-space: nowrap;
   display: flex; align-items: center; gap: 7px;
 }
-.activate-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+.activate-btn:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(124,58,237,0.4); }
 
-/* Activation panel */
+/* ===== ACTIVATION PANEL ===== */
 .activation-panel {
-  background: linear-gradient(135deg, #1a1040 0%, #2e1065 100%);
+  background: var(--panel-bg);
   border-radius: var(--radius); padding: 28px;
-  margin-top: 20px; border: 2px solid rgba(124,58,237,0.4);
-  box-shadow: 0 8px 40px rgba(124,58,237,0.25);
+  margin-top: 18px; border: 2px solid rgba(124,58,237,0.4);
+  box-shadow: 0 8px 48px rgba(124,58,237,0.25);
   animation: cardIn .35s both;
 }
 .act-title {
-  font-size: 1.2rem; font-weight: 900; color: #fff;
+  font-size: 1.18rem; font-weight: 900; color: #fff;
   display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
 }
-.act-lesson { font-size: .85rem; color: #c4b5fd; font-weight: 700; margin-bottom: 20px; }
+.act-lesson { font-size: .83rem; color: #c4b5fd; font-weight: 700; margin-bottom: 20px; }
 .act-row { display: flex; gap: 10px; }
 .act-input {
   flex: 1; background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15);
@@ -351,21 +404,82 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px 28px 80px; }
   transition: border-color .2s; direction: ltr; text-align: center; letter-spacing: .12em;
 }
 .act-input:focus { border-color: var(--accent2); }
-.act-input::placeholder { color: rgba(255,255,255,0.35); letter-spacing: 0; }
+.act-input::placeholder { color: rgba(255,255,255,.35); letter-spacing: 0; }
 .act-submit {
   background: var(--accent2); color: #fff; border: none;
-  border-radius: 10px; padding: 13px 28px;
-  font-family: var(--sans); font-size: .88rem; font-weight: 900;
-  cursor: pointer; transition: all .2s;
+  border-radius: 10px; padding: 13px 26px;
+  font-family: var(--sans); font-size: .86rem; font-weight: 900;
+  cursor: pointer; transition: var(--transition);
 }
-.act-submit:hover { background: #9333ea; transform: translateY(-1px); }
-.act-status { margin-top: 12px; font-size: .85rem; font-weight: 800; color: rgba(255,255,255,0.7); }
+.act-submit:hover { background: #9333ea; transform: translateY(-2px); box-shadow: 0 4px 20px rgba(168,85,247,0.5); }
+.act-status { margin-top: 12px; font-size: .83rem; font-weight: 800; color: rgba(255,255,255,0.75); }
+
+/* ===== CONTACT PAGE ===== */
+.contact-page { max-width: 1340px; margin: 0 auto; padding: 36px 28px 90px; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; margin-top: 30px; }
+.contact-info { display: flex; flex-direction: column; gap: 18px; }
+.contact-card {
+  background: var(--card-bg); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 2px solid transparent;
+  padding: 22px 22px; display: flex; align-items: flex-start; gap: 16px;
+  transition: var(--transition); cursor: default;
+}
+.contact-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
+.contact-card-ico {
+  width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+  background: var(--page-tag-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; color: var(--accent);
+}
+.contact-card-ttl { font-size: .82rem; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+.contact-card-val { font-size: 1rem; font-weight: 800; color: var(--text); }
+.contact-card-link { color: var(--accent); text-decoration: none; transition: color .2s; }
+.contact-card-link:hover { color: var(--accent2); }
+
+.contact-form-wrap {
+  background: var(--card-bg); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); padding: 32px;
+}
+.form-title { font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 22px; display: flex; align-items: center; gap: 10px; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: .78rem; font-weight: 800; color: var(--muted); margin-bottom: 7px; display: block; }
+.form-input, .form-textarea {
+  width: 100%; background: var(--input-bg); border: 1.5px solid var(--input-border);
+  border-radius: 10px; padding: 12px 15px; color: var(--text);
+  font-family: var(--sans); font-size: .88rem; font-weight: 600;
+  outline: none; transition: border-color .2s, background .3s;
+  direction: rtl;
+}
+.form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-textarea { resize: vertical; min-height: 110px; }
+.form-submit {
+  width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border: none; border-radius: 12px;
+  padding: 14px; font-family: var(--sans);
+  font-size: .9rem; font-weight: 900; cursor: pointer;
+  transition: var(--transition); margin-top: 4px;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+}
+.form-submit:hover { opacity: .9; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.5); }
+
+/* Social row */
+.social-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.social-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--page-tag-bg); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 10px 16px;
+  color: var(--text); font-family: var(--sans);
+  font-size: .8rem; font-weight: 800;
+  text-decoration: none; transition: var(--transition); cursor: pointer;
+}
+.social-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-2px); }
+.social-btn i { font-size: 1rem; }
 
 /* ===== LOADING ===== */
 #loadingScreen {
   position: fixed; inset: 0; z-index: 9999;
-  background: var(--nav-bg);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  background: var(--nav-bg, #1a1040);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
   transition: opacity .35s;
 }
 .ld-logo {
@@ -374,64 +488,83 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px 28px 80px; }
   display: flex; align-items: center; justify-content: center;
   font-size: 1.3rem; font-weight: 900; color: #fff;
   animation: floatY 2s ease infinite;
+  box-shadow: 0 0 0 8px rgba(124,58,237,0.2), 0 0 0 16px rgba(124,58,237,0.08);
 }
 .ld-bar { width: 140px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .ld-fill { height: 100%; background: var(--accent2); border-radius: 3px; animation: lfill 1.2s ease infinite; }
-.ld-txt { font-size: .8rem; color: rgba(255,255,255,0.45); font-weight: 700; }
+.ld-txt { font-size: .78rem; color: rgba(255,255,255,0.45); font-weight: 700; }
 @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 @keyframes lfill { 0%{width:0;margin-left:0} 50%{width:75%;margin-left:0} 100%{width:0;margin-left:100%} }
 
 /* ===== TOAST ===== */
 #toast-wrap { position: fixed; top: 80px; left: 18px; z-index: 4000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
 .toast {
-  background: #fff; border: 1px solid rgba(124,58,237,0.2);
-  border-radius: 12px; padding: 13px 16px;
+  background: var(--toast-bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 13px 15px;
   display: flex; align-items: center; gap: 10px;
   min-width: 260px; max-width: 320px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
   animation: toastIn .3s both; pointer-events: all;
 }
 .toast.exit { animation: toastOut .25s both; }
 .toast-ico { font-size: .95rem; }
 .toast-body { flex: 1; }
-.toast-ttl { font-size: .82rem; font-weight: 800; color: var(--text); }
-.toast-msg { font-size: .73rem; color: var(--muted); margin-top: 2px; }
+.toast-ttl { font-size: .8rem; font-weight: 800; color: var(--text); }
+.toast-msg { font-size: .71rem; color: var(--muted); margin-top: 2px; }
 .toast-x { background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--muted); }
 @keyframes toastIn { from{opacity:0;transform:translateX(-18px)} to{opacity:1;transform:none} }
 @keyframes toastOut { to{opacity:0;transform:translateX(-18px)} }
 
-/* Bottom nav mobile */
+/* ===== BOTTOM NAV ===== */
 .bottom-nav {
   display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
-  background: var(--nav-bg); border-top: 1px solid rgba(255,255,255,0.08);
-  padding: 10px 10px 18px;
+  background: var(--bn-bg); border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 10px 10px 18px; transition: background .3s;
 }
 .bn-inner { display: flex; justify-content: space-around; }
 .bn-btn {
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   background: none; border: none; color: rgba(255,255,255,0.45);
   cursor: pointer; padding: 6px 10px; border-radius: 8px;
-  font-family: var(--sans); font-size: .6rem; font-weight: 800;
-  transition: all .18s; text-decoration: none;
+  font-family: var(--sans); font-size: .58rem; font-weight: 800;
+  transition: var(--transition); text-decoration: none;
 }
 .bn-btn.active, .bn-btn:hover { color: var(--accent2); }
+.bn-btn i { font-size: 1.1rem; margin-bottom: 2px; }
 
+/* Utilities */
 .hidden { display: none !important; }
+.mt-10 { margin-top: 10px; }
 
-@media (max-width: 1100px) { .subjects-grid, .teachers-grid { grid-template-columns: repeat(3,1fr); } }
+/* ===== LTR for EN ===== */
+html[lang="en"] { direction: ltr; }
+html[lang="en"] .user-info { text-align: left; }
+html[lang="en"] .back-link { margin-right: 0; margin-left: auto; }
+html[lang="en"] .lesson-row { direction: ltr; }
+html[lang="en"] .lesson-row:hover { transform: translateX(5px); }
+html[lang="en"] .search-box input { direction: ltr; }
+html[lang="en"] .act-input { direction: ltr; }
+html[lang="en"] .contact-page, html[lang="en"] main { direction: ltr; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  .subjects-grid, .teachers-grid { grid-template-columns: repeat(3,1fr); }
+}
 @media (max-width: 800px) {
-  .subjects-grid, .teachers-grid { grid-template-columns: repeat(2,1fr); gap: 14px; }
+  .subjects-grid, .teachers-grid { grid-template-columns: repeat(2,1fr); gap: 13px; }
   .nav-links { display: none; }
   .bottom-nav { display: block; }
   body { padding-bottom: 80px; }
-  main { padding: 20px 14px 80px; }
+  main, .contact-page { padding: 20px 14px 80px; }
   .breadcrumb-bar { padding: 10px 14px; }
   .lesson-row { grid-template-columns: 1fr; }
   .act-row { flex-direction: column; }
+  .contact-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .subjects-grid, .teachers-grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
   .user-info { display: none; }
+  .page-title { font-size: 1.35rem; }
 }
 </style>
 </head>
@@ -448,35 +581,38 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px 28px 80px; }
 <!-- NAV -->
 <nav class="top-nav">
   <div class="nav-inner">
-    <div style="display:flex;align-items:center;gap:20px">
-      <a class="logo" href="#">
+    <div style="display:flex;align-items:center;gap:18px">
+      <a class="logo" onclick="navigate('home')">
         <div class="logo-mark">KA</div>
         <div class="logo-name">Kalawy<em> EDU</em></div>
       </a>
       <div class="nav-links">
-        <a class="nav-link active" href="#">الرئيسية</a>
-        <a class="nav-link" href="#">محاضرات</a>
-        <a class="nav-link" href="#">حجوزات</a>
-        <a class="nav-link" href="#">ملزم</a>
-        <a class="nav-link" href="#">الباقات</a>
-        <a class="nav-link" href="#">تواصل معنا</a>
+        <a class="nav-link active" data-page="home" onclick="navigate('home')" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+        <a class="nav-link" data-page="lectures" onclick="navigate('lectures')" data-ar="محاضرات" data-en="Lectures">محاضرات</a>
+        <a class="nav-link" data-page="packages" onclick="navigate('packages')" data-ar="الباقات" data-en="Packages">الباقات</a>
+        <a class="nav-link" data-page="contact" onclick="navigate('contact')" data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</a>
       </div>
     </div>
     <div class="nav-right">
-      <button class="notif-btn" title="الإشعارات">
+      <!-- Lang toggle -->
+      <button class="icon-btn lang-btn" id="langBtn" onclick="toggleLang()" title="Switch Language">EN</button>
+      <!-- Dark/light toggle -->
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fa-solid fa-moon" id="themeIco"></i>
+      </button>
+      <!-- Notif -->
+      <button class="icon-btn notif-btn" title="الإشعارات">
         <i class="fa-solid fa-bell"></i>
         <span class="notif-dot"></span>
       </button>
+      <!-- User -->
       <div class="user-badge" id="userBadge">
         <div class="user-info">
           <div class="user-name" id="navName">Kalawy Student</div>
-          <div class="user-sub" id="navSub">اضغط هنا لعرض الملف الشخصي</div>
+          <div class="user-sub" id="navSub" data-ar="عرض الملف الشخصي" data-en="View Profile">عرض الملف الشخصي</div>
         </div>
         <img class="user-av" id="navAv" src="https://ui-avatars.com/api/?name=K+S&background=7c3aed&color=fff&bold=true&size=128" alt="Student">
       </div>
-      <button class="select-teacher-btn" id="teacherMenuBtn">
-        <i class="fa-solid fa-chalkboard-user"></i> اختار مدرس
-      </button>
     </div>
   </div>
 </nav>
@@ -484,74 +620,224 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px 28px 80px; }
 <!-- BREADCRUMB -->
 <div class="breadcrumb-bar">
   <div class="breadcrumb-inner">
-    <span>الرئيسية</span>
+    <span data-ar="الرئيسية" data-en="Home">الرئيسية</span>
     <span class="bc-sep">›</span>
-    <span>محاضرات</span>
-    <span class="bc-sep">›</span>
-    <span class="bc-active" id="bcCurrent">اختر المادة</span>
+    <span class="bc-active" id="bcCurrent" data-ar="اختر المادة" data-en="Choose Subject">اختر المادة</span>
   </div>
 </div>
 
-<!-- MAIN -->
-<main>
-  <div class="page-hdr">
-    <div class="page-hdr-left">
-      <div class="page-tag"><i class="fa-solid fa-circle" style="font-size:.5rem"></i> مكتبة المحتوى</div>
-      <div class="page-title" id="pageTitle">اختر المادة الدراسية</div>
-      <div class="page-sub" id="pageSub">ابدأ باختيار المادة التي تريد دراستها</div>
-    </div>
-    <div class="search-box">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" placeholder="ابحث عن مادة أو مدرس…" id="searchInput">
-    </div>
-  </div>
-
-  <!-- SUBJECTS GRID -->
-  <div class="subjects-grid" id="subjectsGrid">
-    <div class="empty-grid">
-      <div class="empty-ico">⏳</div>
-      <div>جاري التحميل…</div>
-    </div>
-  </div>
-
-  <!-- TEACHERS SECTION (hidden initially) -->
-  <div class="section-block hidden" id="teachersSection">
-    <div class="section-label">
-      <div class="section-label-txt">👨‍🏫 اختر المدرس — <span id="selectedSubName" style="color:var(--accent)"></span></div>
-      <button class="back-link" onclick="goBack('subject')"><i class="fa-solid fa-arrow-right"></i> رجوع للمواد</button>
-    </div>
-    <div class="teachers-grid" id="teachersGrid"></div>
-  </div>
-
-  <!-- LESSONS SECTION (hidden initially) -->
-  <div class="section-block hidden" id="lessonsSection">
-    <div class="section-label">
-      <div class="section-label-txt">🎬 الدروس المتاحة — <span id="selectedTeachName" style="color:var(--accent)"></span></div>
-      <button class="back-link" onclick="goBack('teacher')"><i class="fa-solid fa-arrow-right"></i> رجوع للمدرسين</button>
-    </div>
-    <div class="lessons-list" id="lessonsGrid"></div>
-
-    <!-- ACTIVATION PANEL -->
-    <div class="activation-panel hidden" id="activationPanel">
-      <div class="act-title"><span>🔐</span> تفعيل الدرس</div>
-      <div class="act-lesson" id="actLessonName">الدرس: —</div>
-      <div class="act-row">
-        <input type="text" class="act-input" id="activationCode" placeholder="أدخل كود التفعيل هنا">
-        <button class="act-submit" id="activateBtn">تفعيل الآن</button>
+<!-- ===================== HOME PAGE ===================== -->
+<div class="page active" id="page-home">
+  <main>
+    <div class="page-hdr">
+      <div>
+        <div class="page-tag"><i class="fa-solid fa-circle" style="font-size:.45rem"></i> <span data-ar="مكتبة المحتوى" data-en="Content Library">مكتبة المحتوى</span></div>
+        <div class="page-title" id="pageTitle" data-ar="اختر المادة الدراسية" data-en="Choose Your Subject">اختر المادة الدراسية</div>
+        <div class="page-sub" id="pageSub" data-ar="ابدأ باختيار المادة التي تريد دراستها" data-en="Start by selecting the subject you want to study">ابدأ باختيار المادة التي تريد دراستها</div>
       </div>
-      <div class="act-status" id="statusMsg"></div>
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" data-placeholder-ar="ابحث عن مادة أو مدرس…" data-placeholder-en="Search subject or teacher…" placeholder="ابحث عن مادة أو مدرس…">
+      </div>
+    </div>
+
+    <!-- SUBJECTS -->
+    <div class="subjects-grid" id="subjectsGrid">
+      <div class="empty-grid"><div class="empty-ico">⏳</div><div>جاري التحميل…</div></div>
+    </div>
+
+    <!-- TEACHERS SECTION -->
+    <div class="section-block hidden" id="teachersSection">
+      <div class="section-label">
+        <div class="section-label-txt">👨‍🏫 <span data-ar="اختر المدرس" data-en="Choose Teacher">اختر المدرس</span> — <span id="selectedSubName" style="color:var(--accent)"></span></div>
+        <button class="back-link" onclick="goBack('subject')">
+          <i class="fa-solid fa-arrow-right"></i>
+          <span data-ar="رجوع للمواد" data-en="Back to Subjects">رجوع للمواد</span>
+        </button>
+      </div>
+      <div class="teachers-grid" id="teachersGrid"></div>
+    </div>
+
+    <!-- LESSONS SECTION -->
+    <div class="section-block hidden" id="lessonsSection">
+      <div class="section-label">
+        <div class="section-label-txt">🎬 <span data-ar="الدروس المتاحة" data-en="Available Lessons">الدروس المتاحة</span> — <span id="selectedTeachName" style="color:var(--accent)"></span></div>
+        <button class="back-link" onclick="goBack('teacher')">
+          <i class="fa-solid fa-arrow-right"></i>
+          <span data-ar="رجوع للمدرسين" data-en="Back to Teachers">رجوع للمدرسين</span>
+        </button>
+      </div>
+      <div class="lessons-list" id="lessonsGrid"></div>
+
+      <!-- ACTIVATION PANEL -->
+      <div class="activation-panel hidden" id="activationPanel">
+        <div class="act-title"><span>🔐</span> <span data-ar="تفعيل الدرس" data-en="Activate Lesson">تفعيل الدرس</span></div>
+        <div class="act-lesson" id="actLessonName"></div>
+        <div class="act-row">
+          <input type="text" class="act-input" id="activationCode" data-placeholder-ar="أدخل كود التفعيل هنا" data-placeholder-en="Enter activation code here" placeholder="أدخل كود التفعيل هنا">
+          <button class="act-submit" id="activateBtn" data-ar="تفعيل الآن" data-en="Activate Now">تفعيل الآن</button>
+        </div>
+        <div class="act-status" id="statusMsg"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ===================== LECTURES PAGE ===================== -->
+<div class="page" id="page-lectures">
+  <main>
+    <div class="page-hdr">
+      <div>
+        <div class="page-tag"><i class="fa-solid fa-circle" style="font-size:.45rem"></i> <span data-ar="محاضراتي" data-en="My Lectures">محاضراتي</span></div>
+        <div class="page-title" data-ar="مكتبة المحاضرات" data-en="Lectures Library">مكتبة المحاضرات</div>
+        <div class="page-sub" data-ar="جميع المحاضرات المفعّلة الخاصة بك" data-en="All your activated lectures">جميع المحاضرات المفعّلة الخاصة بك</div>
+      </div>
+    </div>
+    <div style="background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--card-shadow);padding:60px;text-align:center;">
+      <div style="font-size:3rem;margin-bottom:14px">🎬</div>
+      <div style="font-size:1rem;font-weight:800;color:var(--text);margin-bottom:8px" data-ar="لا توجد محاضرات مفعّلة بعد" data-en="No lectures activated yet">لا توجد محاضرات مفعّلة بعد</div>
+      <div style="font-size:.83rem;color:var(--muted);font-weight:700" data-ar="قم بتفعيل درس من صفحة المواد للبدء" data-en="Activate a lesson from the subjects page to get started">قم بتفعيل درس من صفحة المواد للبدء</div>
+    </div>
+  </main>
+</div>
+
+<!-- ===================== PACKAGES PAGE ===================== -->
+<div class="page" id="page-packages">
+  <main>
+    <div class="page-hdr">
+      <div>
+        <div class="page-tag"><i class="fa-solid fa-circle" style="font-size:.45rem"></i> <span data-ar="الباقات" data-en="Packages">الباقات</span></div>
+        <div class="page-title" data-ar="باقات الاشتراك" data-en="Subscription Packages">باقات الاشتراك</div>
+        <div class="page-sub" data-ar="اختر الباقة المناسبة لك وابدأ رحلتك" data-en="Choose your package and start your journey">اختر الباقة المناسبة لك وابدأ رحلتك</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px" class="packages-grid-inner">
+      <!-- Package 1 -->
+      <div style="background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--card-shadow);padding:30px 24px;border:2px solid var(--border);text-align:center;transition:var(--transition)" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-5px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:2.5rem;margin-bottom:12px">🥉</div>
+        <div style="font-size:1.05rem;font-weight:900;color:var(--text);margin-bottom:8px" data-ar="الباقة الأساسية" data-en="Basic Package">الباقة الأساسية</div>
+        <div style="font-size:1.6rem;font-weight:900;color:var(--accent);margin-bottom:16px">99 EGP</div>
+        <div style="font-size:.78rem;color:var(--muted);font-weight:700;line-height:1.7" data-ar="✓ 5 دروس شهرياً<br>✓ دعم أساسي<br>✓ تحديثات المحتوى" data-en="✓ 5 lessons/month<br>✓ Basic support<br>✓ Content updates">✓ 5 دروس شهرياً<br>✓ دعم أساسي<br>✓ تحديثات المحتوى</div>
+        <button onclick="navigate('contact')" style="margin-top:20px;width:100%;background:var(--page-tag-bg);border:1.5px solid var(--accent);color:var(--accent);border-radius:10px;padding:11px;font-family:var(--sans);font-size:.83rem;font-weight:800;cursor:pointer">اشترك الآن</button>
+      </div>
+      <!-- Package 2 -->
+      <div style="background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:var(--radius);box-shadow:0 8px 40px rgba(124,58,237,0.4);padding:30px 24px;text-align:center;transform:scale(1.04)">
+        <div style="background:rgba(255,255,255,0.15);border-radius:20px;display:inline-block;padding:4px 12px;font-size:.7rem;font-weight:800;color:#fff;margin-bottom:12px" data-ar="الأكثر شيوعاً" data-en="Most Popular">الأكثر شيوعاً</div>
+        <div style="font-size:2.5rem;margin-bottom:12px">🥇</div>
+        <div style="font-size:1.05rem;font-weight:900;color:#fff;margin-bottom:8px" data-ar="الباقة المميزة" data-en="Premium Package">الباقة المميزة</div>
+        <div style="font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:16px">249 EGP</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.85);font-weight:700;line-height:1.7" data-ar="✓ دروس غير محدودة<br>✓ دعم 24/7<br>✓ محتوى حصري" data-en="✓ Unlimited lessons<br>✓ 24/7 support<br>✓ Exclusive content">✓ دروس غير محدودة<br>✓ دعم 24/7<br>✓ محتوى حصري</div>
+        <button onclick="navigate('contact')" style="margin-top:20px;width:100%;background:#fff;border:none;color:var(--accent);border-radius:10px;padding:11px;font-family:var(--sans);font-size:.83rem;font-weight:800;cursor:pointer">اشترك الآن</button>
+      </div>
+      <!-- Package 3 -->
+      <div style="background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--card-shadow);padding:30px 24px;border:2px solid var(--border);text-align:center;transition:var(--transition)" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-5px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:2.5rem;margin-bottom:12px">💎</div>
+        <div style="font-size:1.05rem;font-weight:900;color:var(--text);margin-bottom:8px" data-ar="الباقة الملكية" data-en="Royal Package">الباقة الملكية</div>
+        <div style="font-size:1.6rem;font-weight:900;color:var(--accent);margin-bottom:16px">499 EGP</div>
+        <div style="font-size:.78rem;color:var(--muted);font-weight:700;line-height:1.7" data-ar="✓ كل شيء في المميزة<br>✓ جلسات خاصة<br>✓ شهادات معتمدة" data-en="✓ Everything in Premium<br>✓ Private sessions<br>✓ Certified certificates">✓ كل شيء في المميزة<br>✓ جلسات خاصة<br>✓ شهادات معتمدة</div>
+        <button onclick="navigate('contact')" style="margin-top:20px;width:100%;background:var(--page-tag-bg);border:1.5px solid var(--accent);color:var(--accent);border-radius:10px;padding:11px;font-family:var(--sans);font-size:.83rem;font-weight:800;cursor:pointer">اشترك الآن</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ===================== CONTACT PAGE ===================== -->
+<div class="page" id="page-contact">
+  <div class="contact-page">
+    <div class="page-hdr">
+      <div>
+        <div class="page-tag"><i class="fa-solid fa-circle" style="font-size:.45rem"></i> <span data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</span></div>
+        <div class="page-title" data-ar="نحن هنا لمساعدتك" data-en="We're Here to Help">نحن هنا لمساعدتك</div>
+        <div class="page-sub" data-ar="تواصل معنا في أي وقت وسنرد عليك في أقرب وقت" data-en="Reach us anytime and we'll reply as soon as possible">تواصل معنا في أي وقت وسنرد عليك في أقرب وقت</div>
+      </div>
+    </div>
+    <div class="contact-grid">
+      <!-- Info cards -->
+      <div class="contact-info">
+        <div class="contact-card">
+          <div class="contact-card-ico"><i class="fa-brands fa-whatsapp"></i></div>
+          <div>
+            <div class="contact-card-ttl" data-ar="واتساب" data-en="WhatsApp">واتساب</div>
+            <div class="contact-card-val"><a class="contact-card-link" href="https://wa.me/201000000000" target="_blank">+20 100 000 0000</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-ico"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <div class="contact-card-ttl" data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</div>
+            <div class="contact-card-val"><a class="contact-card-link" href="mailto:support@kalawy.edu">support@kalawy.edu</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-ico"><i class="fa-solid fa-clock"></i></div>
+          <div>
+            <div class="contact-card-ttl" data-ar="ساعات العمل" data-en="Working Hours">ساعات العمل</div>
+            <div class="contact-card-val" style="font-size:.88rem" data-ar="السبت – الخميس: ٩ص – ١٠م" data-en="Sat – Thu: 9 AM – 10 PM">السبت – الخميس: ٩ص – ١٠م</div>
+          </div>
+        </div>
+        <!-- Social -->
+        <div style="background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--card-shadow);padding:22px">
+          <div style="font-size:.82rem;font-weight:800;color:var(--muted);margin-bottom:14px" data-ar="تابعنا على" data-en="Follow Us On">تابعنا على</div>
+          <div class="social-row">
+            <a class="social-btn" href="#" target="_blank"><i class="fa-brands fa-facebook" style="color:#1877f2"></i> Facebook</a>
+            <a class="social-btn" href="#" target="_blank"><i class="fa-brands fa-instagram" style="color:#e1306c"></i> Instagram</a>
+            <a class="social-btn" href="#" target="_blank"><i class="fa-brands fa-youtube" style="color:#ff0000"></i> YouTube</a>
+            <a class="social-btn" href="#" target="_blank"><i class="fa-brands fa-telegram" style="color:#229ED9"></i> Telegram</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact form -->
+      <div class="contact-form-wrap">
+        <div class="form-title">✉️ <span data-ar="أرسل لنا رسالة" data-en="Send Us a Message">أرسل لنا رسالة</span></div>
+        <div class="form-group">
+          <label class="form-label" data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
+          <input type="text" class="form-input" id="ctName" data-placeholder-ar="أدخل اسمك" data-placeholder-en="Enter your name" placeholder="أدخل اسمك">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-ar="رقم الواتساب" data-en="WhatsApp Number">رقم الواتساب</label>
+          <input type="tel" class="form-input" id="ctPhone" data-placeholder-ar="01xxxxxxxxx" data-placeholder-en="01xxxxxxxxx" placeholder="01xxxxxxxxx" style="direction:ltr;text-align:right">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-ar="موضوع الرسالة" data-en="Subject">موضوع الرسالة</label>
+          <input type="text" class="form-input" id="ctSubject" data-placeholder-ar="بخصوص…" data-placeholder-en="Regarding…" placeholder="بخصوص…">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-ar="الرسالة" data-en="Message">الرسالة</label>
+          <textarea class="form-textarea" id="ctMsg" data-placeholder-ar="اكتب رسالتك هنا…" data-placeholder-en="Write your message here…" placeholder="اكتب رسالتك هنا…"></textarea>
+        </div>
+        <button class="form-submit" onclick="submitContact()">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span data-ar=" إرسال الرسالة" data-en=" Send Message"> إرسال الرسالة</span>
+        </button>
+      </div>
     </div>
   </div>
-</main>
+</div>
 
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav">
   <div class="bn-inner">
-    <button class="bn-btn active" onclick="goBack('subject')"><i class="fa-solid fa-house"></i>الرئيسية</button>
-    <button class="bn-btn" onclick="document.getElementById('subjectsGrid').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-book"></i>المواد</button>
-    <button class="bn-btn" onclick="document.getElementById('teachersSection').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-chalkboard-user"></i>المدرسين</button>
-    <button class="bn-btn" onclick="document.getElementById('lessonsSection').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-play"></i>الدروس</button>
-    <button class="bn-btn" id="logoutBtnMob"><i class="fa-solid fa-arrow-right-from-bracket"></i>خروج</button>
+    <button class="bn-btn active" id="bn-home" onclick="navigate('home')">
+      <i class="fa-solid fa-house"></i>
+      <span data-ar="الرئيسية" data-en="Home">الرئيسية</span>
+    </button>
+    <button class="bn-btn" id="bn-lectures" onclick="navigate('lectures')">
+      <i class="fa-solid fa-play-circle"></i>
+      <span data-ar="محاضرات" data-en="Lectures">محاضرات</span>
+    </button>
+    <button class="bn-btn" id="bn-packages" onclick="navigate('packages')">
+      <i class="fa-solid fa-box-open"></i>
+      <span data-ar="الباقات" data-en="Packages">الباقات</span>
+    </button>
+    <button class="bn-btn" id="bn-contact" onclick="navigate('contact')">
+      <i class="fa-solid fa-headset"></i>
+      <span data-ar="تواصل" data-en="Contact">تواصل</span>
+    </button>
+    <button class="bn-btn" id="bn-logout" onclick="doLogout()">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      <span data-ar="خروج" data-en="Logout">خروج</span>
+    </button>
   </div>
 </nav>
 
@@ -559,15 +845,116 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px 28px 80px; }
 (function(){
 'use strict';
 
+/* ===== CONFIG ===== */
 const SUPABASE_URL = 'https://xjdhbbjeeasdmohbhgze.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+/* ===== STATE ===== */
 let currentLessonId = null;
 let currentLessonTitle = '';
 let allSubjects = [];
+let currentLang = localStorage.getItem('kalawy_lang') || 'ar';
+let currentTheme = localStorage.getItem('kalawy_theme') || 'light';
+let currentPage = 'home';
 
-// Subject icons mapping (emoji based on name keywords)
+/* ===== THEME ===== */
+function applyTheme(theme) {
+  currentTheme = theme;
+  document.body.classList.toggle('dark', theme === 'dark');
+  const ico = document.getElementById('themeIco');
+  ico.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  localStorage.setItem('kalawy_theme', theme);
+}
+window.toggleTheme = function() {
+  applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+};
+applyTheme(currentTheme);
+
+/* ===== LANGUAGE ===== */
+function applyLang(lang) {
+  currentLang = lang;
+  const html = document.documentElement;
+  html.setAttribute('lang', lang);
+  html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.getElementById('langBtn').textContent = lang === 'ar' ? 'EN' : 'ع';
+  localStorage.setItem('kalawy_lang', lang);
+  // Update all data-ar/data-en elements
+  document.querySelectorAll('[data-ar]').forEach(el => {
+    const txt = el.getAttribute(`data-${lang}`);
+    if(txt !== null) el.textContent = txt;
+  });
+  // Placeholders
+  document.querySelectorAll('[data-placeholder-ar]').forEach(el => {
+    el.placeholder = el.getAttribute(`data-placeholder-${lang}`) || el.placeholder;
+  });
+  // Labels with inner HTML (packages)
+  document.querySelectorAll('[data-ar*="<br"]').forEach(el => {
+    const txt = el.getAttribute(`data-${lang}`);
+    if(txt) el.innerHTML = txt;
+  });
+}
+window.toggleLang = function() {
+  applyLang(currentLang === 'ar' ? 'en' : 'ar');
+};
+
+/* ===== NAVIGATION ===== */
+window.navigate = function(page) {
+  currentPage = page;
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  // Nav links
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.page === page);
+  });
+  // Bottom nav
+  document.querySelectorAll('.bn-btn').forEach(b => b.classList.remove('active'));
+  const bb = document.getElementById(`bn-${page}`);
+  if(bb) bb.classList.add('active');
+  // Breadcrumb
+  const bcMap = { home: {ar:'اختر المادة', en:'Choose Subject'}, lectures: {ar:'محاضرات', en:'Lectures'}, packages: {ar:'الباقات', en:'Packages'}, contact: {ar:'تواصل معنا', en:'Contact Us'} };
+  const bcEl = document.getElementById('bcCurrent');
+  if(bcMap[page]) {
+    bcEl.setAttribute('data-ar', bcMap[page].ar);
+    bcEl.setAttribute('data-en', bcMap[page].en);
+    bcEl.textContent = bcMap[page][currentLang];
+  }
+  window.scrollTo({top: 0, behavior: 'smooth'});
+};
+
+/* ===== TOAST ===== */
+function showToast(type, title, msg='', dur=4200){
+  const icons={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};
+  const wrap=document.getElementById('toast-wrap'),t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span class="toast-ico">${icons[type]||'ℹ️'}</span><div class="toast-body"><div class="toast-ttl">${title}</div>${msg?`<div class="toast-msg">${msg}</div>`:''}</div><button class="toast-x" onclick="this.parentElement.remove()">×</button>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{t.classList.add('exit');setTimeout(()=>t.remove(),280)},dur);
+}
+window.showToast = showToast;
+
+/* ===== LOADER ===== */
+function showLoader(t){
+  const s=document.getElementById('loadingScreen');
+  document.getElementById('ldTxt').textContent=t||'جاري التحميل…';
+  s.style.display='flex'; void s.offsetWidth; s.style.opacity='1';
+}
+function hideLoader(){
+  const s=document.getElementById('loadingScreen');
+  s.style.opacity='0'; setTimeout(()=>s.style.display='none',320);
+}
+
+/* ===== UTILS ===== */
+function safeText(v){ return String(v??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
+function priceText(v){ const n=Number(v||0); return n>0?`${n} EGP`:(currentLang==='ar'?'مجاني':'Free'); }
+function firstValue(row, keys, fb=''){ if(!row) return fb; for(const k of keys){ const v=row[k]; if(v!==undefined&&v!==null&&String(v).trim()!=='') return String(v).trim(); } return fb; }
+function subjectLabel(r){ return firstValue(r,['name','title','subject_name','subject','label','slug'],'مادة'); }
+function teacherLabel(r){ return firstValue(r,['name','title','teacher_name','full_name','display_name','label','slug'],'مدرس'); }
+function lessonLabel(r){ return firstValue(r,['title','name','lesson_title','lesson_name','label','slug'],'درس'); }
+function sortByLabel(list, fn){ return [...(list||[])].sort((a,b)=>fn(a).localeCompare(fn(b),undefined,{numeric:true,sensitivity:'base'})); }
+
+/* ===== SUBJECT ICONS ===== */
 const ICONS = {
   math: {emoji:'➕', bg:'#fde68a', color:'#92400e'},
   ريا: {emoji:'➕', bg:'#fde68a', color:'#92400e'},
@@ -596,54 +983,25 @@ const ICONS = {
   حاسب: {emoji:'💻', bg:'#e0f2fe', color:'#075985'},
   computer: {emoji:'💻', bg:'#e0f2fe', color:'#075985'},
 };
-
 function getSubjectIcon(name) {
   const lc = (name||'').toLowerCase();
   for(const [key, val] of Object.entries(ICONS)) {
     if(lc.includes(key.toLowerCase())) return val;
   }
-  // Generate color from name
   let h = 0;
   for(let i=0;i<name.length;i++) h = name.charCodeAt(i) + ((h<<5)-h);
   const hue = Math.abs(h) % 360;
   return { emoji: name.charAt(0), bg: `hsl(${hue},70%,90%)`, color: `hsl(${hue},50%,30%)` };
 }
 
-function showToast(type, title, msg='', dur=4200){
-  const icons={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};
-  const wrap=document.getElementById('toast-wrap'),t=document.createElement('div');
-  t.className=`toast ${type}`;
-  t.innerHTML=`<span class="toast-ico">${icons[type]||'ℹ️'}</span><div class="toast-body"><div class="toast-ttl">${title}</div>${msg?`<div class="toast-msg">${msg}</div>`:''}</div><button class="toast-x" onclick="this.parentElement.remove()">×</button>`;
-  wrap.appendChild(t);
-  setTimeout(()=>{t.classList.add('exit');setTimeout(()=>t.remove(),280)},dur);
-}
-window.showToast = showToast;
-
-function showLoader(t='جاري التحميل…'){
-  const s=document.getElementById('loadingScreen');
-  document.getElementById('ldTxt').textContent=t;
-  s.style.display='flex'; void s.offsetWidth; s.style.opacity='1';
-}
-function hideLoader(){
-  const s=document.getElementById('loadingScreen');
-  s.style.opacity='0'; setTimeout(()=>s.style.display='none',320);
-}
-function safeText(v){ return String(v??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
-function priceText(v){ const n=Number(v||0); return n>0?`${n} EGP`:'مجاني'; }
-function firstValue(row, keys, fb=''){ if(!row) return fb; for(const k of keys){ const v=row[k]; if(v!==undefined&&v!==null&&String(v).trim()!=='') return String(v).trim(); } return fb; }
-function subjectLabel(r){ return firstValue(r,['name','title','subject_name','subject','label','slug'],'مادة'); }
-function teacherLabel(r){ return firstValue(r,['name','title','teacher_name','full_name','display_name','label','slug'],'مدرس'); }
-function lessonLabel(r){ return firstValue(r,['title','name','lesson_title','lesson_name','label','slug'],'درس'); }
-function sortByLabel(list, fn){ return [...(list||[])].sort((a,b)=>fn(a).localeCompare(fn(b),undefined,{numeric:true,sensitivity:'base'})); }
-
-function goBack(to){
+/* ===== GO BACK ===== */
+window.goBack = function(to){
   if(to==='subject'){
     document.getElementById('teachersSection').classList.add('hidden');
     document.getElementById('lessonsSection').classList.add('hidden');
     document.getElementById('activationPanel').classList.add('hidden');
-    document.getElementById('pageTitle').textContent = 'اختر المادة الدراسية';
-    document.getElementById('pageSub').textContent = 'ابدأ باختيار المادة التي تريد دراستها';
-    document.getElementById('bcCurrent').textContent = 'اختر المادة';
+    document.getElementById('pageTitle').textContent = currentLang==='ar'?'اختر المادة الدراسية':'Choose Your Subject';
+    document.getElementById('pageSub').textContent = currentLang==='ar'?'ابدأ باختيار المادة التي تريد دراستها':'Start by selecting the subject you want to study';
     document.querySelectorAll('.subject-card').forEach(c=>c.classList.remove('selected'));
     document.getElementById('subjectsGrid').scrollIntoView({behavior:'smooth',block:'start'});
   } else if(to==='teacher'){
@@ -651,14 +1009,14 @@ function goBack(to){
     document.getElementById('activationPanel').classList.add('hidden');
     document.getElementById('teachersSection').scrollIntoView({behavior:'smooth',block:'start'});
   }
-}
-window.goBack = goBack;
+};
 
+/* ===== LOAD SUBJECTS ===== */
 async function loadSubjects(){
-  showLoader('جاري تحميل المواد…');
+  showLoader(currentLang==='ar'?'جاري تحميل المواد…':'Loading subjects…');
   const {data, error} = await db.from('subjects').select('*');
   if(error){
-    document.getElementById('subjectsGrid').innerHTML=`<div class="empty-grid"><div class="empty-ico">❌</div><div>لم يتم تحميل المواد. تحقق من Supabase.</div></div>`;
+    document.getElementById('subjectsGrid').innerHTML=`<div class="empty-grid"><div class="empty-ico">❌</div><div>${currentLang==='ar'?'لم يتم تحميل المواد':'Failed to load subjects'}</div></div>`;
     showToast('error','خطأ في التحميل',error.message);
     hideLoader(); return;
   }
@@ -671,7 +1029,7 @@ function renderSubjects(list){
   const grid = document.getElementById('subjectsGrid');
   grid.innerHTML = '';
   if(!list.length){
-    grid.innerHTML=`<div class="empty-grid"><div class="empty-ico">🔭</div><div>لا توجد مواد متاحة حالياً</div></div>`;
+    grid.innerHTML=`<div class="empty-grid"><div class="empty-ico">🔭</div><div>${currentLang==='ar'?'لا توجد مواد متاحة':'No subjects available'}</div></div>`;
     return;
   }
   list.forEach((sub, i) => {
@@ -687,14 +1045,11 @@ function renderSubjects(list){
       </div>
       <div class="subject-name">${safeText(name)}</div>
       <div class="subject-meta">
-        <div class="subject-count-badge">
-          <span class="count-num" id="tcount-${sub.id}">—</span>
-          <span> معلمين</span>
-        </div>
+        <span class="count-num" id="tcount-${sub.id}">—</span>
+        <span> ${currentLang==='ar'?'معلمين':'teachers'}</span>
       </div>`;
     card.onclick = () => selectSubject(sub.id, name, card);
     grid.appendChild(card);
-    // load teacher count async
     loadTeacherCount(sub.id);
   });
 }
@@ -705,14 +1060,14 @@ async function loadTeacherCount(subId){
   if(el) el.textContent = (data||[]).length;
 }
 
+/* ===== SELECT SUBJECT ===== */
 async function selectSubject(subId, subName, cardEl){
-  showLoader('جاري تحميل المدرسين…');
+  showLoader(currentLang==='ar'?'جاري تحميل المدرسين…':'Loading teachers…');
   document.querySelectorAll('.subject-card').forEach(c=>c.classList.remove('selected'));
   if(cardEl) cardEl.classList.add('selected');
   document.getElementById('selectedSubName').textContent = subName;
   document.getElementById('pageTitle').textContent = subName;
-  document.getElementById('pageSub').textContent = 'اختر المدرس المناسب لك';
-  document.getElementById('bcCurrent').textContent = subName;
+  document.getElementById('pageSub').textContent = currentLang==='ar'?'اختر المدرس المناسب لك':'Choose the right teacher for you';
 
   const {data, error} = await db.from('teachers').select('*').eq('subject_id', subId);
   if(error){ showToast('error','خطأ',error.message); hideLoader(); return; }
@@ -721,7 +1076,7 @@ async function selectSubject(subId, subName, cardEl){
   const grid = document.getElementById('teachersGrid');
   grid.innerHTML = '';
   if(!teachers.length){
-    grid.innerHTML=`<div class="empty-grid" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div>لا يوجد مدرسون لهذه المادة</div></div>`;
+    grid.innerHTML=`<div class="empty-grid" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div>${currentLang==='ar'?'لا يوجد مدرسون لهذه المادة':'No teachers for this subject'}</div></div>`;
   } else {
     teachers.forEach((t, i) => {
       const tName = teacherLabel(t);
@@ -731,7 +1086,7 @@ async function selectSubject(subId, subName, cardEl){
       card.innerHTML = `
         <div class="teacher-av-fallback">${tName.charAt(0)}</div>
         <div class="teacher-name">${safeText(tName)}</div>
-        <div class="teacher-sub">اضغط لعرض الدروس</div>`;
+        <div class="teacher-sub">${currentLang==='ar'?'اضغط لعرض الدروس':'Click to view lessons'}</div>`;
       card.onclick = () => selectTeacher(t.id, tName);
       grid.appendChild(card);
     });
@@ -744,8 +1099,9 @@ async function selectSubject(subId, subName, cardEl){
   setTimeout(()=>document.getElementById('teachersSection').scrollIntoView({behavior:'smooth',block:'start'}), 100);
 }
 
+/* ===== SELECT TEACHER ===== */
 async function selectTeacher(teacherId, teacherName){
-  showLoader('جاري تحميل الدروس…');
+  showLoader(currentLang==='ar'?'جاري تحميل الدروس…':'Loading lessons…');
   document.getElementById('selectedTeachName').textContent = teacherName;
   document.getElementById('activationPanel').classList.add('hidden');
 
@@ -760,7 +1116,7 @@ async function selectTeacher(teacherId, teacherName){
   const grid = document.getElementById('lessonsGrid');
   grid.innerHTML = '';
   if(!lessons.length){
-    grid.innerHTML=`<div class="empty-grid"><div class="empty-ico">🎬</div><div>لا توجد دروس لهذا المدرس</div></div>`;
+    grid.innerHTML=`<div class="empty-grid"><div class="empty-ico">🎬</div><div>${currentLang==='ar'?'لا توجد دروس لهذا المدرس':'No lessons for this teacher'}</div></div>`;
   } else {
     lessons.forEach((lesson, i) => {
       const title = lessonLabel(lesson);
@@ -775,7 +1131,7 @@ async function selectTeacher(teacherId, teacherName){
           <span class="lesson-price${price===0?' free':''}">${priceText(lesson.price)}</span>
         </div>
         <button class="activate-btn" type="button">
-          <i class="fa-solid fa-cart-plus"></i> تفعيل
+          <i class="fa-solid fa-cart-plus"></i> ${currentLang==='ar'?'تفعيل':'Activate'}
         </button>`;
       row.querySelector('.activate-btn').onclick = () => showActivation(lesson.id, title);
       grid.appendChild(row);
@@ -787,10 +1143,11 @@ async function selectTeacher(teacherId, teacherName){
   setTimeout(()=>document.getElementById('lessonsSection').scrollIntoView({behavior:'smooth',block:'start'}), 100);
 }
 
+/* ===== ACTIVATION ===== */
 function showActivation(id, title){
   currentLessonId = id;
   currentLessonTitle = title;
-  document.getElementById('actLessonName').textContent = `الدرس: ${title}`;
+  document.getElementById('actLessonName').textContent = `${currentLang==='ar'?'الدرس':'Lesson'}: ${title}`;
   document.getElementById('activationCode').value = '';
   document.getElementById('statusMsg').textContent = '';
   document.getElementById('activationPanel').classList.remove('hidden');
@@ -801,16 +1158,16 @@ function showActivation(id, title){
 async function activateLesson(){
   const code = document.getElementById('activationCode').value.trim();
   const status = document.getElementById('statusMsg');
-  if(!currentLessonId){ showToast('warning','اختر درساً','اختر درساً أولاً'); return; }
-  if(!code){ status.textContent='⚠️ أدخل كود التفعيل أولاً'; return; }
-  status.textContent = '⏳ جاري التحقق من الكود…';
+  if(!currentLessonId){ showToast('warning', currentLang==='ar'?'اختر درساً':'Choose a lesson'); return; }
+  if(!code){ status.textContent = currentLang==='ar'?'⚠️ أدخل كود التفعيل أولاً':'⚠️ Enter activation code first'; return; }
+  status.textContent = currentLang==='ar'?'⏳ جاري التحقق من الكود…':'⏳ Verifying code…';
 
   const {data, error} = await db.from('lesson_codes').select('*')
     .eq('code', code).eq('lesson_id', currentLessonId).eq('is_used', false).single();
 
   if(error || !data){
-    status.textContent = '❌ الكود غير صحيح أو مستخدم من قبل';
-    showToast('error','فشل التفعيل','الكود غير صحيح أو مستخدم');
+    status.textContent = currentLang==='ar'?'❌ الكود غير صحيح أو مستخدم من قبل':'❌ Invalid or already used code';
+    showToast('error', currentLang==='ar'?'فشل التفعيل':'Activation Failed', currentLang==='ar'?'الكود غير صحيح أو مستخدم':'Code is invalid or used');
     return;
   }
 
@@ -819,29 +1176,50 @@ async function activateLesson(){
   const {error: ue} = await db.from('lesson_codes').update(payload)
     .eq('code', code).eq('lesson_id', currentLessonId).eq('is_used', false);
 
-  if(ue){ status.textContent='⚠️ الكود صحيح لكن حدث خطأ في الحفظ. تحقق من RLS.'; return; }
+  if(ue){ status.textContent = currentLang==='ar'?'⚠️ الكود صحيح لكن حدث خطأ في الحفظ':'⚠️ Code valid but save error'; return; }
 
-  status.textContent = '✅ تم تفعيل الدرس! جاري التوجيه…';
-  showToast('success','تم التفعيل ✅', `يمكنك الآن فتح: ${currentLessonTitle}`);
+  status.textContent = currentLang==='ar'?'✅ تم تفعيل الدرس! جاري التوجيه…':'✅ Lesson activated! Redirecting…';
+  showToast('success', currentLang==='ar'?'تم التفعيل ✅':'Activated ✅', currentLessonTitle);
   setTimeout(()=>{ window.location.href = `/lesson?id=${encodeURIComponent(currentLessonId)}`; }, 900);
 }
 
-// Search filter
+/* ===== CONTACT FORM ===== */
+window.submitContact = function(){
+  const name = document.getElementById('ctName').value.trim();
+  const phone = document.getElementById('ctPhone').value.trim();
+  const msg = document.getElementById('ctMsg').value.trim();
+  if(!name || !phone || !msg){
+    showToast('warning', currentLang==='ar'?'أكمل البيانات':'Complete all fields', currentLang==='ar'?'يرجى ملء جميع الحقول المطلوبة':'Please fill in all required fields');
+    return;
+  }
+  // Here you'd send to Supabase or a webhook — for now we show success
+  showToast('success', currentLang==='ar'?'تم إرسال رسالتك ✅':'Message Sent ✅', currentLang==='ar'?'سنرد عليك في أقرب وقت ممكن':'We will reply as soon as possible');
+  document.getElementById('ctName').value = '';
+  document.getElementById('ctPhone').value = '';
+  document.getElementById('ctSubject').value = '';
+  document.getElementById('ctMsg').value = '';
+};
+
+/* ===== SEARCH ===== */
 document.getElementById('searchInput').addEventListener('input', function(){
   const q = this.value.trim().toLowerCase();
   if(!q){ renderSubjects(allSubjects); return; }
-  const filtered = allSubjects.filter(s => subjectLabel(s).toLowerCase().includes(q));
-  renderSubjects(filtered);
+  renderSubjects(allSubjects.filter(s => subjectLabel(s).toLowerCase().includes(q)));
 });
 
+/* ===== EVENTS ===== */
 document.getElementById('activateBtn').onclick = activateLesson;
 document.getElementById('activationCode').addEventListener('keydown', e=>{ if(e.key==='Enter') activateLesson(); });
-document.getElementById('logoutBtnMob')?.addEventListener('click', async ()=>{
+
+window.doLogout = async function(){
   await db.auth.signOut();
   window.location.href = '/home';
-});
+};
 
+/* ===== INIT ===== */
+applyLang(currentLang);
 loadSubjects();
+
 })();
 </script>
 </body>
