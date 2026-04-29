@@ -920,7 +920,14 @@ window.navigate = function(page) {
     bcEl.setAttribute('data-en', bcMap[page].en);
     bcEl.textContent = bcMap[page][currentLang];
   }
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  if(page === 'home') {
+    setLibraryView('subjects');
+    document.getElementById('pageTitle').textContent = currentLang==='ar'?'اختر المادة الدراسية':'Choose Your Subject';
+    document.getElementById('pageSub').textContent = currentLang==='ar'?'ابدأ باختيار المادة التي تريد دراستها':'Start by selecting the subject you want to study';
+    document.querySelectorAll('.subject-card').forEach(c=>c.classList.remove('selected'));
+  } else {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
 };
 
 /* ===== TOAST ===== */
@@ -994,20 +1001,43 @@ function getSubjectIcon(name) {
   return { emoji: name.charAt(0), bg: `hsl(${hue},70%,90%)`, color: `hsl(${hue},50%,30%)` };
 }
 
+/* ===== LIBRARY VIEW CONTROL ===== */
+function setLibraryView(view){
+  const subjectsGrid = document.getElementById('subjectsGrid');
+  const teachersSection = document.getElementById('teachersSection');
+  const lessonsSection = document.getElementById('lessonsSection');
+  const activationPanel = document.getElementById('activationPanel');
+
+  subjectsGrid.classList.toggle('hidden', view !== 'subjects');
+  teachersSection.classList.toggle('hidden', view !== 'teachers');
+  lessonsSection.classList.toggle('hidden', view !== 'lessons');
+
+  if(view !== 'lessons') activationPanel.classList.add('hidden');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 /* ===== GO BACK ===== */
 window.goBack = function(to){
-  if(to==='subject'){
-    document.getElementById('teachersSection').classList.add('hidden');
-    document.getElementById('lessonsSection').classList.add('hidden');
-    document.getElementById('activationPanel').classList.add('hidden');
-    document.getElementById('pageTitle').textContent = currentLang==='ar'?'اختر المادة الدراسية':'Choose Your Subject';
-    document.getElementById('pageSub').textContent = currentLang==='ar'?'ابدأ باختيار المادة التي تريد دراستها':'Start by selecting the subject you want to study';
-    document.querySelectorAll('.subject-card').forEach(c=>c.classList.remove('selected'));
-    document.getElementById('subjectsGrid').scrollIntoView({behavior:'smooth',block:'start'});
-  } else if(to==='teacher'){
-    document.getElementById('lessonsSection').classList.add('hidden');
-    document.getElementById('activationPanel').classList.add('hidden');
-    document.getElementById('teachersSection').scrollIntoView({behavior:'smooth',block:'start'});
+  if(to === 'subject'){
+    setLibraryView('subjects');
+
+    document.getElementById('pageTitle').textContent =
+      currentLang === 'ar' ? 'اختر المادة الدراسية' : 'Choose Your Subject';
+
+    document.getElementById('pageSub').textContent =
+      currentLang === 'ar'
+        ? 'ابدأ باختيار المادة التي تريد دراستها'
+        : 'Start by selecting the subject you want to study';
+
+    document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+  }
+
+  if(to === 'teacher'){
+    setLibraryView('teachers');
+
+    document.getElementById('pageSub').textContent =
+      currentLang === 'ar' ? 'اختر المدرس المناسب لك' : 'Choose the right teacher for you';
   }
 };
 
@@ -1092,11 +1122,8 @@ async function selectSubject(subId, subName, cardEl){
     });
   }
 
-  document.getElementById('lessonsSection').classList.add('hidden');
-  document.getElementById('activationPanel').classList.add('hidden');
-  document.getElementById('teachersSection').classList.remove('hidden');
+  setLibraryView('teachers');
   hideLoader();
-  setTimeout(()=>document.getElementById('teachersSection').scrollIntoView({behavior:'smooth',block:'start'}), 100);
 }
 
 /* ===== SELECT TEACHER ===== */
@@ -1138,9 +1165,8 @@ async function selectTeacher(teacherId, teacherName){
     });
   }
 
-  document.getElementById('lessonsSection').classList.remove('hidden');
+  setLibraryView('lessons');
   hideLoader();
-  setTimeout(()=>document.getElementById('lessonsSection').scrollIntoView({behavior:'smooth',block:'start'}), 100);
 }
 
 /* ===== ACTIVATION ===== */
