@@ -334,7 +334,7 @@
           <b>Code</b>
         </div>
         <p class="note">
-          Fixed version: Table name changed to "code".
+          Fixed version: Table name corrected to "codes".
         </p>
       </aside>
     </section>
@@ -342,14 +342,14 @@
 
   <script>
     (function () {
-      // ==========================================
-      // CONFIGURATION - تـعـديـلات السـبـاتـيـز
-      // ==========================================
+      // ==============================
+      // CONFIGURATION
+      // ==============================
       window.KALAWY_SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
       window.KALAWY_SUPABASE_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
       
-      // هنا تم تعديل اسم الجدول من paymentcodes إلى code
-      window.KALAWY_PAYMENT_CODES_TABLE = "code";
+      // تم التعديل إلى codes كما يظهر في صورتك
+      window.KALAWY_PAYMENT_CODES_TABLE = "codes";
 
       if (!window.KALAWY_DB) {
         window.KALAWY_DB = window.supabase.createClient(
@@ -359,27 +359,7 @@
       }
 
       var urlParams = new URLSearchParams(window.location.search);
-
-      var currentLessonId =
-        urlParams.get("lesson_id") ||
-        urlParams.get("lessonid") ||
-        urlParams.get("lessonId") ||
-        urlParams.get("id") ||
-        localStorage.getItem("kalawy_checkout_lessonid") ||
-        "";
-
-      var title =
-        urlParams.get("title") ||
-        localStorage.getItem("kalawy_checkout_title") ||
-        "Selected lesson";
-
-      var price =
-        urlParams.get("price") ||
-        localStorage.getItem("kalawy_checkout_price") ||
-        "150";
-
-      document.getElementById("lessonTitle").textContent = title;
-      document.getElementById("lessonPrice").textContent = price + " EGP";
+      var currentLessonId = urlParams.get("lesson_id") || urlParams.get("lessonid") || urlParams.get("id") || "";
 
       function normalizeCode(value) {
         return String(value || "").trim().toUpperCase().replace(/\s+/g, "");
@@ -388,38 +368,14 @@
       function showMessage(text, type) {
         var msg = document.getElementById("codeMessage");
         var input = document.getElementById("paymentCodeInput");
-
         msg.textContent = text || "";
         msg.className = type || "";
-
         if (type === "error") input.classList.add("is-error");
         else input.classList.remove("is-error");
       }
 
       function getUsedBy() {
-        var jsonKeys = ["kalawy_user", "student", "studentData", "currentUser", "user"];
-
-        for (var i = 0; i < jsonKeys.length; i++) {
-          try {
-            var value = JSON.parse(localStorage.getItem(jsonKeys[i]) || "null");
-            if (value) {
-              var found = value.email || value.phone || value.mobile || value.name || value.id;
-              if (found) return String(found);
-            }
-          } catch(e) {}
-        }
-
-        return (
-          localStorage.getItem("student_email") ||
-          localStorage.getItem("kalawy_email") ||
-          localStorage.getItem("email") ||
-          localStorage.getItem("phone") ||
-          "unknown_user"
-        );
-      }
-
-      function redirectToLesson(lessonId) {
-        return "/lesson.html?id=" + encodeURIComponent(lessonId);
+        return localStorage.getItem("student_email") || "unknown_user";
       }
 
       window.activatePaymentCode = async function () {
@@ -437,66 +393,48 @@
         showMessage("Checking code...", "");
 
         try {
-          // جلب البيانات من جدول "code"
-          var selectResult = await window.KALAWY_DB
+          var { data: codeRow, error: selectError } = await window.KALAWY_DB
             .from(window.KALAWY_PAYMENT_CODES_TABLE)
-            .select("id, code, used, usedby, lessonid")
+            .select("*")
             .eq("code", codeValue)
             .eq("used", false)
             .maybeSingle();
 
-          if (selectResult.error) {
-            console.error("SELECT ERROR:", selectResult.error);
-            // إذا استمر هذا الخطأ، فهذا يعني أنك لم تقم بعمل Policy في Supabase
-            showMessage("Code check failed. Ensure RLS policies are set for table 'code'.", "error");
+          if (selectError) {
+            console.error("SELECT ERROR:", selectError);
+            showMessage("Database error. Check table name and RLS.", "error");
             return;
           }
-
-          var codeRow = selectResult.data;
 
           if (!codeRow) {
             showMessage("Invalid code or already used.", "error");
             return;
           }
 
-          if (!codeRow.lessonid) {
-            showMessage("Code found, but lessonid is empty in Supabase.", "error");
-            return;
-          }
-
           var usedBy = getUsedBy();
 
-          // تحديث الكود ليصبح مستخدماً
-          var updateResult = await window.KALAWY_DB
+          var { error: updateError } = await window.KALAWY_DB
             .from(window.KALAWY_PAYMENT_CODES_TABLE)
-            .update({
-              used: true,
-              usedby: usedBy
-            })
-            .eq("id", codeRow.id)
-            .eq("used", false);
+            .update({ used: true, usedby: usedBy })
+            .eq("id", codeRow.id);
 
-          if (updateResult.error) {
-            console.error("UPDATE ERROR:", updateResult.error);
-            showMessage("Activation failed. Check RLS update policy.", "error");
+          if (updateError) {
+            console.error("UPDATE ERROR:", updateError);
+            showMessage("Could not update code status.", "error");
             return;
           }
 
-          // حفظ حالة الدفع محلياً
           localStorage.setItem("paid_lesson_" + codeRow.lessonid, "true");
-          localStorage.setItem("kalawy_paid_lesson", codeRow.lessonid);
-          localStorage.setItem("kalawy_last_paid_code", codeRow.code);
-
-          showMessage("Payment activated successfully.", "success");
+          showMessage("Activated! Redirecting...", "success");
           document.getElementById("successBox").style.display = "block";
 
           setTimeout(function () {
-            window.location.href = redirectToLesson(codeRow.lessonid);
-          }, 850);
+            window.location.href = "/lesson.html?id=" + codeRow.lessonid;
+          }, 1000);
 
         } catch (err) {
-          console.error("UNEXPECTED ERROR:", err);
-          showMessage("Unexpected error. Check console.", "error");
+          console.error("CRITICAL ERROR:", err);
+          showMessage("Unexpected error.", "error");
         } finally {
           btn.disabled = false;
           btn.textContent = "Activate";
@@ -504,15 +442,6 @@
       };
 
       document.getElementById("activateBtn").onclick = window.activatePaymentCode;
-
-      document.getElementById("paymentCodeInput").onkeydown = function(e) {
-        if (e.key === "Enter") window.activatePaymentCode();
-      };
-
-      document.getElementById("paymentCodeInput").oninput = function(e) {
-        e.target.value = normalizeCode(e.target.value);
-        showMessage("", "");
-      };
     })();
   </script>
 </body>
