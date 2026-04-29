@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kalawy — Login / Register</title>
+<title>Kalawy — Admin/Student Login</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -76,12 +76,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       <div class="auth-heading"><span class="i18n-ar">انضم لكلاوي 🚀</span><span class="i18n-en">Join Kalawy 🚀</span></div>
       <p class="auth-sub"><span class="i18n-ar">سجل بإيميلك ورقم موبايلك، وبعدها تقدر تدخل بالإيميل أو التليفون</span><span class="i18n-en">Register with email and phone, then sign in using either email or phone</span></p>
 
-      <div class="field">
-        <label class="field-label"><span class="i18n-ar">أنا...</span><span class="i18n-en">I am a...</span></label>
-        <div class="role-grid">
-          <div class="role-card selected" onclick="selectRole('student',this)" id="roleStudent"><div class="role-icon">🎒</div><div class="role-label"><span class="i18n-ar">طالب</span><span class="i18n-en">Student</span></div></div>
-          <div class="role-card" onclick="selectRole('teacher',this)" id="roleTeacher"><div class="role-icon">👨‍🏫</div><div class="role-label"><span class="i18n-ar">مدرس</span><span class="i18n-en">Teacher</span></div></div>
-        </div>
+      <div class="msg-box msg-success show" style="margin-bottom:18px">
+        <span>🎒</span>
+        <span>
+          <span class="i18n-ar">التسجيل متاح للطلاب فقط. حسابات المدرسين والأدمن تتعمل من لوحة الإدارة أو من Supabase.</span>
+          <span class="i18n-en">Registration is for students only. Teacher/admin accounts are created from the admin panel or Supabase.</span>
+        </span>
       </div>
 
       <div class="field"><label class="field-label"><span class="i18n-ar">الاسم الكامل</span><span class="i18n-en">Full name</span></label><input type="text" class="field-input" id="regName" placeholder="محمد أحمد" autocomplete="name" /></div>
@@ -101,7 +101,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
         <div class="field"><label class="field-label"><span class="i18n-ar">المنطقة</span><span class="i18n-en">Area</span></label><input type="text" class="field-input" id="regArea" placeholder="مدينة نصر" /></div>
       </div>
 
-      <div class="field teacher-only"><label class="field-label"><span class="i18n-ar">المادة</span><span class="i18n-en">Subject</span></label><select class="field-select" id="regSubject"><option value="">جاري تحميل المواد...</option></select></div>
 
       <div class="field"><label class="field-label"><span class="i18n-ar">البريد الإلكتروني <span class="optional">مطلوب للتسجيل</span></span><span class="i18n-en">Email <span class="optional">required</span></span></label><input type="email" class="field-input" id="regEmail" placeholder="you@example.com" autocomplete="email" /></div>
 
@@ -115,6 +114,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <script>
 const SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
+
+// غيّر الروابط حسب أسماء الصفحات عندك
+const ADMIN_DASHBOARD_URL = "/admin";
+const STUDENT_DASHBOARD_URL = "/dashboard";
+
+// اختياري: لو عايز تخلي نفسك أدمن بسرعة من غير SQL، حط إيميلك أو رقمك هنا.
+// الأفضل تستخدم ملف SQL وتخلي role='admin' في جدول users.
+const ADMIN_EMAILS = [
+  // "your-admin-email@example.com"
+];
+const ADMIN_PHONES = [
+  // "01012345678"
+];
+
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let selectedRole = 'student';
@@ -125,8 +138,6 @@ let selectedRole = 'student';
   document.documentElement.setAttribute('data-theme', t);
   document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
   setLang(l);
-  selectRole('student', document.getElementById('roleStudent'));
-  loadSubjects();
   const p = new URLSearchParams(location.search);
   if (p.get('mode') === 'register') switchTab('register');
   checkExistingSession();
@@ -223,6 +234,7 @@ async function getEmailByPhone(phone){
 
 async function loadSubjects(){
   const select = document.getElementById('regSubject');
+  if (!select) return;
   const { data, error } = await db.from('subjects').select('id,slug,name_ar,name_en').order('created_at', { ascending: true });
   if (error || !data || !data.length) {
     select.innerHTML = '<option value="">تعذر تحميل المواد</option>';
@@ -299,7 +311,6 @@ async function doRegister(){
   const area = document.getElementById('regArea').value.trim() || null;
   const email = normalizeEmail(document.getElementById('regEmail').value);
   const password = document.getElementById('regPassword').value;
-  const subjectId = document.getElementById('regSubject').value || null;
 
   if (!name || !email || !isEmail(email) || !isEgyptPhone(phone) || !password) {
     showErr(t('الاسم والإيميل الصحيح ورقم الموبايل الصحيح وكلمة المرور مطلوبين', 'Name, valid email, valid phone, and password are required'));
@@ -313,18 +324,13 @@ async function doRegister(){
     showErr(t('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'Password must be at least 6 characters'));
     return;
   }
-  if (selectedRole === 'teacher' && !subjectId) {
-    showErr(t('للمدرس: المادة مطلوبة', 'For teachers: subject is required'));
-    return;
-  }
-
   setLoading('btnRegister','spinRegister',true); clearMsg();
 
   const { data, error } = await db.auth.signUp({
     email,
     password,
     options: {
-      data: { name, role: selectedRole, phone, phone_e164: toE164(phone), grade, parent_phone: parentPhone || null, birth_date: birthDate, governorate, area, subject_id: subjectId }
+      data: { name, role: 'student', phone, phone_e164: toE164(phone), grade, parent_phone: parentPhone || null, birth_date: birthDate, governorate, area }
     }
   });
 
@@ -346,7 +352,7 @@ async function doRegister(){
     email,
     name,
     studentid: phone,
-    grade: selectedRole === 'student' ? grade : null,
+    grade,
     parentphone: parentPhone || null,
     phone,
     birth_date: birthDate,
@@ -363,15 +369,6 @@ async function doRegister(){
     return;
   }
 
-  if (selectedRole === 'teacher') {
-    const teacherRow = { id: user.id, email, name, subject_id: subjectId, is_active: true };
-    const { error: teacherInsertError } = await db.from('teachers').upsert(teacherRow, { onConflict: 'id' });
-    if (teacherInsertError) {
-      setLoading('btnRegister','spinRegister',false);
-      showErr(t('تم حفظ المستخدم لكن لم يتم حفظ المدرس. راجع RLS أو جدول teachers: ', 'User saved but teacher row failed. Check RLS or teachers table: ') + teacherInsertError.message);
-      return;
-    }
-  }
 
   setLoading('btnRegister','spinRegister',false);
   showOk(t('تم إنشاء الحساب بنجاح ✅ سيتم تحويلك الآن', 'Account created successfully ✅ Redirecting now'));
@@ -382,34 +379,28 @@ async function redirectByRole(user){
   const authUser = user || (await db.auth.getUser()).data.user;
   if (!authUser) { showErr(t('لا توجد جلسة دخول', 'No active session')); return; }
 
-  let role = authUser.user_metadata?.role || 'student';
+  const email = (authUser.email || '').toLowerCase();
 
   const { data: profile, error: profileError } = await db
     .from('users')
-    .select('is_blocked,name')
+    .select('is_blocked,name,role,phone,email')
     .eq('id', authUser.id)
     .maybeSingle();
 
-  if (!profileError && profile?.is_blocked) {
+  const profilePhone = cleanPhone(profile?.phone || authUser.user_metadata?.phone || '');
+  const isAdmin =
+    authUser.user_metadata?.role === 'admin' ||
+    profile?.role === 'admin' ||
+    ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email) ||
+    ADMIN_PHONES.map(cleanPhone).includes(profilePhone);
+
+  if (!profileError && profile?.is_blocked && !isAdmin) {
     await db.auth.signOut();
-    showErr(t('حسابك محظور من المدرس. تواصل مع الإدارة.', 'Your account is blocked. Please contact support.'));
+    showErr(t('حسابك محظور من الإدارة. تواصل مع الدعم.', 'Your account is blocked. Please contact support.'));
     return;
   }
 
-  const { data: teacher } = await db
-    .from('teachers')
-    .select('id,is_active')
-    .eq('id', authUser.id)
-    .maybeSingle();
-
-  if (teacher?.id) role = 'teacher';
-  if (teacher?.id && teacher.is_active === false) {
-    await db.auth.signOut();
-    showErr(t('حساب المدرس غير مفعل حالياً.', 'Teacher account is not active.'));
-    return;
-  }
-
-  location.href = role === 'teacher' ? '/teacher-dashboard' : '/dashboard';
+  location.href = isAdmin ? ADMIN_DASHBOARD_URL : STUDENT_DASHBOARD_URL;
 }
 </script>
 </body>
