@@ -191,9 +191,11 @@ main{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:36px 24p
 </nav>
 
 <script>
+(function(){
+'use strict';
 const SUPABASE_URL = 'https://xjdhbbjeeasdmohbhgze.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentLessonId = null;
 let currentLessonTitle = '';
@@ -233,7 +235,7 @@ function updateStats(){
 
 async function loadSubjects(){
   showLoader('Loading your courses…');
-  const { data, error } = await supabase.from('subjects').select('*').order('name', { ascending: true });
+  const { data, error } = await db.from('subjects').select('*').order('name', { ascending: true });
   if(error){
     renderEmpty('subjectsGrid','❌','Could not load subjects. Check your Supabase table/RLS.');
     showToast('error','Subjects Error',error.message);
@@ -261,7 +263,7 @@ async function selectSubject(subId, subName=''){
   document.getElementById('step2').classList.remove('hidden');
   document.getElementById('step3').classList.add('hidden');
   updateSidebar(2);
-  const { data, error } = await supabase.from('teachers').select('*').eq('subject_id', subId).order('name', { ascending: true });
+  const { data, error } = await db.from('teachers').select('*').eq('subject_id', subId).order('name', { ascending: true });
   if(error){
     renderEmpty('teachersGrid','❌','Could not load teachers.');
     showToast('error','Teachers Error',error.message);
@@ -288,7 +290,7 @@ async function selectTeacher(teacherId, teacherName=''){
   hideActivation();
   document.getElementById('step3').classList.remove('hidden');
   updateSidebar(3);
-  const { data, error } = await supabase.from('lessons').select('*').eq('teacher_id', teacherId).order('created_at', { ascending: false });
+  const { data, error } = await db.from('lessons').select('*').eq('teacher_id', teacherId).order('created_at', { ascending: false });
   if(error){
     renderEmpty('lessonsGrid','❌','Could not load lessons.');
     showToast('error','Lessons Error',error.message);
@@ -347,7 +349,7 @@ async function activateLesson(){
   status.textContent='Checking your code…';
   status.style.color='var(--muted2)';
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from('lesson_codes')
     .select('*')
     .eq('code', code)
@@ -364,7 +366,7 @@ async function activateLesson(){
 
   const updatePayload = { is_used: true };
   if('used_at' in data) updatePayload.used_at = new Date().toISOString();
-  const { error: updateError } = await supabase
+  const { error: updateError } = await db
     .from('lesson_codes')
     .update(updatePayload)
     .eq('code', code)
@@ -388,8 +390,8 @@ document.getElementById('activationCode').addEventListener('keydown',e=>{if(e.ke
 
 async function preloadCounts(){
   const [teachers, lessons] = await Promise.all([
-    supabase.from('teachers').select('id', { count:'exact', head:false }),
-    supabase.from('lessons').select('id', { count:'exact', head:false })
+    db.from('teachers').select('id', { count:'exact', head:false }),
+    db.from('lessons').select('id', { count:'exact', head:false })
   ]);
   allTeachers = teachers.data || [];
   allLessons = lessons.data || [];
@@ -403,7 +405,13 @@ async function reloadAll(){
   await Promise.all([preloadCounts(), loadSubjects()]);
 }
 
+window.showToast = showToast;
+window.reloadAll = reloadAll;
+window.hideActivation = hideActivation;
+window.showActivation = showActivation;
+
 reloadAll();
+})();
 </script>
 </body>
 </html>
