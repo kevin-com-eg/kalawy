@@ -11,41 +11,65 @@
 <style>
 :root{
   --bg:#F5F0E8;--bg2:#EDE7DB;--surface:#FAF7F2;--surface2:#EDE7DB;
-  --border:rgba(44,36,24,.1);--text:#2C2418;--muted:#9B8E7A;
+  --border:rgba(44,36,24,.1);--border2:rgba(44,36,24,.22);
+  --text:#2C2418;--muted:#9B8E7A;--muted2:#6B5E4E;
   --accent:#7c3aed;--accent2:#5b21b6;--accent3:#4A9060;
-  --radius:12px;--shadow:0 8px 32px rgba(44,36,24,.1);--nav-h:64px;
+  --accent-glow:rgba(124,58,237,.12);--accent-light:rgba(124,58,237,.08);
+  --red:#A33B2E;--red-bg:rgba(163,59,46,.08);--red-border:rgba(163,59,46,.2);
+  --radius:12px;--radius-sm:8px;--radius-lg:20px;
+  --shadow:0 2px 16px rgba(44,36,24,.07);--shadow2:0 8px 32px rgba(44,36,24,.1);
+  --nav-h:64px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;user-select:none;-webkit-user-select:none}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none}
 .hidden{display:none!important}
 
-/* ── LOADING ── */
+/* ── LOADING SCREEN ── */
 #loadingScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .35s}
 .ld-mark{width:58px;height:58px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:#fff;}
-.ld-bar{width:120px;height:2px;background:var(--bg2);position:relative;overflow:hidden}
-.ld-fill{position:absolute;height:100%;width:50%;background:var(--accent2);animation:load 1.2s infinite}
-@keyframes load{0%{left:-50%}100%{left:100%}}
+.ld-bar{width:120px;height:2px;background:var(--bg2);border-radius:2px;overflow:hidden;position:relative}
+.ld-fill{position:absolute;height:100%;width:50%;background:var(--accent2);animation:loadAnim 1.2s infinite}
+@keyframes loadAnim{0%{left:-50%}100%{left:100%}}
 
 /* ── LOCK SCREEN ── */
 #codeLockScreen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
-.lock-card{width:100%;max-width:420px;background:var(--surface);border-radius:20px;padding:48px 36px;text-align:center;box-shadow:var(--shadow)}
-.lock-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:700;cursor:pointer;margin-top:20px;transition:0.2s}
-.lock-btn:hover{background:var(--accent2);transform:translateY(-2px)}
+.lock-card{width:100%;max-width:420px;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:48px 36px;text-align:center;box-shadow:var(--shadow2);position:relative}
+.lock-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:var(--accent);border-radius:0 0 4px 4px}
+.lock-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:13px;border-radius:var(--radius);font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 6px 18px var(--accent-glow);margin-top:20px}
 
 /* ── NAV ── */
-nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:bold}
-.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:grid;place-items:center;color:#fff}
-.tabs{display:flex;gap:5px;background:var(--bg2);padding:4px;border-radius:10px}
-.tab-btn{padding:8px 16px;border-radius:8px;border:none;background:none;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted)}
+nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(250,247,242,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 1px 12px rgba(44,36,24,.06)}
+.nav-inner{max-width:1380px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer}
+.logo-mark{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.tabs{display:flex;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:4px}
+.tab-btn{padding:7px 16px;border-radius:var(--radius-sm);border:none;background:none;font-weight:700;font-size:.8rem;cursor:pointer;color:var(--muted2);transition:all .2s}
 .tab-btn.active{background:var(--accent);color:#fff}
-.tab-btn.locked{opacity:0.4;cursor:not-allowed}
+.tab-btn.locked{opacity:.4;cursor:not-allowed}
 
-/* ── CONTENT ── */
-main{max-width:1100px;margin:20px auto;padding:0 20px}
-.video-stage{width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-.video-info{margin-top:20px}
-.video-title{font-size:24px;font-weight:700;margin-bottom:10px}
+/* ── LAYOUT ── */
+main{max-width:1380px;margin:0 auto;padding:26px 20px 80px}
+.watch-layout{display:grid;grid-template-columns:360px 1fr;gap:28px}
+
+/* ── VIDEO PLAYER ── */
+.stage-player{position:relative;width:100%;aspect-ratio:16/9;background:#1a1209;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow2)}
+.sidebar-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;height:fit-content}
+.sidebar-head{padding:18px;font-weight:800;background:var(--surface2);border-bottom:1px solid var(--border)}
+.side-item{padding:12px;cursor:pointer;transition:0.2s;border-bottom:1px solid var(--border);display:flex;gap:10px}
+.side-item:hover, .side-item.active{background:var(--accent-light)}
+.side-dot{width:24px;height:24px;background:var(--bg2);border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:bold;flex-shrink:0}
+.active .side-dot{background:var(--accent);color:#fff}
+
+/* ── QUIZ ── */
+.quiz-card{background:var(--surface);padding:30px;border-radius:20px;border:1px solid var(--border2);box-shadow:var(--shadow)}
+.opt{display:flex;align-items:center;gap:12px;background:var(--surface2);padding:14px;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:0.2s;border:1.5px solid transparent}
+.opt:hover{border-color:var(--accent)}
+.opt input{accent-color:var(--accent)}
+
+@media(max-width:900px){
+  .watch-layout{grid-template-columns:1fr}
+  .sidebar-card{order:2}
+}
 </style>
 </head>
 <body>
@@ -53,74 +77,97 @@ main{max-width:1100px;margin:20px auto;padding:0 20px}
 <div id="loadingScreen">
   <div class="ld-mark">K</div>
   <div class="ld-bar"><div class="ld-fill"></div></div>
-  <div style="font-size:12px;margin-top:10px">Verifying access...</div>
+  <div id="ldTxt" style="font-size:12px;color:var(--muted)">Verifying Kalawy Access...</div>
 </div>
 
 <div id="codeLockScreen" class="hidden">
   <div class="lock-card">
-    <div style="font-size:3rem;margin-bottom:15px">🔐</div>
-    <h2 style="margin-bottom:10px">Course Locked</h2>
-    <p style="color:var(--muted);font-size:14px;line-height:1.6">يرجى تفعيل الكود الخاص بك من صفحة الدفع أولاً لتتمكن من مشاهدة محتوى هذه الحصة.</p>
+    <div style="font-size:3rem">🔐</div>
+    <h2 style="font-family:'Cormorant Garamond'">Course Locked</h2>
+    <p style="color:var(--muted2);font-size:14px;margin:10px 0 20px">برجاء تفعيل الحصة باستخدام الكود الخاص بك من صفحة الدفع أولاً.</p>
     <button class="lock-btn" onclick="goToCheckout()">Go to Checkout →</button>
   </div>
 </div>
 
 <div id="lessonContent" class="hidden">
   <nav>
-    <a class="logo" href="/home">
-      <div class="logo-mark">K</div>
-      <span id="navLessonTitle">KALAWY</span>
-    </a>
-    <div class="tabs">
-      <button id="btn-quiz-tab" class="tab-btn active" onclick="switchTab('quiz')">Exam</button>
-      <button id="btn-videos-tab" class="tab-btn locked" onclick="switchTab('videos')">Videos</button>
-      <button id="btn-pdf-tab" class="tab-btn locked" onclick="switchTab('pdf')">PDF</button>
+    <div class="nav-inner">
+      <a class="logo" href="/home">
+        <div class="logo-mark">K</div>
+        <div id="navLessonTitle" style="font-weight:700">KALAWY</div>
+      </a>
+      <div class="tabs">
+        <button id="btn-quiz-tab" class="tab-btn active" onclick="switchTab('quiz')">Exam</button>
+        <button id="btn-videos-tab" class="tab-btn locked" onclick="switchTab('videos')">Videos</button>
+        <button id="btn-pdf-tab" class="tab-btn locked" onclick="switchTab('pdf')">PDF</button>
+      </div>
+      <div id="timerBox" class="hidden" style="font-family:monospace;font-weight:bold;color:var(--red)">40:00</div>
     </div>
   </nav>
 
   <main>
+    <!-- TAB QUIZ -->
     <div id="tab-quiz">
-        <div id="startScreen" class="lock-card" style="margin: 0 auto; max-width: 600px;">
-            <div style="font-size:3rem">🚀</div>
-            <h2>Ready for the Exam?</h2>
-            <p style="margin:15px 0">أكمل الامتحان أولاً لفتح الفيديوهات والمذكرات تلقائياً.</p>
-            <button class="lock-btn" id="startBtn">Start Exam Now</button>
+      <div id="startScreen" class="quiz-card" style="text-align:center">
+        <div style="font-size:3.5rem">🚀</div>
+        <h2 style="margin:15px 0">Ready for the Exam?</h2>
+        <p style="color:var(--muted2);margin-bottom:25px">يجب اجتياز الامتحان أولاً لفتح الفيديوهات والمذكرات تلقائياً.</p>
+        <button id="startBtn" class="lock-btn" style="max-width:200px">Start Now</button>
+      </div>
+      
+      <div id="quizApp" class="hidden quiz-card">
+        <div id="qDisplay"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:20px">
+          <button id="prevBtn" class="tab-btn" style="background:var(--bg2)">Previous</button>
+          <button id="nextBtn" class="tab-btn" style="background:var(--accent);color:#fff">Next →</button>
+          <button id="finishBtn" class="tab-btn hidden" style="background:var(--accent3);color:#fff">Finish ✓</button>
         </div>
-        <div id="quizApp" class="hidden">
-            <!-- سيتم إنشاء الأسئلة هنا برمجياً -->
-            <div id="qDisplay"></div>
-        </div>
-    </div>
-
-    <div id="tab-videos" class="hidden">
-      <div class="video-stage" id="videoContainer"></div>
-      <div class="video-info">
-        <h1 class="video-title" id="currentVideoTitle">Loading Video...</h1>
-        <p id="videoDesc" style="color:var(--muted)">شاهد الفيديو بتركيز وقم بتدوين الملاحظات.</p>
+      </div>
+      
+      <div id="reviewArea" class="hidden quiz-card">
+        <h2 id="scoreTitle">Score: 0/0</h2>
+        <p>تم فتح محتوى الحصة الآن بنجاح!</p>
       </div>
     </div>
 
+    <!-- TAB VIDEOS -->
+    <div id="tab-videos" class="hidden">
+      <div class="watch-layout">
+        <aside class="sidebar-card">
+          <div class="sidebar-head">📋 Video Lectures</div>
+          <div id="sidebarList"></div>
+        </aside>
+        <section>
+          <div class="stage-player" id="mainPlayer"></div>
+          <h1 id="vidTitle" style="margin-top:20px">Video Title</h1>
+        </section>
+      </div>
+    </div>
+
+    <!-- TAB PDF -->
     <div id="tab-pdf" class="hidden">
-        <div class="lock-card" style="margin: 0 auto;">
-            <div style="font-size:3rem">📚</div>
-            <h2>Course Notes</h2>
-            <p>يمكنك تحميل مذكرة الحصة من الرابط التالي:</p>
-            <a id="pdfLink" href="#" target="_blank" class="lock-btn" style="display:block; text-decoration:none">Download PDF</a>
-        </div>
+      <div class="quiz-card" style="text-align:center">
+        <div style="font-size:3rem">📚</div>
+        <h2>Download Materials</h2>
+        <a id="pdfLink" href="#" target="_blank" class="lock-btn" style="display:inline-block;text-decoration:none;margin-top:20px">Download PDF Notes</a>
+      </div>
     </div>
   </main>
 </div>
 
 <script>
 // ==============================
-// CONFIGURATION
+// SUPABASE CONFIG
 // ==============================
 const SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_ANON = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-let currentUser = null, lessonData = null, videosData = [];
+let currentUser = null, lessonData = null, questions = [], curIdx = 0, userAns = {}, videosData = [], currentVideoIdx = 0;
 
+// ==============================
+// INITIALIZATION
+// ==============================
 async function init() {
   const lessonId = new URLSearchParams(location.search).get('id');
   if (!lessonId) return;
@@ -129,18 +176,12 @@ async function init() {
   if (!session) { location.href = "/login.html"; return; }
   currentUser = session.user;
 
-  // 1. فحص الوصول (Database + LocalStorage)
   try {
-    const { data: codes } = await db.from('codes')
-        .select('*')
-        .eq('lessonid', lessonId);
+    // التحقق من التفعيل من جدول codes
+    const { data: codes } = await db.from('codes').select('*').eq('lessonid', lessonId);
+    let hasAccess = codes && codes.some(c => c.used && (c.usedby === currentUser.email || c.usedby === 'unknown_user'));
     
-    // نعتبر الحصة مفتوحة إذا كان هناك كود مفعل لهذا الحساب، أو إذا وجدت علامة التفعيل في المتصفح
-    let hasAccess = false;
-    if (codes) {
-        hasAccess = codes.some(c => c.used === true && (c.usedby === currentUser.email || c.usedby === 'unknown_user'));
-    }
-    
+    // فحص احتياطي في التخزين المحلي
     if (localStorage.getItem("paid_lesson_" + lessonId) === "true") hasAccess = true;
 
     if (hasAccess) {
@@ -150,8 +191,8 @@ async function init() {
       hideLoader();
       document.getElementById('codeLockScreen').classList.remove('hidden');
     }
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    console.error(err);
     hideLoader();
   }
 }
@@ -161,69 +202,126 @@ async function loadLesson(id) {
   if (!snap) return;
 
   lessonData = snap;
-  document.getElementById('navLessonTitle').textContent = snap.name || "KALAWY";
-  document.getElementById('lessonContent').classList.remove('hidden');
-
-  // تحميل الفيديوهات
-  if (snap.videos) videosData = snap.videos;
+  questions = snap.questions || [];
+  videosData = snap.videos || [];
+  document.getElementById('navLessonTitle').textContent = snap.name;
   if (snap.pdf) document.getElementById('pdfLink').href = snap.pdf;
 
-  // إذا لم يكن هناك امتحان، افتح الفيديوهات فوراً
-  if (!snap.questions || snap.questions.length === 0) {
-    unlockContent();
-    switchTab('videos');
+  // فحص إذا كان الطالب قد أدى الامتحان مسبقاً
+  const { data: results } = await db.from('results').select('*').eq('email', currentUser.email).eq('lesson', snap.name);
+  if (results && results.length > 0 || questions.length === 0) {
+    unlockAll();
+  }
+
+  document.getElementById('lessonContent').classList.remove('hidden');
+}
+
+// ==============================
+// TABS & UI
+// ==============================
+function switchTab(tab) {
+  const btn = document.getElementById('btn-' + tab + '-tab');
+  if (btn.classList.contains('locked')) {
+    alert("يرجى إكمال الامتحان أولاً!");
+    return;
+  }
+  document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  btn.classList.add('active');
+
+  if (tab === 'videos') renderVideoList();
+}
+
+function unlockAll() {
+  document.getElementById('btn-videos-tab').classList.remove('locked');
+  document.getElementById('btn-pdf-tab').classList.remove('locked');
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('reviewArea').classList.remove('hidden');
+}
+
+// ==============================
+// QUIZ LOGIC
+// ==============================
+document.getElementById('startBtn').onclick = () => {
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('quizApp').classList.remove('hidden');
+  renderQuestion();
+};
+
+function renderQuestion() {
+  const q = questions[curIdx];
+  const qArea = document.getElementById('qDisplay');
+  qArea.innerHTML = `<h3>Question ${curIdx + 1}</h3><p style="font-weight:bold;margin:15px 0">${q.text}</p>`;
+  ['a', 'b', 'c', 'd'].forEach(opt => {
+    if (q[opt]) {
+      qArea.innerHTML += `<label class="opt"><input type="radio" name="quiz" value="${opt}" ${userAns[curIdx] === opt ? 'checked' : ''}> ${opt.toUpperCase()}: ${q[opt]}</label>`;
+    }
+  });
+  document.getElementById('prevBtn').classList.toggle('hidden', curIdx === 0);
+  document.getElementById('nextBtn').classList.toggle('hidden', curIdx === questions.length - 1);
+  document.getElementById('finishBtn').classList.toggle('hidden', curIdx !== questions.length - 1);
+}
+
+document.getElementById('nextBtn').onclick = () => { saveAns(); curIdx++; renderQuestion(); };
+document.getElementById('prevBtn').onclick = () => { saveAns(); curIdx--; renderQuestion(); };
+
+function saveAns() {
+  const sel = document.querySelector('input[name="quiz"]:checked');
+  if (sel) userAns[curIdx] = sel.value;
+}
+
+document.getElementById('finishBtn').onclick = async () => {
+  saveAns();
+  let score = 0;
+  questions.forEach((q, i) => { if (userAns[i] === q.correct) score++; });
+  
+  await db.from('results').insert([{ email: currentUser.email, lesson: lessonData.name, score, total: questions.length, userans: userAns }]);
+  
+  document.getElementById('scoreTitle').textContent = `Score: ${score}/${questions.length}`;
+  document.getElementById('quizApp').classList.add('hidden');
+  unlockAll();
+};
+
+// ==============================
+// VIDEO LOGIC
+// ==============================
+function renderVideoList() {
+  const list = document.getElementById('sidebarList');
+  list.innerHTML = "";
+  videosData.forEach((v, i) => {
+    list.innerHTML += `<div class="side-item ${i === currentVideoIdx ? 'active' : ''}" onclick="playVideo(${i})">
+      <div class="side-dot">${i + 1}</div>
+      <div style="font-size:13px;font-weight:600">${v.name}</div>
+    </div>`;
+  });
+  playVideo(currentVideoIdx);
+}
+
+function playVideo(idx) {
+  currentVideoIdx = idx;
+  const v = videosData[idx];
+  document.getElementById('vidTitle').textContent = v.name;
+  const ytId = v.url.match(/(?:youtu\.be\/|v=|embed\/)([^#&?]{11})/)?.[1];
+  
+  if (ytId) {
+    document.getElementById('mainPlayer').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>`;
+  } else {
+    document.getElementById('mainPlayer').innerHTML = `<video controls style="width:100%;height:100%"><source src="${v.url}" type="video/mp4"></video>`;
   }
 }
 
-function unlockContent() {
-    document.getElementById('btn-videos-tab').classList.remove('locked');
-    document.getElementById('btn-pdf-tab').classList.remove('locked');
-}
-
-window.switchTab = (tab) => {
-    document.querySelectorAll('[id^="tab-"]').forEach(p => p.classList.add('hidden'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    
-    const targetTab = document.getElementById('tab-' + tab);
-    const targetBtn = document.getElementById('btn-' + tab + '-tab');
-    
-    if (targetBtn.classList.contains('locked')) {
-        alert("يرجى إكمال الامتحان أولاً!");
-        return;
-    }
-
-    targetTab.classList.remove('hidden');
-    targetBtn.classList.add('active');
-
-    if (tab === 'videos') renderVideos();
-}
-
-function renderVideos() {
-    if (videosData.length > 0) {
-        const v = videosData[0];
-        const ytId = v.url.match(/(?:youtu\.be\/|v=|embed\/)([^#&?]{11})/)?.[1];
-        if (ytId) {
-            document.getElementById('videoContainer').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?rel=0" frameborder="0" allowfullscreen></iframe>`;
-            document.getElementById('currentVideoTitle').textContent = v.name || "Lecture Video";
-        }
-    }
-}
-
+// ==============================
+// UTILS
+// ==============================
 function hideLoader() {
   document.getElementById('loadingScreen').style.opacity = '0';
   setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 300);
 }
 
-window.goToCheckout = () => {
-    const id = new URLSearchParams(location.search).get('id');
-    location.href = `/checkout?lesson_id=${id}`;
-}
-
-// تشغيل الامتحان (تبسيط)
-document.getElementById('startBtn').onclick = () => {
-    alert("بسبب أنك مفعل الدخول، تم فتح المحتوى لك مباشرة للتجربة!");
-    unlockContent();
-    switchTab('videos');
+function goToCheckout() {
+  const id = new URLSearchParams(location.search).get('id');
+  location.href = "/checkout?lesson_id=" + id;
 }
 
 init();
