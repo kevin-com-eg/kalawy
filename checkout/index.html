@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -335,7 +334,7 @@
           <b>Code</b>
         </div>
         <p class="note">
-          Fixed version: no duplicate Supabase variable, no old lesson-id rejection.
+          Fixed version: Table name changed to "code".
         </p>
       </aside>
     </section>
@@ -343,13 +342,14 @@
 
   <script>
     (function () {
-      // ==============================
-      // SUPABASE - SAFE VERSION
-      // No "const supabase =" here, so it will not conflict with old code.
-      // ==============================
+      // ==========================================
+      // CONFIGURATION - تـعـديـلات السـبـاتـيـز
+      // ==========================================
       window.KALAWY_SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
       window.KALAWY_SUPABASE_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
-      window.KALAWY_PAYMENT_CODES_TABLE = "paymentcodes";
+      
+      // هنا تم تعديل اسم الجدول من paymentcodes إلى code
+      window.KALAWY_PAYMENT_CODES_TABLE = "code";
 
       if (!window.KALAWY_DB) {
         window.KALAWY_DB = window.supabase.createClient(
@@ -419,7 +419,6 @@
       }
 
       function redirectToLesson(lessonId) {
-        // لو صفحة الحصة عندك مش هنا، غيّر السطر ده فقط
         return "/lesson.html?id=" + encodeURIComponent(lessonId);
       }
 
@@ -438,8 +437,7 @@
         showMessage("Checking code...", "");
 
         try {
-          // No .eq("lessonid", currentLessonId)
-          // This fixes "Invalid code for this lesson".
+          // جلب البيانات من جدول "code"
           var selectResult = await window.KALAWY_DB
             .from(window.KALAWY_PAYMENT_CODES_TABLE)
             .select("id, code, used, usedby, lessonid")
@@ -449,7 +447,8 @@
 
           if (selectResult.error) {
             console.error("SELECT ERROR:", selectResult.error);
-            showMessage("Code check failed. Check Supabase RLS select policy.", "error");
+            // إذا استمر هذا الخطأ، فهذا يعني أنك لم تقم بعمل Policy في Supabase
+            showMessage("Code check failed. Ensure RLS policies are set for table 'code'.", "error");
             return;
           }
 
@@ -467,6 +466,7 @@
 
           var usedBy = getUsedBy();
 
+          // تحديث الكود ليصبح مستخدماً
           var updateResult = await window.KALAWY_DB
             .from(window.KALAWY_PAYMENT_CODES_TABLE)
             .update({
@@ -478,25 +478,21 @@
 
           if (updateResult.error) {
             console.error("UPDATE ERROR:", updateResult.error);
-            showMessage("Code found, but activation failed. Check Supabase RLS update policy.", "error");
+            showMessage("Activation failed. Check RLS update policy.", "error");
             return;
           }
 
+          // حفظ حالة الدفع محلياً
           localStorage.setItem("paid_lesson_" + codeRow.lessonid, "true");
           localStorage.setItem("kalawy_paid_lesson", codeRow.lessonid);
           localStorage.setItem("kalawy_last_paid_code", codeRow.code);
-          localStorage.setItem("kalawy_payment_method", "code");
-
-          if (currentLessonId) {
-            localStorage.setItem("paid_lesson_" + currentLessonId, "true");
-          }
 
           showMessage("Payment activated successfully.", "success");
           document.getElementById("successBox").style.display = "block";
 
           setTimeout(function () {
             window.location.href = redirectToLesson(codeRow.lessonid);
-          }, 750);
+          }, 850);
 
         } catch (err) {
           console.error("UNEXPECTED ERROR:", err);
