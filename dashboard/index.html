@@ -49,7 +49,7 @@ nav.top-nav{position:sticky;top:0;z-index:500;height:var(--nav-h);background:rgb
 .nav-inner{max-width:1240px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}.logo-mark{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:.88rem;color:#fff}.logo-name{font-family:var(--display);font-weight:600;font-size:1.2rem;color:var(--text)}.logo-name em{color:var(--accent2);font-style:normal}
 .nav-links{display:flex;align-items:center;gap:2px;margin-left:24px}.nav-link{background:none;border:none;color:var(--muted2);font-family:var(--sans);font-size:.82rem;font-weight:600;padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s}.nav-link:hover,.nav-link.active{color:var(--text);background:var(--surface2)}
-.nav-right{display:flex;align-items:center;gap:8px}.avatar-btn{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px 5px 5px;cursor:pointer;transition:all .2s}.avatar-btn:hover{border-color:var(--border2)}.av-img{width:32px;height:32px;border-radius:7px;object-fit:cover}.av-name{font-size:.78rem;font-weight:800;color:var(--text)}.av-grade{font-size:.65rem;color:var(--accent);margin-top:1px}.icon-btn{width:38px;height:38px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--muted2)}.icon-btn:hover{color:var(--text);border-color:var(--border2)}
+.nav-right{display:flex;align-items:center;gap:8px}.avatar-btn{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px 5px 5px;cursor:pointer;transition:all .2s}.avatar-btn:hover{border-color:var(--border2)}.av-img{width:32px;height:32px;border-radius:7px;object-fit:cover}.av-name{font-size:.78rem;font-weight:800;color:var(--text)}.av-grade{font-size:.65rem;color:var(--accent);margin-top:1px}.icon-btn{width:38px;height:38px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--muted2)}.icon-btn:hover{color:var(--text);border-color:var(--border2)}.logout-btn:hover{color:var(--red);border-color:rgba(163,59,46,.28);background:var(--red-bg)}
 
 main{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:36px 24px 100px}
 .hero{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;margin-bottom:48px}.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--accent-light);border:1px solid rgba(45,90,61,.15);border-radius:30px;padding:5px 14px;font-size:.7rem;font-weight:800;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}.eyebrow-dot{width:6px;height:6px;background:var(--accent2);border-radius:50%;animation:pulse 2s ease infinite}@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.65)}}.hero-title{font-family:var(--display);font-size:clamp(2rem,3.5vw,2.8rem);font-weight:600;line-height:1.1;margin-bottom:14px}.hero-title em{color:var(--accent2);font-style:italic}.hero-sub{color:var(--muted2);font-size:.92rem;line-height:1.75;margin-bottom:26px;max-width:520px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px}
@@ -92,6 +92,7 @@ main{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:36px 24p
         <div><div class="av-name" id="navName">Kalawy Student</div><div class="av-grade" id="navGrade">Student Dashboard</div></div>
       </button>
       <button class="icon-btn" title="Refresh" onclick="reloadAll()"><i class="fa-solid fa-rotate-right"></i></button>
+      <button class="icon-btn logout-btn" id="logoutBtn" title="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
     </div>
   </div>
 </nav>
@@ -187,6 +188,7 @@ main{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:36px 24p
     <button class="bn-btn" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-book"></i>Courses</button>
     <button class="bn-btn" onclick="document.getElementById('step2').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-chalkboard-user"></i>Teachers</button>
     <button class="bn-btn" onclick="document.getElementById('step3').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-play"></i>Lessons</button>
+    <button class="bn-btn" id="logoutBtnMob"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</button>
   </div>
 </nav>
 
@@ -233,6 +235,18 @@ function sortLessons(list){return [...(list||[])].sort((a,b)=>{
   if(ad || bd) return bd - ad;
   return lessonLabel(a).localeCompare(lessonLabel(b), undefined, {numeric:true, sensitivity:'base'});
 });}
+
+async function logout(){
+  try{
+    showToast('info','Signing out…','Please wait.');
+    localStorage.removeItem('kalawy_selected_lesson');
+    await db.auth.signOut();
+    setTimeout(()=>{ window.location.href='/home'; }, 500);
+  }catch(e){
+    showToast('error','Logout Error', e.message || 'Please try again.');
+  }
+}
+window.logout = logout;
 
 function updateSidebar(step){
   [1,2,3,4].forEach(s=>{
@@ -431,6 +445,9 @@ window.showToast = showToast;
 window.reloadAll = reloadAll;
 window.hideActivation = hideActivation;
 window.showActivation = showActivation;
+window.logout = logout;
+document.getElementById('logoutBtn')?.addEventListener('click', logout);
+document.getElementById('logoutBtnMob')?.addEventListener('click', logout);
 
 reloadAll();
 })();
