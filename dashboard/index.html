@@ -1,184 +1,409 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalawy Dashboard | لوحة الطالب</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kalawy · Student Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;600;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#F5F0E8;--bg2:#EDE7DB;--surface:#FAF7F2;--surface2:#EDE7DB;
+  --border:rgba(44,36,24,.1);--border2:rgba(44,36,24,.22);
+  --text:#2C2418;--muted:#9B8E7A;--muted2:#6B5E4E;
+  --accent:#2D5A3D;--accent2:#3A7550;--accent3:#4A9060;
+  --accent-glow:rgba(45,90,61,.12);--accent-light:rgba(45,90,61,.08);
+  --amber:#C4654A;--amber-bg:rgba(196,101,74,.08);--amber-border:rgba(196,101,74,.2);
+  --red:#A33B2E;--red-bg:rgba(163,59,46,.08);
+  --gold:#C4A882;--gold-bg:rgba(196,168,130,.1);
+  --mono:'JetBrains Mono',monospace;--sans:'DM Sans','Cairo',sans-serif;--display:'Cormorant Garamond',serif;
+  --radius:12px;--radius-sm:8px;--radius-lg:20px;
+  --shadow:0 2px 16px rgba(44,36,24,.07);--shadow2:0 8px 32px rgba(44,36,24,.1);--nav-h:64px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px 256px}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* Loading */
+#loadingScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .35s}
+.ld-mark{width:58px;height:58px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:1.35rem;color:#fff;animation:float 2.5s ease infinite}
+.ld-bar{width:120px;height:2px;background:var(--bg2);border-radius:2px;overflow:hidden}
+.ld-fill{height:100%;background:var(--accent2);border-radius:2px;animation:loadAnim 1.2s ease infinite}
+.ld-txt{font-size:.78rem;color:var(--muted);font-family:var(--mono)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes loadAnim{0%{width:0;margin-left:0}50%{width:80%;margin-left:0}100%{width:0;margin-left:100%}}
+
+/* Toast */
+#toast-wrap{position:fixed;top:76px;right:18px;z-index:4000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:13px 16px;display:flex;align-items:center;gap:10px;min-width:270px;max-width:320px;box-shadow:var(--shadow2);animation:toastIn .3s both;pointer-events:all}
+.toast.exit{animation:toastOut .25s both}.toast-ico{font-size:.95rem;flex-shrink:0}.toast-body{flex:1}.toast-ttl{font-size:.82rem;font-weight:700}.toast-msg{font-size:.73rem;color:var(--muted2);margin-top:2px}.toast-x{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:2px;line-height:1}.toast.success{border-color:rgba(45,90,61,.3)}.toast.error{border-color:rgba(163,59,46,.3)}.toast.warning{border-color:var(--amber-border)}
+@keyframes toastIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}@keyframes toastOut{to{opacity:0;transform:translateX(18px)}}
+
+/* Nav */
+nav.top-nav{position:sticky;top:0;z-index:500;height:var(--nav-h);background:rgba(250,247,242,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 1px 12px rgba(44,36,24,.06)}
+.nav-inner{max-width:1240px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}.logo-mark{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:.88rem;color:#fff}.logo-name{font-family:var(--display);font-weight:600;font-size:1.2rem;color:var(--text)}.logo-name em{color:var(--accent2);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:24px}.nav-link{background:none;border:none;color:var(--muted2);font-family:var(--sans);font-size:.82rem;font-weight:600;padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s}.nav-link:hover,.nav-link.active{color:var(--text);background:var(--surface2)}
+.nav-right{display:flex;align-items:center;gap:8px}.avatar-btn{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px 5px 5px;cursor:pointer;transition:all .2s}.avatar-btn:hover{border-color:var(--border2)}.av-img{width:32px;height:32px;border-radius:7px;object-fit:cover}.av-name{font-size:.78rem;font-weight:800;color:var(--text)}.av-grade{font-size:.65rem;color:var(--accent);margin-top:1px}.icon-btn{width:38px;height:38px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--muted2)}.icon-btn:hover{color:var(--text);border-color:var(--border2)}
+
+main{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:36px 24px 100px}
+.hero{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;margin-bottom:48px}.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--accent-light);border:1px solid rgba(45,90,61,.15);border-radius:30px;padding:5px 14px;font-size:.7rem;font-weight:800;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}.eyebrow-dot{width:6px;height:6px;background:var(--accent2);border-radius:50%;animation:pulse 2s ease infinite}@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.65)}}.hero-title{font-family:var(--display);font-size:clamp(2rem,3.5vw,2.8rem);font-weight:600;line-height:1.1;margin-bottom:14px}.hero-title em{color:var(--accent2);font-style:italic}.hero-sub{color:var(--muted2);font-size:.92rem;line-height:1.75;margin-bottom:26px;max-width:520px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.84rem;font-weight:700;cursor:pointer;border:none;transition:all .22s;text-decoration:none}.btn-primary{background:var(--accent);color:#fff;box-shadow:0 3px 14px var(--accent-glow)}.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border2)}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.stats-row{display:flex;gap:12px;flex-wrap:wrap}.stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px}.stat-n{font-family:var(--display);font-size:1.9rem;font-weight:700;line-height:1;color:var(--text)}.stat-l{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:3px}
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;position:sticky;top:80px}.pc-top{display:flex;align-items:center;gap:13px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--border)}.pc-av{width:50px;height:50px;border-radius:10px;object-fit:cover;border:2px solid var(--border2)}.pc-name{font-family:var(--display);font-size:1.1rem;font-weight:700}.pc-grade{font-size:.72rem;color:var(--accent);font-weight:700;margin-top:2px}.pc-links{display:flex;flex-direction:column;gap:7px}.pc-link{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);cursor:pointer;transition:all .2s;text-decoration:none;color:inherit}.pc-link:hover{border-color:var(--accent);background:var(--accent-light)}.pc-link-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0;background:var(--bg2)}.pc-link-title{font-size:.8rem;font-weight:800;color:var(--text)}.pc-link-sub{font-size:.68rem;color:var(--muted);margin-top:1px}.pc-link-arr{margin-left:auto;color:var(--muted);font-size:.8rem}
+
+.section-hdr{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:22px}.section-kicker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:4px}.section-title{font-family:var(--display);font-size:1.65rem;font-weight:700}.count-pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:.75rem;font-weight:800;color:var(--muted2)}
+.flow{display:grid;grid-template-columns:300px 1fr;gap:20px}.steps-card,.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}.steps-card{padding:20px;align-self:start;position:sticky;top:82px}.steps-title{font-family:var(--display);font-size:1.2rem;font-weight:700;margin-bottom:14px}.step-list{display:flex;flex-direction:column;gap:10px}.step-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--muted2);transition:all .22s}.step-item.active{color:var(--accent);border-color:rgba(45,90,61,.22);background:var(--accent-light)}.step-item.done{color:var(--accent2);border-color:rgba(45,90,61,.18);background:rgba(45,90,61,.06)}.step-no{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--bg);font-family:var(--mono);font-size:.75rem;font-weight:800;flex-shrink:0}.step-txt{font-size:.82rem;font-weight:800}.panel{padding:22px;margin-bottom:18px;animation:cardIn .35s both}@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}.panel-title{display:flex;align-items:center;gap:9px;font-family:var(--display);font-size:1.25rem;font-weight:700;margin-bottom:16px}.panel-sub{color:var(--muted2);font-size:.82rem;line-height:1.6;margin-top:-8px;margin-bottom:16px}.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.choice-btn{padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-family:var(--sans);text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:all .22s;color:var(--text);font-weight:800}.choice-btn:hover{border-color:var(--accent);background:var(--accent-light);transform:translateY(-1px)}.choice-icon{width:38px;height:38px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}.choice-name{font-size:.94rem}.choice-meta{display:block;font-size:.68rem;color:var(--muted);margin-top:3px;font-weight:700}.lessons-list{display:flex;flex-direction:column;gap:12px}.lesson-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;transition:all .22s}.lesson-row:hover{border-color:var(--border2);transform:translateY(-1px)}.lesson-title{font-family:var(--display);font-size:1.08rem;font-weight:700}.lesson-price{display:inline-flex;margin-top:6px;padding:3px 9px;border-radius:6px;background:var(--gold-bg);color:var(--gold);border:1px solid rgba(196,168,130,.2);font-family:var(--mono);font-size:.7rem;font-weight:800}.lesson-btn{background:var(--accent-light);color:var(--accent);border:1px solid rgba(45,90,61,.18);border-radius:var(--radius-sm);padding:10px 14px;font-family:var(--sans);font-size:.8rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .22s;white-space:nowrap}.lesson-btn:hover{background:rgba(45,90,61,.14);border-color:var(--accent)}
+.activation-card{background:linear-gradient(135deg,rgba(45,90,61,.08),rgba(196,168,130,.12));border:1px solid rgba(45,90,61,.22);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow2);animation:cardIn .35s both}.activation-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.activation-title{font-family:var(--display);font-size:1.25rem;font-weight:700}.lesson-label{font-size:.82rem;color:var(--accent);font-weight:800;margin-bottom:16px}.code-row{display:flex;gap:10px}.code-input{flex:1;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:12px 15px;color:var(--text);font-family:var(--sans);font-size:.88rem;outline:none;transition:border-color .2s}.code-input:focus{border-color:var(--accent)}.activate-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px 20px;font-family:var(--sans);font-size:.84rem;font-weight:800;cursor:pointer;transition:all .22s}.activate-btn:hover{background:var(--accent2);transform:translateY(-1px)}.status-msg{margin-top:12px;font-size:.82rem;font-weight:800}.empty-card{text-align:center;padding:44px 24px;background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--radius)}.empty-ico{font-size:2.4rem;margin-bottom:10px}.empty-txt{color:var(--muted);font-size:.86rem}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(250,247,242,.95);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:8px 10px 16px}.bn-inner{display:flex;justify-content:space-around}.bn-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--muted);cursor:pointer;padding:6px 10px;border-radius:var(--radius-sm);transition:all .2s;font-family:var(--sans);font-size:.6rem;font-weight:800;text-decoration:none}.bn-btn.active,.bn-btn:hover{color:var(--accent)}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.profile-card{display:none}.nav-links{display:none}.flow{grid-template-columns:1fr}.steps-card{position:relative;top:0}.bottom-nav{display:block}body{padding-bottom:80px}.choice-grid{grid-template-columns:1fr}}
+@media(max-width:580px){main{padding:24px 14px 90px}.nav-inner{padding:0 14px}.avatar-btn{padding-right:5px}.av-name,.av-grade{display:none}.code-row{flex-direction:column}.lesson-row{grid-template-columns:1fr}.lesson-btn{justify-content:center;width:100%}.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat-pill{padding:12px 10px}.stat-n{font-size:1.45rem}.stat-l{font-size:.58rem}}
+</style>
 </head>
-<body class="text-gray-800">
+<body>
+<div id="loadingScreen">
+  <div class="ld-mark">KA</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+  <div class="ld-txt" id="ldTxt">Loading your courses…</div>
+</div>
+<div id="toast-wrap"></div>
 
-    <nav class="bg-blue-700 text-white shadow-lg p-4 mb-8">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold italic tracking-wider">KALAWY <span class="text-blue-200">EDU</span></h1>
-            <div class="flex items-center gap-4">
-                <span id="userName" class="text-sm">أهلاً بك</span>
-                <i class="fas fa-user-circle text-2xl"></i>
-            </div>
-        </div>
-    </nav>
+<nav class="top-nav">
+  <div class="nav-inner">
+    <div style="display:flex;align-items:center">
+      <a class="logo" href="/home">
+        <div class="logo-mark">KA</div>
+        <div class="logo-name">Kalawy<em> EDU</em></div>
+      </a>
+      <div class="nav-links">
+        <button class="nav-link active" onclick="document.getElementById('bookingSection').scrollIntoView({behavior:'smooth'})">Home</button>
+        <button class="nav-link" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})">Courses</button>
+        <button class="nav-link" onclick="showToast('info','Account','Profile settings can be connected to your users table.')">Account</button>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="avatar-btn" onclick="document.getElementById('bookingSection').scrollIntoView({behavior:'smooth'})">
+        <img class="av-img" id="navAv" src="https://ui-avatars.com/api/?name=Kalawy+Student&background=2D5A3D&color=fff&bold=true&size=128" alt="Student">
+        <div><div class="av-name" id="navName">Kalawy Student</div><div class="av-grade" id="navGrade">Student Dashboard</div></div>
+      </button>
+      <button class="icon-btn" title="Refresh" onclick="reloadAll()"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+  </div>
+</nav>
 
-    <div class="container mx-auto px-4 max-w-5xl">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div class="md:col-span-1 space-y-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="font-bold text-lg mb-4 border-b pb-2">خطوات الحجز</h3>
-                    <ul class="space-y-4">
-                        <li id="li-step1" class="flex items-center gap-3 text-blue-600 font-bold">
-                            <span class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">1</span> اختار المادة
-                        </li>
-                        <li id="li-step2" class="flex items-center gap-3 text-gray-400">
-                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">2</span> اختار المدرس
-                        </li>
-                        <li id="li-step3" class="flex items-center gap-3 text-gray-400">
-                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">3</span> اختار الحصة
-                        </li>
-                    </ul>
-                </div>
-            </div>
+<main>
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow"><div class="eyebrow-dot"></div>Student Dashboard</div>
+      <h1 class="hero-title">Welcome back,<br><em id="heroName">Champion</em></h1>
+      <p class="hero-sub">Your courses, teachers, and lesson activation — all in one clean Kalawy dashboard.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-book-open"></i> Browse Courses</button>
+        <button class="btn btn-ghost" onclick="showToast('info','Need help?','Choose a subject, teacher, then activate your lesson with your code.')"><i class="fa-solid fa-circle-info"></i> How it works</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-pill"><div class="stat-n" id="statSubjects">—</div><div class="stat-l">Subjects</div></div>
+        <div class="stat-pill"><div class="stat-n" id="statTeachers">—</div><div class="stat-l">Teachers</div></div>
+        <div class="stat-pill"><div class="stat-n" id="statLessons">—</div><div class="stat-l">Lessons</div></div>
+      </div>
+    </div>
+    <div class="profile-card">
+      <div class="pc-top">
+        <img class="pc-av" id="sideAv" src="https://ui-avatars.com/api/?name=Kalawy+Student&background=2D5A3D&color=fff&bold=true&size=128" alt="Student">
+        <div><div class="pc-name" id="sideName">Kalawy Student</div><div class="pc-grade" id="sideGrade">Ready to learn</div></div>
+      </div>
+      <div class="pc-links">
+        <div class="pc-link" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})"><div class="pc-link-ico">📚</div><div><div class="pc-link-title">Browse Courses</div><div class="pc-link-sub">Choose your subject</div></div><span class="pc-link-arr">→</span></div>
+        <div class="pc-link" onclick="document.getElementById('step2').scrollIntoView({behavior:'smooth'})"><div class="pc-link-ico">👨‍🏫</div><div><div class="pc-link-title">Teachers</div><div class="pc-link-sub">Pick your teacher</div></div><span class="pc-link-arr">→</span></div>
+        <div class="pc-link" onclick="document.getElementById('step3').scrollIntoView({behavior:'smooth'})"><div class="pc-link-ico">🎬</div><div><div class="pc-link-title">Available Lessons</div><div class="pc-link-sub">Select and activate</div></div><span class="pc-link-arr">→</span></div>
+        <div class="pc-link" onclick="document.getElementById('activationCode').focus()"><div class="pc-link-ico">🔐</div><div><div class="pc-link-title">Activation Code</div><div class="pc-link-sub">Unlock your lesson</div></div><span class="pc-link-arr">→</span></div>
+      </div>
+    </div>
+  </div>
 
-            <div class="md:col-span-2 space-y-6">
-                
-                <div id="step1" class="bg-white p-6 rounded-2xl shadow-md transition-all">
-                    <label class="block text-xl font-bold mb-4 text-gray-700">📚 اختر المادة التعليمية</label>
-                    <div id="subjectsGrid" class="grid grid-cols-2 gap-4">
-                        <div class="animate-pulse bg-gray-200 h-16 rounded-xl"></div>
-                        <div class="animate-pulse bg-gray-200 h-16 rounded-xl"></div>
-                    </div>
-                </div>
-
-                <div id="step2" class="bg-white p-6 rounded-2xl shadow-md hidden">
-                    <label class="block text-xl font-bold mb-4 text-gray-700">👨‍🏫 اختر المدرس</label>
-                    <div id="teachersGrid" class="grid grid-cols-2 gap-4"></div>
-                </div>
-
-                <div id="step3" class="bg-white p-6 rounded-2xl shadow-md hidden">
-                    <label class="block text-xl font-bold mb-4 text-gray-700">🎬 الحصص المتاحة</label>
-                    <div id="lessonsGrid" class="space-y-3"></div>
-                </div>
-
-                <div id="step4" class="bg-blue-50 border-2 border-blue-200 p-6 rounded-2xl shadow-md hidden animate-bounce-short">
-                    <h4 class="font-bold text-blue-800 mb-2">تفعيل الحصة الآن</h4>
-                    <p id="lessonNameLabel" class="text-sm mb-4 text-blue-600 font-semibold"></p>
-                    <div class="flex gap-2">
-                        <input type="text" id="activationCode" placeholder="أدخل الكود هنا" 
-                               class="flex-1 p-3 rounded-xl border-2 border-blue-200 focus:outline-none focus:border-blue-500">
-                        <button id="activateBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg">
-                            فتح الحصة
-                        </button>
-                    </div>
-                    <div id="statusMsg" class="mt-3 text-sm"></div>
-                </div>
-
-            </div>
-        </div>
+  <section id="bookingSection">
+    <div class="section-hdr">
+      <div><div class="section-kicker">Content Library</div><div class="section-title">Available Courses</div></div>
+      <div class="count-pill" id="countPill">Loading…</div>
     </div>
 
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    <div class="flow">
+      <aside class="steps-card">
+        <div class="steps-title">Booking Steps</div>
+        <div class="step-list">
+          <div id="li-step1" class="step-item active"><span class="step-no">1</span><span class="step-txt">Choose Subject</span></div>
+          <div id="li-step2" class="step-item"><span class="step-no">2</span><span class="step-txt">Choose Teacher</span></div>
+          <div id="li-step3" class="step-item"><span class="step-no">3</span><span class="step-txt">Choose Lesson</span></div>
+          <div id="li-step4" class="step-item"><span class="step-no">4</span><span class="step-txt">Activate Access</span></div>
+        </div>
+      </aside>
 
-        const SUPABASE_URL = 'https://xjdhbbjeeasdmohbhgze.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa';
-        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      <div>
+        <div id="step1" class="panel">
+          <div class="panel-title">📚 Choose your subject</div>
+          <p class="panel-sub">Start by selecting the subject you want to study.</p>
+          <div id="subjectsGrid" class="choice-grid">
+            <div class="empty-card"><div class="empty-ico">⏳</div><div class="empty-txt">Loading subjects…</div></div>
+          </div>
+        </div>
 
-        let currentLessonId = null;
+        <div id="step2" class="panel hidden">
+          <div class="panel-title">👨‍🏫 Choose your teacher</div>
+          <p class="panel-sub">Select the teacher connected to your subject.</p>
+          <div id="teachersGrid" class="choice-grid"></div>
+        </div>
 
-        // Load Subjects
-        async function loadSubjects() {
-            const { data } = await supabase.from('subjects').select('*');
-            const grid = document.getElementById('subjectsGrid');
-            grid.innerHTML = '';
-            data.forEach(sub => {
-                const btn = document.createElement('button');
-                btn.className = "p-4 bg-gray-50 border-2 border-gray-100 hover:border-blue-500 hover:bg-blue-50 rounded-xl font-bold transition-all text-right flex items-center justify-between";
-                btn.innerHTML = `${sub.name} <i class="fas fa-chevron-left text-xs"></i>`;
-                btn.onclick = () => selectSubject(sub.id);
-                grid.appendChild(btn);
-            });
-        }
+        <div id="step3" class="panel hidden">
+          <div class="panel-title">🎬 Available lessons</div>
+          <p class="panel-sub">Pick a lesson and add your activation code to unlock it.</p>
+          <div id="lessonsGrid" class="lessons-list"></div>
+        </div>
 
-        async function selectSubject(subId) {
-            const { data } = await supabase.from('teachers').select('*').eq('subject_id', subId);
-            const grid = document.getElementById('teachersGrid');
-            grid.innerHTML = '';
-            data.forEach(t => {
-                const btn = document.createElement('button');
-                btn.className = "p-4 bg-white border-2 border-gray-100 hover:border-green-500 rounded-xl shadow-sm font-semibold flex items-center gap-3";
-                btn.innerHTML = `<div class="bg-green-100 p-2 rounded-full"><i class="fas fa-chalkboard-teacher text-green-600"></i></div> ${t.name}`;
-                btn.onclick = () => selectTeacher(t.id);
-                grid.appendChild(btn);
-            });
-            document.getElementById('step2').classList.remove('hidden');
-            updateSidebar(2);
-        }
+        <div id="step4" class="activation-card hidden">
+          <div class="activation-head">
+            <div class="activation-title">🔐 Activate lesson now</div>
+            <button class="icon-btn" onclick="hideActivation()" title="Close"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <p id="lessonNameLabel" class="lesson-label">Lesson: —</p>
+          <div class="code-row">
+            <input type="text" id="activationCode" class="code-input" placeholder="Enter your activation code here">
+            <button id="activateBtn" class="activate-btn">Unlock Lesson</button>
+          </div>
+          <div id="statusMsg" class="status-msg"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
-        async function selectTeacher(teacherId) {
-            const { data } = await supabase.from('lessons').select('*').eq('teacher_id', teacherId);
-            const grid = document.getElementById('lessonsGrid');
-            grid.innerHTML = '';
-            data.forEach(lesson => {
-                const div = document.createElement('div');
-                div.className = "p-4 bg-white border border-gray-200 rounded-xl flex justify-between items-center hover:shadow-md transition-all";
-                div.innerHTML = `
-                    <div>
-                        <span class="block font-bold">${lesson.title}</span>
-                        <span class="text-xs text-gray-500">${lesson.price} جنيه</span>
-                    </div>
-                    <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-200" 
-                            onclick="window.showActivation('${lesson.id}', '${lesson.title}')">
-                        <i class="fas fa-shopping-cart"></i> إضافة
-                    </button>
-                `;
-                grid.appendChild(div);
-            });
-            document.getElementById('step3').classList.remove('hidden');
-            updateSidebar(3);
-        }
+<nav class="bottom-nav">
+  <div class="bn-inner">
+    <button class="bn-btn active" onclick="document.getElementById('bookingSection').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-house"></i>Home</button>
+    <button class="bn-btn" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-book"></i>Courses</button>
+    <button class="bn-btn" onclick="document.getElementById('step2').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-chalkboard-user"></i>Teachers</button>
+    <button class="bn-btn" onclick="document.getElementById('step3').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-play"></i>Lessons</button>
+  </div>
+</nav>
 
-        window.showActivation = (id, title) => {
-            currentLessonId = id;
-            document.getElementById('lessonNameLabel').innerText = `حصة: ${title}`;
-            document.getElementById('step4').classList.remove('hidden');
-            document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
-        };
+<script>
+const SUPABASE_URL = 'https://xjdhbbjeeasdmohbhgze.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        function updateSidebar(step) {
-            const steps = [1, 2, 3];
-            steps.forEach(s => {
-                const li = document.getElementById(`li-step${s}`);
-                if(s === step) {
-                    li.className = "flex items-center gap-3 text-blue-600 font-bold";
-                } else if (s < step) {
-                    li.className = "flex items-center gap-3 text-green-500 font-bold";
-                    li.innerHTML = `<span class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center"><i class="fas fa-check text-xs"></i></span> تم الاختيار`;
-                }
-            });
-        }
+let currentLessonId = null;
+let currentLessonTitle = '';
+let allSubjects = [];
+let allTeachers = [];
+let allLessons = [];
 
-        // Activate Logic
-        document.getElementById('activateBtn').onclick = async () => {
-            const code = document.getElementById('activationCode').value;
-            const status = document.getElementById('statusMsg');
+function showToast(type,title,msg='',dur=4200){
+  const icons={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};
+  const wrap=document.getElementById('toast-wrap'),t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span class="toast-ico">${icons[type]||'ℹ️'}</span><div class="toast-body"><div class="toast-ttl">${title}</div>${msg?`<div class="toast-msg">${msg}</div>`:''}</div><button class="toast-x" onclick="this.parentElement.remove()">×</button>`;
+  wrap.appendChild(t);setTimeout(()=>{t.classList.add('exit');setTimeout(()=>t.remove(),280)},dur);
+}
+function showLoader(t='Loading…'){const s=document.getElementById('loadingScreen');document.getElementById('ldTxt').textContent=t;s.style.display='flex';void s.offsetWidth;s.style.opacity='1';}
+function hideLoader(){const s=document.getElementById('loadingScreen');s.style.opacity='0';setTimeout(()=>s.style.display='none',320);}
+function safeText(v){return String(v ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
+function priceText(value){const n=Number(value||0);return n>0?`${n} EGP`:'Free';}
 
-            const { data } = await supabase.from('lesson_codes').select('*').eq('code', code).eq('lesson_id', currentLessonId).eq('is_used', false).single();
+function updateSidebar(step){
+  [1,2,3,4].forEach(s=>{
+    const li=document.getElementById(`li-step${s}`);
+    if(!li)return;
+    li.classList.remove('active','done');
+    if(s<step) li.classList.add('done');
+    if(s===step) li.classList.add('active');
+    const no=li.querySelector('.step-no');
+    if(no) no.innerHTML=s<step?'<i class="fa-solid fa-check"></i>':s;
+  });
+}
+function updateStats(){
+  document.getElementById('statSubjects').textContent=allSubjects.length || 0;
+  document.getElementById('statTeachers').textContent=allTeachers.length || 0;
+  document.getElementById('statLessons').textContent=allLessons.length || 0;
+  document.getElementById('countPill').textContent=`${allLessons.length || 0} Lesson${allLessons.length===1?'':'s'}`;
+}
 
-            if (data) {
-                status.innerHTML = "✅ تم تفعيل الحصة! جاري توجيهك للمحتوى...";
-                status.className = "mt-3 text-sm text-green-600 font-bold";
-                // Update code status in DB here...
-            } else {
-                status.innerHTML = "❌ الكود غير صحيح أو مستخدم مسبقاً";
-                status.className = "mt-3 text-sm text-red-600 font-bold";
-            }
-        };
+async function loadSubjects(){
+  showLoader('Loading your courses…');
+  const { data, error } = await supabase.from('subjects').select('*').order('name', { ascending: true });
+  if(error){
+    renderEmpty('subjectsGrid','❌','Could not load subjects. Check your Supabase table/RLS.');
+    showToast('error','Subjects Error',error.message);
+    hideLoader();return;
+  }
+  allSubjects = data || [];
+  updateStats();
+  const grid=document.getElementById('subjectsGrid');
+  grid.innerHTML='';
+  if(!allSubjects.length){renderEmpty('subjectsGrid','🔭','No subjects available yet.');hideLoader();return;}
+  allSubjects.forEach(sub=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.innerHTML=`<span><span class="choice-name">${safeText(sub.name)}</span><span class="choice-meta">Choose subject</span></span><span class="choice-icon"><i class="fa-solid fa-chevron-right"></i></span>`;
+    btn.onclick=()=>selectSubject(sub.id, sub.name);
+    grid.appendChild(btn);
+  });
+  hideLoader();
+}
 
-        loadSubjects();
-    </script>
+async function selectSubject(subId, subName=''){
+  showLoader('Loading teachers…');
+  currentLessonId=null;
+  hideActivation();
+  document.getElementById('step2').classList.remove('hidden');
+  document.getElementById('step3').classList.add('hidden');
+  updateSidebar(2);
+  const { data, error } = await supabase.from('teachers').select('*').eq('subject_id', subId).order('name', { ascending: true });
+  if(error){
+    renderEmpty('teachersGrid','❌','Could not load teachers.');
+    showToast('error','Teachers Error',error.message);
+    hideLoader();return;
+  }
+  allTeachers = data || [];
+  updateStats();
+  const grid=document.getElementById('teachersGrid');
+  grid.innerHTML='';
+  if(!allTeachers.length){renderEmpty('teachersGrid','👨‍🏫',`No teachers found for ${safeText(subName)}.`);hideLoader();return;}
+  allTeachers.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.innerHTML=`<span style="display:flex;align-items:center;gap:12px"><span class="choice-icon"><i class="fa-solid fa-chalkboard-user"></i></span><span><span class="choice-name">${safeText(t.name)}</span><span class="choice-meta">View lessons</span></span></span><i class="fa-solid fa-chevron-right"></i>`;
+    btn.onclick=()=>selectTeacher(t.id, t.name);
+    grid.appendChild(btn);
+  });
+  document.getElementById('step2').scrollIntoView({behavior:'smooth', block:'start'});
+  hideLoader();
+}
+
+async function selectTeacher(teacherId, teacherName=''){
+  showLoader('Loading lessons…');
+  hideActivation();
+  document.getElementById('step3').classList.remove('hidden');
+  updateSidebar(3);
+  const { data, error } = await supabase.from('lessons').select('*').eq('teacher_id', teacherId).order('created_at', { ascending: false });
+  if(error){
+    renderEmpty('lessonsGrid','❌','Could not load lessons.');
+    showToast('error','Lessons Error',error.message);
+    hideLoader();return;
+  }
+  allLessons = data || [];
+  updateStats();
+  const grid=document.getElementById('lessonsGrid');
+  grid.innerHTML='';
+  if(!allLessons.length){renderEmpty('lessonsGrid','🎬',`No lessons found for ${safeText(teacherName)}.`);hideLoader();return;}
+  allLessons.forEach(lesson=>{
+    const title = lesson.title || lesson.name || 'Untitled Lesson';
+    const row=document.createElement('div');
+    row.className='lesson-row';
+    row.innerHTML=`
+      <div>
+        <div class="lesson-title">${safeText(title)}</div>
+        <span class="lesson-price">${priceText(lesson.price)}</span>
+      </div>
+      <button class="lesson-btn" onclick="showActivation('${safeText(lesson.id)}','${safeText(title).replace(/'/g,'&#39;')}')">
+        <i class="fa-solid fa-cart-plus"></i> Add / Activate
+      </button>`;
+    grid.appendChild(row);
+  });
+  document.getElementById('step3').scrollIntoView({behavior:'smooth', block:'start'});
+  hideLoader();
+}
+
+function showActivation(id,title){
+  currentLessonId=id;
+  currentLessonTitle=title;
+  document.getElementById('lessonNameLabel').textContent=`Lesson: ${title}`;
+  document.getElementById('activationCode').value='';
+  document.getElementById('statusMsg').textContent='';
+  document.getElementById('step4').classList.remove('hidden');
+  updateSidebar(4);
+  document.getElementById('step4').scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=>document.getElementById('activationCode').focus(),350);
+}
+window.showActivation = showActivation;
+function hideActivation(){
+  document.getElementById('step4').classList.add('hidden');
+  document.getElementById('statusMsg').textContent='';
+}
+
+function renderEmpty(id,ico,msg){
+  const el=document.getElementById(id);
+  el.innerHTML=`<div class="empty-card"><div class="empty-ico">${ico}</div><div class="empty-txt">${msg}</div></div>`;
+}
+
+async function activateLesson(){
+  const code=document.getElementById('activationCode').value.trim();
+  const status=document.getElementById('statusMsg');
+  if(!currentLessonId){showToast('warning','Choose a Lesson','Select a lesson first.');return;}
+  if(!code){status.textContent='⚠️ Enter your activation code first.';status.style.color='var(--amber)';return;}
+  status.textContent='Checking your code…';
+  status.style.color='var(--muted2)';
+
+  const { data, error } = await supabase
+    .from('lesson_codes')
+    .select('*')
+    .eq('code', code)
+    .eq('lesson_id', currentLessonId)
+    .eq('is_used', false)
+    .single();
+
+  if(error || !data){
+    status.textContent='❌ Invalid code or already used.';
+    status.style.color='var(--red)';
+    showToast('error','Activation Failed','The code is invalid or already used.');
+    return;
+  }
+
+  const updatePayload = { is_used: true };
+  if('used_at' in data) updatePayload.used_at = new Date().toISOString();
+  const { error: updateError } = await supabase
+    .from('lesson_codes')
+    .update(updatePayload)
+    .eq('code', code)
+    .eq('lesson_id', currentLessonId)
+    .eq('is_used', false);
+
+  if(updateError){
+    status.textContent='⚠️ Code is correct, but saving activation failed. Check RLS update policy.';
+    status.style.color='var(--amber)';
+    showToast('warning','RLS Review Needed',updateError.message);
+    return;
+  }
+
+  status.textContent='✅ Lesson activated! Redirecting to lesson content…';
+  status.style.color='var(--accent2)';
+  showToast('success','Activated ✅',`You can now open ${currentLessonTitle}.`);
+  setTimeout(()=>{ window.location.href = `/lesson?id=${encodeURIComponent(currentLessonId)}`; },900);
+}
+document.getElementById('activateBtn').onclick=activateLesson;
+document.getElementById('activationCode').addEventListener('keydown',e=>{if(e.key==='Enter')activateLesson();});
+
+async function preloadCounts(){
+  const [teachers, lessons] = await Promise.all([
+    supabase.from('teachers').select('id', { count:'exact', head:false }),
+    supabase.from('lessons').select('id', { count:'exact', head:false })
+  ]);
+  allTeachers = teachers.data || [];
+  allLessons = lessons.data || [];
+  updateStats();
+}
+async function reloadAll(){
+  hideActivation();
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step3').classList.add('hidden');
+  updateSidebar(1);
+  await Promise.all([preloadCounts(), loadSubjects()]);
+}
+
+reloadAll();
+</script>
 </body>
 </html>
