@@ -632,15 +632,53 @@ function lessonVideosRaw(ls){
   [ls?.videos,ls?.video_urls,ls?.video_url,ls?.video].forEach(v=>{
     if(!v)return;
     if(Array.isArray(v)) vals.push(...v);
+    else if(typeof v==='object') vals.push(v);
     else if(typeof v==='string'){
       try{const parsed=JSON.parse(v); if(Array.isArray(parsed)) vals.push(...parsed); else vals.push(v);}catch{vals.push(...v.split(/\n|,/).map(x=>x.trim()).filter(Boolean));}
     }
   });
-  return [...new Set(vals.map(x=>String(x).trim()).filter(Boolean))];
+  const out=[];
+  vals.forEach((x,i)=>{
+    if(!x)return;
+    if(typeof x==='object'){
+      const url=String(x.url||x.src||x.link||'').trim();
+      if(url) out.push({title:x.title||x.name||`Video ${i+1}`,url,duration:x.duration||x.duration_minutes||0});
+    }else{
+      const url=String(x).trim(); if(url) out.push({title:`Video ${i+1}`,url,duration:0});
+    }
+  });
+  const seen=new Set();
+  return out.filter(v=>{if(seen.has(v.url))return false;seen.add(v.url);return true;});
 }
 function lessonPdfRaw(ls){ return ls?.pdf_url || ls?.pdf || ls?.pdf_link || ''; }
 function lessonExamLinkRaw(ls){ return ls?.exam_link || ls?.exam_url || ls?.exam || ''; }
 function lessonExamImageRaw(ls){ return ls?.exam_image_url || ls?.exam_image || ls?.exam_thumb || ''; }
+function lessonExamQuestionsRaw(ls){
+  const v=ls?.exam_questions||ls?.questions||[];
+  if(Array.isArray(v)) return v;
+  if(typeof v==='string'&&v.trim()) { try{ const p=JSON.parse(v); return Array.isArray(p)?p:[]; } catch { return []; } }
+  return [];
+}
+function lessonAccessDays(ls){ return Number(ls?.access_days||ls?.validity_days||ls?.available_days||0); }
+function codeStartDate(c){ return c?.used_at||c?.updated_at||c?.created_at||null; }
+function codeAccessDays(c,ls){ return Number(c?.access_days||c?.validity_days||lessonAccessDays(ls)||0); }
+function accessInfoForLesson(ls){
+  const id=String(ls?.id||'');
+  if(!id) return {active:false,expired:false,locked:true};
+  if(!ls?.price || Number(ls.price)===0) return {active:true,free:true,daysLeft:null};
+  if(localStorage.getItem('paid_lesson_'+id)==='true') return {active:true,local:true,daysLeft:null};
+  const c=boughtCodesMap[id];
+  if(!c) return {active:false,expired:false,locked:true};
+  const days=codeAccessDays(c,ls);
+  const start=codeStartDate(c);
+  if(days>0 && start){
+    const expire=new Date(new Date(start).getTime()+days*86400000);
+    const diff=Math.ceil((expire-new Date())/86400000);
+    if(diff<=0) return {active:false,expired:true,locked:false,expiresAt:expire,daysLeft:0};
+    return {active:true,expired:false,expiresAt:expire,daysLeft:diff};
+  }
+  return {active:true,expired:false,daysLeft:null};
+}
 async function fetchChaptersForTeacher(teacherId){
   try{
     const {data,error}=await db.from('chapters').select('*').eq('teacher_id',teacherId).order('position',{ascending:true});
@@ -685,6 +723,7 @@ function imageFallback(el, name, cls){
 let currentUser = null;
 let currentProfile = null;
 let boughtIds = [];
+let boughtCodesMap = {};
 let curTeacherId = null;
 let curTeacherName = '';
 let curTeacherObj = null;
@@ -821,13 +860,19 @@ async function fetchBought(){
   try{
     const email = String(currentUser?.email || '').toLowerCase();
     const {data:codes,error}=await db.from('codes').select('*');
-    if(error){ console.warn(error); boughtIds=[]; return; }
-    boughtIds=(codes||[])
-      .filter(c => codeIsUsed(c) && codeUsedBy(c) === email && codeLessonId(c))
-      .map(c => String(codeLessonId(c)));
-  }catch(e){console.error(e); boughtIds=[];}
+    if(error){ console.warn(error); boughtIds=[]; boughtCodesMap={}; return; }
+    boughtCodesMap={};
+    (codes||[]).filter(c => codeIsUsed(c) && codeUsedBy(c) === email && codeLessonId(c)).forEach(c=>{
+      const lid=String(codeLessonId(c));
+      const prev=boughtCodesMap[lid];
+      const curTime=new Date(codeStartDate(c)||0).getTime();
+      const prevTime=prev?new Date(codeStartDate(prev)||0).getTime():-1;
+      if(!prev || curTime>=prevTime) boughtCodesMap[lid]=c;
+    });
+    boughtIds=Object.keys(boughtCodesMap);
+  }catch(e){console.error(e); boughtIds=[]; boughtCodesMap={};}
 }
-function isBought(id){ return boughtIds.includes(String(id))||localStorage.getItem('paid_lesson_'+id)==='true'; }
+function isBought(id){ const c=boughtCodesMap[String(id)]; if(localStorage.getItem('paid_lesson_'+id)==='true') return true; if(!c) return false; const days=Number(c.access_days||c.validity_days||0); const start=codeStartDate(c); if(days>0&&start){ return new Date() <= new Date(new Date(start).getTime()+days*86400000); } return true; }
 
 /* BREADCRUMB */
 function updateBC(parts){
@@ -1136,36 +1181,45 @@ async function loadLessons(teachId,teachName){
 
 function renderLessonCards(lessons, grid, l){
   lessons.forEach(ls=>{
-    const bought=isBought(ls.id);
+    const access=accessInfoForLesson(ls);
+    const bought=access.active && !access.free;
     const isFree=!ls.price||ls.price===0||ls.price==='0';
     const name=lessonTitle(ls);
     const price=isFree?(l==='ar'?'مجاني':'Free'):`${ls.price} ${t('egp')}`;
+    const videos=lessonVideosRaw(ls);
+    const examQuestions=lessonExamQuestionsRaw(ls);
     const thumbSrc=getLessonImageUrl(lessonThumbRaw(ls));
     const thumbHtml=thumbSrc
       ?`<img src="${safeText(thumbSrc)}" alt="${safeText(name)}" loading="lazy" onerror="this.outerHTML='${phHTML()}'">`
       :phHTML();
-    const ribbon=bought?`<div class="lesson-ribbon"><i class="fa-solid fa-check"></i> ${t('activated')}</div>`:'';
+    const ribbon=access.expired
+      ?`<div class="lesson-ribbon" style="background:rgba(217,48,37,.92)"><i class="fa-solid fa-lock"></i> انتهت</div>`
+      :(bought?`<div class="lesson-ribbon"><i class="fa-solid fa-check"></i> ${t('activated')}</div>`:'');
     const timeAgo=ls.created_at?timeSince(new Date(ls.created_at),l):'';
-    const btn=(bought||isFree)
+    const accessBadge=access.active && access.daysLeft!==null
+      ?`<span class="lesson-extra-badge"><i class="fa-solid fa-clock"></i> ${access.daysLeft} يوم</span>`
+      :(access.expired?`<span class="lesson-extra-badge warn"><i class="fa-solid fa-lock"></i> انتهت المدة</span>`:(lessonAccessDays(ls)?`<span class="lesson-extra-badge"><i class="fa-solid fa-calendar-days"></i> ${lessonAccessDays(ls)} يوم</span>`:''));
+    const btn=(isFree||access.active)
       ?`<button class="btn-ls btn-watch" onclick="watchLesson('${ls.id}')"><i class="fa-solid fa-circle-play"></i> ${isFree&&!bought?t('free_watch'):t('watch')}</button>`
-      :`<button class="btn-ls btn-buy" onclick="buyLesson('${ls.id}')"><i class="fa-solid fa-cart-shopping"></i> ${t('buy')}</button>`;
+      :`<button class="btn-ls btn-buy" onclick="buyLesson('${ls.id}')"><i class="fa-solid ${access.expired?'fa-rotate-right':'fa-cart-shopping'}"></i> ${access.expired?'تجديد':'اشتري الآن'}</button>`;
     const card=document.createElement('div');
     card.className='lesson-card';
     card.innerHTML=`
       <div class="lesson-thumb">${thumbHtml}${ribbon}</div>
       <div class="lesson-body">
-        <div class="lesson-title">${name}</div>
+        <div class="lesson-title">${safeText(name)}</div>
         <div class="lesson-info">
-          <span class="lesson-teacher-tag"><i class="fa-solid fa-chalkboard-user"></i> ${curTeacherName}</span>
+          <span class="lesson-teacher-tag"><i class="fa-solid fa-chalkboard-user"></i> ${safeText(curTeacherName)}</span>
         </div>
         <div class="lesson-extra-badges">
-          ${lessonVideosRaw(ls).length?`<span class="lesson-extra-badge"><i class="fa-solid fa-video"></i> ${lessonVideosRaw(ls).length}</span>`:''}
+          ${videos.length?`<span class="lesson-extra-badge"><i class="fa-solid fa-video"></i> ${videos.length}</span>`:''}
           ${lessonPdfRaw(ls)?`<span class="lesson-extra-badge"><i class="fa-solid fa-file-pdf"></i> PDF</span>`:''}
-          ${(lessonExamLinkRaw(ls)||lessonExamImageRaw(ls))?`<span class="lesson-extra-badge warn"><i class="fa-solid fa-clipboard-question"></i> Exam</span>`:''}
+          ${(lessonExamLinkRaw(ls)||lessonExamImageRaw(ls)||examQuestions.length)?`<span class="lesson-extra-badge warn"><i class="fa-solid fa-clipboard-question"></i> Exam ${examQuestions.length?examQuestions.length:''}</span>`:''}
+          ${accessBadge}
         </div>
         <div class="lesson-bottom">
-          <div class="lesson-price ${isFree?'free':''}">${price}</div>
-          ${timeAgo?`<div class="lesson-date">${timeAgo}</div>`:''}
+          <div class="lesson-price ${isFree?'free':''}">${safeText(price)}</div>
+          ${timeAgo?`<div class="lesson-date">${safeText(timeAgo)}</div>`:''}
         </div>
         <div class="lesson-actions">${btn}</div>
       </div>
@@ -1197,7 +1251,7 @@ async function renderMyLectures(){
   document.getElementById('myLecSub').textContent=t('my_sub');
   if(!boughtIds.length){ box.innerHTML=emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub')); hideLoader(); return; }
   const {data:allLessons}=await db.from('lessons').select('*,teachers(name,image_url)');
-  const myLessons=(allLessons||[]).filter(ls=>isBought(ls.id));
+  const myLessons=(allLessons||[]).filter(ls=>accessInfoForLesson(ls).active);
   if(!myLessons.length){ box.innerHTML=emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub')); hideLoader(); return; }
   const list=document.createElement('div');
   list.className='my-list';
@@ -1249,7 +1303,7 @@ async function renderProfile(){
   let activated=[];
   try{
     const {data:allLessons}=await db.from('lessons').select('*,teachers(name,image_url)').limit(80);
-    activated=(allLessons||[]).filter(ls=>isBought(ls.id)).slice(0,4);
+    activated=(allLessons||[]).filter(ls=>accessInfoForLesson(ls).active).slice(0,4);
   }catch(e){ activated=[]; }
 
   const miniLessons = activated.length ? activated.map(ls=>{
