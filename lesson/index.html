@@ -375,8 +375,8 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
   <div class="lock-card">
     <button class="lock-back" onclick="location.href='/dashboard'">← Back</button>
     <div class="lock-ico">🔐</div>
-    <div class="lock-title">Course Locked</div>
-    <div class="lock-sub">This page does not activate codes directly anymore. Open checkout, activate your course there, then return here and the lesson will open automatically.</div>
+    <div class="lock-title">Lesson Locked</div>
+    <div class="lock-sub">لو أنت مفعل الحصة ولسه الصفحة مقفولة، اضغط تحديث أو ادخل من Dashboard. لو لم تفعلها، افتح Checkout وفعل كود الحصة.</div>
     <button class="lock-btn" onclick="goToCheckout()">Go to Checkout →</button>
   </div>
 </div>
@@ -857,8 +857,65 @@ window.goToCheckout=function(){
 };
 
 /* ════════════════════════════
-   INIT
+   ACCESS / INIT
 ════════════════════════════ */
+function codeLessonId(c){
+  return c?.lessonid || c?.lesson_id || c?.lesson || c?.course_id || c?.courseid || '';
+}
+function codeUsedBy(c){
+  return String(c?.usedby || c?.used_by || c?.user_email || c?.email || c?.student_email || '').toLowerCase().trim();
+}
+function codeIsUsed(c){
+  return c?.used === true || c?.is_used === true || String(c?.used).toLowerCase() === 'true' || String(c?.is_used).toLowerCase() === 'true';
+}
+function lessonAccessDays(ls,c){
+  return Number(c?.access_days || c?.validity_days || c?.validitydays || ls?.access_days || ls?.validity_days || ls?.validitydays || 30) || 30;
+}
+function toMs(v){
+  if(v===undefined || v===null || v==='') return null;
+  if(typeof v === 'number') return v < 9999999999 ? v * 1000 : v;
+  const s=String(v).trim();
+  if(/^\d+$/.test(s)){ const n=Number(s); return n < 9999999999 ? n * 1000 : n; }
+  const d=new Date(s);
+  return isNaN(d.getTime()) ? null : d.getTime();
+}
+function codeExpiryMs(c,ls){
+  const direct = toMs(c?.expiryat || c?.expiry_at || c?.expires_at || c?.expiresat);
+  if(direct) return direct;
+  const start = toMs(c?.used_at || c?.usedat || c?.updated_at);
+  const days = lessonAccessDays(ls,c);
+  if(start) return start + days * 86400000;
+  // old redeemed codes may not have used_at; give the student access now and cache it locally
+  return Date.now() + days * 86400000;
+}
+async function fetchMyCodes(email){
+  const e=String(email||'').toLowerCase().trim();
+  let codes=[];
+  try{
+    const res=await db.from('codes').select('*').or(`usedby.eq.${e},used_by.eq.${e}`);
+    if(!res.error && res.data) codes=res.data;
+  }catch(err){}
+  if(!codes.length){
+    try{
+      const res=await db.from('codes').select('*').eq('usedby',e);
+      if(!res.error && res.data) codes=res.data;
+    }catch(err){}
+  }
+  return codes||[];
+}
+function getValidAccessCode(codes,lessonId,ls){
+  const email=String(currentUser?.email||'').toLowerCase().trim();
+  const now=Date.now();
+  for(const c of (codes||[])){
+    const sameLesson=String(codeLessonId(c))===String(lessonId);
+    const sameUser=codeUsedBy(c)===email;
+    if(!sameLesson || !sameUser || !codeIsUsed(c)) continue;
+    const exp=codeExpiryMs(c,ls);
+    if(!exp || exp>now) return {ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c};
+  }
+  return {ok:false,expiry:null,code:null};
+}
+
 async function init(){
   const adBlocked=await checkAdBlocker();if(adBlocked)return;
   const lessonId=new URLSearchParams(location.search).get('id');if(!lessonId){hideLoader();return;}
@@ -870,17 +927,40 @@ async function init(){
     try{const p=JSON.parse(cached);if(p.expiry>Date.now()){myStudentId=p.studentId||currentUser.id.substring(0,6).toUpperCase();await loadLesson(lessonId);startAccessTimer(p.expiry);verifyBg(lessonId);hideLoader();return;}}catch(e){}
   }
   try{
-    const[{data:u},{data:codes}]=await Promise.all([db.from('users').select('studentid').eq('id',currentUser.id).single(),db.from('codes').select('*').eq('usedby',currentUser.email)]);
+    const [{data:u},{data:lessonSnap}] = await Promise.all([
+      db.from('users').select('studentid').eq('id',currentUser.id).maybeSingle(),
+      db.from('lessons').select('*').eq('id',lessonId).maybeSingle()
+    ]);
     if(u)myStudentId=u.studentid||currentUser.id.substring(0,6).toUpperCase();
-    let ok=false,exp=null;const now=Date.now();
-    if(codes){codes.forEach(function(c){if(String(c.lessonid)===String(lessonId)&&c.usedby===currentUser.email&&Number(c.expiryat)>now){ok=true;exp=Number(c.expiryat);}});}
-    if(ok){localStorage.setItem('access_'+currentUser.id+'_'+lessonId,JSON.stringify({expiry:exp,studentId:myStudentId}));await loadLesson(lessonId);startAccessTimer(exp);hideLoader();}
-    else{hideLoader();document.getElementById('codeLockScreen').classList.remove('hidden');}
-  }catch(e){hideLoader();document.getElementById('codeLockScreen').classList.remove('hidden');}
+
+    // Free lessons open without a code
+    if(lessonSnap && (!lessonSnap.price || Number(lessonSnap.price)===0)){
+      await loadLesson(lessonId);hideLoader();return;
+    }
+
+    const codes=await fetchMyCodes(currentUser.email);
+    const access=getValidAccessCode(codes,lessonId,lessonSnap);
+    if(access.ok){
+      localStorage.setItem('access_'+currentUser.id+'_'+lessonId,JSON.stringify({expiry:access.expiry,studentId:myStudentId}));
+      await loadLesson(lessonId);startAccessTimer(access.expiry);hideLoader();
+    } else {
+      hideLoader();document.getElementById('codeLockScreen').classList.remove('hidden');
+    }
+  }catch(e){
+    console.error('Access check failed:', e);
+    hideLoader();document.getElementById('codeLockScreen').classList.remove('hidden');
+  }
 }
 
 async function verifyBg(lessonId){
-  try{const{data:codes}=await db.from('codes').select('expiryat,lessonid,usedby').eq('usedby',currentUser.email);if(!codes)return;const now=Date.now();let ok=false;codes.forEach(function(c){if(String(c.lessonid)===String(lessonId)&&c.usedby===currentUser.email&&Number(c.expiryat)>now)ok=true;});if(!ok)localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);}catch(e){}
+  try{
+    const [{data:lessonSnap}, codes] = await Promise.all([
+      db.from('lessons').select('*').eq('id',lessonId).maybeSingle(),
+      fetchMyCodes(currentUser.email)
+    ]);
+    const access=getValidAccessCode(codes,lessonId,lessonSnap);
+    if(!access.ok)localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);
+  }catch(e){}
 }
 
 function startAccessTimer(expiry){
