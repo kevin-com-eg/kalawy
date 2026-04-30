@@ -58,6 +58,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .lock-back{position:absolute;top:16px;left:16px;display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 14px;font-size:.76rem;font-weight:700;color:var(--muted2);cursor:pointer;transition:all .2s;font-family:var(--sans)}
 .lock-back:hover{border-color:var(--accent);color:var(--accent)}
 .lock-ico{width:72px;height:72px;margin:0 auto 20px;background:var(--amber-bg);border:2px solid var(--amber-border);color:var(--amber);border-radius:18px;display:flex;align-items:center;justify-content:center}
+.lock-ico.error-ico{background:var(--red-bg);border-color:var(--red-border);color:var(--red)}
 .lock-title{font-family:var(--display);font-size:1.7rem;font-weight:700;margin-bottom:14px;color:var(--text)}
 .lock-sub{font-size:.85rem;color:var(--muted2);line-height:1.75;margin-bottom:28px;max-width:340px;margin-left:auto;margin-right:auto}
 .lock-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:0}
@@ -438,7 +439,7 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
   document.addEventListener('contextmenu',e=>e.preventDefault());
   document.addEventListener('copy',e=>{e.clipboardData.setData('text/plain','⚠️ Disabled');e.preventDefault();});
   window.addEventListener('keydown',e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&[73,74,67].includes(e.keyCode))||(e.ctrlKey&&e.keyCode===85)){e.preventDefault();return false;}});
-  const kill=()=>{if(window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>160){document.body.innerHTML='<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);text-align:center"><div><div style="font-size:3rem">🔒</div><h2 style="font-family:serif;margin:14px 0 7px">Access Blocked</h2><p style="color:#9B8E7A;font-size:.88rem">Close developer tools to continue.</p></div></div>';}};
+  const kill=()=>{if(window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>160){document.body.innerHTML='<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:#F5F0E8;text-align:center"><div><div style="font-size:3rem">🔒</div><h2 style="font-family:serif;margin:14px 0 7px">Access Blocked</h2><p style="color:#9B8E7A;font-size:.88rem">Close developer tools to continue.</p></div></div>';}};
   setInterval(kill,1000);
 })();
 
@@ -469,7 +470,8 @@ async function checkAdBlocker(){try{const blocked=await detectAdBlocker();if(blo
 
 const SUPABASE_URL="https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_ANON="sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
+let db;
+try{db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);}catch(e){console.error('[KALAWY] Supabase init failed:',e);}
 
 const OPT_LETTERS=['a','b','c','d','e','f','g','h','i','j'];
 let currentUser=null,questions=[],curIdx=0,userAns={},lessonData=null;
@@ -490,8 +492,17 @@ let activeYTPlayer=null;
 let activeYTWmTimer=null;
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
 
-function showLoader(t=''){const s=document.getElementById('loadingScreen');document.getElementById('ldTxt').textContent=t||'Loading…';s.style.display='flex';void s.offsetWidth;s.style.opacity='1';}
-function hideLoader(){const s=document.getElementById('loadingScreen');s.style.opacity='0';setTimeout(()=>s.style.display='none',300);}
+function showLoader(t=''){const s=document.getElementById('loadingScreen');if(!s)return;document.getElementById('ldTxt').textContent=t||'Loading…';s.style.display='flex';void s.offsetWidth;s.style.opacity='1';}
+function hideLoader(){const s=document.getElementById('loadingScreen');if(!s)return;s.style.opacity='0';setTimeout(()=>{if(s)s.style.display='none';},300);}
+
+/* ── FALLBACK ERROR ON BODY ── */
+function showFatalError(title,msg,detail){
+  hideLoader();
+  const lockEl=document.getElementById('codeLockScreen');
+  const target=lockEl||document.body;
+  target.classList.remove('hidden');
+  target.innerHTML='<div class="lock-card"><div class="lock-ico error-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="lock-title">'+title+'</div><div class="lock-sub">'+msg+'</div><div class="dbg-box"><div class="dbg-row"><span class="dbg-label">Error</span><span class="dbg-val">'+(detail||'Unknown')+'</span></div></div><div class="lock-actions"><button class="lock-btn ghost" onclick="location.reload()">↻ Reload Page</button><button class="lock-btn ghost" onclick="location.href=\'/home\'">Go Home</button></div></div>';
+}
 
 window.switchTab=(tab)=>{
   destroyActiveYT();
@@ -648,6 +659,7 @@ function initYTPlayer(wrapper,videoId,studentId){
 function renderVideoPage(){
   destroyActiveYT();swReset();
   const container=document.getElementById('videosContainer');
+  if(!container)return;
   if(!videosData||videosData.length===0){container.innerHTML='<div class="empty-vid"><div class="ei">📺</div><div class="et">No Videos Yet</div><div class="es">Video lessons will appear here once added.</div></div>';return;}
   if(currentVideoIdx>=videosData.length)currentVideoIdx=videosData.length-1;
   if(currentVideoIdx<0)currentVideoIdx=0;
@@ -704,14 +716,15 @@ function renderVideoPage(){
 
 window.goToVideo=function(idx){destroyActiveYT();currentVideoIdx=idx;renderVideoPage();window.scrollTo({top:0,behavior:'smooth'});};
 window.videoNext=function(){if(currentVideoIdx<videosData.length-1){destroyActiveYT();currentVideoIdx++;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
-window.videoPrev=function(){if(currentVideoIdx>0){destroyActiveYT();currentVideoIdx--;renderVideoPage();scrollTo({top:0,behavior:'smooth'});};};
+window.videoPrev=function(){if(currentVideoIdx>0){destroyActiveYT();currentVideoIdx--;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
 
 function initMP4Player(wrapper,videoUrl,studentId){
   const SPEEDS=[0.5,0.75,1,1.25,1.5,1.75,2];
   wrapper.innerHTML='<div class="mp4-wrap"><div class="mp4-loader"></div><video class="main-vid" preload="metadata"><source src="'+videoUrl+'" type="video/mp4"></video><div class="mp4-wm">ID: '+studentId+'</div><div class="vp-controls"><div class="vp-progress"><div class="vp-bar" style="width:0%"></div></div><div class="vp-row"><div class="vp-left"><div class="vp-icon vp-rew" title="−10s"><i class="material-icons">replay_10</i></div><div class="vp-icon vp-pp" title="Play"><i class="material-icons">play_arrow</i></div><div class="vp-icon vp-fwd" title="+10s"><i class="material-icons">forward_10</i></div><div class="vp-vol-wrap"><div class="vp-icon vp-vol-btn"><i class="material-icons">volume_up</i></div><input type="range" min="0" max="100" value="80" class="vol-slider"></div><div class="vp-time"><span class="vp-cur">0:00</span> / <span class="vp-dur">0:00</span></div></div><div class="vp-right"><div class="vp-speed" title="Speed">1×</div><div class="vp-icon vp-pip" title="PiP"><i class="material-icons">picture_in_picture_alt</i></div><div class="vp-icon vp-fs" title="Fullscreen"><i class="material-icons">fullscreen</i></div></div></div></div><div class="vp-settings-popup vp-popup"><div class="vp-popup-title">Speed</div><ul>'+SPEEDS.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+(s===1?'Normal':s+'×')+'</li>').join('')+'</ul></div></div>';
 
   requestAnimationFrame(function(){
-    const pw=wrapper.querySelector('.mp4-wrap');const vid=pw.querySelector('.main-vid');const loader=pw.querySelector('.mp4-loader');
+    const pw=wrapper.querySelector('.mp4-wrap');if(!pw)return;
+    const vid=pw.querySelector('.main-vid');const loader=pw.querySelector('.mp4-loader');
     const controls=pw.querySelector('.vp-controls');const progress=pw.querySelector('.vp-progress');const bar=pw.querySelector('.vp-bar');
     const pp=pw.querySelector('.vp-pp');const curEl=pw.querySelector('.vp-cur');const durEl=pw.querySelector('.vp-dur');
     const speedBtn=pw.querySelector('.vp-speed');const volSlider=pw.querySelector('.vol-slider');const volIcon=pw.querySelector('.vp-vol-btn i');
@@ -760,7 +773,7 @@ window.goToCheckout=function(){
 };
 
 /* ════════════════════════════
-   ACCESS LOGIC (FIXED + DEBUG)
+   ACCESS LOGIC (FIXED)
 ════════════════════════════ */
 function codeLessonId(c){return c?.lessonid||c?.lesson_id||c?.lesson||c?.course_id||c?.courseid||'';}
 function codeUsedBy(c){return String(c?.usedby||c?.used_by||c?.user_email||c?.email||c?.student_email||'').toLowerCase().trim();}
@@ -778,6 +791,7 @@ function codeExpiryMs(c,ls){
 function isUnknownCodeOwner(c){const owner=codeUsedBy(c);return owner===''||owner==='unknown_user'||owner==='unknown'||owner==='null';}
 
 async function fetchMyCodes(email,lessonId){
+  if(!db)return[];
   const e=String(email||'').toLowerCase().trim();
   const lid=String(lessonId||'');
   let codes=[];
@@ -804,35 +818,26 @@ function getValidAccessCode(codes,lessonId,ls){
     const unknown=isUnknownCodeOwner(c);
     const exp=codeExpiryMs(c,ls);
     const notExpired=!exp||exp>now;
-
-    console.log('[KALAWY DEBUG] Code:',{
-      id:c.id, lessonId:cid, match:sameLesson,
-      used, owner, unknown, expiry:new Date(exp).toISOString(), notExpired
-    });
-
+    console.log('[KALAWY DEBUG] Code:',{id:c.id,lessonId:cid,match:sameLesson,used,owner,unknown,expiry:new Date(exp).toISOString(),notExpired});
     if(!sameLesson)continue;
     if(!used&&!unknown)continue;
     if(!notExpired)continue;
-
     return{ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c,claimed:unknown};
   }
   return{ok:false,expiry:null,code:null,claimed:false};
 }
 
-function forceRefresh(){
-  const lessonId=new URLSearchParams(location.search).get('id');
-  location.href='/lesson?id='+lessonId+'&refresh=1';
-}
+function forceRefresh(){const lessonId=new URLSearchParams(location.search).get('id');location.href='/lesson?id='+lessonId+'&refresh=1';}
 
 function showLockWithDebug(codes,lessonId,lessonSnap){
   const screen=document.getElementById('codeLockScreen');
+  if(!screen){showFatalError('Lesson Locked','Could not render lock screen.','');return;}
   const email=currentUser?.email||'—';
   const codeCount=codes?.length||0;
   const lessonName=lessonSnap?.name||lessonId;
-
   let debugRows='';
   if(codeCount===0){
-    debugRows='<div class="dbg-row"><span class="dbg-label">⚠️ No codes found</span><span class="dbg-val">No codes returned for this lesson. Check RLS policies on "codes" table — the anon key must have SELECT access.</span></div>';
+    debugRows='<div class="dbg-row"><span class="dbg-label">⚠️ No codes found</span><span class="dbg-val">No codes returned for this lesson. Check RLS policies on "codes" table — the anon key must have SELECT access.<br><br><strong>Fix:</strong> Run in Supabase SQL Editor:<br>CREATE POLICY "anon_select" ON codes FOR SELECT USING (true);</span></div>';
   }else{
     (codes||[]).forEach((c,i)=>{
       const used=codeIsUsed(c);
@@ -841,30 +846,20 @@ function showLockWithDebug(codes,lessonId,lessonSnap){
       const exp=codeExpiryMs(c,lessonSnap);
       const expired=exp&&exp<Date.now();
       const status=!match?'❌ Wrong lesson':!used&&!isUnknownCodeOwner(c)?'❌ Not used':expired?'❌ Expired':'✅ Valid';
-      debugRows+='<div class="dbg-row"><span class="dbg-label">Code '+( i+1)+': '+status+'</span><span class="dbg-val">ID:'+String(c.id).substring(0,8)+'… | used:'+used+' | owner:'+( owner||'empty')+' | lesson:'+String(codeLessonId(c)).substring(0,8)+'… | exp:'+( exp?new Date(exp).toLocaleString():'none')+'</span></div>';
+      debugRows+='<div class="dbg-row"><span class="dbg-label">Code '+(i+1)+': '+status+'</span><span class="dbg-val">ID:'+String(c.id).substring(0,8)+'… | used:'+used+' | owner:'+(owner||'empty')+' | lesson:'+String(codeLessonId(c)).substring(0,8)+'… | exp:'+(exp?new Date(exp).toLocaleString():'none')+'</span></div>';
     });
   }
 
   screen.innerHTML=
     '<div class="lock-card">'
-    +'<button class="lock-back" onclick="location.href=\'/dashboard\'">'
-    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>'
-    +'Back</button>'
-    +'<div class="lock-ico">'
-    +'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
-    +'<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>'
-    +'<path d="M7 11V7a5 5 0 0 1 10 0v4"/>'
-    +'<circle cx="12" cy="16" r="1" fill="currentColor"/>'
-    +'</svg></div>'
+    +'<button class="lock-back" onclick="location.href=\'/dashboard\'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back</button>'
+    +'<div class="lock-ico"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>'
     +'<div class="lock-title">Lesson Locked</div>'
-    +'<div class="lock-sub" style="direction:rtl;text-align:right;">'
-    +'<span style="display:block;margin-bottom:8px;">لو أنت مفعل الحصة ولسه الصفحة مقفولة، اضغط تحديث أو ادخل من Dashboard.</span>'
-    +'<span>لو لم تفعلها، افتح Checkout وفعل كود الحصة.</span></div>'
+    +'<div class="lock-sub" style="direction:rtl;text-align:right;"><span style="display:block;margin-bottom:8px;">لو أنت مفعل الحصة ولسه الصفحة مقفولة، اضغط تحديث أو ادخل من Dashboard.</span><span>لو لم تفعلها، افتح Checkout وفعل كود الحصة.</span></div>'
     +'<div class="lock-actions">'
     +'<button class="lock-btn primary" onclick="goToCheckout()">Go to Checkout →</button>'
-    +'<button class="lock-btn ghost" onclick="forceRefresh()">'
-    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>'
-    +'Retry / تحديث</button></div>'
+    +'<button class="lock-btn ghost" onclick="forceRefresh()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Retry / تحديث</button>'
+    +'</div>'
     +'<div class="dbg-box"><div class="dbg-title">DEBUG INFO</div>'
     +'<div class="dbg-row"><span class="dbg-label">Email</span><span class="dbg-val">'+email+'</span></div>'
     +'<div class="dbg-row"><span class="dbg-label">Lesson</span><span class="dbg-val">'+lessonName+' ('+lessonId+')</span></div>'
@@ -876,50 +871,73 @@ function showLockWithDebug(codes,lessonId,lessonSnap){
   screen.classList.remove('hidden');
 }
 
-function showLockWithError(err){
-  const screen=document.getElementById('codeLockScreen');
-  screen.innerHTML=
-    '<div class="lock-card">'
-    +'<button class="lock-back" onclick="location.href=\'/dashboard\'">'
-    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>'
-    +'Back</button>'
-    +'<div class="lock-ico" style="background:var(--red-bg);border-color:var(--red-border);color:var(--red);">'
-    +'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
-    +'</div>'
-    +'<div class="lock-title">Connection Error</div>'
-    +'<div class="lock-sub">حصلت مشكلة في الاتصال بالسيرفر. حاول تاني.</div>'
-    +'<div class="dbg-box"><div class="dbg-row"><span class="dbg-label">Error</span><span class="dbg-val">'+( err.message||String(err))+'</span></div></div>'
-    +'<div class="lock-actions"><button class="lock-btn ghost" onclick="location.reload()">Retry</button></div>'
-    +'</div>';
-  screen.classList.remove('hidden');
-}
-
 async function init(){
-  const adBlocked=await checkAdBlocker();if(adBlocked)return;
-  const lessonId=new URLSearchParams(location.search).get('id');if(!lessonId){hideLoader();return;}
-  const{data:{session}}=await db.auth.getSession();
-  if(!session){hideLoader();location.href='/home';return;}
+  /* ── CHECK SUPABASE FIRST ── */
+  if(!db){
+    showFatalError('Configuration Error','Could not connect to the server. The Supabase client failed to initialize.','Supabase URL or Anon Key is missing/invalid.');
+    return;
+  }
+
+  const adBlocked=await checkAdBlocker();
+  if(adBlocked)return;
+
+  const lessonId=new URLSearchParams(location.search).get('id');
+  if(!lessonId){hideLoader();return;}
+
+  /* ── SAFE SESSION CHECK ── */
+  let session=null;
+  try{
+    const sessionRes=await db.auth.getSession();
+    session=sessionRes?.data?.session||null;
+  }catch(e){
+    console.error('[KALAWY] getSession error:',e);
+    showFatalError('Session Error','Could not verify your login. Please log in again.','Error: '+(e?.message||String(e))+'<br><br>If this is a 403 error, the Supabase project might be paused or the anon key is invalid.');
+    return;
+  }
+
+  if(!session){
+    hideLoader();
+    location.href='/home';
+    return;
+  }
   currentUser=session.user;
 
+  /* ── REFRESH CACHE ── */
   if(new URLSearchParams(location.search).get('refresh')==='1'){
     localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);
     localStorage.removeItem('exam_'+currentUser.id+'_'+lessonId);
   }
 
+  /* ── CHECK LOCAL CACHE ── */
   const cached=localStorage.getItem('access_'+currentUser.id+'_'+lessonId);
   if(cached){
-    try{const p=JSON.parse(cached);if(p.expiry>Date.now()){myStudentId=p.studentId||currentUser.id.substring(0,6).toUpperCase();await loadLesson(lessonId);startAccessTimer(p.expiry);verifyBg(lessonId);hideLoader();return;}}catch(e){}
+    try{
+      const p=JSON.parse(cached);
+      if(p.expiry>Date.now()){
+        myStudentId=p.studentId||currentUser.id.substring(0,6).toUpperCase();
+        await loadLesson(lessonId);
+        startAccessTimer(p.expiry);
+        verifyBg(lessonId);
+        hideLoader();
+        return;
+      }
+    }catch(e){}
   }
 
+  /* ── FETCH FROM DB ── */
   try{
-    const[{data:u},{data:lessonSnap}]=await Promise.all([
+    const[userRes,lessonRes]=await Promise.all([
       db.from('users').select('studentid').eq('id',currentUser.id).maybeSingle(),
       db.from('lessons').select('*').eq('id',lessonId).maybeSingle()
     ]);
+    const u=userRes?.data||null;
+    const lessonSnap=lessonRes?.data||null;
     if(u)myStudentId=u.studentid||currentUser.id.substring(0,6).toUpperCase();
 
     if(lessonSnap&&(!lessonSnap.price||Number(lessonSnap.price)===0)){
-      await loadLesson(lessonId);hideLoader();return;
+      await loadLesson(lessonId);
+      hideLoader();
+      return;
     }
 
     const codes=await fetchMyCodes(currentUser.email,lessonId);
@@ -931,69 +949,104 @@ async function init(){
     if(access.ok){
       await tryClaimUnknownCode(access.code,currentUser.email);
       localStorage.setItem('access_'+currentUser.id+'_'+lessonId,JSON.stringify({expiry:access.expiry,studentId:myStudentId}));
-      await loadLesson(lessonId);startAccessTimer(access.expiry);hideLoader();
+      await loadLesson(lessonId);
+      startAccessTimer(access.expiry);
+      hideLoader();
     }else{
       hideLoader();
       showLockWithDebug(codes,lessonId,lessonSnap);
     }
   }catch(e){
     console.error('[KALAWY DEBUG] Access check FAILED:',e);
-    hideLoader();
-    showLockWithError(e);
+
+    /* ── CHECK IF IT'S A 403 ── */
+    const errMsg=e?.message||String(e);
+    const is403=errMsg.includes('403')||errMsg.includes('Forbidden')||errMsg.includes('policy');
+    const isNetwork=errMsg.includes('Failed to fetch')||errMsg.includes('NetworkError')||errMsg.includes('net::');
+
+    if(is403){
+      showFatalError('Access Denied (403)',
+        'The server rejected the request. This usually means:',
+        '<br><br>1. <strong>Supabase project is paused</strong> — go to dashboard.supabase.com and unpause it<br>2. <strong>RLS policy is too strict</strong> — the anon key needs SELECT on tables: users, lessons, codes<br>3. <strong>Anon key is wrong</strong> — check the key in your code matches the project',
+        errMsg);
+    }else if(isNetwork){
+      showFatalError('Network Error',
+        'Could not reach the server. Check your internet connection and try again.',
+        errMsg);
+    }else{
+      showFatalError('Unexpected Error',
+        'Something went wrong while loading the lesson.',
+        errMsg);
+    }
   }
 }
 
 async function verifyBg(lessonId){
   try{
-    const[{data:lessonSnap},codes]=await Promise.all([
+    const[lessonRes,codes]=await Promise.all([
       db.from('lessons').select('*').eq('id',lessonId).maybeSingle(),
       fetchMyCodes(currentUser.email)
     ]);
-    const access=getValidAccessCode(codes,lessonId,lessonSnap);
+    const access=getValidAccessCode(codes,lessonId,lessonRes?.data||null);
     if(!access.ok)localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);
   }catch(e){}
 }
 
 function startAccessTimer(expiry){
-  document.getElementById('accessTimerBox').classList.remove('hidden');
+  const el=document.getElementById('accessTimerBox');
+  if(!el)return;
+  el.classList.remove('hidden');
   const tick=function(){const d=expiry-Date.now();if(d<=0){clearInterval(iv);alert('Access expired.');location.reload();return;}const days=Math.floor(d/86400000),h=Math.floor((d%86400000)/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);document.getElementById('accessCountdown').textContent=days>0?(days+'d '+h+'h'):(h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'));};
   tick();const iv=setInterval(tick,1000);
 }
 
 async function loadLesson(id){
-  document.getElementById('codeLockScreen').classList.add('hidden');
-  document.getElementById('lessonContent').classList.remove('hidden');
-  const[{data:snap},{data:res},{data:hwList}]=await Promise.all([
+  const lockEl=document.getElementById('codeLockScreen');
+  if(lockEl)lockEl.classList.add('hidden');
+  const contentEl=document.getElementById('lessonContent');
+  if(!contentEl)return;
+  contentEl.classList.remove('hidden');
+
+  const[snapRes,resRes,hwRes]=await Promise.all([
     db.from('lessons').select('*').eq('id',id).single(),
     db.from('results').select('*').eq('email',currentUser.email).order('date',{ascending:false}),
     db.from('homework').select('*').eq('lessonid',id)
   ]);
+  const snap=snapRes?.data||null;
+  const res=resRes?.data||[];
+  const hwList=hwRes?.data||[];
   if(!snap)return;
   lessonData=snap;questions=lessonData.questions||[];
 
   examDurationMins=Number(lessonData.examduration)||40;
   timeLeft=examDurationMins*60;
-  document.getElementById('examDurationWarn').textContent='⏱ Time Limit: '+examDurationMins+' Minutes';
-  document.getElementById('timerVal').textContent=examDurationMins+':00';
+  const durWarn=document.getElementById('examDurationWarn');
+  if(durWarn)durWarn.textContent='⏱ Time Limit: '+examDurationMins+' Minutes';
+  const timerVal=document.getElementById('timerVal');
+  if(timerVal)timerVal.textContent=examDurationMins+':00';
 
-  document.getElementById('navLessonTitle').textContent=lessonData.name||'Kalawy';
+  const navTitle=document.getElementById('navLessonTitle');
+  if(navTitle)navTitle.textContent=lessonData.name||'Kalawy';
   videosData=[];
   const extracted=extractVideos(snap);
   if(extracted){videosData=extracted;}
   else{try{const{data:vr}=await db.from('lesson_videos').select('*').eq('lessonid',id);if(vr&&vr.length>0)videosData=normalizeVideos(vr);}catch(e){}}
 
+  const hwTab=document.getElementById('btn-homework-tab');
   if(hwList&&hwList.length>0){
     hwData=hwList[0];hwQuestions=hwData.questions||[];
-    const{data:hwRes}=await db.from('hw_results').select('*').eq('email',currentUser.email).eq('hw_id',hwData.id).maybeSingle();
-    if(hwRes){hwDone=true;hwResultsMap[hwData.id]=hwRes;renderHomeworkDone(hwRes);}
+    const{data:hwResult}=await db.from('hw_results').select('*').eq('email',currentUser.email).eq('hw_id',hwData.id).maybeSingle();
+    if(hwResult){hwDone=true;hwResultsMap[hwData.id]=hwResult;renderHomeworkDone(hwResult);}
     else{hwDone=false;renderHomeworkStart();}
-    document.getElementById('btn-homework-tab').classList.remove('locked');
-  }else{renderNoHomework();document.getElementById('btn-homework-tab').classList.remove('locked');}
+    if(hwTab)hwTab.classList.remove('locked');
+  }else{renderNoHomework();if(hwTab)hwTab.classList.remove('locked');}
 
-  if(lessonData.pdf)document.getElementById('pdfLink').href=lessonData.pdf;
+  const pdfLink=document.getElementById('pdfLink');
+  if(lessonData.pdf&&pdfLink)pdfLink.href=lessonData.pdf;
 
+  const quizTab=document.getElementById('tab-quiz');
   if(questions.length===0){
-    document.getElementById('tab-quiz').innerHTML='<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:60px 28px;text-align:center;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:14px">🎓</div><div style="font-family:var(--display);font-size:1.5rem;font-weight:700">No Exam For This Course</div><div style="font-size:.87rem;color:var(--muted);margin-top:8px">Videos and PDF are unlocked automatically.</div></div>';
+    if(quizTab)quizTab.innerHTML='<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:60px 28px;text-align:center;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:14px">🎓</div><div style="font-family:var(--display);font-size:1.5rem;font-weight:700">No Exam For This Course</div><div style="font-size:.87rem;color:var(--muted);margin-top:8px">Videos and PDF are unlocked automatically.</div></div>';
     unlockPostExam(true);applyInitialVideoLaunch();return;
   }
   const prev=res&&res.find(r=>r.lesson===lessonData.name);
@@ -1004,27 +1057,29 @@ async function loadLesson(id){
   }
 }
 
-function renderNoHomework(){document.getElementById('tab-homework').innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">No Assignment</div><div class="hw-sub">There is no homework assignment for this course.</div></div>';}
-function renderHomeworkStart(){document.getElementById('tab-homework').innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">Assignment: '+(hwData.title||'Homework')+'</div><div class="hw-sub">Answer '+hwQuestions.length+' questions. Completing this may unlock gated videos!</div><button class="hw-btn" onclick="startHw()">Start Assignment →</button></div>';}
+function renderNoHomework(){const el=document.getElementById('tab-homework');if(el)el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">No Assignment</div><div class="hw-sub">There is no homework assignment for this course.</div></div>';}
+function renderHomeworkStart(){const el=document.getElementById('tab-homework');if(!el)return;el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">Assignment: '+(hwData.title||'Homework')+'</div><div class="hw-sub">Answer '+hwQuestions.length+' questions. Completing this may unlock gated videos!</div><button class="hw-btn" onclick="startHw()">Start Assignment →</button></div>';}
 function renderHomeworkDone(result){
+  const el=document.getElementById('tab-homework');if(!el)return;
   const pct=result.total>0?Math.round(result.score/result.total*100):0;const clr=pct>=70?'var(--accent)':pct>=50?'var(--amber)':'var(--red)';
   let rev='<div style="margin-top:26px"><div class="review-title">Assignment Review</div>';
   hwQuestions.forEach(function(q,i){const ok=result.userans&&result.userans[i]===q.correct;const al=result.userans&&result.userans[i];const ans=al?(q[al]?al.toUpperCase()+' — '+q[al]:al.toUpperCase()):'—';const corr=q.correct?(q[q.correct]?q.correct.toUpperCase()+' — '+q[q.correct]:q.correct.toUpperCase()):'—';rev+='<div class="review-item '+(ok?'correct':'wrong')+'"><div class="review-meta"><span class="rv-lbl">Q'+(i+1)+'</span><span class="rbadge '+(ok?'correct':'wrong')+'">'+(ok?'✓ Correct':'✗ Wrong')+'</span></div><div class="rv-q">'+(q.text||'Choose:')+'</div><div class="rv-ans">Your answer: <span>'+ans+'</span></div>'+(!ok?'<div class="rv-correct">✓ Correct: '+corr+'</div>':'')+'</div>';});
   rev+='</div>';
-  document.getElementById('tab-homework').innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:12px">✅</div><div class="hw-title" style="color:var(--accent)">Assignment Complete!</div><div style="font-family:var(--mono);font-size:2.5rem;font-weight:700;color:'+clr+';margin:12px 0 5px">'+result.score+'<span style="font-size:1.1rem;color:var(--muted);">/'+result.total+'</span></div><div style="font-size:.82rem;color:var(--muted)">'+pct+'% — '+(pct>=70?'Excellent!':pct>=50?'Good job!':'Keep practicing!')+'</div></div>'+rev;
+  el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:12px">✅</div><div class="hw-title" style="color:var(--accent)">Assignment Complete!</div><div style="font-family:var(--mono);font-size:2.5rem;font-weight:700;color:'+clr+';margin:12px 0 5px">'+result.score+'<span style="font-size:1.1rem;color:var(--muted);">/'+result.total+'</span></div><div style="font-size:.82rem;color:var(--muted)">'+pct+'% — '+(pct>=70?'Excellent!':pct>=50?'Good job!':'Keep practicing!')+'</div></div>'+rev;
 }
 window.startHw=function(){showLoader('Preparing…');setTimeout(function(){hwCurIdx=0;hwUserAns={};renderHwQ();hideLoader();},300);};
 function renderHwQ(){
+  const el=document.getElementById('tab-homework');if(!el)return;
   const q=hwQuestions[hwCurIdx];if(!q)return;
   const pct=Math.round((hwCurIdx+1)/hwQuestions.length*100);const count=q.optionsCount||4;const prevHidden=hwCurIdx===0?'hidden':'';const isLast=hwCurIdx<hwQuestions.length-1;
-  document.getElementById('tab-homework').innerHTML='<div class="quiz-wrap"><div class="progress-row"><span class="q-count">'+(hwCurIdx+1)+'/'+hwQuestions.length+'</span><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%"></div></div></div><div class="q-card"><div class="q-label">Assignment · Q'+(hwCurIdx+1)+'</div>'+(q.image?'<img src="'+q.image+'" class="q-img" alt="">':'')+'<div class="q-text">'+(q.text||'Choose:')+'</div><div class="options">'+OPT_LETTERS.slice(0,count).map(opt=>'<label class="opt"><input type="radio" name="hw" value="'+opt+'" '+(hwUserAns[hwCurIdx]===opt?'checked':'')+'><span class="opt-key">'+opt.toUpperCase()+'</span><span class="opt-text">'+(q[opt]||'')+'</span></label>').join('')+'</div></div><div class="quiz-nav"><button class="q-btn ghost '+prevHidden+'" onclick="saveHwAns();hwCurIdx--;renderHwQ()">← Previous</button>'+(isLast?'<button class="q-btn primary" onclick="saveHwAns();hwCurIdx++;renderHwQ()">Next →</button>':'<button class="q-btn primary" onclick="saveHwAns();submitHw()">Submit ✓</button>')+'</div></div>';
+  el.innerHTML='<div class="quiz-wrap"><div class="progress-row"><span class="q-count">'+(hwCurIdx+1)+'/'+hwQuestions.length+'</span><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%"></div></div></div><div class="q-card"><div class="q-label">Assignment · Q'+(hwCurIdx+1)+'</div>'+(q.image?'<img src="'+q.image+'" class="q-img" alt="">':'')+'<div class="q-text">'+(q.text||'Choose:')+'</div><div class="options">'+OPT_LETTERS.slice(0,count).map(opt=>'<label class="opt"><input type="radio" name="hw" value="'+opt+'" '+(hwUserAns[hwCurIdx]===opt?'checked':'')+'><span class="opt-key">'+opt.toUpperCase()+'</span><span class="opt-text">'+(q[opt]||'')+'</span></label>').join('')+'</div></div><div class="quiz-nav"><button class="q-btn ghost '+prevHidden+'" onclick="saveHwAns();hwCurIdx--;renderHwQ()">← Previous</button>'+(isLast?'<button class="q-btn primary" onclick="saveHwAns();hwCurIdx++;renderHwQ()">Next →</button>':'<button class="q-btn primary" onclick="saveHwAns();submitHw()">Submit ✓</button>')+'</div></div>';
 }
 function saveHwAns(){const s=document.querySelector('input[name="hw"]:checked');if(s)hwUserAns[hwCurIdx]=s.value;}
 async function submitHw(){
   saveHwAns();showLoader('Submitting…');
   let score=0;hwQuestions.forEach((q,i)=>{if(hwUserAns[i]===q.correct)score++;});
   const res={email:currentUser.email,hw_id:hwData.id,lesson:lessonData&&lessonData.name||'',score,total:hwQuestions.length,userans:hwUserAns};
-  await db.from('hw_results').insert([res]).catch(()=>{});
+  try{await db.from('hw_results').insert([res]);}catch(e){}
   hwDone=true;hwResultsMap[hwData.id]=Object.assign({},res);renderHomeworkDone(res);hideLoader();
 }
 
@@ -1088,15 +1143,16 @@ function unlockPostExam(skipAnim,msgObj){
     const r=50,circ=2*Math.PI*r,off=circ-(pct/100)*circ;
     document.getElementById('scoreBanner').innerHTML='<div class="score-ring"><svg width="116" height="116" viewBox="0 0 116 116"><circle cx="58" cy="58" r="'+r+'" fill="none" stroke="var(--border2)" stroke-width="7"/><circle cx="58" cy="58" r="'+r+'" fill="none" stroke="'+clr+'" stroke-width="7" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'" stroke-linecap="round" style="transition:stroke-dashoffset 1s ease;filter:drop-shadow(0 0 6px '+clr+')"/></svg><div class="score-n" style="color:'+clr+'">'+score+'</div><div class="score-pct">'+pct+'%</div></div><div class="score-of">Out of '+total+' questions</div><div class="score-msg">'+(prev?'✦ You already completed this exam':'✦ Score recorded!')+'</div><div class="score-unlock">✅ Videos &amp; PDF Unlocked</div>';
   }
-  ['videos','pdf'].forEach(t=>document.getElementById('btn-'+t+'-tab').classList.remove('locked'));
+  ['videos','pdf'].forEach(t=>{const btn=document.getElementById('btn-'+t+'-tab');if(btn)btn.classList.remove('locked');});
 }
 
 function startTimer(){
   timeLeft=examDurationMins*60;
   examTimer=setInterval(function(){
     const m=Math.floor(timeLeft/60),s=timeLeft%60;
-    document.getElementById('timerVal').textContent=m+':'+(s<10?'0'+s:s);
-    if(timeLeft<=120)document.getElementById('timerBox').classList.add('urgent');
+    const tv=document.getElementById('timerVal');
+    if(tv)tv.textContent=m+':'+(s<10?'0'+s:s);
+    if(timeLeft<=120){const tb=document.getElementById('timerBox');if(tb)tb.classList.add('urgent');}
     if(timeLeft--<=0){clearInterval(examTimer);alert('Time is up!');document.getElementById('finishBtn').click();}
   },1000);
 }
