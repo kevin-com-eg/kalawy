@@ -603,6 +603,53 @@ function getUserAvatarUrl(user){
   const raw = meta.avatar_url || meta.picture || meta.photo_url || meta.image_url || '';
   return resolvePublicImage(raw, ['avatars','users','profiles','images','uploads']);
 }
+
+function subjectTitle(s){
+  return s?.name || s?.name_ar || s?.name_en || s?.title || s?.subject_name || s?.slug || '---';
+}
+function subjectIconClassOrEmoji(s, fallbackClass){
+  const icon = String(s?.icon || '').trim();
+  return icon || fallbackClass;
+}
+function lessonTitle(ls){
+  return ls?.name || ls?.title || ls?.lesson_name || '---';
+}
+function lessonChapterName(ls){
+  const raw = ls?.chapter || ls?.chapter_name || ls?.unit || ls?.section || '';
+  return raw && String(raw).trim() ? String(raw).trim() : t('general');
+}
+function lessonImageRaw(ls){
+  return ls?.chapter_image || ls?.thumbnail_url || ls?.image_url || ls?.thumb_url || ls?.thumbnail || ls?.image || '';
+}
+function lessonThumbRaw(ls){
+  return ls?.thumbnail_url || ls?.image_url || ls?.thumb_url || ls?.thumbnail || ls?.image || ls?.chapter_image || '';
+}
+function codeLessonId(c){
+  return c?.lessonid || c?.lesson_id || c?.lesson || c?.course_id || null;
+}
+function codeUsedBy(c){
+  return String(c?.usedby || c?.used_by || c?.user_email || c?.email || c?.student_email || '').toLowerCase();
+}
+function codeIsUsed(c){
+  return c?.used === true || c?.is_used === true || String(c?.used).toLowerCase() === 'true' || String(c?.is_used).toLowerCase() === 'true';
+}
+async function loadCurrentProfile(){
+  currentProfile = null;
+  try{
+    const {data} = await db
+      .from('users')
+      .select('*')
+      .or(`auth_user_id.eq.${currentUser.id},email.eq.${currentUser.email}`)
+      .maybeSingle();
+    currentProfile = data || null;
+  }catch(e){ currentProfile = null; }
+  if(currentProfile?.is_blocked){
+    showToast(getLang()==='ar'?'تم حظر حسابك. تواصل مع الدعم.':'Your account is blocked. Contact support.', 3500);
+    await db.auth.signOut();
+    setTimeout(()=>{ window.location.href='/login.html?blocked=1'; }, 700);
+    throw new Error('blocked');
+  }
+}
 function imageFallback(el, name, cls){
   const d = document.createElement('div');
   d.className = cls;
@@ -612,6 +659,7 @@ function imageFallback(el, name, cls){
 
 /* ============ STATE ============ */
 let currentUser = null;
+let currentProfile = null;
 let boughtIds = [];
 let curTeacherId = null;
 let curTeacherName = '';
@@ -734,16 +782,26 @@ async function init(){
   const {data:{session}}=await db.auth.getSession();
   if(!session){window.location.href='/login.html';return;}
   currentUser=session.user;
-  await fetchBought();
-  await loadSubjects();
+  try{
+    await loadCurrentProfile();
+    await fetchBought();
+    await loadSubjects();
+  }catch(e){
+    console.error(e);
+    hideLoader();
+  }
 }
 
 /* DATA */
 async function fetchBought(){
   try{
-    const {data:codes}=await db.from('codes').select('lessonid').eq('usedby',currentUser.email).eq('used',true);
-    if(codes) boughtIds=codes.map(c=>String(c.lessonid));
-  }catch(e){console.error(e);}
+    const email = String(currentUser?.email || '').toLowerCase();
+    const {data:codes,error}=await db.from('codes').select('*');
+    if(error){ console.warn(error); boughtIds=[]; return; }
+    boughtIds=(codes||[])
+      .filter(c => codeIsUsed(c) && codeUsedBy(c) === email && codeLessonId(c))
+      .map(c => String(codeLessonId(c)));
+  }catch(e){console.error(e); boughtIds=[];}
 }
 function isBought(id){ return boughtIds.includes(String(id))||localStorage.getItem('paid_lesson_'+id)==='true'; }
 
@@ -811,23 +869,27 @@ async function loadSubjects(){
 function renderSubjects(subjects){
   const grid=document.getElementById('subjectsGrid');
   grid.innerHTML='';
-  const l=getLang();
   subjects.forEach((s,i)=>{
-    const icon=ICONS[i%ICONS.length];
-    const color=ICON_COLORS[i%ICON_COLORS.length];
+    const fallbackIcon=ICONS[i%ICONS.length];
+    const icon=subjectIconClassOrEmoji(s, fallbackIcon);
+    const color=s.color || ICON_COLORS[i%ICON_COLORS.length];
+    const title=subjectTitle(s);
     const cnt=s._count||0;
     const cntText=cnt+' '+(cnt===1?t('course'):t('courses'));
+    const iconHtml = icon.startsWith('fa-')
+      ? `<i class="fa-solid ${safeText(icon)}" style="color:${safeText(color)}"></i>`
+      : `<span style="font-size:1.6rem">${safeText(icon)}</span>`;
     const card=document.createElement('div');
     card.className='subject-card';
-    card.setAttribute('data-name',(s.name||'').toLowerCase());
+    card.setAttribute('data-name',title.toLowerCase());
     card.innerHTML=`
-      <div class="subject-icon" style="background:${color}15">
-        <i class="fa-solid ${icon}" style="color:${color}"></i>
+      <div class="subject-icon" style="background:${safeText(color)}15">
+        ${iconHtml}
       </div>
-      <div class="subject-name">${s.name||'---'}</div>
-      <div class="subject-count">${cntText}</div>
+      <div class="subject-name">${safeText(title)}</div>
+      <div class="subject-count">${safeText(cntText)}</div>
     `;
-    card.addEventListener('click',()=>loadTeachers(s.id,s.name));
+    card.addEventListener('click',()=>loadTeachers(s.id,title));
     grid.appendChild(card);
   });
 }
@@ -844,7 +906,8 @@ function filterSubjects(){
 async function loadTeachers(subId,subName){
   showLoader();
   curSubId=subId; curSubName=subName||'---';
-  const {data:teachers,error}=await db.from('teachers').select('*').eq('subject_id',subId);
+  const {data:teacherRows,error}=await db.from('teachers').select('*').eq('subject_id',subId);
+  const teachers=(teacherRows||[]).filter(t=>t.is_active!==false && t.is_blocked!==true);
   const grid=document.getElementById('teachersGrid');
   grid.innerHTML='';
   const l=getLang();
@@ -855,12 +918,12 @@ async function loadTeachers(subId,subName){
     {label:curSubName}
   ]);
   showView('teachers');
-  if(error||!teachers||!teachers.length){ grid.innerHTML=emptyHTML('fa-chalkboard-user',t('no_teachers'),t('no_teachers_sub')); hideLoader(); return; }
+  if(error||!teachers.length){ grid.innerHTML=emptyHTML('fa-chalkboard-user',t('no_teachers'),t('no_teachers_sub')); hideLoader(); return; }
   teachers.forEach(tc=>{
     const name=tc.name||'---';
     const imgUrl=getTeacherImageUrl(tc);
     const avHtml=imgUrl
-      ?`<img src="${safeText(imgUrl)}" alt="${safeText(name)}" class="teacher-av" loading="lazy" onerror="imageFallback(this,'${safeText(name)}','teacher-av-fb')">`
+      ?`<img src="${safeText(imgUrl)}" alt="${safeText(name)}" class="teacher-av" loading="lazy" onerror="imageFallback(this,this.alt,'teacher-av-fb')">`
       :`<div class="teacher-av-fb">${safeInitial(name)}</div>`;
     const card=document.createElement('div');
     card.className='teacher-card';
@@ -868,8 +931,8 @@ async function loadTeachers(subId,subName){
       <div class="teacher-banner"><div class="teacher-banner-pattern"></div></div>
       <div class="teacher-av-wrap">${avHtml}</div>
       <div class="teacher-body">
-        <div class="teacher-name">${name}</div>
-        <div class="teacher-badge"><i class="fa-solid fa-tag"></i> ${curSubName}</div>
+        <div class="teacher-name">${safeText(name)}</div>
+        <div class="teacher-badge"><i class="fa-solid fa-tag"></i> ${safeText(curSubName)}</div>
         <button class="teacher-cta"><i class="fa-solid fa-layer-group"></i> ${t('view_lessons')}</button>
       </div>
     `;
@@ -902,14 +965,14 @@ async function loadChapters(teacher){
   // Build teacher hero
   const heroImgUrl=getTeacherImageUrl(teacher);
   const imgHtml=heroImgUrl
-    ?`<img src="${safeText(heroImgUrl)}" alt="${safeText(curTeacherName)}" class="teacher-hero-img" loading="lazy" onerror="imageFallback(this,'${safeText(curTeacherName)}','teacher-hero-fb')">`
+    ?`<img src="${safeText(heroImgUrl)}" alt="${safeText(curTeacherName)}" class="teacher-hero-img" loading="lazy" onerror="imageFallback(this,this.alt,'teacher-hero-fb')">`
     :`<div class="teacher-hero-fb">${safeInitial(curTeacherName)}</div>`;
   document.getElementById('teacherHero').innerHTML=`
     <div class="teacher-hero">
       ${imgHtml}
       <div class="teacher-hero-info">
         <div class="teacher-hero-name">${curTeacherName}</div>
-        <div class="teacher-hero-sub">${curSubName}</div>
+        <div class="teacher-hero-sub">${safeText(curSubName)}</div>
         <div class="teacher-hero-badge"><i class="fa-solid fa-layer-group" style="margin-inline-end:5px"></i>${(lessons||[]).length} ${l==='ar'?'حصة':'lessons'}</div>
       </div>
     </div>
@@ -956,7 +1019,7 @@ async function loadChapters(teacher){
       </div>
       <div class="chapter-card-body">
         <div class="chapter-card-num"><i class="fa-solid fa-layer-group"></i> ${t('chapter_label')} ${idx+1}</div>
-        <div class="chapter-card-name">${chName}</div>
+        <div class="chapter-card-name">${safeText(chName)}</div>
         <div class="chapter-card-count"><i class="fa-solid fa-video"></i> ${count} ${t('lessons_count')}</div>
       </div>
     `;
@@ -1046,9 +1109,9 @@ function renderLessonCards(lessons, grid, l){
   lessons.forEach(ls=>{
     const bought=isBought(ls.id);
     const isFree=!ls.price||ls.price===0||ls.price==='0';
-    const name=ls.name||'---';
+    const name=lessonTitle(ls);
     const price=isFree?(l==='ar'?'مجاني':'Free'):`${ls.price} ${t('egp')}`;
-    const thumbSrc=getLessonImageUrl(ls.thumbnail_url||ls.image_url||ls.image||ls.thumb_url||ls.thumbnail||'');
+    const thumbSrc=getLessonImageUrl(lessonThumbRaw(ls));
     const thumbHtml=thumbSrc
       ?`<img src="${safeText(thumbSrc)}" alt="${safeText(name)}" loading="lazy" onerror="this.outerHTML='${phHTML()}'">`
       :phHTML();
@@ -1108,12 +1171,12 @@ async function renderMyLectures(){
     const tName=ls.teachers?ls.teachers.name:'';
     const row=document.createElement('div');
     row.className='my-row';
-    const myThumb=getLessonImageUrl(ls.thumbnail_url||ls.image_url||ls.image||ls.thumb_url||ls.thumbnail||'');
+    const myThumb=getLessonImageUrl(lessonThumbRaw(ls));
     const thHtml=myThumb?`<img src="${safeText(myThumb)}" alt="${safeText(ls.name||'')}" loading="lazy" onerror="this.outerHTML='<i class=&quot;fa-solid fa-video&quot;></i>'">`:`<i class="fa-solid fa-video"></i>`;
     row.innerHTML=`
       <div class="my-thumb">${thHtml}</div>
       <div class="my-info">
-        <div class="my-name">${ls.name||'---'}</div>
+        <div class="my-name">${safeText(lessonTitle(ls))}</div>
         ${tName?`<div class="my-teacher"><i class="fa-solid fa-chalkboard-user" style="margin-inline-end:4px;color:var(--primary)"></i>${tName}</div>`:''}
       </div>
       <span class="badge-on"><i class="fa-solid fa-circle-check"></i> ${t('activated')}</span>
@@ -1129,11 +1192,11 @@ async function renderMyLectures(){
 /* PROFILE */
 function userDisplayName(){
   const meta=currentUser?.user_metadata||{};
-  return meta.full_name||meta.name||meta.display_name||currentUser?.email?.split('@')[0]||t('no_name');
+  return currentProfile?.name || currentProfile?.full_name || currentProfile?.display_name || meta.full_name||meta.name||meta.display_name||currentUser?.email?.split('@')[0]||t('no_name');
 }
 function userPhone(){
   const meta=currentUser?.user_metadata||{};
-  return meta.phone||meta.phone_number||currentUser?.phone||'---';
+  return currentProfile?.phone || currentProfile?.parentphone || currentProfile?.parent_phone || meta.phone||meta.phone_number||currentUser?.phone||'---';
 }
 async function renderProfile(){
   const box=document.getElementById('profileBox');
@@ -1144,9 +1207,9 @@ async function renderProfile(){
   const email=currentUser?.email||'---';
   const uid=currentUser?.id?String(currentUser.id).slice(0,8)+'...':'---';
   const joined=currentUser?.created_at?new Date(currentUser.created_at).toLocaleDateString(l==='ar'?'ar-EG':'en-US'):'---';
-  const avatar=getUserAvatarUrl(currentUser);
+  const avatar=resolvePublicImage(currentProfile?.avatar_url || currentProfile?.image_url || currentProfile?.photo_url || '', ['avatars','users','profiles','images','uploads']) || getUserAvatarUrl(currentUser);
   const avatarHtml=avatar
-    ? `<img src="${safeText(avatar)}" class="profile-avatar" alt="${safeText(name)}" onerror="imageFallback(this,'${safeText(name)}','profile-avatar-fb')">`
+    ? `<img src="${safeText(avatar)}" class="profile-avatar" alt="${safeText(name)}" onerror="imageFallback(this,this.alt,'profile-avatar-fb')">`
     : `<div class="profile-avatar-fb">${safeInitial(name)}</div>`;
 
   let activated=[];
@@ -1156,11 +1219,11 @@ async function renderProfile(){
   }catch(e){ activated=[]; }
 
   const miniLessons = activated.length ? activated.map(ls=>{
-    const th=getLessonImageUrl(ls.thumbnail_url||ls.image_url||ls.image||ls.thumb_url||ls.thumbnail||'');
+    const th=getLessonImageUrl(lessonThumbRaw(ls));
     const thHtml=th?`<img src="${safeText(th)}" alt="${safeText(ls.name||'')}" onerror="this.outerHTML='<i class=&quot;fa-solid fa-video&quot;></i>'">`:`<i class="fa-solid fa-video"></i>`;
     return `<div class="profile-mini-row" onclick="watchLesson('${ls.id}')">
       <div class="profile-mini-thumb">${thHtml}</div>
-      <div class="profile-mini-title">${safeText(ls.name||'---')}</div>
+      <div class="profile-mini-title">${safeText(lessonTitle(ls))}</div>
       <i class="fa-solid fa-circle-play" style="color:var(--primary)"></i>
     </div>`;
   }).join('') : emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub'));
@@ -1184,6 +1247,8 @@ async function renderProfile(){
           <div class="profile-info-row"><span><i class="fa-solid fa-user"></i> ${t('name')}</span><strong>${safeText(name)}</strong></div>
           <div class="profile-info-row"><span><i class="fa-solid fa-envelope"></i> ${t('email')}</span><strong>${safeText(email)}</strong></div>
           <div class="profile-info-row"><span><i class="fa-solid fa-phone"></i> ${t('phone')}</span><strong>${safeText(userPhone())}</strong></div>
+          ${currentProfile?.grade ? `<div class="profile-info-row"><span><i class="fa-solid fa-layer-group"></i> ${getLang()==='ar'?'الصف':'Grade'}</span><strong>${safeText(currentProfile.grade)}</strong></div>` : ''}
+          ${currentProfile?.school ? `<div class="profile-info-row"><span><i class="fa-solid fa-school"></i> ${getLang()==='ar'?'المدرسة':'School'}</span><strong>${safeText(currentProfile.school)}</strong></div>` : ''}
           <div class="profile-info-row"><span><i class="fa-solid fa-fingerprint"></i> ${t('user_id')}</span><strong>${safeText(uid)}</strong></div>
           <div class="profile-info-row"><span><i class="fa-solid fa-calendar-days"></i> ${t('joined')}</span><strong>${safeText(joined)}</strong></div>
         </div>
