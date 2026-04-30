@@ -6,7 +6,8 @@
 <title>Kalawy EDU</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -286,8 +287,8 @@ main { max-width: 1200px; margin: 0 auto; }
 /* BOTTOM NAV */
 .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); border-top: 1px solid var(--nav-border); padding: 8px 0 12px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
 .bn-inner { display: flex; justify-content: space-around; align-items: center; }
-.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 6px 14px; border-radius: 10px; border: none; background: none; font-family: inherit; color: var(--text3); font-size: 0.65rem; font-weight: 800; transition: color 0.2s; }
-.bn-item i { font-size: 1.15rem; }
+.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 6px 10px; border-radius: 10px; border: none; background: none; font-family: inherit; color: var(--text3); font-size: 0.65rem; font-weight: 800; transition: color 0.2s; }
+.bn-item i { font-size: 1.12rem; }
 .bn-item.active { color: var(--primary); }
 .bn-item.danger { color: var(--red); }
 
@@ -295,6 +296,80 @@ main { max-width: 1200px; margin: 0 auto; }
 .skel { background: var(--bg3); border-radius: 8px; animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0%,100%{opacity:0.5;} 50%{opacity:1;} }
 .hidden { display: none !important; }
+
+
+/* PROFILE */
+.profile-hero {
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 26px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.profile-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 10% 40%, rgba(255,255,255,.12) 1px, transparent 1px), radial-gradient(circle at 90% 10%, rgba(255,255,255,.10) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.profile-avatar, .profile-avatar-fb {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,.5);
+  object-fit: cover;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,.2);
+}
+.profile-avatar-fb {
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 900;
+}
+.profile-info { position: relative; z-index: 1; min-width: 0; }
+.profile-name { font-size: 1.5rem; font-weight: 900; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.profile-email { font-size: .92rem; opacity: .86; font-weight: 700; word-break: break-word; }
+.profile-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.profile-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.18); padding: 5px 12px; border-radius: 999px; font-size: .76rem; font-weight: 900; }
+.profile-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; }
+.profile-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
+.profile-card h3 { font-size: 1rem; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.profile-card h3 i { color: var(--primary); }
+.profile-info-list { display: flex; flex-direction: column; gap: 12px; }
+.profile-info-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px; border-radius: var(--radius-sm); background: var(--bg3); }
+.profile-info-row span { color: var(--text2); font-size: .82rem; font-weight: 800; display: inline-flex; align-items: center; gap: 7px; }
+.profile-info-row strong { color: var(--text); font-size: .86rem; font-weight: 900; text-align: end; word-break: break-word; }
+.profile-actions { display: grid; gap: 10px; }
+.profile-action { width: 100%; padding: 12px 14px; border: 1px solid var(--card-border); border-radius: var(--radius-sm); background: var(--card); color: var(--text); font-family: inherit; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; }
+.profile-action:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+.profile-action.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.profile-action.primary:hover { background: var(--primary-dark); color: #fff; }
+.profile-action.danger { color: var(--red); }
+.profile-action.danger:hover { border-color: var(--red); background: rgba(217,48,37,.08); color: var(--red); }
+.profile-mini-lessons { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.profile-mini-row { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--card-border); border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; }
+.profile-mini-row:hover { border-color: var(--primary); }
+.profile-mini-thumb { width: 54px; height: 38px; border-radius: 8px; background: var(--thumb-placeholder); overflow: hidden; flex-shrink: 0; display: grid; place-items: center; color: var(--text3); }
+.profile-mini-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.profile-mini-title { flex: 1; min-width: 0; font-size: .82rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 700px) {
+  .profile-hero { flex-direction: column; text-align: center; padding: 24px 18px; }
+  .profile-name { white-space: normal; }
+  .profile-badges { justify-content: center; }
+  .profile-grid { grid-template-columns: 1fr; }
+  .profile-info-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .profile-info-row strong { text-align: start; }
+}
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
@@ -398,6 +473,18 @@ main { max-width: 1200px; margin: 0 auto; }
   </main>
 </div>
 
+
+<!-- PAGE: PROFILE -->
+<div class="page" id="page-profile">
+  <main>
+    <div class="sec-hd">
+      <h1 id="profileHd">حسابي <em>الشخصي</em></h1>
+      <p id="profileSub">بياناتك ومحاضراتك وإعدادات الحساب</p>
+    </div>
+    <div id="profileBox"></div>
+  </main>
+</div>
+
 <!-- PAGE: MY LECTURES -->
 <div class="page" id="page-lectures">
   <main>
@@ -463,6 +550,49 @@ const SUPABASE_URL = "https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_KEY = "sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+/* ============ IMAGE + SAFE HELPERS ============ */
+function safeText(v){
+  return String(v ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+}
+function safeInitial(name){
+  const s = String(name || 'K').trim();
+  return (s.charAt(0) || 'K').toUpperCase();
+}
+function isFullUrl(src){ return /^https?:\/\//i.test(String(src||'')); }
+function resolvePublicImage(raw, buckets){
+  if(!raw) return '';
+  const src = String(raw).trim();
+  if(!src) return '';
+  if(isFullUrl(src)) return src;
+  if(src.startsWith('/storage/v1/object/public/')) return SUPABASE_URL + src;
+  if(src.startsWith('/')) return src;
+  for(const bucket of buckets){
+    try{
+      const {data} = db.storage.from(bucket).getPublicUrl(src);
+      if(data && data.publicUrl) return data.publicUrl;
+    }catch(e){}
+  }
+  return src;
+}
+function getTeacherImageUrl(tc){
+  const raw = tc?.image_url || tc?.photo_url || tc?.avatar_url || tc?.image || tc?.photo || tc?.picture || '';
+  return resolvePublicImage(raw, ['teachers','teacher-images','teacher_images','avatars','images','uploads']);
+}
+function getLessonImageUrl(raw){
+  return resolvePublicImage(raw, ['lessons','lesson-images','lesson_images','thumbnails','images','uploads']);
+}
+function getUserAvatarUrl(user){
+  const meta = user?.user_metadata || {};
+  const raw = meta.avatar_url || meta.picture || meta.photo_url || meta.image_url || '';
+  return resolvePublicImage(raw, ['avatars','users','profiles','images','uploads']);
+}
+function imageFallback(el, name, cls){
+  const d = document.createElement('div');
+  d.className = cls;
+  d.textContent = safeInitial(name);
+  el.replaceWith(d);
+}
+
 /* ============ STATE ============ */
 let currentUser = null;
 let boughtIds = [];
@@ -477,7 +607,7 @@ let allSubjects = [];
 /* ============ I18N ============ */
 const T = {
   ar: {
-    loading:'جاري تحميل البيانات...',home:'الرئيسية',lectures:'محاضراتي',contact:'تواصل معنا',logout:'خروج',
+    loading:'جاري تحميل البيانات...',home:'الرئيسية',profile:'حسابي',lectures:'محاضراتي',contact:'تواصل معنا',logout:'خروج',
     sub_title:'المرحلة الثانوية',sub_sub:'اختر المقرر الدراسي للبدء في التعلم',
     search_ph:'ابحث عن مادة...',
     teachers_of:'مدرسو مادة',teachers_sub:'اختر المدرس المناسب لك',
@@ -493,13 +623,14 @@ const T = {
     no_my:'لم تفعّل أي دروس بعد',no_my_sub:'تصفح المواد وابدأ التعلم',
     enter:'دخول',egp:'ج.م',
     contact_hd:'تواصل مع الدعم الفني',contact_sub:'نحن هنا لمساعدتك في أي وقت',
+    profile_hd:'حسابي الشخصي',profile_sub:'بياناتك ومحاضراتك وإعدادات الحساب',account_info:'بيانات الحساب',quick_actions:'اختصارات سريعة',recent_lessons:'آخر المحاضرات المفعّلة',name:'الاسم',email:'البريد',phone:'الهاتف',user_id:'رقم الحساب',joined:'تاريخ التسجيل',activated_lessons:'محاضرات مفعّلة',open_my_lectures:'فتح محاضراتي',back_home:'العودة للرئيسية',clear_cache:'تحديث البيانات',cache_cleared:'تم تحديث البيانات',no_name:'طالب Kalawy',student:'طالب',settings:'الإعدادات',
     wa:'واتساب',wa_sub:'تواصل مباشرة عبر واتساب',mail:'البريد الإلكتروني',
     tg:'تيليغرام',tg_sub:'تابع آخر التحديثات',
     theme_label:'مظهر',lang_label:'لغة',view_lessons:'عرض الحصص',
     chapter_label:'فصل',chapter_preview:'معاينة الفصل',lesson_preview:'معاينة الحصة',
   },
   en: {
-    loading:'Loading data...',home:'Home',lectures:'My Lectures',contact:'Contact',logout:'Logout',
+    loading:'Loading data...',home:'Home',profile:'Profile',lectures:'My Lectures',contact:'Contact',logout:'Logout',
     sub_title:'High School Stage',sub_sub:'Choose your course to start learning',
     search_ph:'Search for a subject...',
     teachers_of:'Teachers of',teachers_sub:'Choose your preferred teacher',
@@ -515,6 +646,7 @@ const T = {
     no_my:'No activated lessons yet',no_my_sub:'Browse subjects and start learning',
     enter:'Enter',egp:'EGP',
     contact_hd:'Contact Support',contact_sub:'We are here to help you anytime',
+    profile_hd:'My Profile',profile_sub:'Your data, lectures, and account settings',account_info:'Account Info',quick_actions:'Quick Actions',recent_lessons:'Recent Activated Lessons',name:'Name',email:'Email',phone:'Phone',user_id:'Account ID',joined:'Joined',activated_lessons:'Activated Lessons',open_my_lectures:'Open My Lectures',back_home:'Back Home',clear_cache:'Refresh Data',cache_cleared:'Data refreshed',no_name:'Kalawy Student',student:'Student',settings:'Settings',
     wa:'WhatsApp',wa_sub:'Contact directly via WhatsApp',mail:'Email',
     tg:'Telegram',tg_sub:'Follow latest updates',
     theme_label:'Theme',lang_label:'Lang',view_lessons:'View Lessons',
@@ -549,6 +681,8 @@ function applyLang(){
   document.getElementById('bnt-lang').textContent=t('lang_label');
   document.getElementById('bnt-logout').textContent=t('logout');
   document.getElementById('langBtn').textContent=l==='ar'?'EN':'AR';
+  const ph = document.getElementById('profileHd'); if(ph) ph.innerHTML=l==='ar'?'حسابي <em>الشخصي</em>':'My <em>Profile</em>';
+  const ps = document.getElementById('profileSub'); if(ps) ps.textContent=t('profile_sub');
 }
 function toggleLang(){
   const n=getLang()==='ar'?'en':'ar';
@@ -704,10 +838,10 @@ async function loadTeachers(subId,subName){
   if(error||!teachers||!teachers.length){ grid.innerHTML=emptyHTML('fa-chalkboard-user',t('no_teachers'),t('no_teachers_sub')); hideLoader(); return; }
   teachers.forEach(tc=>{
     const name=tc.name||'---';
-    const initial=name.charAt(0).toUpperCase();
-    const avHtml=tc.image_url
-      ?`<img src="${tc.image_url}" alt="${name}" class="teacher-av" onerror="this.outerHTML='<div class=\\'teacher-av-fb\\'>${initial}</div>'">`
-      :`<div class="teacher-av-fb">${initial}</div>`;
+    const imgUrl=getTeacherImageUrl(tc);
+    const avHtml=imgUrl
+      ?`<img src="${safeText(imgUrl)}" alt="${safeText(name)}" class="teacher-av" loading="lazy" onerror="imageFallback(this,'${safeText(name)}','teacher-av-fb')">`
+      :`<div class="teacher-av-fb">${safeInitial(name)}</div>`;
     const card=document.createElement('div');
     card.className='teacher-card';
     card.innerHTML=`
@@ -746,10 +880,10 @@ async function loadChapters(teacher){
   ]);
 
   // Build teacher hero
-  const initial=curTeacherName.charAt(0).toUpperCase();
-  const imgHtml=teacher.image_url
-    ?`<img src="${teacher.image_url}" alt="${curTeacherName}" class="teacher-hero-img" onerror="this.outerHTML='<div class=\\'teacher-hero-fb\\'>${initial}</div>'">`
-    :`<div class="teacher-hero-fb">${initial}</div>`;
+  const heroImgUrl=getTeacherImageUrl(teacher);
+  const imgHtml=heroImgUrl
+    ?`<img src="${safeText(heroImgUrl)}" alt="${safeText(curTeacherName)}" class="teacher-hero-img" loading="lazy" onerror="imageFallback(this,'${safeText(curTeacherName)}','teacher-hero-fb')">`
+    :`<div class="teacher-hero-fb">${safeInitial(curTeacherName)}</div>`;
   document.getElementById('teacherHero').innerHTML=`
     <div class="teacher-hero">
       ${imgHtml}
@@ -774,17 +908,17 @@ async function loadChapters(teacher){
   const chapters={};
   lessons.forEach(ls=>{
     const ch=(ls.chapter&&ls.chapter.trim())?ls.chapter.trim():t('general');
-    if(!chapters[ch]){ chapters[ch]={lessons:[],image:ls.chapter_image||ls.thumbnail_url||null,index:Object.keys(chapters).length+1}; }
+    if(!chapters[ch]){ chapters[ch]={lessons:[],image:getLessonImageUrl(ls.chapter_image||ls.thumbnail_url||ls.image_url||ls.image||''),index:Object.keys(chapters).length+1}; }
     chapters[ch].lessons.push(ls);
     // Use chapter_image if available, else first lesson thumbnail
-    if(!chapters[ch].image && (ls.chapter_image||ls.thumbnail_url)){
-      chapters[ch].image=ls.chapter_image||ls.thumbnail_url;
+    if(!chapters[ch].image && (ls.chapter_image||ls.thumbnail_url||ls.image_url||ls.image)){
+      chapters[ch].image=getLessonImageUrl(ls.chapter_image||ls.thumbnail_url||ls.image_url||ls.image);
     }
   });
 
   Object.entries(chapters).forEach(([chName,chData],idx)=>{
     const count=chData.lessons.length;
-    const imgSrc=chData.image;
+    const imgSrc=getLessonImageUrl(chData.image);
     const thumbHtml=imgSrc
       ?`<img src="${imgSrc}" alt="${chName}" class="chapter-card-thumb" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
       :'';
@@ -894,8 +1028,9 @@ function renderLessonCards(lessons, grid, l){
     const isFree=!ls.price||ls.price===0||ls.price==='0';
     const name=ls.name||'---';
     const price=isFree?(l==='ar'?'مجاني':'Free'):`${ls.price} ${t('egp')}`;
-    const thumbHtml=ls.thumbnail_url
-      ?`<img src="${ls.thumbnail_url}" alt="${name}" onerror="this.outerHTML='${phHTML()}'">`
+    const thumbSrc=getLessonImageUrl(ls.thumbnail_url||ls.image_url||ls.image||ls.thumb_url||ls.thumbnail||'');
+    const thumbHtml=thumbSrc
+      ?`<img src="${safeText(thumbSrc)}" alt="${safeText(name)}" loading="lazy" onerror="this.outerHTML='${phHTML()}'">`
       :phHTML();
     const ribbon=bought?`<div class="lesson-ribbon"><i class="fa-solid fa-check"></i> ${t('activated')}</div>`:'';
     const timeAgo=ls.created_at?timeSince(new Date(ls.created_at),l):'';
@@ -953,7 +1088,8 @@ async function renderMyLectures(){
     const tName=ls.teachers?ls.teachers.name:'';
     const row=document.createElement('div');
     row.className='my-row';
-    const thHtml=ls.thumbnail_url?`<img src="${ls.thumbnail_url}" alt="${ls.name||''}">`:`<i class="fa-solid fa-video"></i>`;
+    const myThumb=getLessonImageUrl(ls.thumbnail_url||ls.image_url||ls.image||ls.thumb_url||ls.thumbnail||'');
+    const thHtml=myThumb?`<img src="${safeText(myThumb)}" alt="${safeText(ls.name||'')}" loading="lazy" onerror="this.outerHTML='<i class=&quot;fa-solid fa-video&quot;></i>'">`:`<i class="fa-solid fa-video"></i>`;
     row.innerHTML=`
       <div class="my-thumb">${thHtml}</div>
       <div class="my-info">
@@ -967,6 +1103,92 @@ async function renderMyLectures(){
   });
   box.appendChild(list);
   hideLoader();
+}
+
+
+/* PROFILE */
+function userDisplayName(){
+  const meta=currentUser?.user_metadata||{};
+  return meta.full_name||meta.name||meta.display_name||currentUser?.email?.split('@')[0]||t('no_name');
+}
+function userPhone(){
+  const meta=currentUser?.user_metadata||{};
+  return meta.phone||meta.phone_number||currentUser?.phone||'---';
+}
+async function renderProfile(){
+  const box=document.getElementById('profileBox');
+  if(!box) return;
+  showLoader();
+  const l=getLang();
+  const name=userDisplayName();
+  const email=currentUser?.email||'---';
+  const uid=currentUser?.id?String(currentUser.id).slice(0,8)+'...':'---';
+  const joined=currentUser?.created_at?new Date(currentUser.created_at).toLocaleDateString(l==='ar'?'ar-EG':'en-US'):'---';
+  const avatar=getUserAvatarUrl(currentUser);
+  const avatarHtml=avatar
+    ? `<img src="${safeText(avatar)}" class="profile-avatar" alt="${safeText(name)}" onerror="imageFallback(this,'${safeText(name)}','profile-avatar-fb')">`
+    : `<div class="profile-avatar-fb">${safeInitial(name)}</div>`;
+
+  let activated=[];
+  try{
+    const {data:allLessons}=await db.from('lessons').select('*,teachers(name,image_url)').limit(80);
+    activated=(allLessons||[]).filter(ls=>isBought(ls.id)).slice(0,4);
+  }catch(e){ activated=[]; }
+
+  const miniLessons = activated.length ? activated.map(ls=>{
+    const th=getLessonImageUrl(ls.thumbnail_url||ls.image_url||ls.image||ls.thumb_url||ls.thumbnail||'');
+    const thHtml=th?`<img src="${safeText(th)}" alt="${safeText(ls.name||'')}" onerror="this.outerHTML='<i class=&quot;fa-solid fa-video&quot;></i>'">`:`<i class="fa-solid fa-video"></i>`;
+    return `<div class="profile-mini-row" onclick="watchLesson('${ls.id}')">
+      <div class="profile-mini-thumb">${thHtml}</div>
+      <div class="profile-mini-title">${safeText(ls.name||'---')}</div>
+      <i class="fa-solid fa-circle-play" style="color:var(--primary)"></i>
+    </div>`;
+  }).join('') : emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub'));
+
+  box.innerHTML=`
+    <div class="profile-hero">
+      ${avatarHtml}
+      <div class="profile-info">
+        <div class="profile-name">${safeText(name)}</div>
+        <div class="profile-email">${safeText(email)}</div>
+        <div class="profile-badges">
+          <span class="profile-badge"><i class="fa-solid fa-user-graduate"></i> ${t('student')}</span>
+          <span class="profile-badge"><i class="fa-solid fa-circle-check"></i> ${boughtIds.length} ${t('activated_lessons')}</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-grid">
+      <div class="profile-card">
+        <h3><i class="fa-solid fa-id-card"></i> ${t('account_info')}</h3>
+        <div class="profile-info-list">
+          <div class="profile-info-row"><span><i class="fa-solid fa-user"></i> ${t('name')}</span><strong>${safeText(name)}</strong></div>
+          <div class="profile-info-row"><span><i class="fa-solid fa-envelope"></i> ${t('email')}</span><strong>${safeText(email)}</strong></div>
+          <div class="profile-info-row"><span><i class="fa-solid fa-phone"></i> ${t('phone')}</span><strong>${safeText(userPhone())}</strong></div>
+          <div class="profile-info-row"><span><i class="fa-solid fa-fingerprint"></i> ${t('user_id')}</span><strong>${safeText(uid)}</strong></div>
+          <div class="profile-info-row"><span><i class="fa-solid fa-calendar-days"></i> ${t('joined')}</span><strong>${safeText(joined)}</strong></div>
+        </div>
+      </div>
+      <div class="profile-card">
+        <h3><i class="fa-solid fa-bolt"></i> ${t('quick_actions')}</h3>
+        <div class="profile-actions">
+          <button class="profile-action primary" onclick="navigate('lectures')"><i class="fa-solid fa-circle-play"></i> ${t('open_my_lectures')}</button>
+          <button class="profile-action" onclick="navigate('home')"><i class="fa-solid fa-house"></i> ${t('back_home')}</button>
+          <button class="profile-action" onclick="refreshProfileData()"><i class="fa-solid fa-rotate"></i> ${t('clear_cache')}</button>
+          <button class="profile-action danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> ${t('logout')}</button>
+        </div>
+      </div>
+    </div>
+    <div class="profile-card" style="margin-top:18px">
+      <h3><i class="fa-solid fa-play"></i> ${t('recent_lessons')}</h3>
+      <div class="profile-mini-lessons">${miniLessons}</div>
+    </div>
+  `;
+  hideLoader();
+}
+async function refreshProfileData(){
+  await fetchBought();
+  await renderProfile();
+  showToast(t('cache_cleared'));
 }
 
 /* ACTIONS */
