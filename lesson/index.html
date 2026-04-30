@@ -75,6 +75,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .dbg-row:last-child{border-bottom:none}
 .dbg-label{font-weight:800;color:var(--text);font-size:.7rem}
 .dbg-val{color:var(--muted2);word-break:break-all;line-height:1.5}
+.dbg-val strong{color:var(--red);font-weight:700}
 
 nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(250,247,242,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 1px 12px rgba(44,36,24,.06)}
 .nav-inner{max-width:1380px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -186,17 +187,14 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .info-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px}
 .info-chip span{font-size:.78rem;color:var(--muted);display:block;margin-bottom:3px}
 .info-chip strong{font-size:.92rem;color:var(--text);font-weight:700}
-
 .sw-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px;display:flex;flex-direction:column;gap:3px}
 .sw-chip span{font-size:.78rem;color:var(--muted)}
 .sw-chip strong{font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--accent);letter-spacing:1px}
 .sw-chip.running strong{color:var(--accent2)}
-
 .about-sidebar{padding:12px;border-top:1px solid var(--border);background:var(--bg)}
 .about-sidebar-title{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px;padding:0 4px}
 .about-sidebar-title::before{content:'';width:8px;height:2px;background:var(--accent);border-radius:2px}
 .about-sidebar-body{font-size:.8rem;color:var(--muted2);line-height:1.7;padding:0 4px 4px}
-
 .bottom-nav-row{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:16px}
 .vid-page-btn{display:flex;align-items:center;gap:5px;padding:9px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--muted2);cursor:pointer;transition:all .2s}
 .vid-page-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
@@ -207,14 +205,12 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .empty-vid .ei{font-size:3rem;margin-bottom:14px}
 .empty-vid .et{font-family:var(--display);font-size:1.35rem;font-weight:700}
 .empty-vid .es{font-size:.85rem;color:var(--muted);margin-top:7px}
-
 .hw-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:50px 30px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .hw-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--accent),transparent);border-radius:0 0 4px 4px}
 .hw-title{font-family:var(--display);font-size:1.5rem;font-weight:700;margin-bottom:7px}
 .hw-sub{font-size:.87rem;color:var(--muted2);line-height:1.7;max-width:380px;margin:0 auto 26px}
 .hw-btn{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#fff;border:none;padding:14px 40px;border-radius:var(--radius);font-family:var(--sans);font-size:.95rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 7px 22px var(--accent-glow);min-height:52px}
 .hw-btn:hover{background:var(--accent2);transform:translateY(-2px)}
-
 .pdf-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:60px 32px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow2)}
 .pdf-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--accent),transparent);border-radius:0 0 4px 4px}
 .pdf-ico{width:74px;height:74px;margin:0 auto 20px;background:var(--accent-light);border:2px solid rgba(45,90,61,.2);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2.3rem}
@@ -222,7 +218,6 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .pdf-sub{color:var(--muted2);font-size:.9rem;margin-bottom:30px;line-height:1.7;max-width:360px;margin-left:auto;margin-right:auto}
 .pdf-btn{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#fff;border:none;padding:14px 38px;border-radius:var(--radius);font-family:var(--sans);font-size:.92rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s;box-shadow:0 7px 22px var(--accent-glow)}
 .pdf-btn:hover{background:var(--accent2);transform:translateY(-1px)}
-
 .mp4-wrap{position:relative;width:100%;height:100%;background:#1a1209;overflow:hidden}
 video.main-vid{position:relative;width:100%;height:100%;outline:none;display:block}
 .mp4-loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--accent3);border-radius:50%;z-index:4;animation:spin .7s linear infinite;display:none}
@@ -253,7 +248,6 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
 .vp-popup ul li:hover{background:rgba(255,255,255,.07)}
 .vp-popup ul li.active::after{content:'✓';color:var(--accent3);font-size:.78rem;font-weight:800}
 .mp4-wm{position:absolute;bottom:10px;left:12px;z-index:2;pointer-events:none;font-family:var(--mono);font-size:.72rem;font-weight:800;color:rgba(255,255,255,.55);letter-spacing:2px;text-shadow:0 1px 6px rgba(0,0,0,.9)}
-
 .yt-wrap{position:relative;width:100%;height:100%;background:#1a1209;overflow:hidden}
 .yt-iframe-zone{position:absolute;top:-62px;left:-4px;right:-4px;bottom:-42px;pointer-events:none;z-index:1}
 .yt-iframe-zone iframe{width:100%;height:100%;border:none;display:block}
@@ -301,232 +295,102 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
 .yt-replay-ov button{background:var(--accent2);color:#fff;border:none;padding:11px 28px;border-radius:10px;font-family:var(--sans);font-weight:700;font-size:.88rem;cursor:pointer;transition:background .2s}
 .yt-replay-ov button:hover{background:var(--accent3)}
 .yt-wrap:fullscreen,.yt-wrap:-webkit-full-screen{border-radius:0}
-
 @keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media(max-width:1100px){.watch-layout{grid-template-columns:280px minmax(0,1fr);gap:18px}}
-@media(max-width:800px){
-  .watch-layout{grid-template-columns:1fr;gap:16px}
-  .sidebar-card{position:relative;top:auto;order:2}
-  .stage-area{order:1}
-  .sidebar-scroll{max-height:260px}
-  .info-grid{grid-template-columns:1fr 1fr}
-  .watch-info{margin-top:14px}
-  .bottom-nav-row{margin-top:12px}
-}
-@media(max-width:600px){
-  main{padding:14px 12px 60px}
-  .back-btn span{display:none}
-  .tab-btn{padding:6px 10px;font-size:.72rem}
-  .q-card{padding:16px 12px}
-  .quiz-nav{flex-wrap:wrap;gap:6px}
-  .q-btn.finish{width:100%;justify-content:center}
-  .info-grid{grid-template-columns:1fr 1fr;gap:8px}
-  .info-chip{padding:12px}
-  .info-chip strong{font-size:.82rem}
-  .sw-chip{padding:12px}
-  .stage-player{border-radius:var(--radius)}
-  .sidebar-scroll{max-height:220px}
-  .watch-layout{gap:12px}
-  .nav-inner{padding:0 12px;gap:8px}
-  .tabs{max-width:none;flex:1}
-  .tab-btn{padding:6px 8px;font-size:.7rem}
-  .lock-card{padding:40px 20px 28px}
-  .dbg-box{font-size:.62rem;max-height:160px}
-}
-@media(max-width:400px){
-  .tab-btn{padding:5px 7px;font-size:.66rem}
-  main{padding:10px 10px 60px}
-}
+@media(max-width:800px){.watch-layout{grid-template-columns:1fr;gap:16px}.sidebar-card{position:relative;top:auto;order:2}.stage-area{order:1}.sidebar-scroll{max-height:260px}.info-grid{grid-template-columns:1fr 1fr}.watch-info{margin-top:14px}.bottom-nav-row{margin-top:12px}}
+@media(max-width:600px){main{padding:14px 12px 60px}.back-btn span{display:none}.tab-btn{padding:6px 10px;font-size:.72rem}.q-card{padding:16px 12px}.quiz-nav{flex-wrap:wrap;gap:6px}.q-btn.finish{width:100%;justify-content:center}.info-grid{grid-template-columns:1fr 1fr;gap:8px}.info-chip{padding:12px}.info-chip strong{font-size:.82rem}.sw-chip{padding:12px}.stage-player{border-radius:var(--radius)}.sidebar-scroll{max-height:220px}.watch-layout{gap:12px}.nav-inner{padding:0 12px;gap:8px}.tabs{max-width:none;flex:1}.tab-btn{padding:6px 8px;font-size:.7rem}.lock-card{padding:40px 20px 28px}.dbg-box{font-size:.62rem;max-height:160px}}
+@media(max-width:400px){.tab-btn{padding:5px 7px;font-size:.66rem}main{padding:10px 10px 60px}}
 </style>
 </head>
 <body>
-
-<div id="loadingScreen">
-  <div class="ld-mark">K</div>
-  <div class="ld-bar"><div class="ld-fill"></div></div>
-  <div class="ld-txt" id="ldTxt">Verifying access…</div>
-</div>
-
-<div id="adBlockWall" class="hidden">
-  <div class="adblock-card">
-    <span class="adblock-icon">🛡️</span>
-    <div class="adblock-title">AdBlocker Detected</div>
-    <div class="adblock-sub">We detected an ad blocker or privacy shield active on your browser. Please disable it for this site to access your lesson.</div>
-    <div class="adblock-steps">
-      <div class="adblock-step"><span class="adblock-step-n">1</span><span>Click the AdBlocker icon in your browser toolbar (top-right)</span></div>
-      <div class="adblock-step"><span class="adblock-step-n">2</span><span>Select "Disable on this site" or "Pause protection" for this page</span></div>
-      <div class="adblock-step"><span class="adblock-step-n">3</span><span>If using <strong>Brave</strong>: click the Lion icon → toggle "Shields" to OFF</span></div>
-      <div class="adblock-step"><span class="adblock-step-n">4</span><span>Reload the page after disabling</span></div>
-    </div>
-    <button class="adblock-reload-btn" onclick="location.reload()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-      I've Disabled It — Reload
-    </button>
-    <div class="adblock-note">Kalawy is ad-free. We only check this to protect our content.</div>
-  </div>
-</div>
-
+<div id="loadingScreen"><div class="ld-mark">K</div><div class="ld-bar"><div class="ld-fill"></div></div><div class="ld-txt" id="ldTxt">Verifying access…</div></div>
+<div id="adBlockWall" class="hidden"><div class="adblock-card"><span class="adblock-icon">🛡️</span><div class="adblock-title">AdBlocker Detected</div><div class="adblock-sub">Please disable it for this site to access your lesson.</div><button class="adblock-reload-btn" onclick="location.reload()">I've Disabled It — Reload</button></div></div>
 <div id="codeLockScreen" class="hidden"></div>
-
 <div id="lessonContent" class="hidden">
-  <nav>
-    <div class="nav-inner">
-      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
-        <button class="back-btn" onclick="window.history.back()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          <span>Back</span>
-        </button>
-        <a class="logo" href="/dashboard">
-          <div class="logo-mark">K</div>
-          <div class="logo-name" id="navLessonTitle" style="font-size:.88rem;font-weight:700;color:var(--text)">Kalawy</div>
-        </a>
-        <div class="tabs">
-          <button id="btn-quiz-tab" class="tab-btn active" onclick="switchTab('quiz')">Exam</button>
-          <button id="btn-homework-tab" class="tab-btn locked" onclick="switchTab('homework')">Homework</button>
-          <button id="btn-videos-tab" class="tab-btn locked" onclick="switchTab('videos')">Videos</button>
-          <button id="btn-pdf-tab" class="tab-btn locked" onclick="switchTab('pdf')">PDF</button>
-        </div>
-      </div>
-      <div class="nav-status">
-        <div id="accessTimerBox" class="access-pill hidden">Expires: <span id="accessCountdown">—</span></div>
-        <div id="timerBox" class="hidden">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span id="timerVal">40:00</span>
-        </div>
-      </div>
-    </div>
-  </nav>
-
+  <nav><div class="nav-inner"><div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0"><button class="back-btn" onclick="window.history.back()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg><span>Back</span></button><a class="logo" href="/dashboard"><div class="logo-mark">K</div><div class="logo-name" id="navLessonTitle" style="font-size:.88rem;font-weight:700;color:var(--text)">Kalawy</div></a><div class="tabs"><button id="btn-quiz-tab" class="tab-btn active" onclick="switchTab('quiz')">Exam</button><button id="btn-homework-tab" class="tab-btn locked" onclick="switchTab('homework')">Homework</button><button id="btn-videos-tab" class="tab-btn locked" onclick="switchTab('videos')">Videos</button><button id="btn-pdf-tab" class="tab-btn locked" onclick="switchTab('pdf')">PDF</button></div></div><div class="nav-status"><div id="accessTimerBox" class="access-pill hidden">Expires: <span id="accessCountdown">—</span></div><div id="timerBox" class="hidden"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="timerVal">40:00</span></div></div></div></nav>
   <main>
-    <div id="tab-quiz">
-      <div id="startScreen">
-        <span class="start-emoji">🚀</span>
-        <div class="start-title">Ready for the <em>Exam?</em></div>
-        <p class="start-sub">Complete the exam first — then Videos and PDF unlock automatically. Watch the timer!</p>
-        <div class="start-warn" id="examDurationWarn">⏱ Time Limit: 40 Minutes</div>
-        <button id="startBtn" class="start-btn">Start Exam <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
-      </div>
-      <div id="quizApp" class="hidden quiz-wrap">
-        <div class="progress-row"><span id="qCount" class="q-count">1 / 10</span><div class="prog-track"><div class="prog-fill" id="progFill" style="width:10%"></div></div></div>
-        <div class="q-card" id="qDisplay"></div>
-        <div class="quiz-nav">
-          <button id="prevBtn" class="q-btn ghost hidden">← Previous</button>
-          <button id="nextBtn" class="q-btn primary">Next →</button>
-          <button id="finishBtn" class="q-btn finish hidden">✓ Submit Exam</button>
-        </div>
-      </div>
-      <div id="reviewArea" class="hidden">
-        <div class="score-card" id="scoreBanner"></div>
-        <div class="review-title">Answers Review</div>
-        <div id="reviewList"></div>
-      </div>
-    </div>
+    <div id="tab-quiz"><div id="startScreen"><span class="start-emoji">🚀</span><div class="start-title">Ready for the <em>Exam?</em></div><p class="start-sub">Complete the exam first — then Videos and PDF unlock automatically.</p><div class="start-warn" id="examDurationWarn">⏱ Time Limit: 40 Minutes</div><button id="startBtn" class="start-btn">Start Exam →</button></div><div id="quizApp" class="hidden quiz-wrap"><div class="progress-row"><span id="qCount" class="q-count">1 / 10</span><div class="prog-track"><div class="prog-fill" id="progFill" style="width:10%"></div></div></div><div class="q-card" id="qDisplay"></div><div class="quiz-nav"><button id="prevBtn" class="q-btn ghost hidden">← Previous</button><button id="nextBtn" class="q-btn primary">Next →</button><button id="finishBtn" class="q-btn finish hidden">✓ Submit Exam</button></div></div><div id="reviewArea" class="hidden"><div class="score-card" id="scoreBanner"></div><div class="review-title">Answers Review</div><div id="reviewList"></div></div></div>
     <div id="tab-homework" class="hidden"></div>
     <div id="tab-videos" class="hidden"><div id="videosContainer"></div></div>
-    <div id="tab-pdf" class="hidden">
-      <div class="pdf-card">
-        <div class="pdf-ico">📚</div>
-        <div class="pdf-title">Course Notes</div>
-        <p class="pdf-sub">Download the PDF revision notes for this course.</p>
-        <a id="pdfLink" href="#" target="_blank" class="pdf-btn">↓ Download PDF</a>
-      </div>
-    </div>
+    <div id="tab-pdf" class="hidden"><div class="pdf-card"><div class="pdf-ico">📚</div><div class="pdf-title">Course Notes</div><p class="pdf-sub">Download the PDF revision notes.</p><a id="pdfLink" href="#" target="_blank" class="pdf-btn">↓ Download PDF</a></div></div>
   </main>
 </div>
-
 <script>
-(function(){
-  document.addEventListener('contextmenu',e=>e.preventDefault());
-  document.addEventListener('copy',e=>{e.clipboardData.setData('text/plain','⚠️ Disabled');e.preventDefault();});
-  window.addEventListener('keydown',e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&[73,74,67].includes(e.keyCode))||(e.ctrlKey&&e.keyCode===85)){e.preventDefault();return false;}});
-  const kill=()=>{if(window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>160){document.body.innerHTML='<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:#F5F0E8;text-align:center"><div><div style="font-size:3rem">🔒</div><h2 style="font-family:serif;margin:14px 0 7px">Access Blocked</h2><p style="color:#9B8E7A;font-size:.88rem">Close developer tools to continue.</p></div></div>';}};
-  setInterval(kill,1000);
-})();
+/* ── SAFE DOM HELPERS ── */
+function $(id){return document.getElementById(id);}
+function safeClass(el,cls,add){if(!el)return;el.classList[add?'add':'remove'](cls);}
+function showLoader(t){const s=$('loadingScreen');if(!s)return;$('ldTxt').textContent=t||'Loading…';s.style.display='flex';void s.offsetWidth;s.style.opacity='1';}
+function hideLoader(){const s=$('loadingScreen');if(!s)return;s.style.opacity='0';setTimeout(()=>{if(s)s.style.display='none';},300);}
 
-function detectAdBlocker(){
-  return new Promise(resolve=>{
-    const bait=document.createElement('div');
-    bait.setAttribute('id','ads-bait');bait.setAttribute('aria-hidden','true');bait.innerHTML='&nbsp;';
-    bait.style.cssText='height:1px!important;width:1px!important;position:absolute!important;left:-9999px!important;top:-9999px!important;opacity:0!important;pointer-events:none!important';
-    bait.className='ads ad adsbox ad-banner ad-placement ad-unit pub_300x250 pub_728x90 text-ad banner-ad ad-container ad-wrapper sponsor sponsored';
-    document.body.appendChild(bait);
-    setTimeout(()=>{
-      const el=document.getElementById('ads-bait');if(!el){resolve(true);return;}
-      const style=window.getComputedStyle(el);const rect=el.getBoundingClientRect();
-      const hiddenByExtension=style.display==='none'||style.visibility==='hidden'||(style.opacity==='0'&&(rect.width===0||rect.height===0))||el.offsetParent===null||el.clientHeight===0||el.clientWidth===0;
-      el.remove();resolve(hiddenByExtension);
-    },350);
-  });
-}
-function isBraveBrowser(){try{return!!(navigator.brave&&typeof navigator.brave.isBrave==='function');}catch(e){return false;}}
-function showAdBlockWall(){
-  document.getElementById('loadingScreen').style.opacity='0';
-  setTimeout(()=>{document.getElementById('loadingScreen').style.display='none';},300);
-  const sub=document.querySelector('#adBlockWall .adblock-sub');
-  if(sub){sub.textContent=isBraveBrowser()?'Brave Shields detected. Please disable Shields for this site then reload.':'AdBlock detected. Please disable it for this site then reload.';}
-  document.getElementById('adBlockWall').classList.remove('hidden');
-}
-async function checkAdBlocker(){try{const blocked=await detectAdBlocker();if(blocked){showAdBlockWall();return true;}}catch(e){}return false;}
+/* ── SECURITY ── */
+(function(){document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('copy',e=>{e.clipboardData.setData('text/plain','⚠️ Disabled');e.preventDefault();});window.addEventListener('keydown',e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&[73,74,67].includes(e.keyCode))||(e.ctrlKey&&e.keyCode===85)){e.preventDefault();return false;}});setInterval(()=>{if(window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>160){document.body.innerHTML='<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:#F5F0E8;text-align:center"><div><div style="font-size:3rem">🔒</div><h2 style="font-family:serif;margin:14px 0 7px">Access Blocked</h2></div></div>';}},1000);})();
 
+/* ── ADBLOCK ── */
+function detectAdBlocker(){return new Promise(r=>{const b=document.createElement('div');b.id='ads-bait';b.setAttribute('aria-hidden','true');b.style.cssText='height:1px!important;width:1px!important;position:absolute!important;left:-9999px!important;top:-9999px!important;opacity:0!important;pointer-events:none!important';b.className='ads ad adsbox ad-banner pub_300x250 text-ad ad-placement ad-unit banner-ad';document.body.appendChild(b);setTimeout(()=>{const el=$('ads-bait');if(!el){r(true);return;}const st=window.getComputedStyle(el);const h=st.display==='none'||st.visibility==='hidden'||el.clientHeight===0;el.remove();r(h);},350);});}
+async function checkAdBlocker(){try{if(await detectAdBlocker()){const s=$('loadingScreen');if(s)s.style.opacity='0';setTimeout(()=>{if(s)s.style.display='none';},300);$('adBlockWall').classList.remove('hidden');return true;}}catch(e){}return false;}
+
+/* ── SUPABASE ── */
 const SUPABASE_URL="https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_ANON="sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
 let db;
-try{db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);}catch(e){console.error('[KALAWY] Supabase init failed:',e);}
+try{db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);}catch(e){console.error('[K] Supabase init failed:',e);}
 
 const OPT_LETTERS=['a','b','c','d','e','f','g','h','i','j'];
 let currentUser=null,questions=[],curIdx=0,userAns={},lessonData=null;
-let timeLeft=40*60;
-let examDurationMins=40;
-let examTimer,myStudentId='000000';
+let timeLeft=40*60,examDurationMins=40,examTimer,myStudentId='000000';
 let hwData=null,hwUserAns={},hwCurIdx=0,hwDone=false,hwQuestions=[];
 let videosData=[],hwResultsMap={},currentVideoIdx=0;
-
 let swSeconds=0,swRunning=false,swInterval=null;
+
 function swFmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return(h>0?h+':':'')+(h>0?String(m).padStart(2,'0'):m)+':'+String(sec).padStart(2,'0');}
-function swStart(){if(swRunning)return;swRunning=true;swInterval=setInterval(()=>{swSeconds++;const el=document.getElementById('swVal');if(el)el.textContent=swFmt(swSeconds);const chip=document.getElementById('swChip');if(chip)chip.classList.add('running');},1000);}
+function swStart(){if(swRunning)return;swRunning=true;swInterval=setInterval(()=>{swSeconds++;const el=$('swVal');if(el)el.textContent=swFmt(swSeconds);safeClass($('swChip'),'running',true);},1000);}
 function swStop(){if(!swRunning)return;swRunning=false;clearInterval(swInterval);}
 function swReset(){swStop();swSeconds=0;}
 
-let ytApiReady=false;
-let activeYTPlayer=null;
-let activeYTWmTimer=null;
+let ytApiReady=false,activeYTPlayer=null,activeYTWmTimer=null;
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
 
-function showLoader(t=''){const s=document.getElementById('loadingScreen');if(!s)return;document.getElementById('ldTxt').textContent=t||'Loading…';s.style.display='flex';void s.offsetWidth;s.style.opacity='1';}
-function hideLoader(){const s=document.getElementById('loadingScreen');if(!s)return;s.style.opacity='0';setTimeout(()=>{if(s)s.style.display='none';},300);}
-
-/* ── FALLBACK ERROR ON BODY ── */
+/* ── FATAL ERROR (bulletproof) ── */
 function showFatalError(title,msg,detail){
-  hideLoader();
-  const lockEl=document.getElementById('codeLockScreen');
-  const target=lockEl||document.body;
-  target.classList.remove('hidden');
-  target.innerHTML='<div class="lock-card"><div class="lock-ico error-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="lock-title">'+title+'</div><div class="lock-sub">'+msg+'</div><div class="dbg-box"><div class="dbg-row"><span class="dbg-label">Error</span><span class="dbg-val">'+(detail||'Unknown')+'</span></div></div><div class="lock-actions"><button class="lock-btn ghost" onclick="location.reload()">↻ Reload Page</button><button class="lock-btn ghost" onclick="location.href=\'/home\'">Go Home</button></div></div>';
+  try{hideLoader();}catch(e){}
+  let target=$('codeLockScreen');
+  if(!target){
+    target=document.createElement('div');
+    target.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)';
+    document.body.appendChild(target);
+  }
+  safeClass(target,'hidden',false);
+  target.innerHTML='<div class="lock-card"><div class="lock-ico error-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="lock-title">'+title+'</div><div class="lock-sub">'+msg+'</div><div class="dbg-box"><div class="dbg-row"><span class="dbg-label">Error</span><span class="dbg-val">'+(detail||'Unknown')+'</span></div></div><div class="lock-actions"><button class="lock-btn ghost" onclick="location.reload()">↻ Reload</button><button class="lock-btn ghost" onclick="location.href=\'/home\'">Go Home</button></div></div>';
 }
 
+/* ── SAFE QUERY HELPER ── */
+async function safeQuery(table,filter,opts={}){
+  if(!db)return null;
+  try{const r=await db.from(table).select(opts.select||'*').eq(filter.key,filter.val)[opts.single?'single':opts.maybe?'maybeSingle':'']();return r?.data??null;}catch(e){console.warn('[K] Query failed ['+table+']:',e.message);return null;}
+}
+
+/* ── TABS ── */
 window.switchTab=(tab)=>{
-  destroyActiveYT();
-  if(tab!=='videos')swStop();
+  destroyActiveYT();if(tab!=='videos')swStop();
   showLoader('Loading…');
   setTimeout(()=>{
-    document.querySelectorAll('[id^="tab-"]').forEach(p=>p.classList.add('hidden'));
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById('tab-'+tab).classList.remove('hidden');
-    document.getElementById('btn-'+tab+'-tab').classList.add('active');
+    document.querySelectorAll('[id^="tab-"]').forEach(p=>safeClass(p,'hidden',true));
+    document.querySelectorAll('.tab-btn').forEach(b=>safeClass(b,'active',false));
+    safeClass($('tab-'+tab),'hidden',false);
+    safeClass($('btn-'+tab+'-tab'),'active',true);
     if(tab==='videos')renderVideoPage();
     hideLoader();
   },300);
 };
-
 function destroyActiveYT(){clearTimeout(activeYTWmTimer);if(activeYTPlayer){try{activeYTPlayer.destroy();}catch(e){}activeYTPlayer=null;}}
 
+/* ── VIDEO HELPERS ── */
 function extractYTId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|v=|embed\/)([^#&?]{11})/);return m?m[1]:null;}
-function isDirectVid(url){if(!url)return false;return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)||(!url.includes('youtu')&&!url.includes('youtube')&&url.startsWith('http'));}
-
+function isDirectVid(url){if(!url)return false;return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)||(!url.includes('youtu')&&url.startsWith('http'));}
 function extractVideos(snap){
-  const names=['videos','video','video_links','videoLinks','video_urls','videoData','links','media'];
-  for(const name of names){if(snap[name]!==undefined&&snap[name]!==null){let p=snap[name];if(typeof p==='string'){try{p=JSON.parse(p);}catch(e){continue;}}if(Array.isArray(p)&&p.length>0)return normalizeVideos(p);if(typeof p==='object'&&!Array.isArray(p)){if(p.url||p.name||p.link)return normalizeVideos([p]);const vals=Object.values(p).filter(v=>v&&typeof v==='object');if(vals.length>0&&(vals[0].url||vals[0].name||vals[0].link))return normalizeVideos(vals);}}}
-  for(const[key,val] of Object.entries(snap)){if(['id','name','questions','pdf','created_at','validitydays','examduration','about'].includes(key))continue;const str=typeof val==='string'?val:JSON.stringify(val);if(str&&str.includes('youtu')){let p=val;if(typeof p==='string'){try{p=JSON.parse(p);}catch(e){}}if(Array.isArray(p))return normalizeVideos(p);if(typeof p==='object'&&p.url)return normalizeVideos([p]);if(typeof val==='string'&&extractYTId(val))return normalizeVideos([{url:val,name:'Video 1'}]);}}
+  const n=['videos','video','video_links','videoLinks','video_urls','videoData','links','media'];
+  for(const name of n){if(snap[name]!==undefined&&snap[name]!==null){let p=snap[name];if(typeof p==='string'){try{p=JSON.parse(p);}catch(e){continue;}}if(Array.isArray(p)&&p.length>0)return normalizeVideos(p);if(typeof p==='object'&&!Array.isArray(p)){if(p.url||p.name||p.link)return normalizeVideos([p]);const v=Object.values(p).filter(x=>x&&typeof x==='object');if(v.length&&(v[0].url||v[0].name||v[0].link))return normalizeVideos(v);}}}
+  for(const[k,val] of Object.entries(snap)){if(['id','name','questions','pdf','created_at','validitydays','examduration','about'].includes(k))continue;const s=typeof val==='string'?val:JSON.stringify(val);if(s&&s.includes('youtu')){let p=val;if(typeof p==='string'){try{p=JSON.parse(p);}catch(e){}}if(Array.isArray(p))return normalizeVideos(p);if(typeof p==='object'&&p.url)return normalizeVideos([p]);if(typeof val==='string'&&extractYTId(val))return normalizeVideos([{url:val,name:'Video 1'}]);}}
   return null;
 }
 function normalizeVideos(raw){return raw.map((v,i)=>({url:v.url||v.link||v.video_url||v.src||'',name:v.name||v.title||v.label||'Video '+(i+1),requireHw:!!(v.requireHw||v.require_hw||false),hwId:v.hwId||v.hw_id||''}));}
@@ -534,627 +398,231 @@ function normalizeVideos(raw){return raw.map((v,i)=>({url:v.url||v.link||v.video
 const pageParams=new URLSearchParams(location.search);
 const DESKTOP_MODE=pageParams.get('desktop')==='1';
 const REQUESTED_VIDEO_INDEX=Math.max(0,parseInt(pageParams.get('video')||'0',10)||0);
-const DESKTOP_PROTOCOL='kalawy://open';
 
-function buildDesktopPlayerUrl(idx){const v=videosData[idx];if(!v)return '';const lessonId=pageParams.get('id')||'';const title=encodeURIComponent(v.name||('Lecture '+(idx+1)));const videoUrl=encodeURIComponent(v.url||'');const student=encodeURIComponent(myStudentId||'000000');return DESKTOP_PROTOCOL+'?lesson='+encodeURIComponent(lessonId)+'&video='+idx+'&student='+student+'&title='+title+'&url='+videoUrl;}
-function openDesktopPlayerOrFallback(idx){const appUrl=buildDesktopPlayerUrl(idx);if(!appUrl){goToVideo(idx);switchTab('videos');return;}const lessonId=pageParams.get('id')||'';const fallbackUrl='/lesson?id='+encodeURIComponent(lessonId)+'&video='+idx+'&desktop=1';let hiddenTriggered=false;const onHide=function(){hiddenTriggered=true;cleanup();};const cleanup=function(){window.removeEventListener('blur',onHide);document.removeEventListener('visibilitychange',onVis);};const onVis=function(){if(document.hidden){hiddenTriggered=true;cleanup();}};window.addEventListener('blur',onHide,{once:true});document.addEventListener('visibilitychange',onVis);location.href=appUrl;setTimeout(function(){cleanup();if(!hiddenTriggered)location.href=fallbackUrl;},1200);}
-function applyInitialVideoLaunch(){if(videosData&&videosData.length>0){currentVideoIdx=Math.min(Math.max(REQUESTED_VIDEO_INDEX,0),videosData.length-1);}if(DESKTOP_MODE){document.getElementById('btn-videos-tab').classList.remove('locked');switchTab('videos');}}
-
-function initYTPlayer(wrapper,videoId,studentId){
-  const YT_SPEEDS=[0.5,0.75,1,1.25,1.5,1.75,2];
-  wrapper.innerHTML=
-    '<div class="yt-wrap" id="ytWrap">'
-    +'<div class="yt-iframe-zone"><div id="ytInnerPlayer"></div></div>'
-    +'<div class="yt-click-layer" id="ytClickLayer"></div>'
-    +'<div class="yt-big-play" id="ytBigPlay"><div class="yt-big-circle" id="ytBigCircle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>'
-    +'<div class="yt-seek-fl left-fl" id="ytSeekL"><svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>−10s</div>'
-    +'<div class="yt-seek-fl right-fl" id="ytSeekR"><svg viewBox="0 0 24 24"><path d="M18.92 13.12C17.87 9.93 14.86 7.62 11.32 7.62c-1.96 0-3.73.72-5.12 1.88L2.83 6.13H2v9h.83l4.17-4.17a5.99 5.99 0 014.32-1.74c2.97 0 5.45 2.02 6.17 4.78l2.41-.78z"/></svg>+10s</div>'
-    +'<div class="yt-replay-ov" id="ytReplay"><span>Video ended</span><button id="ytReplayBtn">↺ Replay</button></div>'
-    +'<div class="yt-wm" id="ytWm">'+studentId+'</div>'
-    +'<div class="yt-ctrl" id="ytCtrl">'
-    +'<div class="yt-prog-wrap" id="ytProgWrap"><div class="yt-prog-fill" id="ytProgFill" style="width:0%"></div></div>'
-    +'<div class="yt-row">'
-    +'<div class="yt-left">'
-    +'<button class="yt-btn" id="ytPP"><svg id="ytPPIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>'
-    +'<button class="yt-btn" id="ytRew"><svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg></button>'
-    +'<button class="yt-btn" id="ytFwd"><svg viewBox="0 0 24 24"><path d="M18.92 13.12C17.87 9.93 14.86 7.62 11.32 7.62c-1.96 0-3.73.72-5.12 1.88L2.83 6.13H2v9h.83l4.17-4.17a5.99 5.99 0 014.32-1.74c2.97 0 5.45 2.02 6.17 4.78l2.41-.78z"/></svg></button>'
-    +'<div class="yt-vol-wrap"><button class="yt-btn" id="ytVolBtn"><svg id="ytVolIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg></button>'
-    +'<input type="range" class="yt-vol-sl" id="ytVolSl" min="0" max="100" value="80"></div>'
-    +'<span class="yt-time" id="ytTime">0:00 / 0:00</span>'
-    +'</div>'
-    +'<div class="yt-right">'
-    +'<button class="yt-spd-btn" id="ytSpdBtn">1×</button>'
-    +'<button class="yt-btn" id="ytFs"><svg id="ytFsIcon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>'
-    +'</div>'
-    +'</div>'
-    +'</div>'
-    +'<div class="yt-spd-popup" id="ytSpdPop"><div class="yt-spd-popup-ttl">Speed</div><ul id="ytSpdList">'
-    +YT_SPEEDS.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+(s===1?'Normal':s+'×')+'</li>').join('')
-    +'</ul></div>'
-    +'</div>';
-
-  const wrap=document.getElementById('ytWrap');
-  const clickLayer=document.getElementById('ytClickLayer');
-  const bigPlay=document.getElementById('ytBigPlay');
-  const bigCircle=document.getElementById('ytBigCircle');
-  const ppBtn=document.getElementById('ytPP');
-  const ppIcon=document.getElementById('ytPPIcon');
-  const rewBtn=document.getElementById('ytRew');
-  const fwdBtn=document.getElementById('ytFwd');
-  const progWrap=document.getElementById('ytProgWrap');
-  const progFill=document.getElementById('ytProgFill');
-  const timeEl=document.getElementById('ytTime');
-  const volBtn=document.getElementById('ytVolBtn');
-  const volIcon=document.getElementById('ytVolIcon');
-  const volSl=document.getElementById('ytVolSl');
-  const spdBtn=document.getElementById('ytSpdBtn');
-  const spdPop=document.getElementById('ytSpdPop');
-  const spdList=document.getElementById('ytSpdList');
-  const fsBtn=document.getElementById('ytFs');
-  const fsIcon=document.getElementById('ytFsIcon');
-  const wmEl=document.getElementById('ytWm');
-  const seekL=document.getElementById('ytSeekL');
-  const seekR=document.getElementById('ytSeekR');
-  const replayOv=document.getElementById('ytReplay');
-  const replayBtn=document.getElementById('ytReplayBtn');
-
-  let vol=80,muted=false,dragging=false,ctrlTimer,speed=1;
-
-  function moveWm(){const px=8,py=10;wmEl.style.top=(py+Math.random()*(100-py*2))+'%';wmEl.style.left=(px+Math.random()*(100-px*2))+'%';activeYTWmTimer=setTimeout(moveWm,2600+Math.random()*1800);}
-  moveWm();
-  document.addEventListener('fullscreenchange',function(){clearTimeout(activeYTWmTimer);moveWm();});
-
-  function fmt(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
-  function setPP(st){ppIcon.innerHTML=st==='pause'?'<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>':'<path d="M8 5v14l11-7z"/>';}
-  function flashSeek(el){el.style.opacity='1';setTimeout(()=>el.style.opacity='0',550);}
-  function showCtrl(){wrap.classList.add('ctrl-on');clearTimeout(ctrlTimer);ctrlTimer=setTimeout(()=>{try{if(activeYTPlayer&&activeYTPlayer.getPlayerState()===1)wrap.classList.remove('ctrl-on');}catch(e){}},3200);}
-  function updateVolIcon(){const v=muted?0:vol;if(v===0)volIcon.innerHTML='<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';else if(v<40)volIcon.innerHTML='<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>';else volIcon.innerHTML='<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';}
-
-  function buildPlayer(){
-    activeYTPlayer=new YT.Player('ytInnerPlayer',{
-      videoId:videoId,
-      playerVars:{controls:0,disablekb:1,fs:0,rel:0,iv_load_policy:3,modestbranding:1,showinfo:0,playsinline:1,cc_load_policy:0,autohide:1,enablejsapi:1,origin:location.origin},
-      events:{
-        onReady:function(e){activeYTPlayer.setVolume(vol);setInterval(function(){if(!activeYTPlayer||!activeYTPlayer.getDuration)return;const dur=activeYTPlayer.getDuration()||0;const cur=activeYTPlayer.getCurrentTime()||0;if(!dragging&&dur>0)progFill.style.width=(cur/dur*100)+'%';timeEl.textContent=fmt(cur)+' / '+fmt(dur);},250);},
-        onStateChange:function(e){const S=YT.PlayerState;if(e.data===S.PLAYING){setPP('pause');bigPlay.classList.add('gone');replayOv.classList.remove('show');wrap.classList.add('ctrl-on');setTimeout(()=>wrap.classList.remove('ctrl-on'),2200);swStart();}if(e.data===S.PAUSED){setPP('play');wrap.classList.add('ctrl-on');swStop();}if(e.data===S.ENDED){setPP('play');replayOv.classList.add('show');swStop();}}
-      }
-    });
-  }
-  if(ytApiReady){buildPlayer();}else{const orig=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){ytApiReady=true;if(orig)orig();buildPlayer();};}
-
-  function togglePlay(){if(!activeYTPlayer)return;try{const st=activeYTPlayer.getPlayerState();if(st===1)activeYTPlayer.pauseVideo();else activeYTPlayer.playVideo();}catch(e){}}
-  let clickTm;
-  clickLayer.addEventListener('click',function(){clearTimeout(clickTm);clickTm=setTimeout(togglePlay,210);showCtrl();});
-  clickLayer.addEventListener('dblclick',function(){clearTimeout(clickTm);toggleFullscreen();});
-  bigCircle.addEventListener('click',function(e){e.stopPropagation();if(activeYTPlayer)activeYTPlayer.playVideo();});
-  ppBtn.addEventListener('click',togglePlay);
-
-  function seekToRatio(e){if(!activeYTPlayer)return;const rect=progWrap.getBoundingClientRect();const ratio=Math.max(0,Math.min((e.clientX-rect.left)/rect.width,1));const dur=activeYTPlayer.getDuration()||0;activeYTPlayer.seekTo(ratio*dur,true);progFill.style.width=(ratio*100)+'%';}
-  progWrap.addEventListener('pointerdown',function(e){dragging=true;progWrap.setPointerCapture(e.pointerId);seekToRatio(e);});
-  progWrap.addEventListener('pointermove',function(e){if(dragging)seekToRatio(e);});
-  progWrap.addEventListener('pointerup',function(){dragging=false;});
-
-  rewBtn.addEventListener('click',function(){if(!activeYTPlayer)return;activeYTPlayer.seekTo(Math.max(0,activeYTPlayer.getCurrentTime()-10),true);flashSeek(seekL);});
-  fwdBtn.addEventListener('click',function(){if(!activeYTPlayer)return;activeYTPlayer.seekTo(Math.min(activeYTPlayer.getDuration(),activeYTPlayer.getCurrentTime()+10),true);flashSeek(seekR);});
-
-  volSl.value=80;
-  volSl.addEventListener('input',function(){vol=parseInt(volSl.value);muted=vol===0;if(activeYTPlayer){if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}}updateVolIcon();});
-  volBtn.addEventListener('click',function(){muted=!muted;if(activeYTPlayer){if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}}updateVolIcon();});
-
-  spdList.querySelectorAll('li').forEach(function(li){li.addEventListener('click',function(){speed=parseFloat(li.dataset.speed);if(activeYTPlayer)activeYTPlayer.setPlaybackRate(speed);spdBtn.textContent=speed===1?'1×':speed+'×';spdList.querySelectorAll('li').forEach(x=>x.classList.remove('active'));li.classList.add('active');spdPop.classList.remove('open');});});
-  spdBtn.addEventListener('click',function(e){e.stopPropagation();spdPop.classList.toggle('open');});
-  document.addEventListener('click',function(e){if(!spdPop.contains(e.target)&&e.target!==spdBtn)spdPop.classList.remove('open');});
-
-  function toggleFullscreen(){if(!document.fullscreenElement){wrap.requestFullscreen().catch(()=>{});fsIcon.innerHTML='<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>';}else{document.exitFullscreen();fsIcon.innerHTML='<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';}}
-  fsBtn.addEventListener('click',toggleFullscreen);
-  document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement)fsIcon.innerHTML='<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';});
-
-  replayBtn.addEventListener('click',function(){if(activeYTPlayer){activeYTPlayer.seekTo(0,true);activeYTPlayer.playVideo();replayOv.classList.remove('show');}});
-  wrap.addEventListener('mousemove',showCtrl);wrap.addEventListener('touchstart',showCtrl,{passive:true});wrap.classList.add('ctrl-on');
-
-  document.addEventListener('keydown',function(e){if(!activeYTPlayer)return;const tag=document.activeElement&&document.activeElement.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;if(e.code==='Space'||e.code==='KeyK'){e.preventDefault();togglePlay();}if(e.code==='ArrowLeft'){activeYTPlayer.seekTo(Math.max(0,activeYTPlayer.getCurrentTime()-10),true);flashSeek(seekL);}if(e.code==='ArrowRight'){activeYTPlayer.seekTo(Math.min(activeYTPlayer.getDuration(),activeYTPlayer.getCurrentTime()+10),true);flashSeek(seekR);}if(e.code==='KeyF')toggleFullscreen();if(e.code==='KeyM'){muted=!muted;if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}updateVolIcon();}});
-  updateVolIcon();
-}
-
-function renderVideoPage(){
-  destroyActiveYT();swReset();
-  const container=document.getElementById('videosContainer');
-  if(!container)return;
-  if(!videosData||videosData.length===0){container.innerHTML='<div class="empty-vid"><div class="ei">📺</div><div class="et">No Videos Yet</div><div class="es">Video lessons will appear here once added.</div></div>';return;}
-  if(currentVideoIdx>=videosData.length)currentVideoIdx=videosData.length-1;
-  if(currentVideoIdx<0)currentVideoIdx=0;
-  const v=videosData[currentVideoIdx];
-  const isLocked=v.requireHw&&!hwResultsMap[v.hwId];
-  const ytId=extractYTId(v.url);
-  const isDirect=isDirectVid(v.url);
-
-  let sideItems='';
-  videosData.forEach(function(vid,i){
-    const locked=vid.requireHw&&!hwResultsMap[vid.hwId];
-    const divClick=locked?'':(i===currentVideoIdx?'':'goToVideo('+i+')');
-    const btnClick=locked?'':(DESKTOP_MODE?'goToVideo('+i+')':'openDesktopPlayerOrFallback('+i+')');
-    const activeClass=i===currentVideoIdx?'active':'';const lockedClass=locked?'locked':'';const vidName=vid.name||('Lecture '+(i+1));
-    sideItems+='<div class="side-item '+activeClass+' '+lockedClass+'" onclick="'+divClick+'"><div class="side-head"><span class="side-dot">'+(i+1)+'</span><div class="side-copy"><div class="side-title">'+vidName+'</div><button class="side-play" '+(locked?'disabled':'')+' onclick="event.stopPropagation();'+btnClick+'">'+(locked?'🔒 Locked':(DESKTOP_MODE?'▶ Play':'▶ Open in App'))+'</button></div></div></div>';
-  });
-
-  let playerHtml='';
-  if(isLocked){playerHtml='<div class="video-locked-ov"><div class="lk-emoji">🔒</div><div class="lk-title">Video Locked</div><div class="lk-sub">Complete the homework assignment first to unlock this video.</div><button class="lk-btn" onclick="switchTab(\'homework\')">Go to Homework →</button></div>';}
-  else if(ytId){playerHtml='<div id="ytPlayerSlot" style="width:100%;height:100%"></div>';}
-  else if(isDirect){playerHtml='<div id="mp4Slot" style="width:100%;height:100%"></div>';}
-  else{playerHtml='<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);background:var(--bg2)"><div style="font-size:2.5rem">⚠️</div><div style="font-size:.85rem">Could not load video</div></div>';}
-
-  const vidTitle=v.name||('Lecture '+(currentVideoIdx+1));
-  const statusColor=isLocked?'var(--red)':'var(--accent2)';
-  const statusText=isLocked?'🔒 Locked':'✓ Unlocked';
-  const prevDisabled=currentVideoIdx===0?'disabled':'';
-  const nextDisabled=currentVideoIdx>=videosData.length-1?'disabled':'';
-  const lessonAbout=lessonData?.about||'';
-  const aboutSidebarHtml=lessonAbout?'<div class="about-sidebar"><div class="about-sidebar-title">About This Lesson</div><div class="about-sidebar-body">'+lessonAbout.replace(/\n/g,'<br>')+'</div></div>':'';
-
-  container.innerHTML=
-    '<div class="watch-layout">'
-    +'<aside class="sidebar-card"><div class="sidebar-head">📋 Course Content</div><div class="sidebar-scroll">'+sideItems+'</div>'+aboutSidebarHtml+'</aside>'
-    +'<section class="stage-area">'
-    +'<div class="stage-player">'+playerHtml+'</div>'
-    +'<div class="watch-info"><div class="info-title">'+vidTitle+'</div>'
-    +'<div class="info-grid">'
-    +'<div class="info-chip"><span>Current Lesson</span><strong>'+vidTitle+'</strong></div>'
-    +'<div class="info-chip"><span>Total Videos</span><strong>'+videosData.length+'</strong></div>'
-    +'<div class="info-chip"><span>Progress</span><strong>'+(currentVideoIdx+1)+' / '+videosData.length+'</strong></div>'
-    +'<div class="info-chip"><span>Status</span><strong style="color:'+statusColor+'">'+statusText+'</strong></div>'
-    +'<div class="sw-chip" id="swChip"><span>⏱ Watch Time</span><strong id="swVal">0:00</strong></div>'
-    +'</div></div>'
-    +'<div class="bottom-nav-row">'
-    +'<button class="vid-page-btn" onclick="videoPrev()" '+prevDisabled+'><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Prev</button>'
-    +'<span class="vid-page-ind">'+(currentVideoIdx+1)+' / '+videosData.length+'</span>'
-    +'<button class="vid-page-btn" onclick="videoNext()" '+nextDisabled+'>Next <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>'
-    +'</div></section></div>';
-
-  if(ytId&&!isLocked){const slot=document.getElementById('ytPlayerSlot');if(slot)initYTPlayer(slot,ytId,myStudentId);}
-  if(isDirect&&!isLocked){const slot=document.getElementById('mp4Slot');if(slot)initMP4Player(slot,v.url,myStudentId);}
-}
-
-window.goToVideo=function(idx){destroyActiveYT();currentVideoIdx=idx;renderVideoPage();window.scrollTo({top:0,behavior:'smooth'});};
-window.videoNext=function(){if(currentVideoIdx<videosData.length-1){destroyActiveYT();currentVideoIdx++;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
-window.videoPrev=function(){if(currentVideoIdx>0){destroyActiveYT();currentVideoIdx--;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
-
-function initMP4Player(wrapper,videoUrl,studentId){
-  const SPEEDS=[0.5,0.75,1,1.25,1.5,1.75,2];
-  wrapper.innerHTML='<div class="mp4-wrap"><div class="mp4-loader"></div><video class="main-vid" preload="metadata"><source src="'+videoUrl+'" type="video/mp4"></video><div class="mp4-wm">ID: '+studentId+'</div><div class="vp-controls"><div class="vp-progress"><div class="vp-bar" style="width:0%"></div></div><div class="vp-row"><div class="vp-left"><div class="vp-icon vp-rew" title="−10s"><i class="material-icons">replay_10</i></div><div class="vp-icon vp-pp" title="Play"><i class="material-icons">play_arrow</i></div><div class="vp-icon vp-fwd" title="+10s"><i class="material-icons">forward_10</i></div><div class="vp-vol-wrap"><div class="vp-icon vp-vol-btn"><i class="material-icons">volume_up</i></div><input type="range" min="0" max="100" value="80" class="vol-slider"></div><div class="vp-time"><span class="vp-cur">0:00</span> / <span class="vp-dur">0:00</span></div></div><div class="vp-right"><div class="vp-speed" title="Speed">1×</div><div class="vp-icon vp-pip" title="PiP"><i class="material-icons">picture_in_picture_alt</i></div><div class="vp-icon vp-fs" title="Fullscreen"><i class="material-icons">fullscreen</i></div></div></div></div><div class="vp-settings-popup vp-popup"><div class="vp-popup-title">Speed</div><ul>'+SPEEDS.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+(s===1?'Normal':s+'×')+'</li>').join('')+'</ul></div></div>';
-
-  requestAnimationFrame(function(){
-    const pw=wrapper.querySelector('.mp4-wrap');if(!pw)return;
-    const vid=pw.querySelector('.main-vid');const loader=pw.querySelector('.mp4-loader');
-    const controls=pw.querySelector('.vp-controls');const progress=pw.querySelector('.vp-progress');const bar=pw.querySelector('.vp-bar');
-    const pp=pw.querySelector('.vp-pp');const curEl=pw.querySelector('.vp-cur');const durEl=pw.querySelector('.vp-dur');
-    const speedBtn=pw.querySelector('.vp-speed');const volSlider=pw.querySelector('.vol-slider');const volIcon=pw.querySelector('.vp-vol-btn i');
-    const fsBtn=pw.querySelector('.vp-fs');const pipBtn=pw.querySelector('.vp-pip');const settingsPopup=pw.querySelector('.vp-popup');const speedItems=pw.querySelectorAll('.vp-popup ul li');
-    function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0'+sec:sec);}
-    function playV(){vid.play();pp.querySelector('i').textContent='pause';}
-    function pauseV(){vid.pause();pp.querySelector('i').textContent='play_arrow';}
-    pp.addEventListener('click',function(){vid.paused?playV():pauseV();});
-    pw.addEventListener('click',function(e){if(e.target===pw||e.target===vid){vid.paused?playV():pauseV();}});
-    vid.addEventListener('waiting',function(){loader.style.display='block';});
-    vid.addEventListener('canplay',function(){loader.style.display='none';});
-    vid.addEventListener('ended',function(){pp.querySelector('i').textContent='replay';swStop();});
-    vid.addEventListener('loadeddata',function(){durEl.textContent=fmt(vid.duration);});
-    vid.addEventListener('timeupdate',function(){if(!vid.duration)return;bar.style.width=(vid.currentTime/vid.duration*100)+'%';curEl.textContent=fmt(vid.currentTime);});
-    vid.addEventListener('play',function(){swStart();});
-    vid.addEventListener('pause',function(){swStop();});
-    let dragging=false;
-    function seekTo(e){const rect=progress.getBoundingClientRect();const x=Math.max(0,Math.min(e.clientX-rect.left,rect.width));vid.currentTime=(x/rect.width)*vid.duration;}
-    progress.addEventListener('pointerdown',function(e){dragging=true;progress.setPointerCapture(e.pointerId);seekTo(e);});
-    progress.addEventListener('pointermove',function(e){if(dragging)seekTo(e);});
-    progress.addEventListener('pointerup',function(){dragging=false;});
-    volSlider.value=80;vid.volume=0.8;
-    function updateVol(){const v=vid.volume;volIcon.textContent=v===0?'volume_off':v<0.4?'volume_down':'volume_up';}
-    volSlider.addEventListener('input',function(){vid.volume=volSlider.value/100;updateVol();});
-    pw.querySelector('.vp-vol-btn').addEventListener('click',function(){vid.volume=vid.volume>0?0:0.8;volSlider.value=vid.volume*100;updateVol();});
-    let hideTimer;
-    function showCtrl(){controls.classList.add('show');clearTimeout(hideTimer);hideTimer=setTimeout(function(){if(!vid.paused&&!settingsPopup.classList.contains('show'))controls.classList.remove('show');},2800);}
-    pw.addEventListener('mousemove',showCtrl);pw.addEventListener('touchstart',showCtrl,{passive:true});controls.classList.add('show');
-    speedItems.forEach(function(li){li.addEventListener('click',function(){speedItems.forEach(x=>x.classList.remove('active'));li.classList.add('active');const s=parseFloat(li.dataset.speed);vid.playbackRate=s;speedBtn.textContent=s===1?'1×':s+'×';settingsPopup.classList.remove('show');});});
-    speedBtn.addEventListener('click',function(e){e.stopPropagation();settingsPopup.classList.toggle('show');});
-    document.addEventListener('click',function(e){if(!settingsPopup.contains(e.target)&&e.target!==speedBtn)settingsPopup.classList.remove('show');});
-    pipBtn.addEventListener('click',function(){if(document.pictureInPictureEnabled)vid.requestPictureInPicture().catch(()=>{});});
-    fsBtn.addEventListener('click',function(){if(!document.fullscreenElement){pw.requestFullscreen();fsBtn.querySelector('i').textContent='fullscreen_exit';}else{document.exitFullscreen();fsBtn.querySelector('i').textContent='fullscreen';}});
-    pw.querySelector('.vp-rew').addEventListener('click',function(){vid.currentTime=Math.max(0,vid.currentTime-10);});
-    pw.querySelector('.vp-fwd').addEventListener('click',function(){vid.currentTime=Math.min(vid.duration,vid.currentTime+10);});
-    vid.addEventListener('contextmenu',function(e){e.preventDefault();});
-    updateVol();
-  });
-}
-
-window.goToCheckout=function(){
-  const lessonId=new URLSearchParams(location.search).get('id');
-  if(!lessonId){location.href='/dashboard';return;}
-  localStorage.setItem('checkout_lesson_id',lessonId);
-  location.href='/checkout?lesson_id='+encodeURIComponent(lessonId);
-};
-
-/* ════════════════════════════
-   ACCESS LOGIC (FIXED)
-════════════════════════════ */
-function codeLessonId(c){return c?.lessonid||c?.lesson_id||c?.lesson||c?.course_id||c?.courseid||'';}
-function codeUsedBy(c){return String(c?.usedby||c?.used_by||c?.user_email||c?.email||c?.student_email||'').toLowerCase().trim();}
+/* ── ACCESS FUNCTIONS ── */
+function codeLessonId(c){return c?.lessonid||c?.lesson_id||c?.lesson||c?.course_id||'';}
+function codeUsedBy(c){return String(c?.usedby||c?.used_by||c?.user_email||c?.email||'').toLowerCase().trim();}
 function codeIsUsed(c){return c?.used===true||c?.is_used===true||String(c?.used).toLowerCase()==='true'||String(c?.is_used).toLowerCase()==='true';}
 function lessonAccessDays(ls,c){return Number(c?.access_days||c?.validity_days||c?.validitydays||ls?.access_days||ls?.validity_days||ls?.validitydays||30)||30;}
 function toMs(v){if(v===undefined||v===null||v==='')return null;if(typeof v==='number')return v<9999999999?v*1000:v;const s=String(v).trim();if(/^\d+$/.test(s)){const n=Number(s);return n<9999999999?n*1000:n;}const d=new Date(s);return isNaN(d.getTime())?null:d.getTime();}
-function codeExpiryMs(c,ls){
-  const direct=toMs(c?.expiryat||c?.expiry_at||c?.expires_at||c?.expiresat);
-  if(direct)return direct;
-  const start=toMs(c?.used_at||c?.usedat||c?.updated_at);
-  const days=lessonAccessDays(ls,c);
-  if(start)return start+days*86400000;
-  return Date.now()+days*86400000;
-}
-function isUnknownCodeOwner(c){const owner=codeUsedBy(c);return owner===''||owner==='unknown_user'||owner==='unknown'||owner==='null';}
+function codeExpiryMs(c,ls){const d=toMs(c?.expiryat||c?.expiry_at||c?.expires_at||c?.expiresat);if(d)return d;const s=toMs(c?.used_at||c?.usedat||c?.updated_at);const days=lessonAccessDays(ls,c);if(s)return s+days*86400000;return Date.now()+days*86400000;}
+function isUnknownCodeOwner(c){const o=codeUsedBy(c);return o===''||o==='unknown_user'||o==='unknown'||o==='null';}
 
 async function fetchMyCodes(email,lessonId){
-  if(!db)return[];
-  const e=String(email||'').toLowerCase().trim();
-  const lid=String(lessonId||'');
-  let codes=[];
-  try{const res=await db.from('codes').select('*').eq('lessonid',lid);if(!res.error&&res.data)codes=res.data;}catch(err){}
-  if(!codes.length){try{const res=await db.from('codes').select('*').eq('lesson_id',lid);if(!res.error&&res.data)codes=res.data;}catch(err){}}
-  if(!codes.length&&e){try{const res=await db.from('codes').select('*').eq('usedby',e);if(!res.error&&res.data)codes=res.data;}catch(err){}}
-  if(!codes.length&&e){try{const res=await db.from('codes').select('*').eq('used_by',e);if(!res.error&&res.data)codes=res.data;}catch(err){}}
+  if(!db)return[];const e=String(email||'').toLowerCase().trim();const lid=String(lessonId||'');let codes=[];
+  try{const r=await db.from('codes').select('*').eq('lessonid',lid);if(!r.error&&r.data)codes=r.data;}catch(e){}
+  if(!codes.length)try{const r=await db.from('codes').select('*').eq('lesson_id',lid);if(!r.error&&r.data)codes=r.data;}catch(e){}
+  if(!codes.length&&e)try{const r=await db.from('codes').select('*').eq('usedby',e);if(!r.error&&r.data)codes=r.data;}catch(e){}
+  if(!codes.length&&e)try{const r=await db.from('codes').select('*').eq('used_by',e);if(!r.error&&r.data)codes=r.data;}catch(e){}
   return codes||[];
 }
-
-async function tryClaimUnknownCode(c,email){
-  if(!c||!c.id||!email||!isUnknownCodeOwner(c))return;
-  try{await db.from('codes').update({usedby:email,used_at:c.used_at||new Date().toISOString()}).eq('id',c.id);}catch(err){}
-}
+async function tryClaimUnknownCode(c,email){if(!c||!c.id||!email||!isUnknownCodeOwner(c))return;try{await db.from('codes').update({usedby:email,used_at:c.used_at||new Date().toISOString()}).eq('id',c.id);}catch(e){}}
 
 function getValidAccessCode(codes,lessonId,ls){
-  const email=String(currentUser?.email||'').toLowerCase().trim();
-  const now=Date.now();
+  const email=String(currentUser?.email||'').toLowerCase().trim();const now=Date.now();
   for(const c of (codes||[])){
-    const cid=String(codeLessonId(c));
-    const sameLesson=cid===String(lessonId);
-    const used=codeIsUsed(c);
-    const owner=codeUsedBy(c);
-    const unknown=isUnknownCodeOwner(c);
-    const exp=codeExpiryMs(c,ls);
-    const notExpired=!exp||exp>now;
-    console.log('[KALAWY DEBUG] Code:',{id:c.id,lessonId:cid,match:sameLesson,used,owner,unknown,expiry:new Date(exp).toISOString(),notExpired});
-    if(!sameLesson)continue;
-    if(!used&&!unknown)continue;
-    if(!notExpired)continue;
+    const cid=String(codeLessonId(c));if(cid!==String(lessonId))continue;
+    const used=codeIsUsed(c);const unknown=isUnknownCodeOwner(c);if(!used&&!unknown)continue;
+    const exp=codeExpiryMs(c,ls);if(exp&&exp<=now)continue;
     return{ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c,claimed:unknown};
   }
   return{ok:false,expiry:null,code:null,claimed:false};
 }
 
-function forceRefresh(){const lessonId=new URLSearchParams(location.search).get('id');location.href='/lesson?id='+lessonId+'&refresh=1';}
-
 function showLockWithDebug(codes,lessonId,lessonSnap){
-  const screen=document.getElementById('codeLockScreen');
+  const screen=$('codeLockScreen');
   if(!screen){showFatalError('Lesson Locked','Could not render lock screen.','');return;}
-  const email=currentUser?.email||'—';
-  const codeCount=codes?.length||0;
-  const lessonName=lessonSnap?.name||lessonId;
+  const email=currentUser?.email||'—';const codeCount=codes?.length||0;const lessonName=lessonSnap?.name||lessonId;
   let debugRows='';
   if(codeCount===0){
-    debugRows='<div class="dbg-row"><span class="dbg-label">⚠️ No codes found</span><span class="dbg-val">No codes returned for this lesson. Check RLS policies on "codes" table — the anon key must have SELECT access.<br><br><strong>Fix:</strong> Run in Supabase SQL Editor:<br>CREATE POLICY "anon_select" ON codes FOR SELECT USING (true);</span></div>';
+    debugRows='<div class="dbg-row"><span class="dbg-label">⚠️ No codes found</span><span class="dbg-val">RLS is blocking SELECT on "codes" table.<br><br><strong>Fix in Supabase SQL Editor:</strong><br>CREATE POLICY "anon_select" ON codes FOR SELECT USING (true);</span></div>';
   }else{
-    (codes||[]).forEach((c,i)=>{
-      const used=codeIsUsed(c);
-      const match=String(codeLessonId(c))===String(lessonId);
-      const owner=codeUsedBy(c);
-      const exp=codeExpiryMs(c,lessonSnap);
-      const expired=exp&&exp<Date.now();
-      const status=!match?'❌ Wrong lesson':!used&&!isUnknownCodeOwner(c)?'❌ Not used':expired?'❌ Expired':'✅ Valid';
-      debugRows+='<div class="dbg-row"><span class="dbg-label">Code '+(i+1)+': '+status+'</span><span class="dbg-val">ID:'+String(c.id).substring(0,8)+'… | used:'+used+' | owner:'+(owner||'empty')+' | lesson:'+String(codeLessonId(c)).substring(0,8)+'… | exp:'+(exp?new Date(exp).toLocaleString():'none')+'</span></div>';
-    });
+    (codes||[]).forEach((c,i)=>{const used=codeIsUsed(c);const match=String(codeLessonId(c))===String(lessonId);const owner=codeUsedBy(c);const exp=codeExpiryMs(c,lessonSnap);const expired=exp&&exp<Date.now();const st=!match?'❌ Wrong lesson':!used&&!isUnknownCodeOwner(c)?'❌ Not used':expired?'❌ Expired':'✅ Valid';debugRows+='<div class="dbg-row"><span class="dbg-label">Code '+(i+1)+': '+st+'</span><span class="dbg-val">ID:'+String(c.id).substring(0,8)+'… used:'+used+' owner:'+(owner||'empty')+' lesson:'+String(codeLessonId(c)).substring(0,8)+'… exp:'+(exp?new Date(exp).toLocaleString():'none')+'</span></div>';});
   }
-
-  screen.innerHTML=
-    '<div class="lock-card">'
-    +'<button class="lock-back" onclick="location.href=\'/dashboard\'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back</button>'
-    +'<div class="lock-ico"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>'
-    +'<div class="lock-title">Lesson Locked</div>'
-    +'<div class="lock-sub" style="direction:rtl;text-align:right;"><span style="display:block;margin-bottom:8px;">لو أنت مفعل الحصة ولسه الصفحة مقفولة، اضغط تحديث أو ادخل من Dashboard.</span><span>لو لم تفعلها، افتح Checkout وفعل كود الحصة.</span></div>'
-    +'<div class="lock-actions">'
-    +'<button class="lock-btn primary" onclick="goToCheckout()">Go to Checkout →</button>'
-    +'<button class="lock-btn ghost" onclick="forceRefresh()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Retry / تحديث</button>'
-    +'</div>'
-    +'<div class="dbg-box"><div class="dbg-title">DEBUG INFO</div>'
-    +'<div class="dbg-row"><span class="dbg-label">Email</span><span class="dbg-val">'+email+'</span></div>'
-    +'<div class="dbg-row"><span class="dbg-label">Lesson</span><span class="dbg-val">'+lessonName+' ('+lessonId+')</span></div>'
-    +'<div class="dbg-row"><span class="dbg-label">Codes found</span><span class="dbg-val">'+codeCount+'</span></div>'
-    +debugRows
-    +'</div>'
-    +'<div class="lock-footer">Screenshot this & send to support</div>'
-    +'</div>';
-  screen.classList.remove('hidden');
+  screen.innerHTML='<div class="lock-card"><button class="lock-back" onclick="location.href=\'/dashboard\'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back</button><div class="lock-ico"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div><div class="lock-title">Lesson Locked</div><div class="lock-sub" style="direction:rtl;text-align:right;"><span style="display:block;margin-bottom:8px;">لو أنت مفعل الحصة ولسه مقفولة، اضغط تحديث.</span><span>لو لم تفعلها، افتح Checkout وفعل الكود.</span></div><div class="lock-actions"><button class="lock-btn primary" onclick="goToCheckout()">Go to Checkout →</button><button class="lock-btn ghost" onclick="location.href=location.href">↻ Retry</button></div><div class="dbg-box"><div class="dbg-title">DEBUG</div><div class="dbg-row"><span class="dbg-label">Email</span><span class="dbg-val">'+email+'</span></div><div class="dbg-row"><span class="dbg-label">Lesson</span><span class="dbg-val">'+lessonName+' ('+lessonId+')</span></div><div class="dbg-row"><span class="dbg-label">Codes</span><span class="dbg-val">'+codeCount+'</span></div>'+debugRows+'</div><div class="lock-footer">Screenshot & send to support</div></div>';
+  safeClass(screen,'hidden',false);
 }
 
+/* ── INIT ── */
 async function init(){
-  /* ── CHECK SUPABASE FIRST ── */
-  if(!db){
-    showFatalError('Configuration Error','Could not connect to the server. The Supabase client failed to initialize.','Supabase URL or Anon Key is missing/invalid.');
-    return;
-  }
+  if(!db){showFatalError('Config Error','Supabase client failed to initialize.','Check SUPABASE_URL and SUPABASE_ANON in code.');return;}
+  if(await checkAdBlocker())return;
+  const lessonId=pageParams.get('id');if(!lessonId){hideLoader();return;}
 
-  const adBlocked=await checkAdBlocker();
-  if(adBlocked)return;
-
-  const lessonId=new URLSearchParams(location.search).get('id');
-  if(!lessonId){hideLoader();return;}
-
-  /* ── SAFE SESSION CHECK ── */
   let session=null;
-  try{
-    const sessionRes=await db.auth.getSession();
-    session=sessionRes?.data?.session||null;
-  }catch(e){
-    console.error('[KALAWY] getSession error:',e);
-    showFatalError('Session Error','Could not verify your login. Please log in again.','Error: '+(e?.message||String(e))+'<br><br>If this is a 403 error, the Supabase project might be paused or the anon key is invalid.');
-    return;
+  try{const r=await db.auth.getSession();session=r?.data?.session||null;}catch(e){
+    showFatalError('Session Error','Could not verify login. If 403, the Supabase project might be paused or the anon key is wrong.','Error: '+(e?.message||String(e)));return;
   }
-
-  if(!session){
-    hideLoader();
-    location.href='/home';
-    return;
-  }
+  if(!session){hideLoader();location.href='/home';return;}
   currentUser=session.user;
 
-  /* ── REFRESH CACHE ── */
-  if(new URLSearchParams(location.search).get('refresh')==='1'){
-    localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);
-    localStorage.removeItem('exam_'+currentUser.id+'_'+lessonId);
-  }
+  if(pageParams.get('refresh')==='1'){localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);localStorage.removeItem('exam_'+currentUser.id+'_'+lessonId);}
 
-  /* ── CHECK LOCAL CACHE ── */
   const cached=localStorage.getItem('access_'+currentUser.id+'_'+lessonId);
-  if(cached){
-    try{
-      const p=JSON.parse(cached);
-      if(p.expiry>Date.now()){
-        myStudentId=p.studentId||currentUser.id.substring(0,6).toUpperCase();
-        await loadLesson(lessonId);
-        startAccessTimer(p.expiry);
-        verifyBg(lessonId);
-        hideLoader();
-        return;
-      }
-    }catch(e){}
-  }
+  if(cached){try{const p=JSON.parse(cached);if(p.expiry>Date.now()){myStudentId=p.studentId||currentUser.id.substring(0,6).toUpperCase();await loadLesson(lessonId);startAccessTimer(p.expiry);hideLoader();return;}}catch(e){}}
 
-  /* ── FETCH FROM DB ── */
   try{
-    const[userRes,lessonRes]=await Promise.all([
-      db.from('users').select('studentid').eq('id',currentUser.id).maybeSingle(),
-      db.from('lessons').select('*').eq('id',lessonId).maybeSingle()
-    ]);
-    const u=userRes?.data||null;
-    const lessonSnap=lessonRes?.data||null;
+    const u=await safeQuery('users',{key:'id',val:currentUser.id},{'maybe':true});
     if(u)myStudentId=u.studentid||currentUser.id.substring(0,6).toUpperCase();
 
-    if(lessonSnap&&(!lessonSnap.price||Number(lessonSnap.price)===0)){
-      await loadLesson(lessonId);
-      hideLoader();
-      return;
-    }
+    const lessonSnap=await safeQuery('lessons',{key:'id',val:lessonId},{'single':true});
+    if(!lessonSnap){hideLoader();showLockWithDebug([],lessonId,null);return;}
+    if(!lessonSnap.price||Number(lessonSnap.price)===0){await loadLesson(lessonId);hideLoader();return;}
 
     const codes=await fetchMyCodes(currentUser.email,lessonId);
-    console.log('[KALAWY DEBUG] Fetched codes:',codes?.length,codes);
-
     const access=getValidAccessCode(codes,lessonId,lessonSnap);
-    console.log('[KALAWY DEBUG] Access result:',access);
-
-    if(access.ok){
-      await tryClaimUnknownCode(access.code,currentUser.email);
-      localStorage.setItem('access_'+currentUser.id+'_'+lessonId,JSON.stringify({expiry:access.expiry,studentId:myStudentId}));
-      await loadLesson(lessonId);
-      startAccessTimer(access.expiry);
-      hideLoader();
-    }else{
-      hideLoader();
-      showLockWithDebug(codes,lessonId,lessonSnap);
-    }
+    if(access.ok){await tryClaimUnknownCode(access.code,currentUser.email);localStorage.setItem('access_'+currentUser.id+'_'+lessonId,JSON.stringify({expiry:access.expiry,studentId:myStudentId}));await loadLesson(lessonId);startAccessTimer(access.expiry);hideLoader();}
+    else{hideLoader();showLockWithDebug(codes,lessonId,lessonSnap);}
   }catch(e){
-    console.error('[KALAWY DEBUG] Access check FAILED:',e);
-
-    /* ── CHECK IF IT'S A 403 ── */
-    const errMsg=e?.message||String(e);
-    const is403=errMsg.includes('403')||errMsg.includes('Forbidden')||errMsg.includes('policy');
-    const isNetwork=errMsg.includes('Failed to fetch')||errMsg.includes('NetworkError')||errMsg.includes('net::');
-
-    if(is403){
-      showFatalError('Access Denied (403)',
-        'The server rejected the request. This usually means:',
-        '<br><br>1. <strong>Supabase project is paused</strong> — go to dashboard.supabase.com and unpause it<br>2. <strong>RLS policy is too strict</strong> — the anon key needs SELECT on tables: users, lessons, codes<br>3. <strong>Anon key is wrong</strong> — check the key in your code matches the project',
-        errMsg);
-    }else if(isNetwork){
-      showFatalError('Network Error',
-        'Could not reach the server. Check your internet connection and try again.',
-        errMsg);
-    }else{
-      showFatalError('Unexpected Error',
-        'Something went wrong while loading the lesson.',
-        errMsg);
-    }
+    const msg=e?.message||String(e);
+    const is403=msg.includes('403')||msg.includes('Forbidden')||msg.includes('policy');
+    showFatalError(is403?'Access Denied (403)':'Unexpected Error',is403?'RLS policy is blocking access. Run this in Supabase SQL Editor:<br><br><strong>CREATE POLICY "anon_all" ON results FOR SELECT USING (true);<br>CREATE POLICY "anon_all" ON homework FOR SELECT USING (true);<br>CREATE POLICY "anon_all" ON hw_results FOR SELECT USING (true);<br>CREATE POLICY "anon_all" ON lesson_videos FOR SELECT USING (true);</strong>':'Something went wrong.',msg);
   }
 }
 
-async function verifyBg(lessonId){
-  try{
-    const[lessonRes,codes]=await Promise.all([
-      db.from('lessons').select('*').eq('id',lessonId).maybeSingle(),
-      fetchMyCodes(currentUser.email)
-    ]);
-    const access=getValidAccessCode(codes,lessonId,lessonRes?.data||null);
-    if(!access.ok)localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);
-  }catch(e){}
-}
+function startAccessTimer(expiry){const el=$('accessTimerBox');if(!el)return;safeClass(el,'hidden',false);const tick=()=>{const d=expiry-Date.now();if(d<=0){clearInterval(iv);alert('Access expired.');location.reload();return;}const days=Math.floor(d/86400000),h=Math.floor((d%86400000)/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);const c=$('accessCountdown');if(c)c.textContent=days>0?(days+'d '+h+'h'):(h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'));};tick();const iv=setInterval(tick,1000);}
 
-function startAccessTimer(expiry){
-  const el=document.getElementById('accessTimerBox');
-  if(!el)return;
-  el.classList.remove('hidden');
-  const tick=function(){const d=expiry-Date.now();if(d<=0){clearInterval(iv);alert('Access expired.');location.reload();return;}const days=Math.floor(d/86400000),h=Math.floor((d%86400000)/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);document.getElementById('accessCountdown').textContent=days>0?(days+'d '+h+'h'):(h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'));};
-  tick();const iv=setInterval(tick,1000);
-}
-
+/* ── LOAD LESSON (each query independent) ── */
 async function loadLesson(id){
-  const lockEl=document.getElementById('codeLockScreen');
-  if(lockEl)lockEl.classList.add('hidden');
-  const contentEl=document.getElementById('lessonContent');
-  if(!contentEl)return;
-  contentEl.classList.remove('hidden');
+  safeClass($('codeLockScreen'),'hidden',true);
+  safeClass($('lessonContent'),'hidden',false);
 
-  const[snapRes,resRes,hwRes]=await Promise.all([
-    db.from('lessons').select('*').eq('id',id).single(),
-    db.from('results').select('*').eq('email',currentUser.email).order('date',{ascending:false}),
-    db.from('homework').select('*').eq('lessonid',id)
-  ]);
-  const snap=snapRes?.data||null;
-  const res=resRes?.data||[];
-  const hwList=hwRes?.data||[];
-  if(!snap)return;
+  /* CRITICAL: lesson data */
+  const snap=await safeQuery('lessons',{key:'id',val:id},{single:true});
+  if(!snap){showFatalError('Not Found','This lesson does not exist.','ID: '+id);return;}
   lessonData=snap;questions=lessonData.questions||[];
 
-  examDurationMins=Number(lessonData.examduration)||40;
-  timeLeft=examDurationMins*60;
-  const durWarn=document.getElementById('examDurationWarn');
-  if(durWarn)durWarn.textContent='⏱ Time Limit: '+examDurationMins+' Minutes';
-  const timerVal=document.getElementById('timerVal');
-  if(timerVal)timerVal.textContent=examDurationMins+':00';
+  examDurationMins=Number(lessonData.examduration)||40;timeLeft=examDurationMins*60;
+  const dw=$('examDurationWarn');if(dw)dw.textContent='⏱ Time Limit: '+examDurationMins+' Minutes';
+  const tv=$('timerVal');if(tv)tv.textContent=examDurationMins+':00';
+  const nt=$('navLessonTitle');if(nt)nt.textContent=lessonData.name||'Kalawy';
 
-  const navTitle=document.getElementById('navLessonTitle');
-  if(navTitle)navTitle.textContent=lessonData.name||'Kalawy';
+  /* NON-CRITICAL: results */
+  let res=[];
+  try{const r=await db.from('results').select('*').eq('email',currentUser.email).order('date',{ascending:false});res=r?.data||[];}catch(e){console.warn('[K] results query skipped:',e.message);}
+
+  /* NON-CRITICAL: homework list */
+  let hwList=[];
+  try{const r=await db.from('homework').select('*').eq('lessonid',id);hwList=r?.data||[];}catch(e){console.warn('[K] homework query skipped:',e.message);}
+
+  /* NON-CRITICAL: videos fallback */
   videosData=[];
   const extracted=extractVideos(snap);
   if(extracted){videosData=extracted;}
-  else{try{const{data:vr}=await db.from('lesson_videos').select('*').eq('lessonid',id);if(vr&&vr.length>0)videosData=normalizeVideos(vr);}catch(e){}}
+  else{try{const r=await db.from('lesson_videos').select('*').eq('lessonid',id);if(r?.data?.length)videosData=normalizeVideos(r.data);}catch(e){console.warn('[K] lesson_videos skipped:',e.message);}}
 
-  const hwTab=document.getElementById('btn-homework-tab');
+  /* PDF */
+  if(lessonData.pdf){const pl=$('pdfLink');if(pl)pl.href=lessonData.pdf;}
+
+  /* Homework tab */
   if(hwList&&hwList.length>0){
     hwData=hwList[0];hwQuestions=hwData.questions||[];
-    const{data:hwResult}=await db.from('hw_results').select('*').eq('email',currentUser.email).eq('hw_id',hwData.id).maybeSingle();
+    let hwResult=null;
+    try{const r=await db.from('hw_results').select('*').eq('email',currentUser.email).eq('hw_id',hwData.id).maybeSingle();hwResult=r?.data||null;}catch(e){console.warn('[K] hw_results skipped:',e.message);}
     if(hwResult){hwDone=true;hwResultsMap[hwData.id]=hwResult;renderHomeworkDone(hwResult);}
     else{hwDone=false;renderHomeworkStart();}
-    if(hwTab)hwTab.classList.remove('locked');
-  }else{renderNoHomework();if(hwTab)hwTab.classList.remove('locked');}
+    safeClass($('btn-homework-tab'),'locked',false);
+  }else{renderNoHomework();safeClass($('btn-homework-tab'),'locked',false);}
 
-  const pdfLink=document.getElementById('pdfLink');
-  if(lessonData.pdf&&pdfLink)pdfLink.href=lessonData.pdf;
-
-  const quizTab=document.getElementById('tab-quiz');
+  /* Quiz */
+  const qt=$('tab-quiz');
   if(questions.length===0){
-    if(quizTab)quizTab.innerHTML='<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:60px 28px;text-align:center;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:14px">🎓</div><div style="font-family:var(--display);font-size:1.5rem;font-weight:700">No Exam For This Course</div><div style="font-size:.87rem;color:var(--muted);margin-top:8px">Videos and PDF are unlocked automatically.</div></div>';
+    if(qt)qt.innerHTML='<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:60px 28px;text-align:center;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:14px">🎓</div><div style="font-family:var(--display);font-size:1.5rem;font-weight:700">No Exam For This Course</div><div style="font-size:.87rem;color:var(--muted);margin-top:8px">Videos and PDF are unlocked automatically.</div></div>';
     unlockPostExam(true);applyInitialVideoLaunch();return;
   }
   const prev=res&&res.find(r=>r.lesson===lessonData.name);
   if(prev){userAns=prev.userans||{};generateReview();unlockPostExam(false,buildMsg(prev.score,questions.length,true));applyInitialVideoLaunch();}
-  else{
-    const saved=localStorage.getItem('exam_'+currentUser.id+'_'+id);
-    if(saved){try{const pd=JSON.parse(saved);userAns=pd.userAns;generateReview();unlockPostExam(false,buildMsg(pd.score,questions.length,true));applyInitialVideoLaunch();}catch(e){}}
-  }
+  else{const saved=localStorage.getItem('exam_'+currentUser.id+'_'+id);if(saved){try{const pd=JSON.parse(saved);userAns=pd.userAns;generateReview();unlockPostExam(false,buildMsg(pd.score,questions.length,true));applyInitialVideoLaunch();}catch(e){}}}
 }
 
-function renderNoHomework(){const el=document.getElementById('tab-homework');if(el)el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">No Assignment</div><div class="hw-sub">There is no homework assignment for this course.</div></div>';}
-function renderHomeworkStart(){const el=document.getElementById('tab-homework');if(!el)return;el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">Assignment: '+(hwData.title||'Homework')+'</div><div class="hw-sub">Answer '+hwQuestions.length+' questions. Completing this may unlock gated videos!</div><button class="hw-btn" onclick="startHw()">Start Assignment →</button></div>';}
-function renderHomeworkDone(result){
-  const el=document.getElementById('tab-homework');if(!el)return;
-  const pct=result.total>0?Math.round(result.score/result.total*100):0;const clr=pct>=70?'var(--accent)':pct>=50?'var(--amber)':'var(--red)';
-  let rev='<div style="margin-top:26px"><div class="review-title">Assignment Review</div>';
-  hwQuestions.forEach(function(q,i){const ok=result.userans&&result.userans[i]===q.correct;const al=result.userans&&result.userans[i];const ans=al?(q[al]?al.toUpperCase()+' — '+q[al]:al.toUpperCase()):'—';const corr=q.correct?(q[q.correct]?q.correct.toUpperCase()+' — '+q[q.correct]:q.correct.toUpperCase()):'—';rev+='<div class="review-item '+(ok?'correct':'wrong')+'"><div class="review-meta"><span class="rv-lbl">Q'+(i+1)+'</span><span class="rbadge '+(ok?'correct':'wrong')+'">'+(ok?'✓ Correct':'✗ Wrong')+'</span></div><div class="rv-q">'+(q.text||'Choose:')+'</div><div class="rv-ans">Your answer: <span>'+ans+'</span></div>'+(!ok?'<div class="rv-correct">✓ Correct: '+corr+'</div>':'')+'</div>';});
-  rev+='</div>';
-  el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:12px">✅</div><div class="hw-title" style="color:var(--accent)">Assignment Complete!</div><div style="font-family:var(--mono);font-size:2.5rem;font-weight:700;color:'+clr+';margin:12px 0 5px">'+result.score+'<span style="font-size:1.1rem;color:var(--muted);">/'+result.total+'</span></div><div style="font-size:.82rem;color:var(--muted)">'+pct+'% — '+(pct>=70?'Excellent!':pct>=50?'Good job!':'Keep practicing!')+'</div></div>'+rev;
-}
-window.startHw=function(){showLoader('Preparing…');setTimeout(function(){hwCurIdx=0;hwUserAns={};renderHwQ();hideLoader();},300);};
-function renderHwQ(){
-  const el=document.getElementById('tab-homework');if(!el)return;
-  const q=hwQuestions[hwCurIdx];if(!q)return;
-  const pct=Math.round((hwCurIdx+1)/hwQuestions.length*100);const count=q.optionsCount||4;const prevHidden=hwCurIdx===0?'hidden':'';const isLast=hwCurIdx<hwQuestions.length-1;
-  el.innerHTML='<div class="quiz-wrap"><div class="progress-row"><span class="q-count">'+(hwCurIdx+1)+'/'+hwQuestions.length+'</span><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%"></div></div></div><div class="q-card"><div class="q-label">Assignment · Q'+(hwCurIdx+1)+'</div>'+(q.image?'<img src="'+q.image+'" class="q-img" alt="">':'')+'<div class="q-text">'+(q.text||'Choose:')+'</div><div class="options">'+OPT_LETTERS.slice(0,count).map(opt=>'<label class="opt"><input type="radio" name="hw" value="'+opt+'" '+(hwUserAns[hwCurIdx]===opt?'checked':'')+'><span class="opt-key">'+opt.toUpperCase()+'</span><span class="opt-text">'+(q[opt]||'')+'</span></label>').join('')+'</div></div><div class="quiz-nav"><button class="q-btn ghost '+prevHidden+'" onclick="saveHwAns();hwCurIdx--;renderHwQ()">← Previous</button>'+(isLast?'<button class="q-btn primary" onclick="saveHwAns();hwCurIdx++;renderHwQ()">Next →</button>':'<button class="q-btn primary" onclick="saveHwAns();submitHw()">Submit ✓</button>')+'</div></div>';
-}
+/* ── HOMEWORK ── */
+function renderNoHomework(){const el=$('tab-homework');if(el)el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">No Assignment</div><div class="hw-sub">There is no homework for this course.</div></div>';}
+function renderHomeworkStart(){const el=$('tab-homework');if(!el)return;el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">Assignment: '+(hwData.title||'Homework')+'</div><div class="hw-sub">Answer '+hwQuestions.length+' questions.</div><button class="hw-btn" onclick="startHw()">Start →</button></div>';}
+function renderHomeworkDone(result){const el=$('tab-homework');if(!el)return;const pct=result.total>0?Math.round(result.score/result.total*100):0;const clr=pct>=70?'var(--accent)':pct>=50?'var(--amber)':'var(--red)';let rev='<div style="margin-top:26px"><div class="review-title">Review</div>';hwQuestions.forEach((q,i)=>{const ok=result.userans&&result.userans[i]===q.correct;const al=result.userans&&result.userans[i];const ans=al?(q[al]?al.toUpperCase()+' — '+q[al]:al.toUpperCase()):'—';const corr=q.correct?(q[q.correct]?q.correct.toUpperCase()+' — '+q[q.correct]:q.correct.toUpperCase()):'—';rev+='<div class="review-item '+(ok?'correct':'wrong')+'"><div class="review-meta"><span class="rv-lbl">Q'+(i+1)+'</span><span class="rbadge '+(ok?'correct':'wrong')+'">'+(ok?'✓':'✗')+'</span></div><div class="rv-q">'+(q.text||'Choose:')+'</div><div class="rv-ans">Yours: <span>'+ans+'</span></div>'+(!ok?'<div class="rv-correct">✓ '+corr+'</div>':'')+'</div>';});rev+='</div>';el.innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:12px">✅</div><div class="hw-title" style="color:var(--accent)">Done!</div><div style="font-family:var(--mono);font-size:2.5rem;font-weight:700;color:'+clr+';margin:12px 0 5px">'+result.score+'<span style="font-size:1.1rem;color:var(--muted);">/'+result.total+'</span></div><div style="font-size:.82rem;color:var(--muted)">'+pct+'%</div></div>'+rev;}
+window.startHw=function(){showLoader('Preparing…');setTimeout(()=>{hwCurIdx=0;hwUserAns={};renderHwQ();hideLoader();},300);};
+function renderHwQ(){const el=$('tab-homework');if(!el)return;const q=hwQuestions[hwCurIdx];if(!q)return;const pct=Math.round((hwCurIdx+1)/hwQuestions.length*100);const count=q.optionsCount||4;const prevH=hwCurIdx===0?'hidden':'';const isLast=hwCurIdx<hwQuestions.length-1;el.innerHTML='<div class="quiz-wrap"><div class="progress-row"><span class="q-count">'+(hwCurIdx+1)+'/'+hwQuestions.length+'</span><div class="prog-track"><div class="prog-fill" style="width:'+pct+'%"></div></div></div><div class="q-card"><div class="q-label">Q'+(hwCurIdx+1)+'</div>'+(q.image?'<img src="'+q.image+'" class="q-img" alt="">':'')+'<div class="q-text">'+(q.text||'Choose:')+'</div><div class="options">'+OPT_LETTERS.slice(0,count).map(opt=>'<label class="opt"><input type="radio" name="hw" value="'+opt+'" '+(hwUserAns[hwCurIdx]===opt?'checked':'')+'><span class="opt-key">'+opt.toUpperCase()+'</span><span class="opt-text">'+(q[opt]||'')+'</span></label>').join('')+'</div></div><div class="quiz-nav"><button class="q-btn ghost '+prevH+'" onclick="saveHwAns();hwCurIdx--;renderHwQ()">← Prev</button>'+(isLast?'<button class="q-btn primary" onclick="saveHwAns();hwCurIdx++;renderHwQ()">Next →</button>':'<button class="q-btn primary" onclick="saveHwAns();submitHw()">Submit ✓</button>')+'</div></div>';}
 function saveHwAns(){const s=document.querySelector('input[name="hw"]:checked');if(s)hwUserAns[hwCurIdx]=s.value;}
-async function submitHw(){
-  saveHwAns();showLoader('Submitting…');
-  let score=0;hwQuestions.forEach((q,i)=>{if(hwUserAns[i]===q.correct)score++;});
-  const res={email:currentUser.email,hw_id:hwData.id,lesson:lessonData&&lessonData.name||'',score,total:hwQuestions.length,userans:hwUserAns};
-  try{await db.from('hw_results').insert([res]);}catch(e){}
-  hwDone=true;hwResultsMap[hwData.id]=Object.assign({},res);renderHomeworkDone(res);hideLoader();
-}
+async function submitHw(){saveHwAns();showLoader('Submitting…');let score=0;hwQuestions.forEach((q,i)=>{if(hwUserAns[i]===q.correct)score++;});const r={email:currentUser.email,hw_id:hwData.id,lesson:lessonData?.name||'',score,total:hwQuestions.length,userans:hwUserAns};try{await db.from('hw_results').insert([r]);}catch(e){}hwDone=true;hwResultsMap[hwData.id]=Object.assign({},r);renderHomeworkDone(r);hideLoader();}
 
-function buildMsg(score,total,prev){const pct=total>0?Math.round(score/total*100):0;return{score,total,pct,prev};}
-
-document.getElementById('startBtn').onclick=function(){
-  if(!questions.length)return alert('No exam questions yet.');
-  showLoader('Preparing exam…');
-  setTimeout(function(){
-    document.getElementById('startScreen').classList.add('hidden');
-    document.getElementById('quizApp').classList.remove('hidden');
-    document.getElementById('timerBox').classList.remove('hidden');
-    renderQ();startTimer();hideLoader();
-  },300);
-};
-
-function renderQ(){
-  const q=questions[curIdx];if(!q)return;
-  const pct=Math.round((curIdx+1)/questions.length*100);const count=q.optionsCount||4;
-  document.getElementById('qCount').textContent=(curIdx+1)+' / '+questions.length;
-  document.getElementById('progFill').style.width=pct+'%';
-  document.getElementById('qDisplay').innerHTML='<div class="q-label">Question '+(curIdx+1)+'</div>'+(q.image?'<img src="'+q.image+'" class="q-img" alt="">':'')+'<div class="q-text">'+(q.text||'Choose:')+'</div><div class="options">'+OPT_LETTERS.slice(0,count).map(opt=>'<label class="opt"><input type="radio" name="exam" value="'+opt+'" '+(userAns[curIdx]===opt?'checked':'')+'><span class="opt-key">'+opt.toUpperCase()+'</span><span class="opt-text">'+(q[opt]||'')+'</span></label>').join('')+'</div>';
-  document.getElementById('prevBtn').classList.toggle('hidden',curIdx===0);
-  document.getElementById('nextBtn').classList.toggle('hidden',curIdx===questions.length-1);
-  document.getElementById('finishBtn').classList.toggle('hidden',curIdx!==questions.length-1);
-}
+/* ── QUIZ ── */
+function buildMsg(score,total,prev){return{score,total,pct:total>0?Math.round(score/total*100):0,prev};}
+ $('startBtn').onclick=function(){if(!questions.length)return alert('No questions.');showLoader('Preparing…');setTimeout(()=>{safeClass($('startScreen'),'hidden',true);safeClass($('quizApp'),'hidden',false);safeClass($('timerBox'),'hidden',false);renderQ();startTimer();hideLoader();},300);};
+function renderQ(){const q=questions[curIdx];if(!q)return;const pct=Math.round((curIdx+1)/questions.length*100);const count=q.optionsCount||4;$('qCount').textContent=(curIdx+1)+' / '+questions.length;$('progFill').style.width=pct+'%';$('qDisplay').innerHTML='<div class="q-label">Question '+(curIdx+1)+'</div>'+(q.image?'<img src="'+q.image+'" class="q-img" alt="">':'')+'<div class="q-text">'+(q.text||'Choose:')+'</div><div class="options">'+OPT_LETTERS.slice(0,count).map(opt=>'<label class="opt"><input type="radio" name="exam" value="'+opt+'" '+(userAns[curIdx]===opt?'checked':'')+'><span class="opt-key">'+opt.toUpperCase()+'</span><span class="opt-text">'+(q[opt]||'')+'</span></label>').join('')+'</div>';safeClass($('prevBtn'),'hidden',curIdx===0);safeClass($('nextBtn'),'hidden',curIdx===questions.length-1);safeClass($('finishBtn'),'hidden',curIdx!==questions.length-1);}
 function saveAns(){const s=document.querySelector('input[name="exam"]:checked');if(s)userAns[curIdx]=s.value;}
-document.getElementById('nextBtn').onclick=function(){saveAns();curIdx++;renderQ();};
-document.getElementById('prevBtn').onclick=function(){saveAns();curIdx--;renderQ();};
+ $('nextBtn').onclick=function(){saveAns();curIdx++;renderQ();};
+ $('prevBtn').onclick=function(){saveAns();curIdx--;renderQ();};
+ $('finishBtn').onclick=async function(){saveAns();clearInterval(examTimer);showLoader('Grading…');try{let score=0;questions.forEach((q,i)=>{if(userAns[i]===q.correct)score++;});const{error}=await db.from('results').insert([{email:currentUser.email,lesson:lessonData.name,score,total:questions.length,userans:userAns,date:new Date().toISOString()}]);if(error)throw error;localStorage.setItem('exam_'+currentUser.id+'_'+pageParams.get('id'),JSON.stringify({userAns,score}));generateReview();unlockPostExam(false,buildMsg(score,questions.length,false));scrollTo({top:0,behavior:'smooth'});}catch(err){alert('Error: '+(err.message||err));}finally{hideLoader();}};
+function generateReview(){const list=$('reviewList');if(!list)return;list.innerHTML='';questions.forEach((q,i)=>{const ok=userAns[i]===q.correct;const al=userAns[i];const ans=al?(q[al]?al.toUpperCase()+' — '+q[al]:al.toUpperCase()):'—';const corr=q.correct?(q[q.correct]?q.correct.toUpperCase()+' — '+q[q.correct]:q.correct.toUpperCase()):'—';list.innerHTML+='<div class="review-item '+(ok?'correct':'wrong')+'" style="animation:cardIn .35s ease '+(i*.04)+'s both"><div class="review-meta"><span class="rv-lbl">Q'+(i+1)+'</span><span class="rbadge '+(ok?'correct':'wrong')+'">'+(ok?'✓':'✗')+'</span></div>'+(q.image?'<img src="'+q.image+'" style="max-height:150px;border-radius:var(--radius);margin-bottom:10px;border:1px solid var(--border);width:100%;object-fit:contain;background:var(--bg2)">':'')+'<div class="rv-q">'+(q.text||'Choose:')+'</div><div class="rv-ans">Yours: <span>'+ans+'</span></div>'+(!ok?'<div class="rv-correct">✓ '+corr+'</div>':'')+'</div>';});}
+function unlockPostExam(_,msgObj){safeClass($('startScreen'),'hidden',true);safeClass($('quizApp'),'hidden',true);safeClass($('timerBox'),'hidden',true);safeClass($('reviewArea'),'hidden',false);if(msgObj){const{score,total,pct,prev}=msgObj;const clr=pct>=70?'var(--accent)':pct>=50?'var(--amber)':'var(--red)';const r=50,circ=2*Math.PI*r,off=circ-(pct/100)*circ;$('scoreBanner').innerHTML='<div class="score-ring"><svg width="116" height="116" viewBox="0 0 116 116"><circle cx="58" cy="58" r="'+r+'" fill="none" stroke="var(--border2)" stroke-width="7"/><circle cx="58" cy="58" r="'+r+'" fill="none" stroke="'+clr+'" stroke-width="7" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'" stroke-linecap="round" style="transition:stroke-dashoffset 1s ease"/></svg><div class="score-n" style="color:'+clr+'">'+score+'</div><div class="score-pct">'+pct+'%</div></div><div class="score-of">Out of '+total+'</div><div class="score-msg">'+(prev?'✦ Already completed':'✦ Score recorded!')+'</div><div class="score-unlock">✅ Videos & PDF Unlocked</div>';}['videos','pdf'].forEach(t=>safeClass($('btn-'+t+'-tab'),'locked',false));}
+function startTimer(){timeLeft=examDurationMins*60;examTimer=setInterval(()=>{const m=Math.floor(timeLeft/60),s=timeLeft%60;const tv=$('timerVal');if(tv)tv.textContent=m+':'+(s<10?'0'+s:s);if(timeLeft<=120)safeClass($('timerBox'),'urgent',true);if(timeLeft--<=0){clearInterval(examTimer);alert('Time is up!');$('finishBtn').click();}},1000);}
 
-document.getElementById('finishBtn').onclick=async function(){
-  saveAns();clearInterval(examTimer);showLoader('Grading…');
-  try{
-    let score=0;questions.forEach((q,i)=>{if(userAns[i]===q.correct)score++;});
-    const payload={email:currentUser.email,lesson:lessonData.name,score,total:questions.length,userans:userAns,date:new Date().toISOString()};
-    const{error}=await db.from('results').insert([payload]);if(error)throw error;
-    const id=new URLSearchParams(location.search).get('id');
-    localStorage.setItem('exam_'+currentUser.id+'_'+id,JSON.stringify({userAns,score}));
-    generateReview();unlockPostExam(false,buildMsg(score,questions.length,false));scrollTo({top:0,behavior:'smooth'});
-  }catch(err){console.error('Exam submit error:',err);alert('Error saving exam: '+(err.message||err));}
-  finally{hideLoader();}
-};
+/* ── VIDEO PAGE ── */
+function renderVideoPage(){destroyActiveYT();swReset();const container=$('videosContainer');if(!container)return;if(!videosData||!videosData.length){container.innerHTML='<div class="empty-vid"><div class="ei">📺</div><div class="et">No Videos Yet</div></div>';return;}currentVideoIdx=Math.max(0,Math.min(currentVideoIdx,videosData.length-1));const v=videosData[currentVideoIdx];const isLocked=v.requireHw&&!hwResultsMap[v.hwId];const ytId=extractYTId(v.url);const isDirect=isDirectVid(v.url);
+let sideItems='';videosData.forEach((vid,i)=>{const locked=vid.requireHw&&!hwResultsMap[vid.hwId];const ac=i===currentVideoIdx?'active':'';const lc=locked?'locked':'';sideItems+='<div class="side-item '+ac+' '+lc+'" '+(locked?'':('onclick="goToVideo('+i+')"'))+'><div class="side-head"><span class="side-dot">'+(i+1)+'</span><div class="side-copy"><div class="side-title">'+(vid.name||'Lecture '+(i+1))+'</div>'+(locked?'<div class="side-play" disabled>🔒 Locked</div>':'<button class="side-play" onclick="event.stopPropagation();goToVideo('+i+')">▶ Play</button>')+'</div></div></div>';});
+let playerHtml='';if(isLocked)playerHtml='<div class="video-locked-ov"><div class="lk-emoji">🔒</div><div class="lk-title">Video Locked</div><div class="lk-sub">Complete homework first.</div><button class="lk-btn" onclick="switchTab(\'homework\')">Go to Homework →</button></div>';else if(ytId)playerHtml='<div id="ytPlayerSlot" style="width:100%;height:100%"></div>';else if(isDirect)playerHtml='<div id="mp4Slot" style="width:100%;height:100%"></div>';else playerHtml='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);background:var(--bg2)"><div style="font-size:2.5rem">⚠️</div></div>';
+const aboutHtml=lessonData?.about?'<div class="about-sidebar"><div class="about-sidebar-title">About</div><div class="about-sidebar-body">'+lessonData.about.replace(/\n/g,'<br>')+'</div></div>':'';
+container.innerHTML='<div class="watch-layout"><aside class="sidebar-card"><div class="sidebar-head">📋 Content</div><div class="sidebar-scroll">'+sideItems+'</div>'+aboutHtml+'</aside><section class="stage-area"><div class="stage-player">'+playerHtml+'</div><div class="watch-info"><div class="info-title">'+(v.name||'Lecture '+(currentVideoIdx+1))+'</div><div class="info-grid"><div class="info-chip"><span>Current</span><strong>'+(v.name||'Lecture '+(currentVideoIdx+1))+'</strong></div><div class="info-chip"><span>Total</span><strong>'+videosData.length+'</strong></div><div class="info-chip"><span>Progress</span><strong>'+(currentVideoIdx+1)+'/'+videosData.length+'</strong></div><div class="info-chip"><span>Status</span><strong style="color:'+(isLocked?'var(--red)':'var(--accent2)')+'">'+(isLocked?'🔒 Locked':'✓ Unlocked')+'</strong></div><div class="sw-chip" id="swChip"><span>⏱ Watch Time</span><strong id="swVal">0:00</strong></div></div></div><div class="bottom-nav-row"><button class="vid-page-btn" onclick="videoPrev()" '+(currentVideoIdx===0?'disabled':'')+'><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Prev</button><span class="vid-page-ind">'+(currentVideoIdx+1)+'/'+videosData.length+'</span><button class="vid-page-btn" onclick="videoNext()" '+(currentVideoIdx>=videosData.length-1?'disabled':'')+'>Next <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button></div></section></div>';
+if(ytId&&!isLocked){const s=$('ytPlayerSlot');if(s)initYTPlayer(s,ytId,myStudentId);}
+if(isDirect&&!isLocked){const s=$('mp4Slot');if(s)initMP4Player(s,v.url,myStudentId);}
+}
+window.goToVideo=function(i){destroyActiveYT();currentVideoIdx=i;renderVideoPage();scrollTo({top:0,behavior:'smooth'});};
+window.videoNext=function(){if(currentVideoIdx<videosData.length-1){destroyActiveYT();currentVideoIdx++;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
+window.videoPrev=function(){if(currentVideoIdx>0){destroyActiveYT();currentVideoIdx--;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
+function applyInitialVideoLaunch(){if(videosData?.length)currentVideoIdx=Math.min(Math.max(REQUESTED_VIDEO_INDEX,0),videosData.length-1);}
 
-function generateReview(){
-  const list=document.getElementById('reviewList');if(!list)return;list.innerHTML='';
-  questions.forEach((q,i)=>{
-    const ok=userAns[i]===q.correct;const al=userAns[i];
-    const ans=al?(q[al]?al.toUpperCase()+' — '+q[al]:al.toUpperCase()):'—';
-    const corr=q.correct?(q[q.correct]?q.correct.toUpperCase()+' — '+q[q.correct]:q.correct.toUpperCase()):'—';
-    list.innerHTML+='<div class="review-item '+(ok?'correct':'wrong')+'" style="animation:cardIn .35s ease '+(i*.04)+'s both"><div class="review-meta"><span class="rv-lbl">Q'+(i+1)+'</span><span class="rbadge '+(ok?'correct':'wrong')+'">'+(ok?'✓ Correct':'✗ Wrong')+'</span></div>'+(q.image?'<img src="'+q.image+'" style="max-height:150px;border-radius:var(--radius);margin-bottom:10px;border:1px solid var(--border);width:100%;object-fit:contain;background:var(--bg2)">':'')+'<div class="rv-q">'+(q.text||'Choose:')+'</div><div class="rv-ans">Your answer: <span>'+ans+'</span></div>'+(!ok?'<div class="rv-correct">✓ Correct: '+corr+'</div>':'')+'</div>';
-  });
+window.goToCheckout=function(){const lid=pageParams.get('id');if(!lid){location.href='/dashboard';return;}localStorage.setItem('checkout_lesson_id',lid);location.href='/checkout?lesson_id='+encodeURIComponent(lid);};
+
+/* ── YT PLAYER (compact) ── */
+function initYTPlayer(w,vid,sid){const SP=[0.5,0.75,1,1.25,1.5,1.75,2];w.innerHTML='<div class="yt-wrap" id="ytWrap"><div class="yt-iframe-zone"><div id="ytInnerPlayer"></div></div><div class="yt-click-layer" id="ytClickLayer"></div><div class="yt-big-play" id="ytBigPlay"><div class="yt-big-circle" id="ytBigCircle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div><div class="yt-replay-ov" id="ytReplay"><span>Video ended</span><button id="ytReplayBtn">↺ Replay</button></div><div class="yt-wm" id="ytWm">'+sid+'</div><div class="yt-ctrl" id="ytCtrl"><div class="yt-prog-wrap" id="ytProgWrap"><div class="yt-prog-fill" id="ytProgFill" style="width:0%"></div></div><div class="yt-row"><div class="yt-left"><button class="yt-btn" id="ytPP"><svg id="ytPPIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button><button class="yt-btn" id="ytRew"><svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg></button><button class="yt-btn" id="ytFwd"><svg viewBox="0 0 24 24"><path d="M18.92 13.12C17.87 9.93 14.86 7.62 11.32 7.62c-1.96 0-3.73.72-5.12 1.88L2.83 6.13H2v9h.83l4.17-4.17a5.99 5.99 0 014.32-1.74c2.97 0 5.45 2.02 6.17 4.78l2.41-.78z"/></svg></button><div class="yt-vol-wrap"><button class="yt-btn" id="ytVolBtn"><svg id="ytVolIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c-4.01.91-7 4.49-7 8.77s2.99 7.86 7 8.77v-2.06c-2.89-.86-5-3.54-5-6.71s2.11-5.85 5-6.71v-2.06z"/></svg></button><input type="range" class="yt-vol-sl" id="ytVolSl" min="0" max="100" value="80"></div><span class="yt-time" id="ytTime">0:00 / 0:00</span></div><div class="yt-right"><button class="yt-spd-btn" id="ytSpdBtn">1×</button><button class="yt-btn" id="ytFs"><svg id="ytFsIcon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button></div></div></div><div class="yt-spd-popup" id="ytSpdPop"><div class="yt-spd-popup-ttl">Speed</div><ul id="ytSpdList">'+SP.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+(s===1?'Normal':s+'×')+'</li>').join('')+'</ul></div></div>';
+const wrap=$('ytWrap'),cl=$('ytClickLayer'),bp=$('ytBigPlay'),bc=$('ytBigCircle'),pp=$('ytPP'),pi=$('ytPPIcon'),rw=$('ytRew'),fw=$('ytFwd'),pw=$('ytProgWrap'),pf=$('ytProgFill'),te=$('ytTime'),vb=$('ytVolBtn'),vi=$('ytVolIcon'),vs=$('ytVolSl'),sb=$('ytSpdBtn'),sp=$('ytSpdPop'),sl=$('ytSpdList'),fb=$('ytFs'),fi=$('ytFsIcon'),wm=$('ytWm'),ro=$('ytReplay'),rb=$('ytReplayBtn');
+let vol=80,muted=false,dragging=false,ctrlT,speed=1;
+function moveWm(){wm.style.top=(10+Math.random()*80)+'%';wm.style.left=(8+Math.random()*84)+'%';activeYTWmTimer=setTimeout(moveWm,2600+Math.random()*1800);}moveWm();
+document.addEventListener('fullscreenchange',()=>{clearTimeout(activeYTWmTimer);moveWm();});
+function fmt(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
+function setPP(st){pi.innerHTML=st==='pause'?'<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>':'<path d="M8 5v14l11-7z"/>';}
+function showCtrl(){safeClass(wrap,'ctrl-on',true);clearTimeout(ctrlT);ctrlT=setTimeout(()=>{try{if(activeYTPlayer&&activeYTPlayer.getPlayerState()===1)safeClass(wrap,'ctrl-on',false);}catch(e){}},3200);}
+function updateVolIcon(){const v=muted?0:vol;vi.innerHTML=v===0?'<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>':v<40?'<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>':'<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c-4.01.91-7 4.49-7 8.77s2.99 7.86 7 8.77v-2.06c-2.89-.86-5-3.54-5-6.71s2.11-5.85 5-6.71v-2.06z"/>';}
+function buildP(){activeYTPlayer=new YT.Player('ytInnerPlayer',{videoId:vid,playerVars:{controls:0,disablekb:1,fs:0,rel:0,iv_load_policy:3,modestbranding:1,showinfo:0,playsinline:1,cc_load_policy:0,enablejsapi:1,origin:location.origin},events:{onReady(e){activeYTPlayer.setVolume(vol);setInterval(()=>{if(!activeYTPlayer?.getDuration)return;const dur=activeYTPlayer.getDuration()||0,cur=activeYTPlayer.getCurrentTime()||0;if(!dragging&&dur>0)pf.style.width=(cur/dur*100)+'%';te.textContent=fmt(cur)+' / '+fmt(dur);},250);},onStateChange(e){const S=YT.PlayerState;if(e.data===S.PLAYING){setPP('pause');safeClass(bp,'gone',true);safeClass(ro,'show',false);safeClass(wrap,'ctrl-on',true);setTimeout(()=>safeClass(wrap,'ctrl-on',false),2200);swStart();}if(e.data===S.PAUSED){setPP('play');safeClass(wrap,'ctrl-on',true);swStop();}if(e.data===S.ENDED){setPP('play');safeClass(ro,'show',true);swStop();}}}});}
+if(ytApiReady)buildP();else{const o=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){ytApiReady=true;if(o)o();buildP();};}
+function togglePlay(){if(!activeYTPlayer)return;try{activeYTPlayer.getPlayerState()===1?activeYTPlayer.pauseVideo():activeYTPlayer.playVideo();}catch(e){}}
+let ct;cl.addEventListener('click',()=>{clearTimeout(ct);ct=setTimeout(togglePlay,210);showCtrl();});cl.addEventListener('dblclick',()=>{clearTimeout(ct);void(wrap.requestFullscreen?.());});bc.addEventListener('click',e=>{e.stopPropagation();if(activeYTPlayer)activeYTPlayer.playVideo();});pp.addEventListener('click',togglePlay);
+function seekR(e){if(!activeYTPlayer)return;const r=pw.getBoundingClientRect(),ratio=Math.max(0,Math.min((e.clientX-r.left)/r.width,1));activeYTPlayer.seekTo(ratio*(activeYTPlayer.getDuration()||0),true);pf.style.width=(ratio*100)+'%';}
+pw.addEventListener('pointerdown',e=>{dragging=true;pw.setPointerCapture(e.pointerId);seekR(e);});pw.addEventListener('pointermove',e=>{if(dragging)seekR(e);});pw.addEventListener('pointerup',()=>{dragging=false;});
+rw.addEventListener('click',()=>{if(activeYTPlayer)activeYTPlayer.seekTo(Math.max(0,activeYTPlayer.getCurrentTime()-10),true);});fw.addEventListener('click',()=>{if(activeYTPlayer)activeYTPlayer.seekTo(Math.min(activeYTPlayer.getDuration(),activeYTPlayer.getCurrentTime()+10),true);});
+vs.value=80;vs.addEventListener('input',()=>{vol=parseInt(vs.value);muted=vol===0;if(activeYTPlayer){if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}}updateVolIcon();});
+vb.addEventListener('click',()=>{muted=!muted;if(activeYTPlayer){if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}}updateVolIcon();});
+sl.querySelectorAll('li').forEach(li=>{li.addEventListener('click',()=>{speed=parseFloat(li.dataset.speed);if(activeYTPlayer)activeYTPlayer.setPlaybackRate(speed);sb.textContent=speed===1?'1×':speed+'×';sl.querySelectorAll('li').forEach(x=>safeClass(x,'active',false));safeClass(li,'active',true);safeClass(sp,'open',false);});});});
+sb.addEventListener('click',e=>{e.stopPropagation();safeClass(sp,'open',null);});
+document.addEventListener('click',e=>{if(!sp.contains(e.target)&&e.target!==sb)safeClass(sp,'open',false);});
+function toggleFs(){if(!document.fullscreenElement){wrap.requestFullscreen?.();fi.innerHTML='<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>';}else{document.exitFullscreen();fi.innerHTML='<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';}}
+fb.addEventListener('click',toggleFs);document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)fi.innerHTML='<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';});
+rb.addEventListener('click',()=>{if(activeYTPlayer){activeYTPlayer.seekTo(0,true);activeYTPlayer.playVideo();safeClass(ro,'show',false);}});
+wrap.addEventListener('mousemove',showCtrl);wrap.addEventListener('touchstart',showCtrl,{passive:true});safeClass(wrap,'ctrl-on',true);
+document.addEventListener('keydown',e=>{if(!activeYTPlayer)return;const t=document.activeElement?.tagName;if(t==='INPUT'||t==='TEXTAREA')return;if(e.code==='Space'||e.code==='KeyK'){e.preventDefault();togglePlay();}if(e.code==='KeyF')toggleFs();if(e.code==='KeyM'){muted=!muted;if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}updateVolIcon();}});
+updateVolIcon();
 }
 
-function unlockPostExam(skipAnim,msgObj){
-  document.getElementById('startScreen').classList.add('hidden');
-  document.getElementById('quizApp').classList.add('hidden');
-  document.getElementById('timerBox').classList.add('hidden');
-  document.getElementById('reviewArea').classList.remove('hidden');
-  if(msgObj){
-    const{score,total,pct,prev}=msgObj;const clr=pct>=70?'var(--accent)':pct>=50?'var(--amber)':'var(--red)';
-    const r=50,circ=2*Math.PI*r,off=circ-(pct/100)*circ;
-    document.getElementById('scoreBanner').innerHTML='<div class="score-ring"><svg width="116" height="116" viewBox="0 0 116 116"><circle cx="58" cy="58" r="'+r+'" fill="none" stroke="var(--border2)" stroke-width="7"/><circle cx="58" cy="58" r="'+r+'" fill="none" stroke="'+clr+'" stroke-width="7" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'" stroke-linecap="round" style="transition:stroke-dashoffset 1s ease;filter:drop-shadow(0 0 6px '+clr+')"/></svg><div class="score-n" style="color:'+clr+'">'+score+'</div><div class="score-pct">'+pct+'%</div></div><div class="score-of">Out of '+total+' questions</div><div class="score-msg">'+(prev?'✦ You already completed this exam':'✦ Score recorded!')+'</div><div class="score-unlock">✅ Videos &amp; PDF Unlocked</div>';
-  }
-  ['videos','pdf'].forEach(t=>{const btn=document.getElementById('btn-'+t+'-tab');if(btn)btn.classList.remove('locked');});
-}
-
-function startTimer(){
-  timeLeft=examDurationMins*60;
-  examTimer=setInterval(function(){
-    const m=Math.floor(timeLeft/60),s=timeLeft%60;
-    const tv=document.getElementById('timerVal');
-    if(tv)tv.textContent=m+':'+(s<10?'0'+s:s);
-    if(timeLeft<=120){const tb=document.getElementById('timerBox');if(tb)tb.classList.add('urgent');}
-    if(timeLeft--<=0){clearInterval(examTimer);alert('Time is up!');document.getElementById('finishBtn').click();}
-  },1000);
+/* ── MP4 PLAYER ── */
+function initMP4Player(w,url,sid){const SP=[0.5,0.75,1,1.25,1.5,1.75,2];w.innerHTML='<div class="mp4-wrap"><div class="mp4-loader"></div><video class="main-vid" preload="metadata"><source src="'+url+'" type="video/mp4"></video><div class="mp4-wm">ID: '+sid+'</div><div class="vp-controls"><div class="vp-progress"><div class="vp-bar" style="width:0%"></div></div><div class="vp-row"><div class="vp-left"><div class="vp-icon vp-rew"><i class="material-icons">replay_10</i></div><div class="vp-icon vp-pp"><i class="material-icons">play_arrow</i></div><div class="vp-icon vp-fwd"><i class="material-icons">forward_10</i></div><div class="vp-vol-wrap"><div class="vp-icon vp-vol-btn"><i class="material-icons">volume_up</i></div><input type="range" min="0" max="100" value="80" class="vol-slider"></div><div class="vp-time"><span class="vp-cur">0:00</span> / <span class="vp-dur">0:00</span></div></div><div class="vp-right"><div class="vp-speed" title="Speed">1×</div><div class="vp-icon vp-fs"><i class="material-icons">fullscreen</i></div></div></div></div><div class="vp-settings-popup vp-popup"><div class="vp-popup-title">Speed</div><ul>'+SP.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+(s===1?'Normal':s+'×')+'</li>').join('')+'</ul></div></div>';
+requestAnimationFrame(()=>{const pw=w.querySelector('.mp4-wrap');if(!pw)return;const vid=pw.querySelector('.main-vid'),ld=pw.querySelector('.mp4-loader'),ctrl=pw.querySelector('.vp-controls'),prog=pw.querySelector('.vp-progress'),bar=pw.querySelector('.vp-bar'),pp=pw.querySelector('.vp-pp'),ce=pw.querySelector('.vp-cur'),de=pw.querySelector('.vp-dur'),sbtn=pw.querySelector('.vp-speed'),vsl=pw.querySelector('.vol-slider'),vi=pw.querySelector('.vp-vol-btn i'),fsb=pw.querySelector('.vp-fs'),sp=pw.querySelector('.vp-popup'),si=pw.querySelectorAll('.vp-popup ul li');
+function f(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+Math.floor(s%60);}
+pp.addEventListener('click',()=>{vid.paused?vid.play():vid.pause();pp.querySelector('i').textContent=vid.paused?'play_arrow':'pause';});
+pw.addEventListener('click',e=>{if(e.target===pw||e.target===vid){vid.paused?vid.play():vid.pause();pp.querySelector('i').textContent=vid.paused?'play_arrow':'pause';}});
+vid.addEventListener('waiting',()=>{ld.style.display='block';});vid.addEventListener('canplay',()=>{ld.style.display='none';});vid.addEventListener('ended',()=>{pp.querySelector('i').textContent='replay';swStop();});vid.addEventListener('loadeddata',()=>{de.textContent=f(vid.duration);});vid.addEventListener('timeupdate',()=>{if(!vid.duration)return;bar.style.width=(vid.currentTime/vid.duration*100)+'%';ce.textContent=f(vid.currentTime);});vid.addEventListener('play',swStart);vid.addEventListener('pause',swStop);
+let dr=false;function seek(e){const r=prog.getBoundingClientRect();vid.currentTime=(Math.max(0,Math.min(e.clientX-r.left,r.width))/r.width)*vid.duration;}
+prog.addEventListener('pointerdown',e=>{dr=true;prog.setPointerCapture(e.pointerId);seek(e);});prog.addEventListener('pointermove',e=>{if(dr)seek(e);});prog.addEventListener('pointerup',()=>{dr=false;});
+vid.volume=0.8;vsl.value=80;function uv(){vi.textContent=vid.volume===0?'volume_off':vid.volume<0.4?'volume_down':'volume_up';}
+vsl.addEventListener('input',()=>{vid.volume=vsl.value/100;uv();});
+pw.querySelector('.vp-vol-btn').addEventListener('click',()=>{vid.volume=vid.volume>0?0:0.8;vsl.value=vid.volume*100;uv();});
+let ht;function sc(){ctrl.classList.add('show');clearTimeout(ht);ht=setTimeout(()=>{if(!vid.paused&&!sp.classList.contains('show'))ctrl.classList.remove('show');},2800);}
+pw.addEventListener('mousemove',sc);pw.addEventListener('touchstart',sc,{passive:true});ctrl.classList.add('show');
+si.forEach(li=>{li.addEventListener('click',()=>{si.forEach(x=>safeClass(x,'active',false));safeClass(li,'active',true);vid.playbackRate=parseFloat(li.dataset.speed);sbtn.textContent=vid.playbackRate===1?'1×':vid.playbackRate+'×';sp.classList.remove('show');});});
+sbtn.addEventListener('click',e=>{e.stopPropagation();sp.classList.toggle('show');});
+document.addEventListener('click',e=>{if(!sp.contains(e.target)&&e.target!==sbtn)sp.classList.remove('show');});
+fsb.addEventListener('click',()=>{if(!document.fullscreenElement){pw.requestFullscreen();fsb.querySelector('i').textContent='fullscreen_exit';}else{document.exitFullscreen();fsb.querySelector('i').textContent='fullscreen';}});
+pw.querySelector('.vp-rew').addEventListener('click',()=>{vid.currentTime=Math.max(0,vid.currentTime-10);});
+pw.querySelector('.vp-fwd').addEventListener('click',()=>{vid.currentTime=Math.min(vid.duration,vid.currentTime+10);});
+vid.addEventListener('contextmenu',e=>e.preventDefault());uv();});
 }
 
 init();
