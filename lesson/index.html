@@ -30,7 +30,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .hidden{display:none!important}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
-/* ── LOADING ── */
 #loadingScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .35s}
 .ld-mark{width:58px;height:58px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:1.4rem;color:#fff;animation:float 2.5s ease infinite}
 .ld-bar{width:120px;height:2px;background:var(--bg2);border-radius:2px;overflow:hidden}
@@ -39,7 +38,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @keyframes loadAnim{0%{width:0;margin-left:0}50%{width:80%;margin-left:0}100%{width:0;margin-left:100%}}
 
-/* ── ADBLOCKER WALL ── */
 #adBlockWall{position:fixed;inset:0;z-index:9998;background:var(--surface);display:flex;align-items:center;justify-content:center;padding:24px}
 .adblock-card{background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:52px 40px;text-align:center;max-width:520px;width:100%;box-shadow:var(--shadow2);position:relative;overflow:hidden}
 .adblock-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--red),transparent);border-radius:0 0 4px 4px}
@@ -54,19 +52,29 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .adblock-reload-btn:hover{background:var(--accent2);transform:translateY(-2px)}
 .adblock-note{font-size:.73rem;color:var(--muted);margin-top:14px;font-family:var(--mono)}
 
-/* ── CODE LOCK SCREEN ── */
 #codeLockScreen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
-.lock-card{width:100%;max-width:420px;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:48px 36px 38px;text-align:center;position:relative;box-shadow:var(--shadow2)}
-.lock-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--accent),transparent);border-radius:0 0 4px 4px}
-.lock-back{position:absolute;top:16px;left:16px;display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 13px;font-size:.76rem;font-weight:700;color:var(--muted2);cursor:pointer;transition:all .2s}
+.lock-card{width:100%;max-width:440px;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:48px 36px 32px;text-align:center;position:relative;box-shadow:var(--shadow2)}
+.lock-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--amber),transparent);border-radius:0 0 4px 4px}
+.lock-back{position:absolute;top:16px;left:16px;display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 14px;font-size:.76rem;font-weight:700;color:var(--muted2);cursor:pointer;transition:all .2s;font-family:var(--sans)}
 .lock-back:hover{border-color:var(--accent);color:var(--accent)}
-.lock-ico{width:70px;height:70px;margin:0 auto 18px;background:var(--accent-light);border:2px solid rgba(45,90,61,.2);color:var(--accent);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2.2rem}
-.lock-title{font-family:var(--display);font-size:1.65rem;font-weight:700;margin-bottom:7px}
-.lock-sub{font-size:.85rem;color:var(--muted2);line-height:1.65;margin-bottom:26px}
-.lock-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:13px;border-radius:var(--radius);font-family:var(--sans);font-size:.92rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 6px 18px var(--accent-glow);min-height:50px}
-.lock-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.lock-ico{width:72px;height:72px;margin:0 auto 20px;background:var(--amber-bg);border:2px solid var(--amber-border);color:var(--amber);border-radius:18px;display:flex;align-items:center;justify-content:center}
+.lock-title{font-family:var(--display);font-size:1.7rem;font-weight:700;margin-bottom:14px;color:var(--text)}
+.lock-sub{font-size:.85rem;color:var(--muted2);line-height:1.75;margin-bottom:28px;max-width:340px;margin-left:auto;margin-right:auto}
+.lock-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:0}
+.lock-btn{width:100%;border:none;padding:13px;border-radius:var(--radius);font-family:var(--sans);font-size:.92rem;font-weight:700;cursor:pointer;transition:all .25s;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px}
+.lock-btn.primary{background:var(--accent);color:#fff;box-shadow:0 6px 18px var(--accent-glow)}
+.lock-btn.primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.lock-btn.ghost{background:var(--surface2);border:1px solid var(--border);color:var(--muted2)}
+.lock-btn.ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.lock-footer{font-size:.7rem;color:var(--muted);text-align:center;margin-top:12px;font-family:var(--mono)}
 
-/* ── NAV ── */
+.dbg-box{background:var(--bg);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:14px;margin-top:16px;text-align:left;font-family:var(--mono);font-size:.68rem;max-height:220px;overflow:auto}
+.dbg-title{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--amber);font-weight:800;margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed var(--border)}
+.dbg-row{display:flex;flex-direction:column;gap:2px;padding:5px 0;border-bottom:1px solid var(--border)}
+.dbg-row:last-child{border-bottom:none}
+.dbg-label{font-weight:800;color:var(--text);font-size:.7rem}
+.dbg-val{color:var(--muted2);word-break:break-all;line-height:1.5}
+
 nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(250,247,242,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 1px 12px rgba(44,36,24,.06)}
 .nav-inner{max-width:1380px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer;flex-shrink:0}
@@ -87,10 +95,8 @@ nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(250,24
 .back-btn{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 13px;font-size:.78rem;font-weight:700;color:var(--muted2);cursor:pointer;transition:all .2s;flex-shrink:0}
 .back-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-/* ── MAIN ── */
 main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20px 80px}
 
-/* ── START SCREEN ── */
 #startScreen{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:60px 32px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 #startScreen::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--accent),transparent);border-radius:0 0 4px 4px}
 .start-emoji{font-size:3.5rem;display:block;margin-bottom:20px;animation:float 3s ease infinite}
@@ -101,7 +107,6 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .start-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;padding:15px 44px;border-radius:var(--radius);font-family:var(--sans);font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 8px 24px var(--accent-glow);min-height:54px}
 .start-btn:hover{background:var(--accent2);transform:translateY(-2px)}
 
-/* ── QUIZ ── */
 .quiz-wrap{display:flex;flex-direction:column;gap:16px}
 .progress-row{display:flex;align-items:center;gap:13px;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
 .prog-track{flex:1;height:7px;background:var(--bg2);border:1px solid var(--border);border-radius:5px;overflow:hidden}
@@ -129,7 +134,6 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .q-btn.finish{background:var(--accent-light);border:1px solid rgba(45,90,61,.2);color:var(--accent)}
 .q-btn.finish:hover{background:rgba(45,90,61,.14)}
 
-/* ── SCORE / REVIEW ── */
 .score-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:34px 26px;text-align:center;position:relative;overflow:hidden;margin-bottom:20px;box-shadow:var(--shadow)}
 .score-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--accent),transparent);border-radius:0 0 4px 4px}
 .score-ring{width:116px;height:116px;margin:0 auto 16px;position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column}
@@ -152,7 +156,6 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .rv-ans span{color:var(--text);font-weight:700}
 .rv-correct{font-size:.8rem;color:var(--accent2);font-weight:700;margin-top:4px}
 
-/* ── VIDEO PAGE ── */
 .watch-layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px;align-items:start}
 .sidebar-card{position:sticky;top:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
 .sidebar-head{display:flex;align-items:center;gap:11px;padding:20px 20px 18px;font-size:.9rem;font-weight:800;color:var(--text);background:var(--surface2);border-bottom:1px solid var(--border)}
@@ -183,22 +186,15 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .info-chip span{font-size:.78rem;color:var(--muted);display:block;margin-bottom:3px}
 .info-chip strong{font-size:.92rem;color:var(--text);font-weight:700}
 
-/* ── STOPWATCH chip ── */
 .sw-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px;display:flex;flex-direction:column;gap:3px}
 .sw-chip span{font-size:.78rem;color:var(--muted)}
 .sw-chip strong{font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--accent);letter-spacing:1px}
 .sw-chip.running strong{color:var(--accent2)}
 
-/* ── ABOUT CARD (inside sidebar) ── */
 .about-sidebar{padding:12px;border-top:1px solid var(--border);background:var(--bg)}
 .about-sidebar-title{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px;padding:0 4px}
 .about-sidebar-title::before{content:'';width:8px;height:2px;background:var(--accent);border-radius:2px}
 .about-sidebar-body{font-size:.8rem;color:var(--muted2);line-height:1.7;padding:0 4px 4px}
-/* Keep old about card for fallback */
-.about-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin-top:16px;box-shadow:var(--shadow)}
-.about-card-title{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:7px}
-.about-card-title::before{content:'';width:10px;height:2px;background:var(--accent);border-radius:2px}
-.about-card-body{font-size:.88rem;color:var(--muted2);line-height:1.75}
 
 .bottom-nav-row{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:16px}
 .vid-page-btn{display:flex;align-items:center;gap:5px;padding:9px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--muted2);cursor:pointer;transition:all .2s}
@@ -211,7 +207,6 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .empty-vid .et{font-family:var(--display);font-size:1.35rem;font-weight:700}
 .empty-vid .es{font-size:.85rem;color:var(--muted);margin-top:7px}
 
-/* ── HOMEWORK ── */
 .hw-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:50px 30px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .hw-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--accent),transparent);border-radius:0 0 4px 4px}
 .hw-title{font-family:var(--display);font-size:1.5rem;font-weight:700;margin-bottom:7px}
@@ -219,7 +214,6 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .hw-btn{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#fff;border:none;padding:14px 40px;border-radius:var(--radius);font-family:var(--sans);font-size:.95rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 7px 22px var(--accent-glow);min-height:52px}
 .hw-btn:hover{background:var(--accent2);transform:translateY(-2px)}
 
-/* ── PDF ── */
 .pdf-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:60px 32px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow2)}
 .pdf-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:3px;background:linear-gradient(to right,transparent,var(--accent),transparent);border-radius:0 0 4px 4px}
 .pdf-ico{width:74px;height:74px;margin:0 auto 20px;background:var(--accent-light);border:2px solid rgba(45,90,61,.2);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2.3rem}
@@ -228,7 +222,6 @@ main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:26px 20p
 .pdf-btn{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#fff;border:none;padding:14px 38px;border-radius:var(--radius);font-family:var(--sans);font-size:.92rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s;box-shadow:0 7px 22px var(--accent-glow)}
 .pdf-btn:hover{background:var(--accent2);transform:translateY(-1px)}
 
-/* ══ MP4 PLAYER ══ */
 .mp4-wrap{position:relative;width:100%;height:100%;background:#1a1209;overflow:hidden}
 video.main-vid{position:relative;width:100%;height:100%;outline:none;display:block}
 .mp4-loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--accent3);border-radius:50%;z-index:4;animation:spin .7s linear infinite;display:none}
@@ -260,52 +253,51 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
 .vp-popup ul li.active::after{content:'✓';color:var(--accent3);font-size:.78rem;font-weight:800}
 .mp4-wm{position:absolute;bottom:10px;left:12px;z-index:2;pointer-events:none;font-family:var(--mono);font-size:.72rem;font-weight:800;color:rgba(255,255,255,.55);letter-spacing:2px;text-shadow:0 1px 6px rgba(0,0,0,.9)}
 
-/* ══ YOUTUBE PLAYER ══ */
 .yt-wrap{position:relative;width:100%;height:100%;background:#1a1209;overflow:hidden}
-.yt-iframe-zone{position:absolute;top:-62px;left:-4px;right:-4px;bottom:-42px;pointer-events:none;z-index:1;}
+.yt-iframe-zone{position:absolute;top:-62px;left:-4px;right:-4px;bottom:-42px;pointer-events:none;z-index:1}
 .yt-iframe-zone iframe{width:100%;height:100%;border:none;display:block}
 .yt-click-layer{position:absolute;inset:0;z-index:10;cursor:pointer}
-.yt-wm{position:absolute;z-index:50;pointer-events:none;font-family:var(--mono);font-size:clamp(.65rem,1.3vw,.9rem);font-weight:800;color:rgba(255,255,255,.55);letter-spacing:2px;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.9),0 0 12px rgba(0,0,0,.6);top:12%;left:15%;transition:top 1.5s cubic-bezier(.4,0,.2,1),left 1.5s cubic-bezier(.4,0,.2,1);}
-.yt-ctrl{position:absolute;bottom:0;left:0;right:0;z-index:30;background:linear-gradient(to top,rgba(20,14,6,.95) 0%,rgba(20,14,6,.45) 65%,transparent 100%);padding:28px 14px 10px;transform:translateY(100%);opacity:0;transition:transform .3s ease,opacity .3s ease;}
+.yt-wm{position:absolute;z-index:50;pointer-events:none;font-family:var(--mono);font-size:clamp(.65rem,1.3vw,.9rem);font-weight:800;color:rgba(255,255,255,.55);letter-spacing:2px;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.9),0 0 12px rgba(0,0,0,.6);top:12%;left:15%;transition:top 1.5s cubic-bezier(.4,0,.2,1),left 1.5s cubic-bezier(.4,0,.2,1)}
+.yt-ctrl{position:absolute;bottom:0;left:0;right:0;z-index:30;background:linear-gradient(to top,rgba(20,14,6,.95) 0%,rgba(20,14,6,.45) 65%,transparent 100%);padding:28px 14px 10px;transform:translateY(100%);opacity:0;transition:transform .3s ease,opacity .3s ease}
 .yt-wrap:hover .yt-ctrl,.yt-wrap.ctrl-on .yt-ctrl{transform:translateY(0);opacity:1}
-.yt-prog-wrap{width:100%;height:4px;background:rgba(255,255,255,.2);border-radius:4px;cursor:pointer;margin-bottom:10px;transition:height .15s;position:relative;}
+.yt-prog-wrap{width:100%;height:4px;background:rgba(255,255,255,.2);border-radius:4px;cursor:pointer;margin-bottom:10px;transition:height .15s;position:relative}
 .yt-prog-wrap:hover{height:6px}
-.yt-prog-fill{height:100%;background:var(--accent3);border-radius:4px;position:relative;pointer-events:none;transition:width .12s linear;}
-.yt-prog-fill::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(74,144,96,.8);opacity:0;transition:opacity .15s;}
+.yt-prog-fill{height:100%;background:var(--accent3);border-radius:4px;position:relative;pointer-events:none;transition:width .12s linear}
+.yt-prog-fill::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(74,144,96,.8);opacity:0;transition:opacity .15s}
 .yt-prog-wrap:hover .yt-prog-fill::after{opacity:1}
 .yt-row{display:flex;align-items:center;justify-content:space-between;gap:4px}
 .yt-left,.yt-right{display:flex;align-items:center;gap:3px}
-.yt-btn{width:33px;height:33px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .18s;color:#fff;flex-shrink:0;}
+.yt-btn{width:33px;height:33px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .18s;color:#fff;flex-shrink:0}
 .yt-btn:hover{background:rgba(255,255,255,.1)}
 .yt-btn svg{width:18px;height:18px;fill:#fff;pointer-events:none}
 .yt-time{font-family:var(--mono);font-size:.67rem;color:rgba(255,255,255,.82);white-space:nowrap;padding:0 5px}
 .yt-vol-wrap{display:flex;align-items:center;gap:4px}
-.yt-vol-sl{-webkit-appearance:none;width:0;height:3px;background:rgba(255,255,255,.35);border-radius:3px;outline:none;cursor:pointer;transition:width .2s,opacity .2s;opacity:0;}
+.yt-vol-sl{-webkit-appearance:none;width:0;height:3px;background:rgba(255,255,255,.35);border-radius:3px;outline:none;cursor:pointer;transition:width .2s,opacity .2s;opacity:0}
 .yt-vol-wrap:hover .yt-vol-sl,.yt-vol-sl:focus{width:58px;opacity:1}
 .yt-vol-sl::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff}
-.yt-spd-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:3px 8px;font-family:var(--mono);font-size:.63rem;font-weight:700;color:#fff;cursor:pointer;transition:background .18s;}
+.yt-spd-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:3px 8px;font-family:var(--mono);font-size:.63rem;font-weight:700;color:#fff;cursor:pointer;transition:background .18s}
 .yt-spd-btn:hover{background:rgba(255,255,255,.2)}
-.yt-spd-popup{position:absolute;bottom:60px;right:14px;background:rgba(14,10,4,.97);border:1px solid rgba(255,255,255,.1);border-radius:10px;min-width:130px;z-index:60;overflow:hidden;display:none;}
+.yt-spd-popup{position:absolute;bottom:60px;right:14px;background:rgba(14,10,4,.97);border:1px solid rgba(255,255,255,.1);border-radius:10px;min-width:130px;z-index:60;overflow:hidden;display:none}
 .yt-spd-popup.open{display:block}
-.yt-spd-popup-ttl{font-family:var(--mono);font-size:.57rem;color:rgba(255,255,255,.33);text-transform:uppercase;letter-spacing:1.5px;padding:8px 14px 4px;}
+.yt-spd-popup-ttl{font-family:var(--mono);font-size:.57rem;color:rgba(255,255,255,.33);text-transform:uppercase;letter-spacing:1.5px;padding:8px 14px 4px}
 .yt-spd-popup ul{list-style:none}
-.yt-spd-popup li{padding:8px 14px;font-size:.78rem;color:rgba(255,255,255,.8);cursor:pointer;transition:background .15s;display:flex;justify-content:space-between;align-items:center;}
+.yt-spd-popup li{padding:8px 14px;font-size:.78rem;color:rgba(255,255,255,.8);cursor:pointer;transition:background .15s;display:flex;justify-content:space-between;align-items:center}
 .yt-spd-popup li:hover{background:rgba(255,255,255,.07)}
 .yt-spd-popup li.active{color:var(--accent3)}
 .yt-spd-popup li.active::after{content:'✓';font-size:.7rem;font-weight:800}
-.yt-big-play{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.38);transition:opacity .25s;}
+.yt-big-play{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.38);transition:opacity .25s}
 .yt-big-play.gone{opacity:0;pointer-events:none}
-.yt-big-circle{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.13);border:2px solid rgba(255,255,255,.32);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s;cursor:pointer;}
+.yt-big-circle{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.13);border:2px solid rgba(255,255,255,.32);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s;cursor:pointer}
 .yt-big-circle:hover{transform:scale(1.1);background:rgba(255,255,255,.24)}
 .yt-big-circle svg{width:28px;height:28px;fill:#fff}
-.yt-seek-fl{position:absolute;top:50%;transform:translateY(-50%);z-index:40;background:rgba(0,0,0,.52);border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;opacity:0;transition:opacity .18s;pointer-events:none;font-family:var(--mono);font-size:.54rem;color:#fff;}
+.yt-seek-fl{position:absolute;top:50%;transform:translateY(-50%);z-index:40;background:rgba(0,0,0,.52);border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;opacity:0;transition:opacity .18s;pointer-events:none;font-family:var(--mono);font-size:.54rem;color:#fff}
 .yt-seek-fl svg{width:17px;height:17px;fill:#fff}
 .yt-seek-fl.left-fl{left:13%}
 .yt-seek-fl.right-fl{right:13%}
-.yt-replay-ov{position:absolute;inset:0;z-index:25;background:rgba(0,0,0,.52);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.yt-replay-ov{position:absolute;inset:0;z-index:25;background:rgba(0,0,0,.52);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .yt-replay-ov.show{display:flex}
 .yt-replay-ov span{color:rgba(255,255,255,.7);font-size:.83rem;font-family:var(--sans)}
-.yt-replay-ov button{background:var(--accent2);color:#fff;border:none;padding:11px 28px;border-radius:10px;font-family:var(--sans);font-weight:700;font-size:.88rem;cursor:pointer;transition:background .2s;}
+.yt-replay-ov button{background:var(--accent2);color:#fff;border:none;padding:11px 28px;border-radius:10px;font-family:var(--sans);font-weight:700;font-size:.88rem;cursor:pointer;transition:background .2s}
 .yt-replay-ov button:hover{background:var(--accent3)}
 .yt-wrap:fullscreen,.yt-wrap:-webkit-full-screen{border-radius:0}
 
@@ -337,6 +329,8 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
   .nav-inner{padding:0 12px;gap:8px}
   .tabs{max-width:none;flex:1}
   .tab-btn{padding:6px 8px;font-size:.7rem}
+  .lock-card{padding:40px 20px 28px}
+  .dbg-box{font-size:.62rem;max-height:160px}
 }
 @media(max-width:400px){
   .tab-btn{padding:5px 7px;font-size:.66rem}
@@ -371,15 +365,7 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
   </div>
 </div>
 
-<div id="codeLockScreen" class="hidden">
-  <div class="lock-card">
-    <button class="lock-back" onclick="location.href='/dashboard'">← Back</button>
-    <div class="lock-ico">🔐</div>
-    <div class="lock-title">Lesson Locked</div>
-    <div class="lock-sub">لو أنت مفعل الحصة ولسه الصفحة مقفولة، اضغط تحديث أو ادخل من Dashboard. لو لم تفعلها، افتح Checkout وفعل كود الحصة.</div>
-    <button class="lock-btn" onclick="goToCheckout()">Go to Checkout →</button>
-  </div>
-</div>
+<div id="codeLockScreen" class="hidden"></div>
 
 <div id="lessonContent" class="hidden">
   <nav>
@@ -411,7 +397,6 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
   </nav>
 
   <main>
-    <!-- QUIZ TAB -->
     <div id="tab-quiz">
       <div id="startScreen">
         <span class="start-emoji">🚀</span>
@@ -435,14 +420,8 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
         <div id="reviewList"></div>
       </div>
     </div>
-
-    <!-- HOMEWORK TAB -->
     <div id="tab-homework" class="hidden"></div>
-
-    <!-- VIDEOS TAB -->
     <div id="tab-videos" class="hidden"><div id="videosContainer"></div></div>
-
-    <!-- PDF TAB -->
     <div id="tab-pdf" class="hidden">
       <div class="pdf-card">
         <div class="pdf-ico">📚</div>
@@ -455,7 +434,6 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
 </div>
 
 <script>
-/* ── SECURITY ── */
 (function(){
   document.addEventListener('contextmenu',e=>e.preventDefault());
   document.addEventListener('copy',e=>{e.clipboardData.setData('text/plain','⚠️ Disabled');e.preventDefault();});
@@ -464,7 +442,6 @@ video.main-vid{position:relative;width:100%;height:100%;outline:none;display:blo
   setInterval(kill,1000);
 })();
 
-/* ── ADBLOCKER DETECTION ── */
 function detectAdBlocker(){
   return new Promise(resolve=>{
     const bait=document.createElement('div');
@@ -490,27 +467,24 @@ function showAdBlockWall(){
 }
 async function checkAdBlocker(){try{const blocked=await detectAdBlocker();if(blocked){showAdBlockWall();return true;}}catch(e){}return false;}
 
-/* ── SUPABASE ── */
 const SUPABASE_URL="https://xjdhbbjeeasdmohbhgze.supabase.co";
 const SUPABASE_ANON="sb_publishable_jcMmE0j0QAf9ii2AVD3N8Q_GKto6KYa";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
 
 const OPT_LETTERS=['a','b','c','d','e','f','g','h','i','j'];
 let currentUser=null,questions=[],curIdx=0,userAns={},lessonData=null;
-let timeLeft=40*60;   // default — will be overridden from DB
+let timeLeft=40*60;
 let examDurationMins=40;
 let examTimer,myStudentId='000000';
 let hwData=null,hwUserAns={},hwCurIdx=0,hwDone=false,hwQuestions=[];
 let videosData=[],hwResultsMap={},currentVideoIdx=0;
 
-/* ── Stopwatch ── */
 let swSeconds=0,swRunning=false,swInterval=null;
 function swFmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return(h>0?h+':':'')+(h>0?String(m).padStart(2,'0'):m)+':'+String(sec).padStart(2,'0');}
 function swStart(){if(swRunning)return;swRunning=true;swInterval=setInterval(()=>{swSeconds++;const el=document.getElementById('swVal');if(el)el.textContent=swFmt(swSeconds);const chip=document.getElementById('swChip');if(chip)chip.classList.add('running');},1000);}
 function swStop(){if(!swRunning)return;swRunning=false;clearInterval(swInterval);}
 function swReset(){swStop();swSeconds=0;}
 
-/* ── YouTube IFrame API ── */
 let ytApiReady=false;
 let activeYTPlayer=null;
 let activeYTWmTimer=null;
@@ -521,7 +495,6 @@ function hideLoader(){const s=document.getElementById('loadingScreen');s.style.o
 
 window.switchTab=(tab)=>{
   destroyActiveYT();
-  /* stop stopwatch when leaving videos tab */
   if(tab!=='videos')swStop();
   showLoader('Loading…');
   setTimeout(()=>{
@@ -534,10 +507,7 @@ window.switchTab=(tab)=>{
   },300);
 };
 
-function destroyActiveYT(){
-  clearTimeout(activeYTWmTimer);
-  if(activeYTPlayer){try{activeYTPlayer.destroy();}catch(e){}activeYTPlayer=null;}
-}
+function destroyActiveYT(){clearTimeout(activeYTWmTimer);if(activeYTPlayer){try{activeYTPlayer.destroy();}catch(e){}activeYTPlayer=null;}}
 
 function extractYTId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|v=|embed\/)([^#&?]{11})/);return m?m[1]:null;}
 function isDirectVid(url){if(!url)return false;return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)||(!url.includes('youtu')&&!url.includes('youtube')&&url.startsWith('http'));}
@@ -559,9 +529,6 @@ function buildDesktopPlayerUrl(idx){const v=videosData[idx];if(!v)return '';cons
 function openDesktopPlayerOrFallback(idx){const appUrl=buildDesktopPlayerUrl(idx);if(!appUrl){goToVideo(idx);switchTab('videos');return;}const lessonId=pageParams.get('id')||'';const fallbackUrl='/lesson?id='+encodeURIComponent(lessonId)+'&video='+idx+'&desktop=1';let hiddenTriggered=false;const onHide=function(){hiddenTriggered=true;cleanup();};const cleanup=function(){window.removeEventListener('blur',onHide);document.removeEventListener('visibilitychange',onVis);};const onVis=function(){if(document.hidden){hiddenTriggered=true;cleanup();}};window.addEventListener('blur',onHide,{once:true});document.addEventListener('visibilitychange',onVis);location.href=appUrl;setTimeout(function(){cleanup();if(!hiddenTriggered)location.href=fallbackUrl;},1200);}
 function applyInitialVideoLaunch(){if(videosData&&videosData.length>0){currentVideoIdx=Math.min(Math.max(REQUESTED_VIDEO_INDEX,0),videosData.length-1);}if(DESKTOP_MODE){document.getElementById('btn-videos-tab').classList.remove('locked');switchTab('videos');}}
 
-/* ════════════════════════════
-   YOUTUBE PLAYER
-════════════════════════════ */
 function initYTPlayer(wrapper,videoId,studentId){
   const YT_SPEEDS=[0.5,0.75,1,1.25,1.5,1.75,2];
   wrapper.innerHTML=
@@ -591,7 +558,7 @@ function initYTPlayer(wrapper,videoId,studentId){
     +'</div>'
     +'</div>'
     +'<div class="yt-spd-popup" id="ytSpdPop"><div class="yt-spd-popup-ttl">Speed</div><ul id="ytSpdList">'
-    +YT_SPEEDS.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+( s===1?'Normal':s+'×')+'</li>').join('')
+    +YT_SPEEDS.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+(s===1?'Normal':s+'×')+'</li>').join('')
     +'</ul></div>'
     +'</div>';
 
@@ -637,30 +604,12 @@ function initYTPlayer(wrapper,videoId,studentId){
       videoId:videoId,
       playerVars:{controls:0,disablekb:1,fs:0,rel:0,iv_load_policy:3,modestbranding:1,showinfo:0,playsinline:1,cc_load_policy:0,autohide:1,enablejsapi:1,origin:location.origin},
       events:{
-        onReady:function(e){
-          activeYTPlayer.setVolume(vol);
-          setInterval(function(){
-            if(!activeYTPlayer||!activeYTPlayer.getDuration)return;
-            const dur=activeYTPlayer.getDuration()||0;const cur=activeYTPlayer.getCurrentTime()||0;
-            if(!dragging&&dur>0)progFill.style.width=(cur/dur*100)+'%';
-            timeEl.textContent=fmt(cur)+' / '+fmt(dur);
-          },250);
-        },
-        onStateChange:function(e){
-          const S=YT.PlayerState;
-          if(e.data===S.PLAYING){
-            setPP('pause');bigPlay.classList.add('gone');replayOv.classList.remove('show');
-            wrap.classList.add('ctrl-on');setTimeout(()=>wrap.classList.remove('ctrl-on'),2200);
-            swStart();  // ← start stopwatch when video plays
-          }
-          if(e.data===S.PAUSED){setPP('play');wrap.classList.add('ctrl-on');swStop();}
-          if(e.data===S.ENDED){setPP('play');replayOv.classList.add('show');swStop();}
-        }
+        onReady:function(e){activeYTPlayer.setVolume(vol);setInterval(function(){if(!activeYTPlayer||!activeYTPlayer.getDuration)return;const dur=activeYTPlayer.getDuration()||0;const cur=activeYTPlayer.getCurrentTime()||0;if(!dragging&&dur>0)progFill.style.width=(cur/dur*100)+'%';timeEl.textContent=fmt(cur)+' / '+fmt(dur);},250);},
+        onStateChange:function(e){const S=YT.PlayerState;if(e.data===S.PLAYING){setPP('pause');bigPlay.classList.add('gone');replayOv.classList.remove('show');wrap.classList.add('ctrl-on');setTimeout(()=>wrap.classList.remove('ctrl-on'),2200);swStart();}if(e.data===S.PAUSED){setPP('play');wrap.classList.add('ctrl-on');swStop();}if(e.data===S.ENDED){setPP('play');replayOv.classList.add('show');swStop();}}
       }
     });
   }
-  if(ytApiReady){buildPlayer();}
-  else{const orig=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){ytApiReady=true;if(orig)orig();buildPlayer();};}
+  if(ytApiReady){buildPlayer();}else{const orig=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){ytApiReady=true;if(orig)orig();buildPlayer();};}
 
   function togglePlay(){if(!activeYTPlayer)return;try{const st=activeYTPlayer.getPlayerState();if(st===1)activeYTPlayer.pauseVideo();else activeYTPlayer.playVideo();}catch(e){}}
   let clickTm;
@@ -692,23 +641,12 @@ function initYTPlayer(wrapper,videoId,studentId){
   replayBtn.addEventListener('click',function(){if(activeYTPlayer){activeYTPlayer.seekTo(0,true);activeYTPlayer.playVideo();replayOv.classList.remove('show');}});
   wrap.addEventListener('mousemove',showCtrl);wrap.addEventListener('touchstart',showCtrl,{passive:true});wrap.classList.add('ctrl-on');
 
-  document.addEventListener('keydown',function(e){
-    if(!activeYTPlayer)return;const tag=document.activeElement&&document.activeElement.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;
-    if(e.code==='Space'||e.code==='KeyK'){e.preventDefault();togglePlay();}
-    if(e.code==='ArrowLeft'){activeYTPlayer.seekTo(Math.max(0,activeYTPlayer.getCurrentTime()-10),true);flashSeek(seekL);}
-    if(e.code==='ArrowRight'){activeYTPlayer.seekTo(Math.min(activeYTPlayer.getDuration(),activeYTPlayer.getCurrentTime()+10),true);flashSeek(seekR);}
-    if(e.code==='KeyF')toggleFullscreen();
-    if(e.code==='KeyM'){muted=!muted;if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}updateVolIcon();}
-  });
+  document.addEventListener('keydown',function(e){if(!activeYTPlayer)return;const tag=document.activeElement&&document.activeElement.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;if(e.code==='Space'||e.code==='KeyK'){e.preventDefault();togglePlay();}if(e.code==='ArrowLeft'){activeYTPlayer.seekTo(Math.max(0,activeYTPlayer.getCurrentTime()-10),true);flashSeek(seekL);}if(e.code==='ArrowRight'){activeYTPlayer.seekTo(Math.min(activeYTPlayer.getDuration(),activeYTPlayer.getCurrentTime()+10),true);flashSeek(seekR);}if(e.code==='KeyF')toggleFullscreen();if(e.code==='KeyM'){muted=!muted;if(muted)activeYTPlayer.mute();else{activeYTPlayer.unMute();activeYTPlayer.setVolume(vol);}updateVolIcon();}});
   updateVolIcon();
 }
 
-/* ════════════════════════════
-   VIDEO PAGE RENDER
-════════════════════════════ */
 function renderVideoPage(){
-  destroyActiveYT();
-  swReset();  // reset stopwatch for new video
+  destroyActiveYT();swReset();
   const container=document.getElementById('videosContainer');
   if(!videosData||videosData.length===0){container.innerHTML='<div class="empty-vid"><div class="ei">📺</div><div class="et">No Videos Yet</div><div class="es">Video lessons will appear here once added.</div></div>';return;}
   if(currentVideoIdx>=videosData.length)currentVideoIdx=videosData.length-1;
@@ -721,13 +659,10 @@ function renderVideoPage(){
   let sideItems='';
   videosData.forEach(function(vid,i){
     const locked=vid.requireHw&&!hwResultsMap[vid.hwId];
-    const divClick=locked?'':( i===currentVideoIdx?'':'goToVideo('+i+')' );
-    const btnClick=locked?'':( DESKTOP_MODE?'goToVideo('+i+')':'openDesktopPlayerOrFallback('+i+')' );
+    const divClick=locked?'':(i===currentVideoIdx?'':'goToVideo('+i+')');
+    const btnClick=locked?'':(DESKTOP_MODE?'goToVideo('+i+')':'openDesktopPlayerOrFallback('+i+')');
     const activeClass=i===currentVideoIdx?'active':'';const lockedClass=locked?'locked':'';const vidName=vid.name||('Lecture '+(i+1));
-    sideItems+='<div class="side-item '+activeClass+' '+lockedClass+'" onclick="'+divClick+'">'
-      +'<div class="side-head"><span class="side-dot">'+(i+1)+'</span><div class="side-copy"><div class="side-title">'+vidName+'</div>'
-      +'<button class="side-play" '+(locked?'disabled':'')+' onclick="event.stopPropagation();'+btnClick+'">'
-      +(locked?'🔒 Locked':(DESKTOP_MODE?'▶ Play':'▶ Open in App'))+'</button></div></div></div>';
+    sideItems+='<div class="side-item '+activeClass+' '+lockedClass+'" onclick="'+divClick+'"><div class="side-head"><span class="side-dot">'+(i+1)+'</span><div class="side-copy"><div class="side-title">'+vidName+'</div><button class="side-play" '+(locked?'disabled':'')+' onclick="event.stopPropagation();'+btnClick+'">'+(locked?'🔒 Locked':(DESKTOP_MODE?'▶ Play':'▶ Open in App'))+'</button></div></div></div>';
   });
 
   let playerHtml='';
@@ -742,38 +677,26 @@ function renderVideoPage(){
   const prevDisabled=currentVideoIdx===0?'disabled':'';
   const nextDisabled=currentVideoIdx>=videosData.length-1?'disabled':'';
   const lessonAbout=lessonData?.about||'';
-
-  /* About block for sidebar */
-  const aboutSidebarHtml=lessonAbout
-    ?'<div class="about-sidebar"><div class="about-sidebar-title">About This Lesson</div><div class="about-sidebar-body">'+lessonAbout.replace(/\n/g,'<br>')+'</div></div>'
-    :'';
+  const aboutSidebarHtml=lessonAbout?'<div class="about-sidebar"><div class="about-sidebar-title">About This Lesson</div><div class="about-sidebar-body">'+lessonAbout.replace(/\n/g,'<br>')+'</div></div>':'';
 
   container.innerHTML=
     '<div class="watch-layout">'
-    +'<aside class="sidebar-card">'
-    +'<div class="sidebar-head">📋 Course Content</div>'
-    +'<div class="sidebar-scroll">'+sideItems+'</div>'
-    +aboutSidebarHtml
-    +'</aside>'
+    +'<aside class="sidebar-card"><div class="sidebar-head">📋 Course Content</div><div class="sidebar-scroll">'+sideItems+'</div>'+aboutSidebarHtml+'</aside>'
     +'<section class="stage-area">'
     +'<div class="stage-player">'+playerHtml+'</div>'
-    +'<div class="watch-info">'
-    +'<div class="info-title">'+vidTitle+'</div>'
+    +'<div class="watch-info"><div class="info-title">'+vidTitle+'</div>'
     +'<div class="info-grid">'
     +'<div class="info-chip"><span>Current Lesson</span><strong>'+vidTitle+'</strong></div>'
     +'<div class="info-chip"><span>Total Videos</span><strong>'+videosData.length+'</strong></div>'
     +'<div class="info-chip"><span>Progress</span><strong>'+(currentVideoIdx+1)+' / '+videosData.length+'</strong></div>'
     +'<div class="info-chip"><span>Status</span><strong style="color:'+statusColor+'">'+statusText+'</strong></div>'
     +'<div class="sw-chip" id="swChip"><span>⏱ Watch Time</span><strong id="swVal">0:00</strong></div>'
-    +'</div>'
-    +'</div>'
+    +'</div></div>'
     +'<div class="bottom-nav-row">'
     +'<button class="vid-page-btn" onclick="videoPrev()" '+prevDisabled+'><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Prev</button>'
     +'<span class="vid-page-ind">'+(currentVideoIdx+1)+' / '+videosData.length+'</span>'
     +'<button class="vid-page-btn" onclick="videoNext()" '+nextDisabled+'>Next <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>'
-    +'</div>'
-    +'</section>'
-    +'</div>';
+    +'</div></section></div>';
 
   if(ytId&&!isLocked){const slot=document.getElementById('ytPlayerSlot');if(slot)initYTPlayer(slot,ytId,myStudentId);}
   if(isDirect&&!isLocked){const slot=document.getElementById('mp4Slot');if(slot)initMP4Player(slot,v.url,myStudentId);}
@@ -781,31 +704,11 @@ function renderVideoPage(){
 
 window.goToVideo=function(idx){destroyActiveYT();currentVideoIdx=idx;renderVideoPage();window.scrollTo({top:0,behavior:'smooth'});};
 window.videoNext=function(){if(currentVideoIdx<videosData.length-1){destroyActiveYT();currentVideoIdx++;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
-window.videoPrev=function(){if(currentVideoIdx>0){destroyActiveYT();currentVideoIdx--;renderVideoPage();scrollTo({top:0,behavior:'smooth'});}};
+window.videoPrev=function(){if(currentVideoIdx>0){destroyActiveYT();currentVideoIdx--;renderVideoPage();scrollTo({top:0,behavior:'smooth'});};};
 
-/* ════ MP4 PLAYER ════ */
 function initMP4Player(wrapper,videoUrl,studentId){
   const SPEEDS=[0.5,0.75,1,1.25,1.5,1.75,2];
-  wrapper.innerHTML='<div class="mp4-wrap">'
-    +'<div class="mp4-loader"></div>'
-    +'<video class="main-vid" preload="metadata"><source src="'+videoUrl+'" type="video/mp4"></video>'
-    +'<div class="mp4-wm">ID: '+studentId+'</div>'
-    +'<div class="vp-controls">'
-    +'<div class="vp-progress"><div class="vp-bar" style="width:0%"></div></div>'
-    +'<div class="vp-row"><div class="vp-left">'
-    +'<div class="vp-icon vp-rew" title="−10s"><i class="material-icons">replay_10</i></div>'
-    +'<div class="vp-icon vp-pp" title="Play"><i class="material-icons">play_arrow</i></div>'
-    +'<div class="vp-icon vp-fwd" title="+10s"><i class="material-icons">forward_10</i></div>'
-    +'<div class="vp-vol-wrap"><div class="vp-icon vp-vol-btn"><i class="material-icons">volume_up</i></div><input type="range" min="0" max="100" value="80" class="vol-slider"></div>'
-    +'<div class="vp-time"><span class="vp-cur">0:00</span> / <span class="vp-dur">0:00</span></div>'
-    +'</div><div class="vp-right">'
-    +'<div class="vp-speed" title="Speed">1×</div>'
-    +'<div class="vp-icon vp-pip" title="PiP"><i class="material-icons">picture_in_picture_alt</i></div>'
-    +'<div class="vp-icon vp-fs" title="Fullscreen"><i class="material-icons">fullscreen</i></div>'
-    +'</div></div></div>'
-    +'<div class="vp-settings-popup vp-popup"><div class="vp-popup-title">Speed</div><ul>'
-    +SPEEDS.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+( s===1?'Normal':s+'×' )+'</li>').join('')
-    +'</ul></div></div>';
+  wrapper.innerHTML='<div class="mp4-wrap"><div class="mp4-loader"></div><video class="main-vid" preload="metadata"><source src="'+videoUrl+'" type="video/mp4"></video><div class="mp4-wm">ID: '+studentId+'</div><div class="vp-controls"><div class="vp-progress"><div class="vp-bar" style="width:0%"></div></div><div class="vp-row"><div class="vp-left"><div class="vp-icon vp-rew" title="−10s"><i class="material-icons">replay_10</i></div><div class="vp-icon vp-pp" title="Play"><i class="material-icons">play_arrow</i></div><div class="vp-icon vp-fwd" title="+10s"><i class="material-icons">forward_10</i></div><div class="vp-vol-wrap"><div class="vp-icon vp-vol-btn"><i class="material-icons">volume_up</i></div><input type="range" min="0" max="100" value="80" class="vol-slider"></div><div class="vp-time"><span class="vp-cur">0:00</span> / <span class="vp-dur">0:00</span></div></div><div class="vp-right"><div class="vp-speed" title="Speed">1×</div><div class="vp-icon vp-pip" title="PiP"><i class="material-icons">picture_in_picture_alt</i></div><div class="vp-icon vp-fs" title="Fullscreen"><i class="material-icons">fullscreen</i></div></div></div></div><div class="vp-settings-popup vp-popup"><div class="vp-popup-title">Speed</div><ul>'+SPEEDS.map(s=>'<li data-speed="'+s+'" class="'+(s===1?'active':'')+'">'+(s===1?'Normal':s+'×')+'</li>').join('')+'</ul></div></div>';
 
   requestAnimationFrame(function(){
     const pw=wrapper.querySelector('.mp4-wrap');const vid=pw.querySelector('.main-vid');const loader=pw.querySelector('.mp4-loader');
@@ -853,109 +756,142 @@ window.goToCheckout=function(){
   const lessonId=new URLSearchParams(location.search).get('id');
   if(!lessonId){location.href='/dashboard';return;}
   localStorage.setItem('checkout_lesson_id',lessonId);
-  location.href=`/checkout?lesson_id=${encodeURIComponent(lessonId)}`;
+  location.href='/checkout?lesson_id='+encodeURIComponent(lessonId);
 };
 
 /* ════════════════════════════
-   ACCESS / INIT
+   ACCESS LOGIC (FIXED + DEBUG)
 ════════════════════════════ */
-function codeLessonId(c){
-  return c?.lessonid || c?.lesson_id || c?.lesson || c?.course_id || c?.courseid || '';
-}
-function codeUsedBy(c){
-  return String(c?.usedby || c?.used_by || c?.user_email || c?.email || c?.student_email || '').toLowerCase().trim();
-}
-function codeIsUsed(c){
-  return c?.used === true || c?.is_used === true || String(c?.used).toLowerCase() === 'true' || String(c?.is_used).toLowerCase() === 'true';
-}
-function lessonAccessDays(ls,c){
-  return Number(c?.access_days || c?.validity_days || c?.validitydays || ls?.access_days || ls?.validity_days || ls?.validitydays || 30) || 30;
-}
-function toMs(v){
-  if(v===undefined || v===null || v==='') return null;
-  if(typeof v === 'number') return v < 9999999999 ? v * 1000 : v;
-  const s=String(v).trim();
-  if(/^\d+$/.test(s)){ const n=Number(s); return n < 9999999999 ? n * 1000 : n; }
-  const d=new Date(s);
-  return isNaN(d.getTime()) ? null : d.getTime();
-}
+function codeLessonId(c){return c?.lessonid||c?.lesson_id||c?.lesson||c?.course_id||c?.courseid||'';}
+function codeUsedBy(c){return String(c?.usedby||c?.used_by||c?.user_email||c?.email||c?.student_email||'').toLowerCase().trim();}
+function codeIsUsed(c){return c?.used===true||c?.is_used===true||String(c?.used).toLowerCase()==='true'||String(c?.is_used).toLowerCase()==='true';}
+function lessonAccessDays(ls,c){return Number(c?.access_days||c?.validity_days||c?.validitydays||ls?.access_days||ls?.validity_days||ls?.validitydays||30)||30;}
+function toMs(v){if(v===undefined||v===null||v==='')return null;if(typeof v==='number')return v<9999999999?v*1000:v;const s=String(v).trim();if(/^\d+$/.test(s)){const n=Number(s);return n<9999999999?n*1000:n;}const d=new Date(s);return isNaN(d.getTime())?null:d.getTime();}
 function codeExpiryMs(c,ls){
-  const direct = toMs(c?.expiryat || c?.expiry_at || c?.expires_at || c?.expiresat);
-  if(direct) return direct;
-  const start = toMs(c?.used_at || c?.usedat || c?.updated_at);
-  const days = lessonAccessDays(ls,c);
-  if(start) return start + days * 86400000;
-  // old redeemed codes may not have used_at; give the student access now and cache it locally
-  return Date.now() + days * 86400000;
+  const direct=toMs(c?.expiryat||c?.expiry_at||c?.expires_at||c?.expiresat);
+  if(direct)return direct;
+  const start=toMs(c?.used_at||c?.usedat||c?.updated_at);
+  const days=lessonAccessDays(ls,c);
+  if(start)return start+days*86400000;
+  return Date.now()+days*86400000;
 }
-async function fetchMyCodes(email, lessonId){
+function isUnknownCodeOwner(c){const owner=codeUsedBy(c);return owner===''||owner==='unknown_user'||owner==='unknown'||owner==='null';}
+
+async function fetchMyCodes(email,lessonId){
   const e=String(email||'').toLowerCase().trim();
   const lid=String(lessonId||'');
   let codes=[];
-
-  // Main path: fetch codes for this lesson, then filter in JS.
-  // This also catches old Checkout bug where usedby became "unknown_user".
-  try{
-    const res=await db.from('codes').select('*').eq('lessonid',lid);
-    if(!res.error && res.data) codes=res.data;
-  }catch(err){}
-
-  // Compatibility if some projects use lesson_id instead of lessonid.
-  if(!codes.length){
-    try{
-      const res=await db.from('codes').select('*').eq('lesson_id',lid);
-      if(!res.error && res.data) codes=res.data;
-    }catch(err){}
-  }
-
-  // Fallback: fetch by email if lesson filter is blocked by RLS.
-  if(!codes.length && e){
-    try{
-      const res=await db.from('codes').select('*').eq('usedby',e);
-      if(!res.error && res.data) codes=res.data;
-    }catch(err){}
-  }
-
-  // Last fallback: try used_by as well.
-  if(!codes.length && e){
-    try{
-      const res=await db.from('codes').select('*').eq('used_by',e);
-      if(!res.error && res.data) codes=res.data;
-    }catch(err){}
-  }
-
+  try{const res=await db.from('codes').select('*').eq('lessonid',lid);if(!res.error&&res.data)codes=res.data;}catch(err){}
+  if(!codes.length){try{const res=await db.from('codes').select('*').eq('lesson_id',lid);if(!res.error&&res.data)codes=res.data;}catch(err){}}
+  if(!codes.length&&e){try{const res=await db.from('codes').select('*').eq('usedby',e);if(!res.error&&res.data)codes=res.data;}catch(err){}}
+  if(!codes.length&&e){try{const res=await db.from('codes').select('*').eq('used_by',e);if(!res.error&&res.data)codes=res.data;}catch(err){}}
   return codes||[];
 }
-function isUnknownCodeOwner(c){
-  const owner=codeUsedBy(c);
-  return owner==='' || owner==='unknown_user' || owner==='unknown' || owner==='null';
-}
+
 async function tryClaimUnknownCode(c,email){
-  // Best effort: fixes rows created by old checkout as usedby=unknown_user.
-  // If RLS blocks it, the page still opens for this session using the valid used code.
-  if(!c || !c.id || !email || !isUnknownCodeOwner(c)) return;
-  try{
-    await db.from('codes').update({usedby:email, used_at:c.used_at || new Date().toISOString()}).eq('id',c.id);
-  }catch(err){}
+  if(!c||!c.id||!email||!isUnknownCodeOwner(c))return;
+  try{await db.from('codes').update({usedby:email,used_at:c.used_at||new Date().toISOString()}).eq('id',c.id);}catch(err){}
 }
+
 function getValidAccessCode(codes,lessonId,ls){
   const email=String(currentUser?.email||'').toLowerCase().trim();
   const now=Date.now();
   for(const c of (codes||[])){
-    const sameLesson=String(codeLessonId(c))===String(lessonId);
+    const cid=String(codeLessonId(c));
+    const sameLesson=cid===String(lessonId);
+    const used=codeIsUsed(c);
     const owner=codeUsedBy(c);
-
-    // KALAWY FIX:
-    // Some old checkout/Admin versions saved usedby as unknown_user or a different email.
-    // To stop false "Lesson Locked", any USED code for the same lesson opens it.
-    // If the owner is empty/unknown, we still try to claim it for the current email below.
-    const sameUserOrLegacy = owner===email || isUnknownCodeOwner(c) || true;
-
-    if(!sameLesson || !sameUserOrLegacy || !codeIsUsed(c)) continue;
+    const unknown=isUnknownCodeOwner(c);
     const exp=codeExpiryMs(c,ls);
-    if(!exp || exp>now) return {ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c,claimed:isUnknownCodeOwner(c)};
+    const notExpired=!exp||exp>now;
+
+    console.log('[KALAWY DEBUG] Code:',{
+      id:c.id, lessonId:cid, match:sameLesson,
+      used, owner, unknown, expiry:new Date(exp).toISOString(), notExpired
+    });
+
+    if(!sameLesson)continue;
+    if(!used&&!unknown)continue;
+    if(!notExpired)continue;
+
+    return{ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c,claimed:unknown};
   }
-  return {ok:false,expiry:null,code:null,claimed:false};
+  return{ok:false,expiry:null,code:null,claimed:false};
+}
+
+function forceRefresh(){
+  const lessonId=new URLSearchParams(location.search).get('id');
+  location.href='/lesson?id='+lessonId+'&refresh=1';
+}
+
+function showLockWithDebug(codes,lessonId,lessonSnap){
+  const screen=document.getElementById('codeLockScreen');
+  const email=currentUser?.email||'—';
+  const codeCount=codes?.length||0;
+  const lessonName=lessonSnap?.name||lessonId;
+
+  let debugRows='';
+  if(codeCount===0){
+    debugRows='<div class="dbg-row"><span class="dbg-label">⚠️ No codes found</span><span class="dbg-val">No codes returned for this lesson. Check RLS policies on "codes" table — the anon key must have SELECT access.</span></div>';
+  }else{
+    (codes||[]).forEach((c,i)=>{
+      const used=codeIsUsed(c);
+      const match=String(codeLessonId(c))===String(lessonId);
+      const owner=codeUsedBy(c);
+      const exp=codeExpiryMs(c,lessonSnap);
+      const expired=exp&&exp<Date.now();
+      const status=!match?'❌ Wrong lesson':!used&&!isUnknownCodeOwner(c)?'❌ Not used':expired?'❌ Expired':'✅ Valid';
+      debugRows+='<div class="dbg-row"><span class="dbg-label">Code '+( i+1)+': '+status+'</span><span class="dbg-val">ID:'+String(c.id).substring(0,8)+'… | used:'+used+' | owner:'+( owner||'empty')+' | lesson:'+String(codeLessonId(c)).substring(0,8)+'… | exp:'+( exp?new Date(exp).toLocaleString():'none')+'</span></div>';
+    });
+  }
+
+  screen.innerHTML=
+    '<div class="lock-card">'
+    +'<button class="lock-back" onclick="location.href=\'/dashboard\'">'
+    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>'
+    +'Back</button>'
+    +'<div class="lock-ico">'
+    +'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
+    +'<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>'
+    +'<path d="M7 11V7a5 5 0 0 1 10 0v4"/>'
+    +'<circle cx="12" cy="16" r="1" fill="currentColor"/>'
+    +'</svg></div>'
+    +'<div class="lock-title">Lesson Locked</div>'
+    +'<div class="lock-sub" style="direction:rtl;text-align:right;">'
+    +'<span style="display:block;margin-bottom:8px;">لو أنت مفعل الحصة ولسه الصفحة مقفولة، اضغط تحديث أو ادخل من Dashboard.</span>'
+    +'<span>لو لم تفعلها، افتح Checkout وفعل كود الحصة.</span></div>'
+    +'<div class="lock-actions">'
+    +'<button class="lock-btn primary" onclick="goToCheckout()">Go to Checkout →</button>'
+    +'<button class="lock-btn ghost" onclick="forceRefresh()">'
+    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>'
+    +'Retry / تحديث</button></div>'
+    +'<div class="dbg-box"><div class="dbg-title">DEBUG INFO</div>'
+    +'<div class="dbg-row"><span class="dbg-label">Email</span><span class="dbg-val">'+email+'</span></div>'
+    +'<div class="dbg-row"><span class="dbg-label">Lesson</span><span class="dbg-val">'+lessonName+' ('+lessonId+')</span></div>'
+    +'<div class="dbg-row"><span class="dbg-label">Codes found</span><span class="dbg-val">'+codeCount+'</span></div>'
+    +debugRows
+    +'</div>'
+    +'<div class="lock-footer">Screenshot this & send to support</div>'
+    +'</div>';
+  screen.classList.remove('hidden');
+}
+
+function showLockWithError(err){
+  const screen=document.getElementById('codeLockScreen');
+  screen.innerHTML=
+    '<div class="lock-card">'
+    +'<button class="lock-back" onclick="location.href=\'/dashboard\'">'
+    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>'
+    +'Back</button>'
+    +'<div class="lock-ico" style="background:var(--red-bg);border-color:var(--red-border);color:var(--red);">'
+    +'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+    +'</div>'
+    +'<div class="lock-title">Connection Error</div>'
+    +'<div class="lock-sub">حصلت مشكلة في الاتصال بالسيرفر. حاول تاني.</div>'
+    +'<div class="dbg-box"><div class="dbg-row"><span class="dbg-label">Error</span><span class="dbg-val">'+( err.message||String(err))+'</span></div></div>'
+    +'<div class="lock-actions"><button class="lock-btn ghost" onclick="location.reload()">Retry</button></div>'
+    +'</div>';
+  screen.classList.remove('hidden');
 }
 
 async function init(){
@@ -964,40 +900,52 @@ async function init(){
   const{data:{session}}=await db.auth.getSession();
   if(!session){hideLoader();location.href='/home';return;}
   currentUser=session.user;
+
+  if(new URLSearchParams(location.search).get('refresh')==='1'){
+    localStorage.removeItem('access_'+currentUser.id+'_'+lessonId);
+    localStorage.removeItem('exam_'+currentUser.id+'_'+lessonId);
+  }
+
   const cached=localStorage.getItem('access_'+currentUser.id+'_'+lessonId);
   if(cached){
     try{const p=JSON.parse(cached);if(p.expiry>Date.now()){myStudentId=p.studentId||currentUser.id.substring(0,6).toUpperCase();await loadLesson(lessonId);startAccessTimer(p.expiry);verifyBg(lessonId);hideLoader();return;}}catch(e){}
   }
+
   try{
-    const [{data:u},{data:lessonSnap}] = await Promise.all([
+    const[{data:u},{data:lessonSnap}]=await Promise.all([
       db.from('users').select('studentid').eq('id',currentUser.id).maybeSingle(),
       db.from('lessons').select('*').eq('id',lessonId).maybeSingle()
     ]);
     if(u)myStudentId=u.studentid||currentUser.id.substring(0,6).toUpperCase();
 
-    // Free lessons open without a code
-    if(lessonSnap && (!lessonSnap.price || Number(lessonSnap.price)===0)){
+    if(lessonSnap&&(!lessonSnap.price||Number(lessonSnap.price)===0)){
       await loadLesson(lessonId);hideLoader();return;
     }
 
-    const codes=await fetchMyCodes(currentUser.email, lessonId);
+    const codes=await fetchMyCodes(currentUser.email,lessonId);
+    console.log('[KALAWY DEBUG] Fetched codes:',codes?.length,codes);
+
     const access=getValidAccessCode(codes,lessonId,lessonSnap);
+    console.log('[KALAWY DEBUG] Access result:',access);
+
     if(access.ok){
       await tryClaimUnknownCode(access.code,currentUser.email);
       localStorage.setItem('access_'+currentUser.id+'_'+lessonId,JSON.stringify({expiry:access.expiry,studentId:myStudentId}));
       await loadLesson(lessonId);startAccessTimer(access.expiry);hideLoader();
-    } else {
-      hideLoader();document.getElementById('codeLockScreen').classList.remove('hidden');
+    }else{
+      hideLoader();
+      showLockWithDebug(codes,lessonId,lessonSnap);
     }
   }catch(e){
-    console.error('Access check failed:', e);
-    hideLoader();document.getElementById('codeLockScreen').classList.remove('hidden');
+    console.error('[KALAWY DEBUG] Access check FAILED:',e);
+    hideLoader();
+    showLockWithError(e);
   }
 }
 
 async function verifyBg(lessonId){
   try{
-    const [{data:lessonSnap}, codes] = await Promise.all([
+    const[{data:lessonSnap},codes]=await Promise.all([
       db.from('lessons').select('*').eq('id',lessonId).maybeSingle(),
       fetchMyCodes(currentUser.email)
     ]);
@@ -1023,7 +971,6 @@ async function loadLesson(id){
   if(!snap)return;
   lessonData=snap;questions=lessonData.questions||[];
 
-  /* ── Read exam duration from DB ── */
   examDurationMins=Number(lessonData.examduration)||40;
   timeLeft=examDurationMins*60;
   document.getElementById('examDurationWarn').textContent='⏱ Time Limit: '+examDurationMins+' Minutes';
@@ -1057,7 +1004,6 @@ async function loadLesson(id){
   }
 }
 
-/* ── HOMEWORK ── */
 function renderNoHomework(){document.getElementById('tab-homework').innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">No Assignment</div><div class="hw-sub">There is no homework assignment for this course.</div></div>';}
 function renderHomeworkStart(){document.getElementById('tab-homework').innerHTML='<div class="hw-card"><div style="font-size:3rem;margin-bottom:16px">📋</div><div class="hw-title">Assignment: '+(hwData.title||'Homework')+'</div><div class="hw-sub">Answer '+hwQuestions.length+' questions. Completing this may unlock gated videos!</div><button class="hw-btn" onclick="startHw()">Start Assignment →</button></div>';}
 function renderHomeworkDone(result){
@@ -1082,7 +1028,6 @@ async function submitHw(){
   hwDone=true;hwResultsMap[hwData.id]=Object.assign({},res);renderHomeworkDone(res);hideLoader();
 }
 
-/* ── QUIZ ── */
 function buildMsg(score,total,prev){const pct=total>0?Math.round(score/total*100):0;return{score,total,pct,prev};}
 
 document.getElementById('startBtn').onclick=function(){
@@ -1147,7 +1092,6 @@ function unlockPostExam(skipAnim,msgObj){
 }
 
 function startTimer(){
-  /* use dynamic examDurationMins */
   timeLeft=examDurationMins*60;
   examTimer=setInterval(function(){
     const m=Math.floor(timeLeft/60),s=timeLeft%60;
