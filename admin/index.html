@@ -396,6 +396,7 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
           <div class="fg2"><div class="fw"><label class="flbl">Email</label><input id="teacherEmail" class="finp" type="email" placeholder="teacher@email.com"></div><div class="fw"><label class="flbl">Phone</label><input id="teacherPhone" class="finp" maxlength="11" placeholder="01012345678"></div></div>
           <div class="fg2"><div class="fw"><label class="flbl">Subject</label><select id="teacherSubject" class="finp"></select></div><div class="fw"><label class="flbl">Status</label><select id="teacherActive" class="finp"><option value="true">Active</option><option value="false">Blocked</option></select></div></div>
           <div class="fw"><label class="flbl">Bio</label><textarea id="teacherBio" class="finp" placeholder="Short teacher bio"></textarea></div>
+          <div class="fw"><label class="flbl">Teacher Image URL</label><input id="teacherImage" class="finp" placeholder="https://... أو path من Storage"></div>
           <label class="flbl">Permissions</label>
           <div class="checks"><label class="check"><input type="checkbox" id="canAdd" checked> Add Lesson</label><label class="check"><input type="checkbox" id="canEdit" checked> Edit Lesson</label><label class="check"><input type="checkbox" id="canDelete"> Delete Lesson</label><label class="check"><input type="checkbox" id="canExam" checked> Create Exam</label></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onclick="saveTeacher()">Save Teacher</button><button class="btn btn-ghost" onclick="clearTeacherForm()">Clear</button></div>
@@ -655,6 +656,67 @@ function subjectIcon(s){return s?.icon||'📚'}
 function teacherById(id){return state.teachers.find(t=>String(t.id)===String(id));}
 function lessonById(id){return state.lessons.find(l=>String(l.id)===String(id));}
 function lessonName(l){return l?.name||l?.title||l?.lesson_name||'Untitled';}
+function lessonChapterName(l){const raw=l?.chapter||l?.chapter_name||l?.unit||l?.section||'';return raw&&String(raw).trim()?String(raw).trim():'عام';}
+function lessonImageRaw(l){return l?.thumbnail_url||l?.image_url||l?.thumb_url||l?.thumbnail||l?.image||l?.chapter_image||'';}
+function lessonVideoRaw(l){return l?.video_url||l?.video||'';}
+function lessonPdfRaw(l){return l?.pdf_url||l?.pdf||'';}
+function tempId(prefix){return prefix+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);}
+function safeJs(v){return String(v??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ');}
+function readFileAsDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});}
+function buildChapterStateFromDb(t){
+  const rows=state.lessons.filter(l=>String(l.teacher_id)===String(t.id));
+  const map=new Map();
+  rows.forEach(l=>{
+    const name=lessonChapterName(l);
+    if(!map.has(name)){
+      map.set(name,{id:tempId('ch'),name,img:l?.chapter_image||lessonImageRaw(l)||''});
+    }else if(!map.get(name).img && (l?.chapter_image||lessonImageRaw(l))){
+      map.get(name).img=l?.chapter_image||lessonImageRaw(l);
+    }
+  });
+  state.chChapters=Array.from(map.values());
+  state.chLessons=rows.map(l=>{
+    const chName=lessonChapterName(l);
+    let ch=state.chChapters.find(c=>c.name===chName);
+    if(!ch){ch={id:tempId('ch'),name:chName,img:l?.chapter_image||lessonImageRaw(l)||''};state.chChapters.push(ch);}
+    return {id:'db_'+String(l.id),dbId:l.id,name:lessonName(l),chapterId:ch.id,price:Number(l.price||0),hasExam:Array.isArray(l.questions)&&l.questions.length>0,img:lessonImageRaw(l),video:lessonVideoRaw(l),pdf:lessonPdfRaw(l),about:l.about||'',grade:l.grade||'',lesson_date:l.lesson_date||l.date||''};
+  });
+}
+async function saveLessonConnectedRow(item,teacher,chapter){
+  const chapterName=chapter?.name||'عام';
+  const chapterImage=chapter?.img||item.img||'';
+  const fullPayload={
+    name:item.name,title:item.name,lesson_name:item.name,
+    grade:item.grade||'',lesson_date:item.lesson_date||todayISO(),
+    price:Number(item.price||0),validitydays:90,examduration:40,about:item.about||'',
+    image:item.img||'',thumbnail_url:item.img||'',image_url:item.img||'',
+    pdf:item.pdf||'',pdf_url:item.pdf||'',
+    video:item.video||'',video_url:item.video||'',
+    videos:item.video?[item.video]:[],questions:item.hasExam?[]:[],
+    chapter:chapterName,chapter_name:chapterName,chapter_image:chapterImage,
+    subject_id:teacher.subject_id,teacher_id:teacher.id
+  };
+  const safePayload={
+    name:item.name,grade:item.grade||'',lesson_date:item.lesson_date||todayISO(),
+    price:Number(item.price||0),validitydays:90,examduration:40,about:item.about||'',
+    image:item.img||'',pdf:item.pdf||'',video:item.video||'',videos:item.video?[item.video]:[],questions:item.hasExam?[]:[],
+    chapter:chapterName,subject_id:teacher.subject_id,teacher_id:teacher.id
+  };
+  async function tryWrite(payload){
+    if(item.dbId){return await dbClient.from('lessons').update(payload).eq('id',item.dbId).select().maybeSingle();}
+    return await dbClient.from('lessons').insert(payload).select().maybeSingle();
+  }
+  let res=await tryWrite(fullPayload);
+  if(res.error){
+    res=await tryWrite(safePayload);
+    if(res.error){
+      const minimal={name:item.name,grade:item.grade||'',lesson_date:item.lesson_date||todayISO(),price:Number(item.price||0),about:item.about||'',image:item.img||'',pdf:item.pdf||'',video:item.video||'',subject_id:teacher.subject_id,teacher_id:teacher.id};
+      res=await tryWrite(minimal);
+    }
+  }
+  if(res.error) throw res.error;
+  if(res.data?.id) item.dbId=res.data.id;
+}
 function relationLesson(c){return c?.lessons||c?.lesson||null;}
 function relationTeacher(l){return l?.teachers||l?.teacher||null;}
 function relationSubject(t){return t?.subjects||t?.subject||null;}
@@ -765,11 +827,11 @@ function renderResults(){const rows=state.activeTeacherId?state.results.filter(r
    ============================================================ */
 async function saveSubject(){const payload={slug:$('subjectSlug').value.trim().toLowerCase(),name_ar:$('subjectAr').value.trim(),name_en:$('subjectEn').value.trim(),icon:$('subjectIcon').value.trim(),color:$('subjectColor').value.trim()||'#2D5A3D'};if(!payload.slug||(!payload.name_ar&&!payload.name_en)){toast('warning','Missing data','Add slug and subject name.');return;}const {data:existing}=await dbClient.from('subjects').select('id').eq('slug',payload.slug).maybeSingle();const res=existing?.id?await dbClient.from('subjects').update(payload).eq('id',existing.id):await dbClient.from('subjects').insert(payload);if(res.error){toast('error','Subject Error',res.error.message);return;}toast('success','Subject Saved');['subjectSlug','subjectAr','subjectEn','subjectIcon','subjectColor'].forEach(id=>$(id).value='');await loadAll();}
 async function saveByEmail(table,payload){const {data:existing,error:e1}=await dbClient.from(table).select('id').eq('email',payload.email).maybeSingle();if(e1)return{error:e1};if(existing?.id)return await dbClient.from(table).update(payload).eq('id',existing.id);return await dbClient.from(table).insert(payload);}
-async function saveTeacher(){const id=$('teacherId').value;const name=$('teacherName').value.trim();const email=$('teacherEmail').value.trim().toLowerCase();const phone=normalizePhone($('teacherPhone').value);const subject_id=$('teacherSubject').value;if(!name||!email||!subject_id){toast('warning','Missing data','Teacher name, email and subject are required.');return;}let userPayload={email,name,phone,role:'teacher',is_blocked:$('teacherActive').value!=='true'};let userRes=await saveByEmail('users',userPayload);if(userRes.error){delete userPayload.phone;userRes=await saveByEmail('users',userPayload);}if(userRes.error){toast('error','User Error',userRes.error.message);return;}const payload={email,name,phone,subject_id,bio:$('teacherBio').value.trim(),is_active:$('teacherActive').value==='true',can_add_lessons:$('canAdd').checked,can_edit_lessons:$('canEdit').checked,can_delete_lessons:$('canDelete').checked,can_create_exams:$('canExam').checked};const res=id?await dbClient.from('teachers').update(payload).eq('id',id):await saveByEmail('teachers',payload);if(res.error){toast('error','Teacher Error',res.error.message);return;}toast('success','Teacher Saved');clearTeacherForm();await loadAll();}
-function clearTeacherForm(){$('teacherId').value='';['teacherName','teacherEmail','teacherPhone','teacherBio'].forEach(id=>$(id).value='');$('teacherActive').value='true';$('canAdd').checked=true;$('canEdit').checked=true;$('canDelete').checked=false;$('canExam').checked=true;}
-function editTeacher(id){const t=teacherById(id);if(!t)return;$('teacherId').value=t.id;$('teacherName').value=t.name||'';$('teacherEmail').value=t.email||'';$('teacherPhone').value=t.phone||'';$('teacherSubject').value=t.subject_id||'';$('teacherBio').value=t.bio||'';$('teacherActive').value=String(t.is_active!==false);$('canAdd').checked=t.can_add_lessons!==false;$('canEdit').checked=t.can_edit_lessons!==false;$('canDelete').checked=!!t.can_delete_lessons;$('canExam').checked=t.can_create_exams!==false;showSection('teachers');window.scrollTo({top:0,behavior:'smooth'});toast('info','Loaded','Teacher data loaded in form.');}
+async function saveTeacher(){const id=$('teacherId').value;const name=$('teacherName').value.trim();const email=$('teacherEmail').value.trim().toLowerCase();const phone=normalizePhone($('teacherPhone').value);const subject_id=$('teacherSubject').value;const image_url=$('teacherImage')?.value.trim()||'';if(!name||!email||!subject_id){toast('warning','Missing data','Teacher name, email and subject are required.');return;}let userPayload={email,name,phone,role:'teacher',is_blocked:$('teacherActive').value!=='true'};let userRes=await saveByEmail('users',userPayload);if(userRes.error){delete userPayload.phone;userRes=await saveByEmail('users',userPayload);}if(userRes.error){toast('error','User Error',userRes.error.message);return;}const payload={email,name,phone,subject_id,bio:$('teacherBio').value.trim(),image_url,image:image_url,photo_url:image_url,is_active:$('teacherActive').value==='true',can_add_lessons:$('canAdd').checked,can_edit_lessons:$('canEdit').checked,can_delete_lessons:$('canDelete').checked,can_create_exams:$('canExam').checked};const res=id?await dbClient.from('teachers').update(payload).eq('id',id):await saveByEmail('teachers',payload);if(res.error){const fallback={email,name,phone,subject_id,bio:$('teacherBio').value.trim(),is_active:$('teacherActive').value==='true',can_add_lessons:$('canAdd').checked,can_edit_lessons:$('canEdit').checked,can_delete_lessons:$('canDelete').checked,can_create_exams:$('canExam').checked};const res2=id?await dbClient.from('teachers').update(fallback).eq('id',id):await saveByEmail('teachers',fallback);if(res2.error){toast('error','Teacher Error',res2.error.message);return;}}toast('success','Teacher Saved');clearTeacherForm();await loadAll();}
+function clearTeacherForm(){$('teacherId').value='';['teacherName','teacherEmail','teacherPhone','teacherBio','teacherImage'].forEach(id=>{if($(id))$(id).value='';});$('teacherActive').value='true';$('canAdd').checked=true;$('canEdit').checked=true;$('canDelete').checked=false;$('canExam').checked=true;}
+function editTeacher(id){const t=teacherById(id);if(!t)return;$('teacherId').value=t.id;$('teacherName').value=t.name||'';$('teacherEmail').value=t.email||'';$('teacherPhone').value=t.phone||'';$('teacherSubject').value=t.subject_id||'';$('teacherBio').value=t.bio||'';if($('teacherImage'))$('teacherImage').value=t.image_url||t.photo_url||t.avatar_url||t.image||'';$('teacherActive').value=String(t.is_active!==false);$('canAdd').checked=t.can_add_lessons!==false;$('canEdit').checked=t.can_edit_lessons!==false;$('canDelete').checked=!!t.can_delete_lessons;$('canExam').checked=t.can_create_exams!==false;showSection('teachers');window.scrollTo({top:0,behavior:'smooth'});toast('info','Loaded','Teacher data loaded in form.');}
 async function deleteTeacher(id){if(!confirm('Delete teacher?'))return;const {error}=await dbClient.from('teachers').delete().eq('id',id);if(error){toast('error','Delete Error',error.message);return;}toast('success','Deleted');await loadAll();}
-async function saveLesson(){const teacher=teacherById($('lessonTeacher').value);if(!teacher){toast('warning','Choose teacher');return;}const name=$('lessonName').value.trim();if(!name){toast('warning','Missing name','Lesson name is required.');return;}const payload={name,grade:$('lessonGrade').value.trim(),lesson_date:$('lessonDate').value||null,price:Number($('lessonPrice').value||0),validitydays:Number($('lessonValidity').value||90),examduration:Number($('lessonExamDuration').value||40),about:$('lessonAbout').value.trim(),image:$('lessonImage').value.trim(),pdf:$('lessonPdf').value.trim(),video:$('lessonVideo').value.trim(),videos:[],questions:[],subject_id:teacher.subject_id,teacher_id:teacher.id};const {error}=await dbClient.from('lessons').insert(payload);if(error){toast('error','Lesson Error',error.message);return;}toast('success','Course Published');['lessonName','lessonGrade','lessonAbout','lessonImage','lessonPdf','lessonVideo'].forEach(id=>$(id).value='');$('lessonDate').value=todayISO();$('lessonPrice').value=0;$('lessonValidity').value=90;$('lessonExamDuration').value=40;await loadAll();}
+async function saveLesson(){const teacher=teacherById($('lessonTeacher').value);if(!teacher){toast('warning','Choose teacher');return;}const name=$('lessonName').value.trim();if(!name){toast('warning','Missing name','Lesson name is required.');return;}const img=$('lessonImage').value.trim();const vid=$('lessonVideo').value.trim();const pdf=$('lessonPdf').value.trim();const payload={name,title:name,lesson_name:name,grade:$('lessonGrade').value.trim(),lesson_date:$('lessonDate').value||null,price:Number($('lessonPrice').value||0),validitydays:Number($('lessonValidity').value||90),examduration:Number($('lessonExamDuration').value||40),about:$('lessonAbout').value.trim(),image:img,thumbnail_url:img,image_url:img,pdf:pdf,pdf_url:pdf,video:vid,video_url:vid,videos:vid?[vid]:[],questions:[],chapter:'عام',chapter_name:'عام',chapter_image:img,subject_id:teacher.subject_id,teacher_id:teacher.id};let {error}=await dbClient.from('lessons').insert(payload);if(error){const fallback={name,grade:$('lessonGrade').value.trim(),lesson_date:$('lessonDate').value||null,price:Number($('lessonPrice').value||0),validitydays:Number($('lessonValidity').value||90),examduration:Number($('lessonExamDuration').value||40),about:$('lessonAbout').value.trim(),image:img,pdf:pdf,video:vid,videos:vid?[vid]:[],questions:[],chapter:'عام',subject_id:teacher.subject_id,teacher_id:teacher.id};const res2=await dbClient.from('lessons').insert(fallback);error=res2.error;}if(error){toast('error','Lesson Error',error.message);return;}toast('success','Course Published');['lessonName','lessonGrade','lessonAbout','lessonImage','lessonPdf','lessonVideo'].forEach(id=>$(id).value='');$('lessonDate').value=todayISO();$('lessonPrice').value=0;$('lessonValidity').value=90;$('lessonExamDuration').value=40;await loadAll();}
 async function deleteLesson(id){if(!confirm('Delete lesson?'))return;const {error}=await dbClient.from('lessons').delete().eq('id',id);if(error){toast('error','Delete Error',error.message);return;}toast('success','Deleted');await loadAll();}
 function addQuestion(){const q=$('qText').value.trim(),a=$('qA').value.trim(),b=$('qB').value.trim(),c=$('qC').value.trim(),d=$('qD').value.trim();if(!q||!a||!b||!c||!d){toast('warning','Complete question','Question and all answers are required.');return;}state.questions.push({q,choices:[a,b,c,d],correct:Number($('qCorrect').value),explain:$('qExplain').value.trim()});['qText','qA','qB','qC','qD','qExplain'].forEach(id=>$(id).value='');$('qCorrect').value='0';renderQuestions();}
 function removeQuestion(i){state.questions.splice(i,1);renderQuestions();}
@@ -824,10 +886,8 @@ function chUpdateHeroFromTeacher(){
   $('chSubjectTag').textContent=(subjectIcon(subj)||'📚')+' '+subjectLabel(subj);
   $('chGradeTag').textContent=t.grade||'';
 
-  // Load chapter/lesson data for this teacher (from localStorage keyed by teacher id)
-  const saved=localStorage.getItem('ch_data_'+t.id);
-  if(saved){const d=JSON.parse(saved);state.chChapters=d.chapters||[];state.chLessons=d.lessons||[];}
-  else{state.chChapters=[];state.chLessons=[];}
+  // Load chapter/lesson data directly from Supabase lessons, so student dashboard sees the same data
+  buildChapterStateFromDb(t);
   chRenderChapters();chRenderLessons();
 }
 
@@ -844,22 +904,23 @@ function chUploadTeacherImg(inp){
 function chRenderChapters(){
   const grid=$('chChaptersGrid'); grid.innerHTML='';
   state.chChapters.forEach(ch=>{
+    const cid=safeJs(ch.id);
     const div=document.createElement('div');div.className='ch-chapter-card';
     div.innerHTML=`
-      <div class="ch-chapter-thumb" id="chThumb-${ch.id}">
-        ${ch.img?`<img src="${ch.img}" alt="${escapeHtml(ch.name)}">`:`<div class="ch-chapter-ph"><div class="ch-chapter-ph-icon">📖</div><div class="ch-chapter-ph-txt">صورة الفصل</div></div>`}
+      <div class="ch-chapter-thumb" id="chThumb-${escapeHtml(ch.id)}">
+        ${ch.img?`<img src="${escapeHtml(ch.img)}" alt="${escapeHtml(ch.name)}">`:`<div class="ch-chapter-ph"><div class="ch-chapter-ph-icon">📖</div><div class="ch-chapter-ph-txt">صورة الفصل</div></div>`}
         <span class="ch-chapter-num-badge">${escapeHtml(ch.name)}</span>
-        <button class="ch-chapter-upload" onclick="chTriggerChapterImg(${ch.id},event)">📷 رفع صورة</button>
+        <button class="ch-chapter-upload" onclick="chTriggerChapterImg('${cid}',event)">📷 رفع صورة</button>
       </div>
       <div class="ch-chapter-body">
         <input class="ch-chapter-name-input" value="${escapeHtml(ch.name)}" placeholder="اسم الفصل"
-          oninput="state.chChapters.find(c=>c.id===${ch.id}).name=this.value;chUpdateModal()">
+          oninput="const c=state.chChapters.find(x=>x.id==='${cid}');if(c)c.name=this.value;chUpdateModal()">
         <div class="ch-chapter-meta">
           <div class="ch-lecture-count">
             <span class="ch-lc-dot"></span>
             <span>${state.chLessons.filter(l=>l.chapterId===ch.id).length} حصة</span>
           </div>
-          <button class="ch-chapter-del" onclick="chDeleteChapter(${ch.id})" title="حذف">🗑</button>
+          <button class="ch-chapter-del" onclick="chDeleteChapter('${cid}')" title="حذف">🗑</button>
         </div>
       </div>`;
     grid.appendChild(div);
@@ -873,24 +934,24 @@ function chRenderChapters(){
 
 function chTriggerChapterImg(id,e){e.stopPropagation();state.chPendingChapterImgId=id;$('chChapterImgInput').click();}
 
-$('chChapterImgInput').addEventListener('change',function(){
+$('chChapterImgInput').addEventListener('change',async function(){
   const file=this.files[0];if(!file||!state.chPendingChapterImgId)return;
-  const url=URL.createObjectURL(file);
+  const url=await readFileAsDataUrl(file);
   const ch=state.chChapters.find(c=>c.id===state.chPendingChapterImgId);
   if(ch){ch.img=url;chRenderChapters();}
   toast('success','تم رفع صورة الفصل');this.value='';
 });
 
-$('chLessonImgInput').addEventListener('change',function(){
+$('chLessonImgInput').addEventListener('change',async function(){
   const file=this.files[0];if(!file||!state.chPendingLessonImgId)return;
-  const url=URL.createObjectURL(file);
+  const url=await readFileAsDataUrl(file);
   const ls=state.chLessons.find(l=>l.id===state.chPendingLessonImgId);
   if(ls){ls.img=url;chRenderLessons();}
   toast('success','تم رفع صورة الحصة');this.value='';
 });
 
 function chAddChapter(){
-  const id=Date.now();state.chChapters.push({id,name:'فصل جديد',img:''});
+  const id=tempId('ch');state.chChapters.push({id,name:'فصل جديد',img:''});
   chRenderChapters();chRenderLessons();toast('success','تم إضافة فصل جديد');
 }
 function chDeleteChapter(id){
@@ -901,17 +962,17 @@ function chDeleteChapter(id){
 }
 function chUpdateModal(){
   const sel=$('chModalLessonChapter');
-  sel.innerHTML=state.chChapters.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  sel.innerHTML=state.chChapters.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
 }
-function chOpenModal(){chUpdateModal();$('chLessonModal').classList.add('open');}
+function chOpenModal(){if(!state.chChapters.length)chAddChapter();chUpdateModal();$('chLessonModal').classList.add('open');}
 function chCloseModal(){$('chLessonModal').classList.remove('open');}
 function chAddLesson(){
   const name=$('chModalLessonName').value.trim();if(!name){toast('warning','ادخل اسم الحصة');return;}
-  const chapterId=parseInt($('chModalLessonChapter').value);
+  const chapterId=String($('chModalLessonChapter').value);
   const price=parseInt($('chModalLessonPrice').value)||0;
   const hasExam=$('chModalHasExam').checked;
-  const id=Date.now();
-  state.chLessons.push({id,name,chapterId,price,hasExam,img:''});
+  const id=tempId('ls');
+  state.chLessons.push({id,name,chapterId,price,hasExam,img:'',video:'',pdf:'',about:'',grade:'',lesson_date:todayISO()});
   chCloseModal();$('chModalLessonName').value='';$('chModalLessonPrice').value=0;$('chModalHasExam').checked=false;
   chRenderLessons();chRenderChapters();toast('success','تم إضافة الحصة');
 }
@@ -935,22 +996,23 @@ function chRenderLessons(){
   state.chLessons.forEach(l=>{if(!grouped[l.chapterId])grouped[l.chapterId]=[];grouped[l.chapterId].push(l);});
   let html='';
   Object.entries(grouped).forEach(([chId,chLessons])=>{
-    const ch=state.chChapters.find(c=>c.id===parseInt(chId));
+    const ch=state.chChapters.find(c=>c.id===chId);
     html+=`<div class="ch-group-head"><span class="ch-group-tag">${ch?escapeHtml(ch.name):'فصل محذوف'}</span><span style="color:var(--muted);font-weight:600;font-size:.76rem">${chLessons.length} حصة</span></div>`;
     chLessons.forEach(l=>{
+      const lid=safeJs(l.id);
       const isFree=!l.price||l.price===0;
-      html+=`<div class="ch-lesson-row" id="chLessonRow-${l.id}">
-        <div class="ch-lesson-thumb-sm" onclick="chTriggerLessonImg(${l.id},event)" title="رفع صورة" style="cursor:pointer">
-          ${l.img?`<img src="${l.img}" alt="">`:'🎬'}
+      html+=`<div class="ch-lesson-row" id="chLessonRow-${escapeHtml(l.id)}">
+        <div class="ch-lesson-thumb-sm" onclick="chTriggerLessonImg('${lid}',event)" title="رفع صورة" style="cursor:pointer">
+          ${l.img?`<img src="${escapeHtml(l.img)}" alt="">`:'🎬'}
         </div>
         <div class="ch-lesson-info">
-          <input class="ch-lesson-title-inp" value="${escapeHtml(l.name)}" placeholder="اسم الحصة" oninput="state.chLessons.find(x=>x.id===${l.id}).name=this.value">
+          <input class="ch-lesson-title-inp" value="${escapeHtml(l.name)}" placeholder="اسم الحصة" oninput="const x=state.chLessons.find(y=>y.id==='${lid}');if(x)x.name=this.value">
           <div class="ch-lesson-chapter-tag">${ch?escapeHtml(ch.name):''} • ${isFree?'مجاني':l.price+' ج.م'}</div>
         </div>
         <div class="ch-lesson-actions-row">
-          ${l.hasExam?`<span class="ch-has-exam">🧪 امتحان</span>`:`<button class="ch-btn-exam" onclick="chToggleExam(${l.id})">+ امتحان</button>`}
-          <button class="ch-btn-watch-sm">▶ مشاهدة</button>
-          <button class="ch-lesson-del" onclick="chDeleteLesson(${l.id})">🗑</button>
+          ${l.hasExam?`<span class="ch-has-exam">🧪 امتحان</span>`:`<button class="ch-btn-exam" onclick="chToggleExam('${lid}')">+ امتحان</button>`}
+          <button class="ch-btn-watch-sm" onclick="${l.dbId?`window.open('/lesson?id=${escapeHtml(l.dbId)}','_blank')`:`toast('warning','احفظ الحصة الأول')`}">▶ مشاهدة</button>
+          <button class="ch-lesson-del" onclick="chDeleteLesson('${lid}')">🗑</button>
         </div>
       </div>`;
     });
@@ -958,11 +1020,31 @@ function chRenderLessons(){
   container.innerHTML=html;
 }
 
-function chSaveAll(){
+async function chSaveAll(){
   const t=activeTeacher();if(!t){toast('warning','اختار مدرساً أولاً');return;}
-  localStorage.setItem('ch_data_'+t.id,JSON.stringify({chapters:state.chChapters,lessons:state.chLessons}));
-  $('chLastSave').textContent=new Date().toLocaleTimeString('ar-EG');
-  toast('success','تم حفظ التغييرات بنجاح!');
+  try{
+    $('secureLayer').classList.remove('hidden');
+    const originalIds=state.lessons.filter(l=>String(l.teacher_id)===String(t.id)).map(l=>String(l.id));
+    const remainingIds=state.chLessons.filter(l=>l.dbId).map(l=>String(l.dbId));
+    for(const oldId of originalIds){
+      if(!remainingIds.includes(oldId)){
+        await dbClient.from('lessons').delete().eq('id',oldId);
+      }
+    }
+    for(const item of state.chLessons){
+      const chapter=state.chChapters.find(c=>c.id===item.chapterId)||{name:'عام',img:item.img||''};
+      await saveLessonConnectedRow(item,t,chapter);
+    }
+    $('chLastSave').textContent=new Date().toLocaleTimeString('ar-EG');
+    toast('success','تم الحفظ في Supabase والطالب هيشوف التغيير بعد Refresh');
+    await loadLessons();
+    fillSelects();
+    renderLessons();
+  }catch(e){
+    toast('error','Save Error',e.message||String(e));
+  }finally{
+    $('secureLayer').classList.add('hidden');
+  }
 }
 
 /* ============================================================
