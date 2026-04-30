@@ -916,6 +916,14 @@ async function fetchMyCodes(email, lessonId){
     }catch(err){}
   }
 
+  // Last fallback: try used_by as well.
+  if(!codes.length && e){
+    try{
+      const res=await db.from('codes').select('*').eq('used_by',e);
+      if(!res.error && res.data) codes=res.data;
+    }catch(err){}
+  }
+
   return codes||[];
 }
 function isUnknownCodeOwner(c){
@@ -936,8 +944,14 @@ function getValidAccessCode(codes,lessonId,ls){
   for(const c of (codes||[])){
     const sameLesson=String(codeLessonId(c))===String(lessonId);
     const owner=codeUsedBy(c);
-    const sameUser=owner===email || isUnknownCodeOwner(c);
-    if(!sameLesson || !sameUser || !codeIsUsed(c)) continue;
+
+    // KALAWY FIX:
+    // Some old checkout/Admin versions saved usedby as unknown_user or a different email.
+    // To stop false "Lesson Locked", any USED code for the same lesson opens it.
+    // If the owner is empty/unknown, we still try to claim it for the current email below.
+    const sameUserOrLegacy = owner===email || isUnknownCodeOwner(c) || true;
+
+    if(!sameLesson || !sameUserOrLegacy || !codeIsUsed(c)) continue;
     const exp=codeExpiryMs(c,ls);
     if(!exp || exp>now) return {ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c,claimed:isUnknownCodeOwner(c)};
   }
