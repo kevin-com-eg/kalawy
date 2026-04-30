@@ -52,6 +52,19 @@
 html { scroll-behavior: smooth; }
 body { font-family: var(--sans-ar); background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; }
 [data-lang="en"] body, [data-lang="en"] * { font-family: var(--sans-en) !important; }
+/* FIX: English font override كان بيكسر Font Awesome ويظهر الأيقونات مربعات */
+.fa, .fa-solid, .fas {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+}
+.fa-regular, .far {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 400 !important;
+}
+.fa-brands, .fab {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+}
 a { text-decoration: none; color: inherit; }
 
 /* LOADER */
@@ -411,6 +424,7 @@ main { max-width: 1200px; margin: 0 auto; }
     </a>
     <div class="nav-links">
       <button class="nav-link active" data-page="home" onclick="navigate('home')" id="nl-home">الرئيسية</button>
+      <button class="nav-link" data-page="profile" onclick="navigate('profile')" id="nl-profile"><i class="fa-solid fa-user"></i> حسابي</button>
       <button class="nav-link" data-page="lectures" onclick="navigate('lectures')" id="nl-lectures">محاضراتي</button>
       <button class="nav-link" data-page="contact" onclick="navigate('contact')" id="nl-contact">تواصل معنا</button>
       <button class="nav-link danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> <span id="nl-logout">خروج</span></button>
@@ -528,6 +542,9 @@ main { max-width: 1200px; margin: 0 auto; }
   <div class="bn-inner">
     <button class="bn-item active" onclick="navigate('home')" id="bn-home">
       <i class="fa-solid fa-house"></i><span id="bnt-home">الرئيسية</span>
+    </button>
+    <button class="bn-item" onclick="navigate('profile')" id="bn-profile">
+      <i class="fa-solid fa-user"></i><span id="bnt-profile">حسابي</span>
     </button>
     <button class="bn-item" onclick="navigate('lectures')" id="bn-lectures">
       <i class="fa-solid fa-play-circle"></i><span id="bnt-lectures">دروسي</span>
@@ -662,6 +679,7 @@ function applyLang(){
   document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');
   document.getElementById('ld-text').textContent=t('loading');
   document.getElementById('nl-home').textContent=t('home');
+  const nlp=document.getElementById('nl-profile'); if(nlp) nlp.innerHTML='<i class="fa-solid fa-user"></i> '+t('profile');
   document.getElementById('nl-lectures').textContent=t('lectures');
   document.getElementById('nl-contact').textContent=t('contact');
   document.getElementById('nl-logout').textContent=t('logout');
@@ -676,6 +694,7 @@ function applyLang(){
   document.getElementById('ct-tg').textContent=t('tg');
   document.getElementById('ct-tg-sub').textContent=t('tg_sub');
   document.getElementById('bnt-home').textContent=t('home');
+  const bnp=document.getElementById('bnt-profile'); if(bnp) bnp.textContent=t('profile');
   document.getElementById('bnt-lectures').textContent=t('lectures');
   document.getElementById('bnt-theme').textContent=t('theme_label');
   document.getElementById('bnt-lang').textContent=t('lang_label');
@@ -758,6 +777,7 @@ function navigate(page){
   const bn=document.getElementById('bn-'+page);
   if(bn) bn.classList.add('active');
   if(page==='home') showView('subjects');
+  if(page==='profile') renderProfile();
   if(page==='lectures') renderMyLectures();
   window.scrollTo({top:0,behavior:'smooth'});
 }
