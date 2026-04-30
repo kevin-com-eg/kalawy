@@ -888,32 +888,60 @@ function codeExpiryMs(c,ls){
   // old redeemed codes may not have used_at; give the student access now and cache it locally
   return Date.now() + days * 86400000;
 }
-async function fetchMyCodes(email){
+async function fetchMyCodes(email, lessonId){
   const e=String(email||'').toLowerCase().trim();
+  const lid=String(lessonId||'');
   let codes=[];
+
+  // Main path: fetch codes for this lesson, then filter in JS.
+  // This also catches old Checkout bug where usedby became "unknown_user".
   try{
-    const res=await db.from('codes').select('*').or(`usedby.eq.${e},used_by.eq.${e}`);
+    const res=await db.from('codes').select('*').eq('lessonid',lid);
     if(!res.error && res.data) codes=res.data;
   }catch(err){}
+
+  // Compatibility if some projects use lesson_id instead of lessonid.
   if(!codes.length){
+    try{
+      const res=await db.from('codes').select('*').eq('lesson_id',lid);
+      if(!res.error && res.data) codes=res.data;
+    }catch(err){}
+  }
+
+  // Fallback: fetch by email if lesson filter is blocked by RLS.
+  if(!codes.length && e){
     try{
       const res=await db.from('codes').select('*').eq('usedby',e);
       if(!res.error && res.data) codes=res.data;
     }catch(err){}
   }
+
   return codes||[];
+}
+function isUnknownCodeOwner(c){
+  const owner=codeUsedBy(c);
+  return owner==='' || owner==='unknown_user' || owner==='unknown' || owner==='null';
+}
+async function tryClaimUnknownCode(c,email){
+  // Best effort: fixes rows created by old checkout as usedby=unknown_user.
+  // If RLS blocks it, the page still opens for this session using the valid used code.
+  if(!c || !c.id || !email || !isUnknownCodeOwner(c)) return;
+  try{
+    await db.from('codes').update({usedby:email, used_at:c.used_at || new Date().toISOString()}).eq('id',c.id);
+  }catch(err){}
 }
 function getValidAccessCode(codes,lessonId,ls){
   const email=String(currentUser?.email||'').toLowerCase().trim();
   const now=Date.now();
   for(const c of (codes||[])){
     const sameLesson=String(codeLessonId(c))===String(lessonId);
-    const sameUser=codeUsedBy(c)===email;
+    const owner=codeUsedBy(c);
+    const sameUser=owner===email || isUnknownCodeOwner(c);
     if(!sameLesson || !sameUser || !codeIsUsed(c)) continue;
     const exp=codeExpiryMs(c,ls);
-    if(!exp || exp>now) return {ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c};
+    if(!exp || exp>now) return {ok:true,expiry:exp||Date.now()+lessonAccessDays(ls,c)*86400000,code:c,claimed:isUnknownCodeOwner(c)};
   }
-  return {ok:false,expiry:null,code:null};
+  return {ok:false,expiry:null,code:null,claimed:false};
 }
 
 async function init(){
@@ -938,9 +966,10 @@ async function init(){
       await loadLesson(lessonId);hideLoader();return;
     }
 
-    const codes=await fetchMyCodes(currentUser.email);
+    const codes=await fetchMyCodes(currentUser.email, lessonId);
     const access=getValidAccessCode(codes,lessonId,lessonSnap);
     if(access.ok){
+      await tryClaimUnknownCode(access.code,currentUser.email);
       localStorage.setItem('access_'+currentUser.id+'_'+lessonId,JSON.stringify({expiry:access.expiry,studentId:myStudentId}));
       await loadLesson(lessonId);startAccessTimer(access.expiry);hideLoader();
     } else {
