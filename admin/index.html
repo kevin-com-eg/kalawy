@@ -254,6 +254,19 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
 .ch-no-teacher h3{font-size:1.1rem;font-weight:800;margin-bottom:8px}
 .ch-no-teacher p{font-size:.86rem}
 
+
+/* ===== Chapter-first builder v4 ===== */
+.ch-chapter-card.selected{border-color:var(--green)!important;box-shadow:0 0 0 3px rgba(45,90,61,.14),0 14px 34px rgba(45,90,61,.18)}
+.ch-chapter-card.selected .ch-chapter-num-badge{background:#fff;color:var(--green)}
+.ch-modal{max-width:680px;max-height:92vh;overflow:auto}
+.ch-form-input.textarea{min-height:88px;resize:vertical;line-height:1.7}
+.ch-form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ch-lesson-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.ch-mini-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;background:rgba(45,90,61,.09);color:var(--green);border:1px solid rgba(45,90,61,.13);font-size:.68rem;font-weight:800}
+.ch-mini-badge.warn{background:rgba(196,101,74,.10);color:var(--amber);border-color:rgba(196,101,74,.18)}
+.ch-lesson-row.active{background:rgba(45,90,61,.04)}
+@media(max-width:720px){.ch-form-grid-2{grid-template-columns:1fr}.ch-modal{margin:12px;max-height:90vh}.ch-lesson-actions-row{flex-wrap:wrap;justify-content:flex-end}}
+
 /* ===================== RESPONSIVE ===================== */
 @media(max-width:900px){
   .sidebar{display:none}.main-area{margin-left:0}.topbar{display:none}
@@ -286,26 +299,59 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
 <div class="ch-modal-overlay" id="chLessonModal">
   <div class="ch-modal">
     <div class="ch-modal-title">
-      إضافة حصة جديدة
+      <span id="chModalTitle">إضافة حصة داخل الشابتر</span>
       <button class="ch-modal-close" onclick="chCloseModal()">✕</button>
     </div>
-    <div class="ch-form-group">
-      <label class="ch-form-label">اسم الحصة</label>
-      <input class="ch-form-input" id="chModalLessonName" placeholder="مثلاً: الفصل الأول - مقدمة">
+    <input type="hidden" id="chModalEditId">
+    <div class="ch-form-grid-2">
+      <div class="ch-form-group">
+        <label class="ch-form-label">اسم الحصة</label>
+        <input class="ch-form-input" id="chModalLessonName" placeholder="مثلاً: مقدمة التفاضل">
+      </div>
+      <div class="ch-form-group">
+        <label class="ch-form-label">الشابتر</label>
+        <select class="ch-form-input" id="chModalLessonChapter"></select>
+      </div>
+    </div>
+    <div class="ch-form-grid-2">
+      <div class="ch-form-group">
+        <label class="ch-form-label">السعر (جنيه)</label>
+        <input class="ch-form-input" type="number" id="chModalLessonPrice" value="0">
+      </div>
+      <div class="ch-form-group">
+        <label class="ch-form-label">صورة الحصة URL</label>
+        <input class="ch-form-input ltr" id="chModalLessonImage" placeholder="https://...">
+      </div>
     </div>
     <div class="ch-form-group">
-      <label class="ch-form-label">الشابتر</label>
-      <select class="ch-form-input" id="chModalLessonChapter"></select>
+      <label class="ch-form-label">روابط الفيديوهات — كل فيديو في سطر</label>
+      <textarea class="ch-form-input textarea ltr" id="chModalLessonVideos" placeholder="https://video-1.mp4&#10;https://youtube.com/...&#10;https://drive.google.com/..."></textarea>
     </div>
-    <div class="ch-form-group">
-      <label class="ch-form-label">السعر (جنيه)</label>
-      <input class="ch-form-input" type="number" id="chModalLessonPrice" value="0">
+    <div class="ch-form-grid-2">
+      <div class="ch-form-group">
+        <label class="ch-form-label">PDF Link</label>
+        <input class="ch-form-input ltr" id="chModalLessonPdf" placeholder="https://...pdf">
+      </div>
+      <div class="ch-form-group">
+        <label class="ch-form-label">رابط الامتحان</label>
+        <input class="ch-form-input ltr" id="chModalExamLink" placeholder="https://forms.gle/... أو /exam?id=...">
+      </div>
+    </div>
+    <div class="ch-form-grid-2">
+      <div class="ch-form-group">
+        <label class="ch-form-label">صورة الامتحان URL</label>
+        <input class="ch-form-input ltr" id="chModalExamImage" placeholder="https://...">
+      </div>
+      <div class="ch-form-group">
+        <label class="ch-form-label">وصف قصير</label>
+        <input class="ch-form-input" id="chModalLessonAbout" placeholder="ملاحظات أو وصف للحصة">
+      </div>
     </div>
     <label style="display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer;direction:rtl;font-family:'Cairo',sans-serif">
       <input type="checkbox" id="chModalHasExam" style="accent-color:var(--green)">
-      <span style="font-size:.88rem;font-weight:700">تتضمن امتحان</span>
+      <span style="font-size:.88rem;font-weight:700">الحصة تتضمن امتحان</span>
     </label>
-    <button class="ch-btn-modal-add" onclick="chAddLesson()">+ إضافة الحصة</button>
+    <button class="ch-btn-modal-add" onclick="chAddLesson()" id="chModalSaveBtn">+ حفظ الحصة</button>
   </div>
 </div>
 
@@ -342,7 +388,7 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
     <button class="sb-link" data-section="students" onclick="showSection('students',this)"><div class="sb-icon">👥</div>Students</button>
     <div class="sb-section">Content</div>
     <button class="sb-link" data-section="subjects" onclick="showSection('subjects',this)"><div class="sb-icon">📚</div>Subjects</button>
-    <button class="sb-link" data-section="lessons" onclick="showSection('lessons',this)"><div class="sb-icon">🎬</div>Courses & Lessons</button>
+    <button class="sb-link" data-section="lessons" onclick="showSection('lessons',this)"><div class="sb-icon">🎬</div>Chapters</button>
     <button class="sb-link" data-section="homework" onclick="showSection('homework',this)"><div class="sb-icon">📋</div>Homework</button>
     <button class="sb-link" data-section="exams" onclick="showSection('exams',this)"><div class="sb-icon">📝</div>Exams</button>
     <div class="sb-section">Tools</div>
@@ -362,7 +408,7 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
 <nav class="bottom-nav"><div class="bottom-nav-inner">
   <button class="bn-item active" id="bn-overview" onclick="showSection('overview',null,'overview')"><div class="bn-icon">📊</div><div class="bn-label">Overview</div></button>
   <button class="bn-item" id="bn-teachers" onclick="showSection('teachers',null,'teachers')"><div class="bn-icon">👨‍🏫</div><div class="bn-label">Teachers</div></button>
-  <button class="bn-item" id="bn-lessons" onclick="showSection('lessons',null,'lessons')"><div class="bn-icon">🎬</div><div class="bn-label">Lessons</div></button>
+  <button class="bn-item" id="bn-lessons" onclick="showSection('lessons',null,'lessons')"><div class="bn-icon">🎬</div><div class="bn-label">Chapters</div></button>
   <button class="bn-item" id="bn-students" onclick="showSection('students',null,'students')"><div class="bn-icon">👥</div><div class="bn-label">Students</div></button>
   <button class="bn-item" id="bn-codes" onclick="showSection('codes',null,'codes')"><div class="bn-icon">🎫</div><div class="bn-label">Codes</div></button>
 </div></nav>
@@ -467,23 +513,23 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
 
           <!-- Chapters -->
           <div class="ch-sec-hd">
-            <h2 class="ch-sec-title">اختار الفصل / <em>الشابتر</em></h2>
-            <p class="ch-sec-sub">أضف وعدّل الفصول الدراسية للمدرس المختار</p>
+            <h2 class="ch-sec-title">١) اعمل <em>الشابترات</em> أولاً</h2>
+            <p class="ch-sec-sub">اعمل شابتر واضغط عليه، وبعدها ضيف الحصص والفيديوهات والـ PDF والامتحان</p>
           </div>
           <div class="ch-chapters-grid" id="chChaptersGrid"></div>
 
           <!-- Lessons -->
           <div class="ch-sec-hd" style="margin-top:8px">
-            <h2 class="ch-sec-title">📚 الحصص <em>الدراسية</em></h2>
-            <p class="ch-sec-sub">كل الحصص مرتبة حسب الفصل</p>
+            <h2 class="ch-sec-title">٢) حصص <em>الشابتر المختار</em></h2>
+            <p class="ch-sec-sub" id="chActiveChapterSub">اختار شابتر من فوق عشان تضيف جواه الحصص</p>
           </div>
           <div class="ch-lessons-section">
             <div class="ch-lessons-sec-head">
               <div class="ch-lessons-sec-title">
-                🎬 قائمة الحصص
+                🎬 حصص الشابتر
                 <span class="ch-count-badge" id="chLessonsCountBadge">0 حصة</span>
               </div>
-              <button class="ch-btn-add-lesson" onclick="chOpenModal()">+ إضافة حصة</button>
+              <button class="ch-btn-add-lesson" onclick="chOpenModal()">+ إضافة حصة داخل الشابتر</button>
             </div>
             <div id="chLessonsContainer">
               <div style="padding:48px;text-align:center;color:var(--muted);font-family:'Cairo',sans-serif">
@@ -506,7 +552,7 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
       </div><!-- /tabPanelChapters -->
 
       <!-- ---- PUBLISH NEW COURSE ---- -->
-      <div id="tabPanelPublish" style="display:none">
+      <div id="tabPanelPublish" style="display:none" class="hidden">
         <div class="grid-2">
           <div class="card"><div class="card-head"><div><div class="card-title">🎬 New Course / Lesson</div><div class="card-desc">Choose teacher; subject is detected from teacher.</div></div></div><div class="card-body">
             <div class="fw"><label class="flbl">Teacher</label><select id="lessonTeacher" class="finp"></select></div>
@@ -533,7 +579,7 @@ tbody td{padding:12px 16px;font-size:.82rem;vertical-align:middle}
       </div><!-- /tabPanelPublish -->
 
       <!-- ---- PUBLISHED TABLE ---- -->
-      <div id="tabPanelList" style="display:none">
+      <div id="tabPanelList" style="display:none" class="hidden">
         <div class="card"><div class="card-head"><div class="card-title">🎬 Published Courses</div><button class="btn btn-ghost btn-sm" onclick="loadLessons().then(()=>{renderLessons();})">Refresh</button></div>
         <div style="padding:4px"><div class="table-wrap"><table><thead><tr><th>Course</th><th>Teacher</th><th>Date</th><th>Price</th><th>Actions</th></tr></thead><tbody id="lessonsRows"></tbody></table></div></div></div>
       </div><!-- /tabPanelList -->
@@ -628,15 +674,15 @@ const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const state = {
   user:null, profile:null,
-  subjects:[], teachers:[], lessons:[], students:[], codes:[], results:[], homework:[],
+  subjects:[], teachers:[], chapters:[], lessons:[], students:[], codes:[], results:[], homework:[],
   questions:[], activeTeacherId:"",
   // Chapter/lesson local state
-  chChapters:[], chLessons:[],
+  chChapters:[], chLessons:[], activeChapterId:null, chEditingLessonId:null,
   chPendingChapterImgId:null, chPendingLessonImgId:null
 };
 
 const $ = id => document.getElementById(id);
-const labels = {overview:'Overview',teachers:'Teachers',subjects:'Subjects',lessons:'Courses & Lessons',homework:'Homework',exams:'Exams',students:'Students',codes:'Codes',results:'Results'};
+const labels = {overview:'Overview',teachers:'Teachers',subjects:'Subjects',lessons:'Chapters',homework:'Homework',exams:'Exams',students:'Students',codes:'Codes',results:'Results'};
 
 /* ============================================================
    TOAST
@@ -660,46 +706,90 @@ function lessonChapterName(l){const raw=l?.chapter||l?.chapter_name||l?.unit||l?
 function lessonImageRaw(l){return l?.thumbnail_url||l?.image_url||l?.thumb_url||l?.thumbnail||l?.image||l?.chapter_image||'';}
 function lessonVideoRaw(l){return l?.video_url||l?.video||'';}
 function lessonPdfRaw(l){return l?.pdf_url||l?.pdf||'';}
+function lessonVideosRaw(l){
+  const vals=[];
+  const candidates=[l?.videos,l?.video_urls,l?.video_url,l?.video];
+  candidates.forEach(v=>{
+    if(!v)return;
+    if(Array.isArray(v)) vals.push(...v);
+    else if(typeof v==='string'){
+      try{const parsed=JSON.parse(v);if(Array.isArray(parsed)) vals.push(...parsed);else vals.push(v);}catch{vals.push(...v.split(/\n|,/).map(x=>x.trim()).filter(Boolean));}
+    }
+  });
+  return [...new Set(vals.map(x=>String(x).trim()).filter(Boolean))];
+}
+function lessonExamLinkRaw(l){return l?.exam_link||l?.exam_url||l?.exam||'';}
+function lessonExamImageRaw(l){return l?.exam_image_url||l?.exam_image||l?.exam_thumb||'';}
+function parseVideoLines(v){return String(v||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);}
+function teacherImageRaw(t){return t?.image_url||t?.photo_url||t?.avatar_url||t?.image||t?.photo||'';}
 function tempId(prefix){return prefix+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);}
 function safeJs(v){return String(v??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ');}
 function readFileAsDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});}
 function buildChapterStateFromDb(t){
   const rows=state.lessons.filter(l=>String(l.teacher_id)===String(t.id));
-  const map=new Map();
+  const dbChapters=(state.chapters||[]).filter(c=>String(c.teacher_id)===String(t.id));
+  const byDbId=new Map();
+  state.chChapters=dbChapters.map((c,idx)=>{
+    const ch={id:'dbch_'+String(c.id),dbId:c.id,name:c.name||c.title||c.chapter_name||('فصل '+(idx+1)),img:c.image_url||c.image||c.thumbnail_url||'',position:c.position||idx+1};
+    byDbId.set(String(c.id),ch);
+    return ch;
+  });
+  function ensureChapterByName(name,img=''){
+    const clean=name&&String(name).trim()?String(name).trim():'عام';
+    let ch=state.chChapters.find(c=>String(c.name).trim()===clean);
+    if(!ch){ch={id:tempId('ch'),name:clean,img:img||'',position:state.chChapters.length+1};state.chChapters.push(ch);}
+    if(!ch.img&&img)ch.img=img;
+    return ch;
+  }
   rows.forEach(l=>{
-    const name=lessonChapterName(l);
-    if(!map.has(name)){
-      map.set(name,{id:tempId('ch'),name,img:l?.chapter_image||lessonImageRaw(l)||''});
-    }else if(!map.get(name).img && (l?.chapter_image||lessonImageRaw(l))){
-      map.get(name).img=l?.chapter_image||lessonImageRaw(l);
-    }
+    const dbId=l?.chapter_id||l?.chapterid;
+    const byId=dbId?byDbId.get(String(dbId)):null;
+    if(!byId) ensureChapterByName(lessonChapterName(l),l?.chapter_image||'');
   });
-  state.chChapters=Array.from(map.values());
   state.chLessons=rows.map(l=>{
-    const chName=lessonChapterName(l);
-    let ch=state.chChapters.find(c=>c.name===chName);
-    if(!ch){ch={id:tempId('ch'),name:chName,img:l?.chapter_image||lessonImageRaw(l)||''};state.chChapters.push(ch);}
-    return {id:'db_'+String(l.id),dbId:l.id,name:lessonName(l),chapterId:ch.id,price:Number(l.price||0),hasExam:Array.isArray(l.questions)&&l.questions.length>0,img:lessonImageRaw(l),video:lessonVideoRaw(l),pdf:lessonPdfRaw(l),about:l.about||'',grade:l.grade||'',lesson_date:l.lesson_date||l.date||''};
+    const dbId=l?.chapter_id||l?.chapterid;
+    let ch=dbId?byDbId.get(String(dbId)):null;
+    if(!ch) ch=ensureChapterByName(lessonChapterName(l),l?.chapter_image||lessonImageRaw(l)||'');
+    const videos=lessonVideosRaw(l);
+    return {id:'db_'+String(l.id),dbId:l.id,name:lessonName(l),chapterId:ch.id,chapterDbId:ch.dbId||null,price:Number(l.price||0),hasExam:!!(lessonExamLinkRaw(l)||lessonExamImageRaw(l)||(Array.isArray(l.questions)&&l.questions.length>0)),img:lessonImageRaw(l),video:videos[0]||lessonVideoRaw(l),videos,pdf:lessonPdfRaw(l),examLink:lessonExamLinkRaw(l),examImage:lessonExamImageRaw(l),about:l.about||'',grade:l.grade||'',lesson_date:l.lesson_date||l.date||''};
   });
+  if(state.chChapters.length && !state.activeChapterId) state.activeChapterId=state.chChapters[0].id;
+  if(state.activeChapterId && !state.chChapters.some(c=>c.id===state.activeChapterId)) state.activeChapterId=state.chChapters[0]?.id||null;
+}
+async function saveChapterRow(ch,teacher,index){
+  const fullPayload={name:ch.name,title:ch.name,chapter_name:ch.name,image:ch.img||'',image_url:ch.img||'',thumbnail_url:ch.img||'',teacher_id:teacher.id,subject_id:teacher.subject_id,position:index+1};
+  const safePayload={name:ch.name,image:ch.img||'',teacher_id:teacher.id,subject_id:teacher.subject_id,position:index+1};
+  async function tryWrite(payload){
+    if(ch.dbId){return await dbClient.from('chapters').update(payload).eq('id',ch.dbId).select().maybeSingle();}
+    return await dbClient.from('chapters').insert(payload).select().maybeSingle();
+  }
+  let res=await tryWrite(fullPayload);
+  if(res.error) res=await tryWrite(safePayload);
+  if(res.error) return null; // chapters table may not exist; lessons will still save with chapter name
+  if(res.data?.id) ch.dbId=res.data.id;
+  return ch.dbId||null;
 }
 async function saveLessonConnectedRow(item,teacher,chapter){
   const chapterName=chapter?.name||'عام';
   const chapterImage=chapter?.img||item.img||'';
+  const videos=Array.isArray(item.videos)?item.videos.filter(Boolean):parseVideoLines(item.video||'');
+  const firstVideo=videos[0]||item.video||'';
   const fullPayload={
     name:item.name,title:item.name,lesson_name:item.name,
     grade:item.grade||'',lesson_date:item.lesson_date||todayISO(),
     price:Number(item.price||0),validitydays:90,examduration:40,about:item.about||'',
-    image:item.img||'',thumbnail_url:item.img||'',image_url:item.img||'',
+    image:item.img||'',thumbnail_url:item.img||'',image_url:item.img||'',lesson_image:item.img||'',
     pdf:item.pdf||'',pdf_url:item.pdf||'',
-    video:item.video||'',video_url:item.video||'',
-    videos:item.video?[item.video]:[],questions:item.hasExam?[]:[],
-    chapter:chapterName,chapter_name:chapterName,chapter_image:chapterImage,
+    video:firstVideo,video_url:firstVideo,videos:videos,video_urls:videos,
+    exam_link:item.examLink||'',exam_url:item.examLink||'',exam_image:item.examImage||'',exam_image_url:item.examImage||'',
+    questions:item.hasExam?[]:[],
+    chapter:chapterName,chapter_name:chapterName,chapter_id:chapter?.dbId||null,chapter_image:chapterImage,
     subject_id:teacher.subject_id,teacher_id:teacher.id
   };
   const safePayload={
     name:item.name,grade:item.grade||'',lesson_date:item.lesson_date||todayISO(),
     price:Number(item.price||0),validitydays:90,examduration:40,about:item.about||'',
-    image:item.img||'',pdf:item.pdf||'',video:item.video||'',videos:item.video?[item.video]:[],questions:item.hasExam?[]:[],
+    image:item.img||'',pdf:item.pdf||'',video:firstVideo,videos:videos,questions:item.hasExam?[]:[],
     chapter:chapterName,subject_id:teacher.subject_id,teacher_id:teacher.id
   };
   async function tryWrite(payload){
@@ -710,7 +800,7 @@ async function saveLessonConnectedRow(item,teacher,chapter){
   if(res.error){
     res=await tryWrite(safePayload);
     if(res.error){
-      const minimal={name:item.name,grade:item.grade||'',lesson_date:item.lesson_date||todayISO(),price:Number(item.price||0),about:item.about||'',image:item.img||'',pdf:item.pdf||'',video:item.video||'',subject_id:teacher.subject_id,teacher_id:teacher.id};
+      const minimal={name:item.name,price:Number(item.price||0),about:item.about||'',image:item.img||'',pdf:item.pdf||'',video:firstVideo,chapter:chapterName,subject_id:teacher.subject_id,teacher_id:teacher.id};
       res=await tryWrite(minimal);
     }
   }
@@ -763,12 +853,13 @@ async function signOut(){await dbClient.auth.signOut();location.href=AUTH_ROUTE;
    ============================================================ */
 async function loadAll(){
   $('secureLayer').classList.remove('hidden');
-  await Promise.all([loadSubjects(),loadTeachers(),loadLessons(),loadStudents(),loadCodes(),loadResults(),loadHomework()]);
+  await Promise.all([loadSubjects(),loadTeachers(),loadChaptersData(),loadLessons(),loadStudents(),loadCodes(),loadResults(),loadHomework()]);
   fillSelects(); renderAll(); updateStats();
   $('secureLayer').classList.add('hidden');
 }
 async function loadSubjects(){state.subjects=await safeQuery('Subjects',()=>dbClient.from('subjects').select('*').order('created_at',{ascending:true}),()=>dbClient.from('subjects').select('*'));}
 async function loadTeachers(){state.teachers=await safeQuery('Teachers',()=>dbClient.from('teachers').select('*, subjects(*)').order('created_at',{ascending:false}),()=>dbClient.from('teachers').select('*'));}
+async function loadChaptersData(){const res=await dbClient.from('chapters').select('*').order('position',{ascending:true});state.chapters=res.error?[]:(res.data||[]);}
 async function loadLessons(){state.lessons=await safeQuery('Lessons',()=>dbClient.from('lessons').select('*, teachers(*), subjects(*)').order('created_at',{ascending:false}),()=>dbClient.from('lessons').select('*'));}
 async function loadStudents(){const rows=await safeQuery('Students',()=>dbClient.from('users').select('*').order('created_at',{ascending:false}),()=>dbClient.from('users').select('*'));state.students=rows.filter(u=>!u.role||u.role==='student');}
 async function loadCodes(){state.codes=await safeQuery('Codes',()=>dbClient.from('codes').select('*, lessons(*)').order('created_at',{ascending:false}).limit(150),()=>dbClient.from('codes').select('*').limit(150));}
@@ -858,9 +949,12 @@ function showSection(id,el,bottomId){
    LESSON TAB SWITCHER
    ============================================================ */
 function switchLessonTab(tab){
+  tab='chapters';
   ['chapters','publish','list'].forEach(t=>{
-    $('tabPanel'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===tab?'block':'none';
-    $('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active',t===tab);
+    const panel=$('tabPanel'+t.charAt(0).toUpperCase()+t.slice(1));
+    const btn=$('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(panel)panel.style.display=t===tab?'block':'none';
+    if(btn)btn.classList.toggle('active',t===tab);
   });
 }
 
@@ -881,6 +975,9 @@ function chUpdateHeroFromTeacher(){
   $('chTeacherNameInput').value=t.name||t.email||'';
   $('chTeacherNameInput').readOnly=false;
   $('chTeacherInitial').textContent=(t.name||t.email||'م').charAt(0);
+  const tImg=teacherImageRaw(t);
+  if(tImg){$('chTeacherImgEl').src=tImg;$('chTeacherImgEl').style.display='block';$('chTeacherInitial').style.display='none';}
+  else {$('chTeacherImgEl').style.display='none';$('chTeacherInitial').style.display='inline';}
 
   const subj=relationSubject(t)||state.subjects.find(s=>String(s.id)===String(t.subject_id));
   $('chSubjectTag').textContent=(subjectIcon(subj)||'📚')+' '+subjectLabel(subj);
@@ -893,53 +990,60 @@ function chUpdateHeroFromTeacher(){
 
 function chUpdateTeacherName(v){$('chTeacherInitial').textContent=v.charAt(0)||'م';}
 
-function chUploadTeacherImg(inp){
+async function chUploadTeacherImg(inp){
   const file=inp.files[0];if(!file)return;
-  const url=URL.createObjectURL(file);
+  const t=activeTeacher();if(!t){toast('warning','اختار مدرس الأول');return;}
+  const url=await readFileAsDataUrl(file);
   const img=$('chTeacherImgEl'); img.src=url;img.style.display='block';
   $('chTeacherInitial').style.display='none';
-  toast('success','Teacher photo uploaded');
+  t.image_url=url;t.image=url;t.photo_url=url;
+  try{
+    await dbClient.from('teachers').update({image_url:url,image:url,photo_url:url}).eq('id',t.id);
+    toast('success','تم حفظ صورة المدرس');
+  }catch(e){toast('warning','الصورة ظهرت مؤقتاً','لو عايزها ثابتة حط Image URL في بيانات المدرس');}
 }
 
 function chRenderChapters(){
   const grid=$('chChaptersGrid'); grid.innerHTML='';
-  state.chChapters.forEach(ch=>{
+  state.chChapters.forEach((ch,idx)=>{
     const cid=safeJs(ch.id);
-    const div=document.createElement('div');div.className='ch-chapter-card';
+    const selected=state.activeChapterId===ch.id;
+    const div=document.createElement('div');div.className='ch-chapter-card'+(selected?' selected':'');
+    div.onclick=()=>chSelectChapter(ch.id);
     div.innerHTML=`
       <div class="ch-chapter-thumb" id="chThumb-${escapeHtml(ch.id)}">
-        ${ch.img?`<img src="${escapeHtml(ch.img)}" alt="${escapeHtml(ch.name)}">`:`<div class="ch-chapter-ph"><div class="ch-chapter-ph-icon">📖</div><div class="ch-chapter-ph-txt">صورة الفصل</div></div>`}
-        <span class="ch-chapter-num-badge">${escapeHtml(ch.name)}</span>
-        <button class="ch-chapter-upload" onclick="chTriggerChapterImg('${cid}',event)">📷 رفع صورة</button>
+        ${ch.img?`<img src="${escapeHtml(ch.img)}" alt="${escapeHtml(ch.name)}">`:`<div class="ch-chapter-ph"><div class="ch-chapter-ph-icon">📖</div><div class="ch-chapter-ph-txt">صورة الشابتر</div></div>`}
+        <span class="ch-chapter-num-badge">${selected?'مختار':'شابتر '+(idx+1)}</span>
+        <button class="ch-chapter-upload" onclick="chTriggerChapterImg('${cid}',event)">📷 صورة</button>
       </div>
       <div class="ch-chapter-body">
-        <input class="ch-chapter-name-input" value="${escapeHtml(ch.name)}" placeholder="اسم الفصل"
-          oninput="const c=state.chChapters.find(x=>x.id==='${cid}');if(c)c.name=this.value;chUpdateModal()">
+        <input class="ch-chapter-name-input" value="${escapeHtml(ch.name)}" placeholder="اسم الشابتر"
+          onclick="event.stopPropagation()" oninput="const c=state.chChapters.find(x=>x.id==='${cid}');if(c)c.name=this.value;chUpdateModal();chRenderLessons()">
         <div class="ch-chapter-meta">
           <div class="ch-lecture-count">
             <span class="ch-lc-dot"></span>
             <span>${state.chLessons.filter(l=>l.chapterId===ch.id).length} حصة</span>
           </div>
-          <button class="ch-chapter-del" onclick="chDeleteChapter('${cid}')" title="حذف">🗑</button>
+          <button class="ch-chapter-del" onclick="event.stopPropagation();chDeleteChapter('${cid}')" title="حذف">🗑</button>
         </div>
       </div>`;
     grid.appendChild(div);
   });
   const addBtn=document.createElement('div');addBtn.className='ch-add-chapter-btn';addBtn.onclick=chAddChapter;
-  addBtn.innerHTML=`<div class="ch-add-icon">+</div><div class="ch-add-txt">إضافة فصل جديد</div><div style="font-size:.76rem;color:inherit">اضغط هنا</div>`;
+  addBtn.innerHTML=`<div class="ch-add-icon">+</div><div class="ch-add-txt">إضافة شابتر جديد</div><div style="font-size:.76rem;color:inherit">بعدها اضغط عليه وضيف حصص</div>`;
   grid.appendChild(addBtn);
   $('chChapterCount').textContent=state.chChapters.length;
   chUpdateModal();
 }
-
+function chSelectChapter(id){state.activeChapterId=id;chRenderChapters();chRenderLessons();$('chLessonsContainer')?.scrollIntoView({behavior:'smooth',block:'nearest'});}
 function chTriggerChapterImg(id,e){e.stopPropagation();state.chPendingChapterImgId=id;$('chChapterImgInput').click();}
 
 $('chChapterImgInput').addEventListener('change',async function(){
   const file=this.files[0];if(!file||!state.chPendingChapterImgId)return;
   const url=await readFileAsDataUrl(file);
   const ch=state.chChapters.find(c=>c.id===state.chPendingChapterImgId);
-  if(ch){ch.img=url;chRenderChapters();}
-  toast('success','تم رفع صورة الفصل');this.value='';
+  if(ch){ch.img=url;chRenderChapters();chRenderLessons();}
+  toast('success','تم رفع صورة الشابتر');this.value='';
 });
 
 $('chLessonImgInput').addEventListener('change',async function(){
@@ -951,71 +1055,123 @@ $('chLessonImgInput').addEventListener('change',async function(){
 });
 
 function chAddChapter(){
-  const id=tempId('ch');state.chChapters.push({id,name:'فصل جديد',img:''});
-  chRenderChapters();chRenderLessons();toast('success','تم إضافة فصل جديد');
+  const id=tempId('ch');state.chChapters.push({id,name:'شابتر جديد',img:'',position:state.chChapters.length+1});
+  state.activeChapterId=id;
+  chRenderChapters();chRenderLessons();toast('success','تم إضافة شابتر جديد');
 }
 function chDeleteChapter(id){
-  if(!confirm('هل تريد حذف هذا الفصل؟'))return;
+  if(!confirm('حذف الشابتر وكل حصصه؟'))return;
   state.chChapters=state.chChapters.filter(c=>c.id!==id);
   state.chLessons=state.chLessons.filter(l=>l.chapterId!==id);
-  chRenderChapters();chRenderLessons();toast('info','تم حذف الفصل');
+  if(state.activeChapterId===id)state.activeChapterId=state.chChapters[0]?.id||null;
+  chRenderChapters();chRenderLessons();toast('info','تم حذف الشابتر');
 }
 function chUpdateModal(){
   const sel=$('chModalLessonChapter');
+  if(!sel)return;
   sel.innerHTML=state.chChapters.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
+  if(state.activeChapterId)sel.value=state.activeChapterId;
 }
-function chOpenModal(){if(!state.chChapters.length)chAddChapter();chUpdateModal();$('chLessonModal').classList.add('open');}
-function chCloseModal(){$('chLessonModal').classList.remove('open');}
+function chOpenModal(editId){
+  if(!state.chChapters.length)chAddChapter();
+  if(!state.activeChapterId)state.activeChapterId=state.chChapters[0]?.id||null;
+  state.chEditingLessonId=editId||null;
+  chUpdateModal();
+  const l=editId?state.chLessons.find(x=>x.id===editId):null;
+  $('chModalTitle').textContent=l?'تعديل الحصة':'إضافة حصة داخل الشابتر';
+  $('chModalSaveBtn').textContent=l?'💾 حفظ تعديل الحصة':'+ حفظ الحصة';
+  $('chModalEditId').value=l?.id||'';
+  $('chModalLessonName').value=l?.name||'';
+  $('chModalLessonChapter').value=l?.chapterId||state.activeChapterId||'';
+  $('chModalLessonPrice').value=l?.price||0;
+  $('chModalLessonImage').value=l?.img||'';
+  $('chModalLessonVideos').value=(l?.videos?.length?l.videos:(l?.video?[l.video]:[])).join('\n');
+  $('chModalLessonPdf').value=l?.pdf||'';
+  $('chModalExamLink').value=l?.examLink||'';
+  $('chModalExamImage').value=l?.examImage||'';
+  $('chModalLessonAbout').value=l?.about||'';
+  $('chModalHasExam').checked=!!l?.hasExam;
+  $('chLessonModal').classList.add('open');
+}
+function chCloseModal(){$('chLessonModal').classList.remove('open');state.chEditingLessonId=null;}
 function chAddLesson(){
   const name=$('chModalLessonName').value.trim();if(!name){toast('warning','ادخل اسم الحصة');return;}
-  const chapterId=String($('chModalLessonChapter').value);
+  const chapterId=String($('chModalLessonChapter').value||state.activeChapterId);
   const price=parseInt($('chModalLessonPrice').value)||0;
-  const hasExam=$('chModalHasExam').checked;
-  const id=tempId('ls');
-  state.chLessons.push({id,name,chapterId,price,hasExam,img:'',video:'',pdf:'',about:'',grade:'',lesson_date:todayISO()});
-  chCloseModal();$('chModalLessonName').value='';$('chModalLessonPrice').value=0;$('chModalHasExam').checked=false;
-  chRenderLessons();chRenderChapters();toast('success','تم إضافة الحصة');
+  const videos=parseVideoLines($('chModalLessonVideos').value);
+  const hasExam=$('chModalHasExam').checked || !!$('chModalExamLink').value.trim() || !!$('chModalExamImage').value.trim();
+  const payload={
+    name,chapterId,price,hasExam,
+    img:$('chModalLessonImage').value.trim(),
+    video:videos[0]||'',videos,
+    pdf:$('chModalLessonPdf').value.trim(),
+    examLink:$('chModalExamLink').value.trim(),
+    examImage:$('chModalExamImage').value.trim(),
+    about:$('chModalLessonAbout').value.trim(),grade:'',lesson_date:todayISO()
+  };
+  const editId=$('chModalEditId').value||state.chEditingLessonId;
+  if(editId){
+    const old=state.chLessons.find(x=>x.id===editId);
+    if(old)Object.assign(old,payload);
+  }else{
+    state.chLessons.push({id:tempId('ls'),...payload});
+  }
+  chCloseModal();
+  ['chModalLessonName','chModalLessonImage','chModalLessonVideos','chModalLessonPdf','chModalExamLink','chModalExamImage','chModalLessonAbout'].forEach(id=>$(id).value='');
+  $('chModalLessonPrice').value=0;$('chModalHasExam').checked=false;
+  state.activeChapterId=chapterId;
+  chRenderLessons();chRenderChapters();toast('success',editId?'تم تعديل الحصة':'تم إضافة الحصة');
 }
 function chTriggerLessonImg(id,e){e.stopPropagation();state.chPendingLessonImgId=id;$('chLessonImgInput').click();}
 function chDeleteLesson(id){
+  if(!confirm('حذف الحصة؟'))return;
   state.chLessons=state.chLessons.filter(l=>l.id!==id);
   chRenderLessons();chRenderChapters();toast('info','تم حذف الحصة');
 }
-function chToggleExam(id){const l=state.chLessons.find(x=>x.id===id);if(l){l.hasExam=true;chRenderLessons();toast('info','تم إضافة امتحان للحصة');}}
+function chEditLesson(id){chOpenModal(id);}
+function chToggleExam(id){const l=state.chLessons.find(x=>x.id===id);if(l){l.hasExam=!l.hasExam;chRenderLessons();toast('info',l.hasExam?'تم تفعيل الامتحان':'تم إلغاء الامتحان');}}
 
 function chRenderLessons(){
   const container=$('chLessonsContainer');
   $('chLessonCount').textContent=state.chLessons.length;
   $('chExamCount').textContent=state.chLessons.filter(l=>l.hasExam).length;
-  $('chLessonsCountBadge').textContent=state.chLessons.length+' حصة';
-  if(!state.chLessons.length){
-    container.innerHTML=`<div style="padding:48px;text-align:center;color:var(--muted);font-family:'Cairo',sans-serif"><div style="font-size:2rem;margin-bottom:10px">📭</div><div style="font-weight:700">لم تضف حصص بعد</div><div style="font-size:.82rem;margin-top:4px">اضغط "+ إضافة حصة" للبدء</div></div>`;
+  const activeCh=state.chChapters.find(c=>c.id===state.activeChapterId)||null;
+  const visible=activeCh?state.chLessons.filter(l=>l.chapterId===activeCh.id):[];
+  $('chLessonsCountBadge').textContent=visible.length+' حصة';
+  if($('chActiveChapterSub'))$('chActiveChapterSub').textContent=activeCh?`أنت الآن داخل: ${activeCh.name}`:'اختار شابتر من فوق عشان تضيف جواه الحصص';
+  if(!activeCh){
+    container.innerHTML=`<div style="padding:48px;text-align:center;color:var(--muted);font-family:'Cairo',sans-serif"><div style="font-size:2rem;margin-bottom:10px">👆</div><div style="font-weight:700">اختار شابتر الأول</div><div style="font-size:.82rem;margin-top:4px">أضف شابتر من فوق واضغط عليه</div></div>`;
     return;
   }
-  const grouped={};
-  state.chLessons.forEach(l=>{if(!grouped[l.chapterId])grouped[l.chapterId]=[];grouped[l.chapterId].push(l);});
-  let html='';
-  Object.entries(grouped).forEach(([chId,chLessons])=>{
-    const ch=state.chChapters.find(c=>c.id===chId);
-    html+=`<div class="ch-group-head"><span class="ch-group-tag">${ch?escapeHtml(ch.name):'فصل محذوف'}</span><span style="color:var(--muted);font-weight:600;font-size:.76rem">${chLessons.length} حصة</span></div>`;
-    chLessons.forEach(l=>{
-      const lid=safeJs(l.id);
-      const isFree=!l.price||l.price===0;
-      html+=`<div class="ch-lesson-row" id="chLessonRow-${escapeHtml(l.id)}">
-        <div class="ch-lesson-thumb-sm" onclick="chTriggerLessonImg('${lid}',event)" title="رفع صورة" style="cursor:pointer">
-          ${l.img?`<img src="${escapeHtml(l.img)}" alt="">`:'🎬'}
+  if(!visible.length){
+    container.innerHTML=`<div class="ch-group-head"><span class="ch-group-tag">${escapeHtml(activeCh.name)}</span><span style="color:var(--muted);font-weight:600;font-size:.76rem">0 حصة</span></div><div style="padding:48px;text-align:center;color:var(--muted);font-family:'Cairo',sans-serif"><div style="font-size:2rem;margin-bottom:10px">📭</div><div style="font-weight:700">لا توجد حصص داخل هذا الشابتر</div><div style="font-size:.82rem;margin-top:4px">اضغط \"+ إضافة حصة داخل الشابتر\"</div></div>`;
+    return;
+  }
+  let html=`<div class="ch-group-head"><span class="ch-group-tag">${escapeHtml(activeCh.name)}</span><span style="color:var(--muted);font-weight:600;font-size:.76rem">${visible.length} حصة</span></div>`;
+  visible.forEach(l=>{
+    const lid=safeJs(l.id);
+    const isFree=!l.price||l.price===0;
+    const vids=Array.isArray(l.videos)?l.videos.filter(Boolean):(l.video?[l.video]:[]);
+    html+=`<div class="ch-lesson-row" id="chLessonRow-${escapeHtml(l.id)}">
+      <div class="ch-lesson-thumb-sm" onclick="chTriggerLessonImg('${lid}',event)" title="رفع صورة" style="cursor:pointer">
+        ${l.img?`<img src="${escapeHtml(l.img)}" alt="">`:'🎬'}
+      </div>
+      <div class="ch-lesson-info">
+        <input class="ch-lesson-title-inp" value="${escapeHtml(l.name)}" placeholder="اسم الحصة" oninput="const x=state.chLessons.find(y=>y.id==='${lid}');if(x)x.name=this.value">
+        <div class="ch-lesson-chapter-tag">${escapeHtml(activeCh.name)} • ${isFree?'مجاني':l.price+' ج.م'}</div>
+        <div class="ch-lesson-tools">
+          <span class="ch-mini-badge">🎥 ${vids.length} فيديو</span>
+          ${l.pdf?`<span class="ch-mini-badge">📄 PDF</span>`:''}
+          ${l.hasExam?`<span class="ch-mini-badge warn">🧪 امتحان</span>`:''}
+          ${l.examImage?`<span class="ch-mini-badge warn">🖼 صورة امتحان</span>`:''}
         </div>
-        <div class="ch-lesson-info">
-          <input class="ch-lesson-title-inp" value="${escapeHtml(l.name)}" placeholder="اسم الحصة" oninput="const x=state.chLessons.find(y=>y.id==='${lid}');if(x)x.name=this.value">
-          <div class="ch-lesson-chapter-tag">${ch?escapeHtml(ch.name):''} • ${isFree?'مجاني':l.price+' ج.م'}</div>
-        </div>
-        <div class="ch-lesson-actions-row">
-          ${l.hasExam?`<span class="ch-has-exam">🧪 امتحان</span>`:`<button class="ch-btn-exam" onclick="chToggleExam('${lid}')">+ امتحان</button>`}
-          <button class="ch-btn-watch-sm" onclick="${l.dbId?`window.open('/lesson?id=${escapeHtml(l.dbId)}','_blank')`:`toast('warning','احفظ الحصة الأول')`}">▶ مشاهدة</button>
-          <button class="ch-lesson-del" onclick="chDeleteLesson('${lid}')">🗑</button>
-        </div>
-      </div>`;
-    });
+      </div>
+      <div class="ch-lesson-actions-row">
+        <button class="ch-btn-exam" onclick="chEditLesson('${lid}')">✏️ تعديل</button>
+        <button class="ch-btn-watch-sm" onclick="${l.dbId?`window.open('/lesson?id=${escapeHtml(l.dbId)}','_blank')`:`toast('warning','احفظ الحصة الأول')`}">▶ مشاهدة</button>
+        <button class="ch-lesson-del" onclick="chDeleteLesson('${lid}')">🗑</button>
+      </div>
+    </div>`;
   });
   container.innerHTML=html;
 }
@@ -1024,6 +1180,10 @@ async function chSaveAll(){
   const t=activeTeacher();if(!t){toast('warning','اختار مدرساً أولاً');return;}
   try{
     $('secureLayer').classList.remove('hidden');
+    // Save chapters first. If the chapters table is not installed, lessons still save by chapter name.
+    for(let i=0;i<state.chChapters.length;i++){
+      await saveChapterRow(state.chChapters[i],t,i);
+    }
     const originalIds=state.lessons.filter(l=>String(l.teacher_id)===String(t.id)).map(l=>String(l.id));
     const remainingIds=state.chLessons.filter(l=>l.dbId).map(l=>String(l.dbId));
     for(const oldId of originalIds){
@@ -1036,10 +1196,13 @@ async function chSaveAll(){
       await saveLessonConnectedRow(item,t,chapter);
     }
     $('chLastSave').textContent=new Date().toLocaleTimeString('ar-EG');
-    toast('success','تم الحفظ في Supabase والطالب هيشوف التغيير بعد Refresh');
+    toast('success','تم الحفظ','الشابترات والحصص والفيديوهات والـ PDF والامتحانات اتحفظت في Supabase');
+    await loadChaptersData();
     await loadLessons();
+    buildChapterStateFromDb(t);
     fillSelects();
     renderLessons();
+    chRenderChapters();chRenderLessons();
   }catch(e){
     toast('error','Save Error',e.message||String(e));
   }finally{
@@ -1057,7 +1220,7 @@ Object.assign(window,{
   addQuestion,removeQuestion,saveExam,
   renderStudents,toggleStudentBlock,saveManualGrade,generateCode,saveCode,
   switchLessonTab,chOpenModal,chCloseModal,chAddLesson,chDeleteLesson,chTriggerLessonImg,
-  chToggleExam,chTriggerChapterImg,chSaveAll,chUpdateTeacherName,chUploadTeacherImg,
+  chToggleExam,chEditLesson,chTriggerChapterImg,chSaveAll,chUpdateTeacherName,chUploadTeacherImg,
   state
 });
 
