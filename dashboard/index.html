@@ -245,6 +245,9 @@ main { max-width: 1200px; margin: 0 auto; }
 .chapter-cnt { color: var(--text3); font-size: 0.8rem; font-weight: 700; }
 .lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
 
+
+.lesson-extra-badges{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.lesson-extra-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary);font-size:.68rem;font-weight:900}.lesson-extra-badge.warn{background:rgba(249,171,0,.12);color:#b36b00}.chapter-card-big.selected{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light),var(--shadow-lg)}
+
 /* LESSON CARD */
 .lesson-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); overflow: hidden; transition: all 0.25s; box-shadow: var(--shadow-sm); }
 .lesson-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow-md); }
@@ -624,6 +627,27 @@ function lessonImageRaw(ls){
 function lessonThumbRaw(ls){
   return ls?.thumbnail_url || ls?.image_url || ls?.thumb_url || ls?.thumbnail || ls?.image || ls?.chapter_image || '';
 }
+function lessonVideosRaw(ls){
+  const vals=[];
+  [ls?.videos,ls?.video_urls,ls?.video_url,ls?.video].forEach(v=>{
+    if(!v)return;
+    if(Array.isArray(v)) vals.push(...v);
+    else if(typeof v==='string'){
+      try{const parsed=JSON.parse(v); if(Array.isArray(parsed)) vals.push(...parsed); else vals.push(v);}catch{vals.push(...v.split(/\n|,/).map(x=>x.trim()).filter(Boolean));}
+    }
+  });
+  return [...new Set(vals.map(x=>String(x).trim()).filter(Boolean))];
+}
+function lessonPdfRaw(ls){ return ls?.pdf_url || ls?.pdf || ls?.pdf_link || ''; }
+function lessonExamLinkRaw(ls){ return ls?.exam_link || ls?.exam_url || ls?.exam || ''; }
+function lessonExamImageRaw(ls){ return ls?.exam_image_url || ls?.exam_image || ls?.exam_thumb || ''; }
+async function fetchChaptersForTeacher(teacherId){
+  try{
+    const {data,error}=await db.from('chapters').select('*').eq('teacher_id',teacherId).order('position',{ascending:true});
+    if(error) return [];
+    return data||[];
+  }catch(e){ return []; }
+}
 function codeLessonId(c){
   return c?.lessonid || c?.lesson_id || c?.lesson || c?.course_id || null;
 }
@@ -683,7 +707,7 @@ const T = {
     no_chapters:'لا توجد فصول',no_chapters_sub:'سيتم إضافة فصول قريباً',
     no_lessons:'لا توجد حصص',no_lessons_sub:'سيتم إضافة حصص قريباً',
     buy:'اشتري الآن',watch:'مشاهدة',free_watch:'مشاهدة مجانية',
-    activated:'مفعّلة',general:'عام',lessons_count:'حصة',course:'كورس',courses:'كورس',
+    activated:'مفعّلة',general:'عام',lessons_count:'حصة',course:'مدرس',courses:'مدرسين',
     my_hd:'محاضراتي',my_sub:'جميع الدروس التي قمت بتفعيلها',
     no_my:'لم تفعّل أي دروس بعد',no_my_sub:'تصفح المواد وابدأ التعلم',
     enter:'دخول',egp:'ج.م',
@@ -706,7 +730,7 @@ const T = {
     no_chapters:'No chapters yet',no_chapters_sub:'Chapters will be added soon',
     no_lessons:'No lessons available',no_lessons_sub:'Lessons will be added soon',
     buy:'Buy Now',watch:'Watch Now',free_watch:'Watch Free',
-    activated:'Activated',general:'General',lessons_count:'lessons',course:'course',courses:'courses',
+    activated:'Activated',general:'General',lessons_count:'lessons',course:'teacher',courses:'teachers',
     my_hd:'My Lectures',my_sub:'All lessons you have activated',
     no_my:'No activated lessons yet',no_my_sub:'Browse subjects and start learning',
     enter:'Enter',egp:'EGP',
@@ -949,8 +973,10 @@ async function loadChapters(teacher){
   curTeacherName=teacher.name||'---';
   curTeacherObj=teacher;
 
-  // Fetch all lessons for this teacher
-  const {data:lessons,error}=await db.from('lessons').select('*').eq('teacher_id',teacher.id);
+  const [{data:lessons,error}, dbChapters] = await Promise.all([
+    db.from('lessons').select('*').eq('teacher_id',teacher.id),
+    fetchChaptersForTeacher(teacher.id)
+  ]);
 
   const l=getLang();
   document.getElementById('chapTitle').textContent=t('chapters_hd');
@@ -962,16 +988,15 @@ async function loadChapters(teacher){
     {label:curTeacherName}
   ]);
 
-  // Build teacher hero
   const heroImgUrl=getTeacherImageUrl(teacher);
   const imgHtml=heroImgUrl
-    ?`<img src="${safeText(heroImgUrl)}" alt="${safeText(curTeacherName)}" class="teacher-hero-img" loading="lazy" onerror="imageFallback(this,this.alt,'teacher-hero-fb')">`
+    ?`<img src="${safeText(heroImgUrl)}" alt="${safeText(curTeacherName)}" class="teacher-hero-img" loading="lazy" onerror="imageFallback(this,'${safeText(curTeacherName)}','teacher-hero-fb')">`
     :`<div class="teacher-hero-fb">${safeInitial(curTeacherName)}</div>`;
   document.getElementById('teacherHero').innerHTML=`
     <div class="teacher-hero">
       ${imgHtml}
       <div class="teacher-hero-info">
-        <div class="teacher-hero-name">${curTeacherName}</div>
+        <div class="teacher-hero-name">${safeText(curTeacherName)}</div>
         <div class="teacher-hero-sub">${safeText(curSubName)}</div>
         <div class="teacher-hero-badge"><i class="fa-solid fa-layer-group" style="margin-inline-end:5px"></i>${(lessons||[]).length} ${l==='ar'?'حصة':'lessons'}</div>
       </div>
@@ -982,28 +1007,32 @@ async function loadChapters(teacher){
   const grid=document.getElementById('chaptersCardsGrid');
   grid.innerHTML='';
 
-  if(error||!lessons||!lessons.length){
-    grid.innerHTML=emptyHTML('fa-layer-group',t('no_chapters'),t('no_chapters_sub'));
-    hideLoader(); return;
-  }
+  if(error){ grid.innerHTML=emptyHTML('fa-layer-group',t('no_chapters'),t('no_chapters_sub')); hideLoader(); return; }
 
-  // Group lessons by chapter
   const chapters={};
-  lessons.forEach(ls=>{
-    const ch=(ls.chapter&&ls.chapter.trim())?ls.chapter.trim():t('general');
-    if(!chapters[ch]){ chapters[ch]={lessons:[],image:getLessonImageUrl(ls.chapter_image||ls.thumbnail_url||ls.image_url||ls.image||''),index:Object.keys(chapters).length+1}; }
-    chapters[ch].lessons.push(ls);
-    // Use chapter_image if available, else first lesson thumbnail
-    if(!chapters[ch].image && (ls.chapter_image||ls.thumbnail_url||ls.image_url||ls.image)){
-      chapters[ch].image=getLessonImageUrl(ls.chapter_image||ls.thumbnail_url||ls.image_url||ls.image);
+  (dbChapters||[]).forEach((ch,idx)=>{
+    const name=ch.name||ch.title||ch.chapter_name||`${t('chapter_label')} ${idx+1}`;
+    chapters[name]={id:ch.id,lessons:[],image:getLessonImageUrl(ch.image_url||ch.image||ch.thumbnail_url||''),index:idx+1};
+  });
+  (lessons||[]).forEach(ls=>{
+    const ch=(ls.chapter&&String(ls.chapter).trim())?String(ls.chapter).trim():(ls.chapter_name&&String(ls.chapter_name).trim()?String(ls.chapter_name).trim():t('general'));
+    const dbChapter=(dbChapters||[]).find(c=>String(c.id)===String(ls.chapter_id||ls.chapterid));
+    const chName=dbChapter?(dbChapter.name||dbChapter.title||dbChapter.chapter_name||ch):ch;
+    if(!chapters[chName]){ chapters[chName]={id:dbChapter?.id||null,lessons:[],image:getLessonImageUrl(dbChapter?.image_url||dbChapter?.image||ls.chapter_image||lessonThumbRaw(ls)||''),index:Object.keys(chapters).length+1}; }
+    chapters[chName].lessons.push(ls);
+    if(!chapters[chName].image && (ls.chapter_image||lessonThumbRaw(ls))){
+      chapters[chName].image=getLessonImageUrl(ls.chapter_image||lessonThumbRaw(ls));
     }
   });
 
-  Object.entries(chapters).forEach(([chName,chData],idx)=>{
+  const entries=Object.entries(chapters);
+  if(!entries.length){ grid.innerHTML=emptyHTML('fa-layer-group',t('no_chapters'),t('no_chapters_sub')); hideLoader(); return; }
+
+  entries.forEach(([chName,chData],idx)=>{
     const count=chData.lessons.length;
     const imgSrc=getLessonImageUrl(chData.image);
     const thumbHtml=imgSrc
-      ?`<img src="${imgSrc}" alt="${chName}" class="chapter-card-thumb" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+      ?`<img src="${safeText(imgSrc)}" alt="${safeText(chName)}" class="chapter-card-thumb" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
       :'';
     const phStyle=imgSrc?'style="display:none"':'';
 
@@ -1128,6 +1157,11 @@ function renderLessonCards(lessons, grid, l){
         <div class="lesson-title">${name}</div>
         <div class="lesson-info">
           <span class="lesson-teacher-tag"><i class="fa-solid fa-chalkboard-user"></i> ${curTeacherName}</span>
+        </div>
+        <div class="lesson-extra-badges">
+          ${lessonVideosRaw(ls).length?`<span class="lesson-extra-badge"><i class="fa-solid fa-video"></i> ${lessonVideosRaw(ls).length}</span>`:''}
+          ${lessonPdfRaw(ls)?`<span class="lesson-extra-badge"><i class="fa-solid fa-file-pdf"></i> PDF</span>`:''}
+          ${(lessonExamLinkRaw(ls)||lessonExamImageRaw(ls))?`<span class="lesson-extra-badge warn"><i class="fa-solid fa-clipboard-question"></i> Exam</span>`:''}
         </div>
         <div class="lesson-bottom">
           <div class="lesson-price ${isFree?'free':''}">${price}</div>
