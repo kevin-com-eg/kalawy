@@ -27,509 +27,276 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
 }
-
 [data-theme="light"] {
-  --bg: #f8f9fa;
-  --bg2: #ffffff;
-  --bg3: #f1f3f4;
-  --card: #ffffff;
-  --card-border: #e8eaed;
-  --card-hover: #f8f9fa;
-  --nav-bg: #ffffff;
-  --nav-border: #e8eaed;
-  --text: #202124;
-  --text2: #5f6368;
-  --text3: #9aa0a6;
-  --input-bg: #f1f3f4;
-  --divider: #e8eaed;
-  --badge-bg: #e8f0fe;
-  --badge-color: #1a73e8;
-  --chapter-bg: #e8f0fe;
-  --chapter-border: #d2e3fc;
-  --subject-icon-bg: #e8f0fe;
-  --thumb-placeholder: #f1f3f4;
+  --bg: #f8f9fa; --bg2: #ffffff; --bg3: #f1f3f4;
+  --card: #ffffff; --card-border: #e8eaed; --card-hover: #f8f9fa;
+  --nav-bg: #ffffff; --nav-border: #e8eaed;
+  --text: #202124; --text2: #5f6368; --text3: #9aa0a6;
+  --input-bg: #f1f3f4; --divider: #e8eaed;
+  --badge-bg: #e8f0fe; --badge-color: #1a73e8;
+  --chapter-bg: #e8f0fe; --chapter-border: #d2e3fc;
+  --subject-icon-bg: #e8f0fe; --thumb-placeholder: #f1f3f4;
 }
-
 [data-theme="dark"] {
-  --bg: #1a1a2e;
-  --bg2: #16213e;
-  --bg3: #0f3460;
-  --card: #16213e;
-  --card-border: rgba(255,255,255,0.08);
-  --card-hover: #1a2744;
-  --nav-bg: #16213e;
-  --nav-border: rgba(255,255,255,0.08);
-  --text: #e8eaed;
-  --text2: #9aa0a6;
-  --text3: #5f6368;
-  --input-bg: rgba(255,255,255,0.06);
-  --divider: rgba(255,255,255,0.08);
-  --badge-bg: rgba(26,115,232,0.15);
-  --badge-color: #4285f4;
-  --chapter-bg: rgba(26,115,232,0.12);
-  --chapter-border: rgba(26,115,232,0.25);
-  --subject-icon-bg: rgba(26,115,232,0.15);
-  --thumb-placeholder: #0f3460;
+  --bg: #1a1a2e; --bg2: #16213e; --bg3: #0f3460;
+  --card: #16213e; --card-border: rgba(255,255,255,0.08); --card-hover: #1a2744;
+  --nav-bg: #16213e; --nav-border: rgba(255,255,255,0.08);
+  --text: #e8eaed; --text2: #9aa0a6; --text3: #5f6368;
+  --input-bg: rgba(255,255,255,0.06); --divider: rgba(255,255,255,0.08);
+  --badge-bg: rgba(26,115,232,0.15); --badge-color: #4285f4;
+  --chapter-bg: rgba(26,115,232,0.12); --chapter-border: rgba(26,115,232,0.25);
+  --subject-icon-bg: rgba(26,115,232,0.15); --thumb-placeholder: #0f3460;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body {
-  font-family: var(--sans-ar);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  transition: background 0.3s, color 0.3s;
-}
+body { font-family: var(--sans-ar); background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; }
 [data-lang="en"] body, [data-lang="en"] * { font-family: var(--sans-en) !important; }
 a { text-decoration: none; color: inherit; }
 
-/* ============ LOADER ============ */
-#loadingScreen {
-  position: fixed; inset: 0; z-index: 9999;
-  background: var(--bg);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 24px;
-  transition: opacity 0.4s;
-}
-.ld-icon {
-  width: 80px; height: 80px; border-radius: 20px;
-  background: linear-gradient(135deg, var(--primary), var(--primary2));
-  display: grid; place-items: center;
-  color: #fff; font-size: 1.6rem; font-weight: 900;
-  animation: ldFloat 2s ease-in-out infinite;
-}
-@keyframes ldFloat {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-.ld-bar {
-  width: 180px; height: 4px; border-radius: 4px;
-  background: var(--bg3); overflow: hidden;
-}
-.ld-bar-inner {
-  height: 100%; width: 40%; border-radius: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--primary2));
-  animation: ldSlide 1.2s ease-in-out infinite;
-}
-@keyframes ldSlide {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(350%); }
-}
+/* LOADER */
+#loadingScreen { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; transition: opacity 0.4s; }
+.ld-icon { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, var(--primary), var(--primary2)); display: grid; place-items: center; color: #fff; font-size: 1.6rem; font-weight: 900; animation: ldFloat 2s ease-in-out infinite; }
+@keyframes ldFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.ld-bar { width: 180px; height: 4px; border-radius: 4px; background: var(--bg3); overflow: hidden; }
+.ld-bar-inner { height: 100%; width: 40%; border-radius: 4px; background: linear-gradient(90deg, var(--primary), var(--primary2)); animation: ldSlide 1.2s ease-in-out infinite; }
+@keyframes ldSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
 
-/* ============ TOAST ============ */
-#toast {
-  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: var(--primary); color: #fff;
-  padding: 12px 28px; border-radius: 50px;
-  font-weight: 700; font-size: 0.9rem;
-  opacity: 0; transition: all 0.3s; z-index: 9998;
-  pointer-events: none; white-space: nowrap;
-  box-shadow: 0 4px 20px var(--primary-glow);
-}
+/* TOAST */
+#toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--primary); color: #fff; padding: 12px 28px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; opacity: 0; transition: all 0.3s; z-index: 9998; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 20px var(--primary-glow); }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ============ NAV ============ */
-nav.top-nav {
-  position: sticky; top: 0; z-index: 1000;
-  height: var(--nav-h);
-  background: var(--nav-bg);
-  border-bottom: 1px solid var(--nav-border);
-  display: flex; align-items: center;
-  box-shadow: var(--shadow-sm);
-  transition: background 0.3s;
-}
-.nav-inner {
-  max-width: 1200px; margin: 0 auto; width: 100%;
-  padding: 0 24px; display: flex;
-  justify-content: space-between; align-items: center;
-}
+/* NAV */
+nav.top-nav { position: sticky; top: 0; z-index: 1000; height: var(--nav-h); background: var(--nav-bg); border-bottom: 1px solid var(--nav-border); display: flex; align-items: center; box-shadow: var(--shadow-sm); transition: background 0.3s; }
+.nav-inner { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
 .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.logo-box {
-  width: 38px; height: 38px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--primary), var(--primary2));
-  display: grid; place-items: center;
-  color: #fff; font-weight: 900; font-size: 0.85rem;
-}
+.logo-box { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--primary2)); display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 0.85rem; }
 .logo-text { font-weight: 900; font-size: 1.15rem; color: var(--text); }
 .logo-text span { color: var(--primary); }
 .nav-links { display: flex; align-items: center; gap: 2px; }
-.nav-link {
-  color: var(--text2); padding: 8px 18px; border-radius: 8px;
-  font-weight: 700; font-size: 0.9rem; cursor: pointer;
-  border: none; background: none; font-family: inherit;
-  transition: all 0.2s;
-}
+.nav-link { color: var(--text2); padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: none; font-family: inherit; transition: all 0.2s; }
 .nav-link:hover { background: var(--primary-light); color: var(--primary); }
 .nav-link.active { background: var(--badge-bg); color: var(--primary); }
 .nav-link.danger { color: var(--red); }
 .nav-link.danger:hover { background: rgba(217,48,37,0.08); }
 .nav-controls { display: flex; align-items: center; gap: 6px; }
-.ctrl-btn {
-  width: 36px; height: 36px; border-radius: 8px;
-  border: 1px solid var(--card-border);
-  background: var(--card); color: var(--text2);
-  cursor: pointer; display: grid; place-items: center;
-  font-size: 0.85rem; transition: all 0.2s;
-  font-family: inherit; font-weight: 800;
-}
+.ctrl-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card); color: var(--text2); cursor: pointer; display: grid; place-items: center; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; font-weight: 800; }
 .ctrl-btn:hover { border-color: var(--primary); color: var(--primary); }
 .lang-btn { font-size: 0.75rem; }
 
-/* ============ PAGES ============ */
+/* PAGES */
 .page { display: none; padding: 28px 20px 110px; animation: fadeUp 0.35s ease; }
 .page.active { display: block; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 main { max-width: 1200px; margin: 0 auto; }
 
-/* ============ BREADCRUMB ============ */
+/* BREADCRUMB */
 .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-.bc-item {
-  color: var(--text2); font-size: 0.85rem; font-weight: 700;
-  cursor: pointer; transition: color 0.2s;
-  background: none; border: none; font-family: inherit;
-  padding: 0;
-}
+.bc-item { color: var(--text2); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: color 0.2s; background: none; border: none; font-family: inherit; padding: 0; }
 .bc-item:hover { color: var(--primary); }
 .bc-item.current { color: var(--text); cursor: default; }
 .bc-sep { color: var(--text3); font-size: 0.7rem; }
 
-/* ============ SECTION HEADER ============ */
+/* SECTION HEADER */
 .sec-hd { margin-bottom: 28px; }
-.sec-hd h1 {
-  font-size: 1.75rem; font-weight: 900; line-height: 1.3;
-  color: var(--text); margin-bottom: 6px;
-}
+.sec-hd h1 { font-size: 1.75rem; font-weight: 900; line-height: 1.3; color: var(--text); margin-bottom: 6px; }
 .sec-hd h1 em { font-style: normal; color: var(--primary); }
 .sec-hd p { color: var(--text2); font-size: 0.95rem; font-weight: 600; }
 
-/* ============ SEARCH ============ */
-.search-wrap {
-  position: relative; margin-bottom: 28px; max-width: 480px;
-}
-.search-wrap i {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  right: 16px; color: var(--text3); font-size: 0.95rem;
-}
+/* SEARCH */
+.search-wrap { position: relative; margin-bottom: 28px; max-width: 480px; }
+.search-wrap i { position: absolute; top: 50%; transform: translateY(-50%); right: 16px; color: var(--text3); font-size: 0.95rem; }
 [data-lang="en"] .search-wrap i { right: auto; left: 16px; }
-.search-input {
-  width: 100%; padding: 12px 16px 12px 16px;
-  padding-right: 44px;
-  border-radius: var(--radius-sm); border: 1px solid var(--card-border);
-  background: var(--card); color: var(--text);
-  font-family: inherit; font-size: 0.95rem; font-weight: 600;
-  outline: none; transition: border-color 0.2s;
-}
+.search-input { width: 100%; padding: 12px 16px 12px 16px; padding-right: 44px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); background: var(--card); color: var(--text); font-family: inherit; font-size: 0.95rem; font-weight: 600; outline: none; transition: border-color 0.2s; }
 [data-lang="en"] .search-input { padding-right: 16px; padding-left: 44px; }
 .search-input:focus { border-color: var(--primary); }
 .search-input::placeholder { color: var(--text3); }
 
-/* ============ SUBJECTS GRID ============ */
-.subjects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 16px;
-}
-.subject-card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  padding: 28px 20px;
-  text-align: center; cursor: pointer;
-  transition: all 0.25s;
-  box-shadow: var(--shadow-sm);
-}
-.subject-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-md);
-}
-.subject-icon {
-  width: 64px; height: 64px; border-radius: 16px;
-  background: var(--subject-icon-bg);
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 14px; font-size: 1.6rem;
-  transition: all 0.25s;
-}
-.subject-card:hover .subject-icon {
-  background: var(--primary-glow);
-  transform: scale(1.08);
-}
+/* SUBJECTS GRID */
+.subjects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+.subject-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.25s; box-shadow: var(--shadow-sm); }
+.subject-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+.subject-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--subject-icon-bg); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 1.6rem; transition: all 0.25s; }
+.subject-card:hover .subject-icon { background: var(--primary-glow); transform: scale(1.08); }
 .subject-icon i { color: var(--primary); }
 .subject-name { font-size: 1rem; font-weight: 800; margin-bottom: 4px; color: var(--text); }
 .subject-count { font-size: 0.8rem; color: var(--text3); font-weight: 700; }
 
-/* ============ TEACHERS GRID ============ */
-.teachers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-.teacher-card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  overflow: hidden; cursor: pointer;
-  transition: all 0.25s;
-  box-shadow: var(--shadow-sm);
-}
-.teacher-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-md);
-}
-.teacher-banner {
-  height: 80px;
-  background: linear-gradient(135deg, var(--primary), var(--primary2));
-  position: relative;
-}
-.teacher-banner-pattern {
-  position: absolute; inset: 0; opacity: 0.1;
-  background-image: radial-gradient(circle at 20% 50%, #fff 1px, transparent 1px),
-    radial-gradient(circle at 80% 20%, #fff 1px, transparent 1px);
-  background-size: 30px 30px;
-}
+/* TEACHERS GRID */
+.teachers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.teacher-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: all 0.25s; box-shadow: var(--shadow-sm); }
+.teacher-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+.teacher-banner { height: 80px; background: linear-gradient(135deg, var(--primary), var(--primary2)); position: relative; }
+.teacher-banner-pattern { position: absolute; inset: 0; opacity: 0.1; background-image: radial-gradient(circle at 20% 50%, #fff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #fff 1px, transparent 1px); background-size: 30px 30px; }
 .teacher-av-wrap { padding: 0 18px; margin-top: -32px; position: relative; }
-.teacher-av {
-  width: 64px; height: 64px; border-radius: 50%;
-  border: 3px solid var(--card);
-  background: var(--bg3); object-fit: cover;
-  box-shadow: var(--shadow-sm);
-}
-.teacher-av-fb {
-  width: 64px; height: 64px; border-radius: 50%;
-  border: 3px solid var(--card);
-  background: linear-gradient(135deg, var(--primary), var(--primary2));
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 900; font-size: 1.3rem;
-  box-shadow: var(--shadow-sm);
-}
+.teacher-av { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--card); background: var(--bg3); object-fit: cover; box-shadow: var(--shadow-sm); }
+.teacher-av-fb { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--card); background: linear-gradient(135deg, var(--primary), var(--primary2)); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.3rem; box-shadow: var(--shadow-sm); }
 .teacher-body { padding: 10px 18px 20px; }
 .teacher-name { font-size: 1.05rem; font-weight: 900; margin-bottom: 8px; }
-.teacher-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--badge-bg); color: var(--badge-color);
-  padding: 3px 10px; border-radius: 6px;
-  font-size: 0.75rem; font-weight: 800; margin-bottom: 14px;
-}
-.teacher-cta {
-  width: 100%; padding: 10px; border-radius: var(--radius-sm);
-  border: none; background: var(--primary); color: #fff;
-  font-weight: 800; font-size: 0.88rem; cursor: pointer;
-  font-family: inherit; display: flex; align-items: center;
-  justify-content: center; gap: 8px; transition: all 0.2s;
-}
+.teacher-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--badge-bg); color: var(--badge-color); padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; margin-bottom: 14px; }
+.teacher-cta { width: 100%; padding: 10px; border-radius: var(--radius-sm); border: none; background: var(--primary); color: #fff; font-weight: 800; font-size: 0.88rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
 .teacher-cta:hover { background: var(--primary-dark); }
 
-/* ============ CHAPTERS / LESSONS ============ */
-.chapters-wrap { display: flex; flex-direction: column; gap: 32px; }
-
-.chapter-hd {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
-}
-.chapter-pill {
-  background: var(--chapter-bg);
-  border: 1px solid var(--chapter-border);
-  color: var(--primary); font-weight: 900; font-size: 0.85rem;
-  padding: 7px 18px; border-radius: 50px;
-  display: flex; align-items: center; gap: 6px;
-}
-.chapter-line { flex: 1; height: 1px; background: var(--divider); }
-.chapter-cnt { color: var(--text3); font-size: 0.8rem; font-weight: 700; }
-
-/* Lessons grid */
-.lessons-grid {
+/* ============ CHAPTER CARDS (EdNuva style) ============ */
+.chapters-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 22px;
 }
-
-/* ============ LESSON CARD ============ */
-.lesson-card {
+.chapter-card-big {
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  overflow: hidden; transition: all 0.25s;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.28s;
   box-shadow: var(--shadow-sm);
 }
-.lesson-card:hover {
-  transform: translateY(-3px);
+.chapter-card-big:hover {
+  transform: translateY(-5px);
   border-color: var(--primary);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
-.lesson-thumb {
-  width: 100%; height: 155px;
+.chapter-card-thumb {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
   background: var(--thumb-placeholder);
-  position: relative; overflow: hidden;
+  transition: transform 0.3s;
 }
-.lesson-thumb img {
-  width: 100%; height: 100%; object-fit: cover;
-  display: block; transition: transform 0.3s;
-}
-.lesson-card:hover .lesson-thumb img { transform: scale(1.04); }
-.lesson-ph {
-  width: 100%; height: 100%;
+.chapter-card-big:hover .chapter-card-thumb { transform: scale(1.04); }
+.chapter-card-thumb-ph {
+  width: 100%; height: 160px;
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 8px;
-  background: linear-gradient(135deg, var(--bg3), var(--bg));
 }
-.lesson-ph-icon {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: var(--primary-glow);
-  border: 2px solid var(--primary);
+.chapter-card-thumb-ph i { color: rgba(255,255,255,0.85); font-size: 2.2rem; }
+.chapter-card-thumb-ph span { color: rgba(255,255,255,0.7); font-size: 0.8rem; font-weight: 700; }
+.chapter-card-body { padding: 16px; }
+.chapter-card-num {
+  font-size: 0.72rem; font-weight: 800;
+  color: var(--primary); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 5px;
+}
+.chapter-card-name { font-size: 1rem; font-weight: 900; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.chapter-card-count {
+  font-size: 0.8rem; color: var(--text3); font-weight: 700;
+  display: flex; align-items: center; gap: 5px;
+}
+.chapter-card-count i { color: var(--primary); font-size: 0.75rem; }
+
+/* Teacher hero in chapter view */
+.teacher-hero {
+  display: flex; align-items: center; gap: 20px;
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+  border-radius: var(--radius); padding: 24px; margin-bottom: 32px;
+  color: #fff; position: relative; overflow: hidden;
+}
+.teacher-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 10% 50%, rgba(255,255,255,0.08) 1px, transparent 1px),
+    radial-gradient(circle at 90% 20%, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.teacher-hero-img {
+  width: 80px; height: 80px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.5);
+  object-fit: cover; flex-shrink: 0; position: relative; z-index: 1;
+}
+.teacher-hero-fb {
+  width: 80px; height: 80px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.2);
   display: flex; align-items: center; justify-content: center;
-  color: var(--primary); font-size: 1.2rem;
+  color: #fff; font-weight: 900; font-size: 1.8rem;
+  flex-shrink: 0; position: relative; z-index: 1;
 }
+.teacher-hero-info { position: relative; z-index: 1; }
+.teacher-hero-name { font-size: 1.3rem; font-weight: 900; margin-bottom: 4px; }
+.teacher-hero-sub { font-size: 0.85rem; opacity: 0.8; font-weight: 600; }
+.teacher-hero-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.2); border-radius: 20px;
+  padding: 4px 12px; font-size: 0.75rem; font-weight: 800;
+  margin-top: 8px;
+}
+
+/* LESSONS */
+.chapters-wrap { display: flex; flex-direction: column; gap: 32px; }
+.chapter-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.chapter-pill { background: var(--chapter-bg); border: 1px solid var(--chapter-border); color: var(--primary); font-weight: 900; font-size: 0.85rem; padding: 7px 18px; border-radius: 50px; display: flex; align-items: center; gap: 6px; }
+.chapter-line { flex: 1; height: 1px; background: var(--divider); }
+.chapter-cnt { color: var(--text3); font-size: 0.8rem; font-weight: 700; }
+.lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+
+/* LESSON CARD */
+.lesson-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); overflow: hidden; transition: all 0.25s; box-shadow: var(--shadow-sm); }
+.lesson-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+.lesson-thumb { width: 100%; height: 155px; background: var(--thumb-placeholder); position: relative; overflow: hidden; }
+.lesson-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+.lesson-card:hover .lesson-thumb img { transform: scale(1.04); }
+.lesson-ph { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, var(--bg3), var(--bg)); }
+.lesson-ph-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-glow); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; }
 .lesson-ph-txt { font-size: 0.75rem; color: var(--text3); font-weight: 700; }
-
-.lesson-ribbon {
-  position: absolute; top: 10px; left: 10px;
-  background: rgba(15,157,88,0.92); color: #fff;
-  font-size: 0.7rem; font-weight: 900;
-  padding: 4px 10px; border-radius: 6px;
-  display: flex; align-items: center; gap: 4px;
-  backdrop-filter: blur(4px);
-}
+.lesson-ribbon { position: absolute; top: 10px; left: 10px; background: rgba(15,157,88,0.92); color: #fff; font-size: 0.7rem; font-weight: 900; padding: 4px 10px; border-radius: 6px; display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); }
 [data-lang="en"] .lesson-ribbon { left: auto; right: 10px; }
-
 .lesson-body { padding: 14px 16px 16px; }
-.lesson-title {
-  font-size: 0.98rem; font-weight: 800;
-  margin-bottom: 8px; line-height: 1.4;
-  display: -webkit-box; -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical; overflow: hidden;
-}
+.lesson-title { font-size: 0.98rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .lesson-info { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
-.lesson-teacher-tag {
-  font-size: 0.78rem; color: var(--text2); font-weight: 700;
-  display: flex; align-items: center; gap: 4px;
-}
+.lesson-teacher-tag { font-size: 0.78rem; color: var(--text2); font-weight: 700; display: flex; align-items: center; gap: 4px; }
 .lesson-teacher-tag i { color: var(--primary); font-size: 0.7rem; }
 .lesson-bottom { display: flex; align-items: center; justify-content: space-between; }
-.lesson-price {
-  font-size: 0.95rem; font-weight: 900; color: var(--primary);
-}
+.lesson-price { font-size: 0.95rem; font-weight: 900; color: var(--primary); }
 .lesson-price.free { color: var(--green); }
 .lesson-date { font-size: 0.72rem; color: var(--text3); font-weight: 600; }
-
 .lesson-actions { margin-top: 12px; display: flex; gap: 8px; }
-.btn-ls {
-  flex: 1; padding: 9px 12px; border-radius: var(--radius-sm);
-  border: none; font-family: inherit; font-weight: 800;
-  font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.btn-buy {
-  background: var(--primary); color: #fff;
-  box-shadow: 0 2px 8px var(--primary-glow);
-}
+.btn-ls { flex: 1; padding: 9px 12px; border-radius: var(--radius-sm); border: none; font-family: inherit; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-buy { background: var(--primary); color: #fff; box-shadow: 0 2px 8px var(--primary-glow); }
 .btn-buy:hover { background: var(--primary-dark); }
-.btn-watch {
-  background: var(--green); color: #fff;
-  box-shadow: 0 2px 8px rgba(15,157,88,0.25);
-}
+.btn-watch { background: var(--green); color: #fff; box-shadow: 0 2px 8px rgba(15,157,88,0.25); }
 .btn-watch:hover { opacity: 0.9; }
 
-/* ============ EMPTY STATE ============ */
-.empty-state {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 70px 20px; text-align: center; gap: 14px;
-}
-.empty-icon {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: var(--primary-light);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; color: var(--primary);
-}
+/* EMPTY STATE */
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 70px 20px; text-align: center; gap: 14px; }
+.empty-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary); }
 .empty-title { font-size: 1.05rem; font-weight: 800; color: var(--text2); }
 .empty-sub { font-size: 0.85rem; color: var(--text3); max-width: 280px; line-height: 1.6; }
 
-/* ============ MY LECTURES ============ */
+/* MY LECTURES */
 .my-list { display: flex; flex-direction: column; gap: 12px; }
-.my-row {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  display: flex; align-items: center; gap: 14px;
-  transition: all 0.2s; box-shadow: var(--shadow-sm);
-}
+.my-row { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 14px 18px; display: flex; align-items: center; gap: 14px; transition: all 0.2s; box-shadow: var(--shadow-sm); }
 .my-row:hover { border-color: var(--primary); }
-.my-thumb {
-  width: 72px; height: 50px; border-radius: 8px;
-  background: var(--thumb-placeholder); overflow: hidden;
-  flex-shrink: 0; display: flex; align-items: center;
-  justify-content: center; font-size: 1.2rem; color: var(--text3);
-}
+.my-thumb { width: 72px; height: 50px; border-radius: 8px; background: var(--thumb-placeholder); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text3); }
 .my-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .my-info { flex: 1; min-width: 0; }
 .my-name { font-size: 0.95rem; font-weight: 800; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .my-teacher { font-size: 0.78rem; color: var(--text2); font-weight: 700; }
-.badge-on {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: rgba(15,157,88,0.1); color: var(--green);
-  padding: 4px 10px; border-radius: 6px;
-  font-size: 0.72rem; font-weight: 800; flex-shrink: 0;
-}
+.badge-on { display: inline-flex; align-items: center; gap: 4px; background: rgba(15,157,88,0.1); color: var(--green); padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; flex-shrink: 0; }
 
-/* ============ CONTACT ============ */
-.contact-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 18px;
-}
-.contact-card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  padding: 28px 22px; text-align: center;
-  cursor: pointer; transition: all 0.25s;
-  box-shadow: var(--shadow-sm);
-}
-.contact-card:hover {
-  transform: translateY(-4px); border-color: var(--primary);
-  box-shadow: var(--shadow-md);
-}
-.contact-icon {
-  width: 56px; height: 56px; border-radius: 14px;
-  background: var(--primary-light);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; margin: 0 auto 14px;
-}
-.contact-card:hover .contact-icon { background: var(--primary-glow); }
+/* CONTACT */
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+.contact-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 28px 22px; text-align: center; cursor: pointer; transition: all 0.25s; box-shadow: var(--shadow-sm); }
+.contact-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+.contact-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 14px; }
 .contact-title { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
 .contact-sub { font-size: 0.8rem; color: var(--text2); font-weight: 600; }
 
-/* ============ BOTTOM NAV ============ */
-.bottom-nav {
-  display: none; position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--nav-bg); border-top: 1px solid var(--nav-border);
-  padding: 8px 0 12px; z-index: 1000;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-}
+/* BOTTOM NAV */
+.bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); border-top: 1px solid var(--nav-border); padding: 8px 0 12px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
 .bn-inner { display: flex; justify-content: space-around; align-items: center; }
-.bn-item {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 3px; cursor: pointer; padding: 6px 14px;
-  border-radius: 10px; border: none; background: none;
-  font-family: inherit; color: var(--text3);
-  font-size: 0.65rem; font-weight: 800;
-  transition: color 0.2s;
-}
+.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 6px 14px; border-radius: 10px; border: none; background: none; font-family: inherit; color: var(--text3); font-size: 0.65rem; font-weight: 800; transition: color 0.2s; }
 .bn-item i { font-size: 1.15rem; }
 .bn-item.active { color: var(--primary); }
 .bn-item.danger { color: var(--red); }
 
-/* ============ SKELETON ============ */
+/* SKELETON */
 .skel { background: var(--bg3); border-radius: 8px; animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0%,100%{opacity:0.5;} 50%{opacity:1;} }
 .hidden { display: none !important; }
 
-/* ============ RESPONSIVE ============ */
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .bottom-nav { display: block; }
@@ -537,6 +304,7 @@ main { max-width: 1200px; margin: 0 auto; }
   .sec-hd h1 { font-size: 1.4rem; }
   .teachers-grid { grid-template-columns: repeat(2, 1fr); }
   .lessons-grid { grid-template-columns: 1fr 1fr; }
+  .chapters-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 }
 @media (max-width: 520px) {
   .subjects-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -544,23 +312,22 @@ main { max-width: 1200px; margin: 0 auto; }
   .subject-icon { width: 50px; height: 50px; font-size: 1.3rem; border-radius: 12px; }
   .teachers-grid { grid-template-columns: 1fr; }
   .lessons-grid { grid-template-columns: 1fr; }
+  .chapters-cards-grid { grid-template-columns: 1fr; }
   .sec-hd h1 { font-size: 1.2rem; }
+  .teacher-hero { flex-direction: column; text-align: center; }
 }
 </style>
 </head>
 <body>
 
-<!-- LOADER -->
 <div id="loadingScreen">
   <div class="ld-icon">K</div>
   <div class="ld-bar"><div class="ld-bar-inner"></div></div>
   <div style="color:var(--text2);font-size:0.85rem;font-weight:700" id="ld-text">جاري تحميل البيانات...</div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- NAV -->
 <nav class="top-nav">
   <div class="nav-inner">
     <a class="logo" onclick="navigate('home')">
@@ -607,6 +374,17 @@ main { max-width: 1200px; margin: 0 auto; }
         <p id="teachSub">اختر المدرس المناسب لك</p>
       </div>
       <div class="teachers-grid" id="teachersGrid"></div>
+    </div>
+
+    <!-- ✅ NEW: Chapters Cards View (like EdNuva) -->
+    <div id="view-chapters" class="hidden">
+      <!-- Teacher Hero with image -->
+      <div id="teacherHero"></div>
+      <div class="sec-hd">
+        <h1 id="chapTitle">الفصول الدراسية</h1>
+        <p id="chapSub">اختر الفصل اللي عايز تذاكره</p>
+      </div>
+      <div class="chapters-cards-grid" id="chaptersCardsGrid"></div>
     </div>
 
     <!-- Lessons -->
@@ -690,8 +468,10 @@ let currentUser = null;
 let boughtIds = [];
 let curTeacherId = null;
 let curTeacherName = '';
+let curTeacherObj = null;
 let curSubId = null;
 let curSubName = '';
+let curChapter = null;
 let allSubjects = [];
 
 /* ============ I18N ============ */
@@ -701,40 +481,44 @@ const T = {
     sub_title:'المرحلة الثانوية',sub_sub:'اختر المقرر الدراسي للبدء في التعلم',
     search_ph:'ابحث عن مادة...',
     teachers_of:'مدرسو مادة',teachers_sub:'اختر المدرس المناسب لك',
+    chapters_hd:'الفصول الدراسية',chapters_sub:'اختر الفصل اللي عايز تذاكره',
     lessons_of:'حصص',lessons_sub:'تصفح جميع الحصص المتاحة',
     no_subjects:'لا توجد مواد متاحة',no_subjects_sub:'سيتم إضافة مواد قريباً',
     no_teachers:'لا يوجد مدرسون لهذه المادة',no_teachers_sub:'سيتم إضافة مدرسين قريباً',
+    no_chapters:'لا توجد فصول',no_chapters_sub:'سيتم إضافة فصول قريباً',
     no_lessons:'لا توجد حصص',no_lessons_sub:'سيتم إضافة حصص قريباً',
     buy:'اشتري الآن',watch:'مشاهدة',free_watch:'مشاهدة مجانية',
     activated:'مفعّلة',general:'عام',lessons_count:'حصة',course:'كورس',courses:'كورس',
     my_hd:'محاضراتي',my_sub:'جميع الدروس التي قمت بتفعيلها',
     no_my:'لم تفعّل أي دروس بعد',no_my_sub:'تصفح المواد وابدأ التعلم',
-    enter:'دخول',egp:'ج.م',updated:'منذ',days:'أيام',day:'يوم',
+    enter:'دخول',egp:'ج.م',
     contact_hd:'تواصل مع الدعم الفني',contact_sub:'نحن هنا لمساعدتك في أي وقت',
     wa:'واتساب',wa_sub:'تواصل مباشرة عبر واتساب',mail:'البريد الإلكتروني',
     tg:'تيليغرام',tg_sub:'تابع آخر التحديثات',
     theme_label:'مظهر',lang_label:'لغة',view_lessons:'عرض الحصص',
-    added:'تمت الإضافة'
+    chapter_label:'فصل',chapter_preview:'معاينة الفصل',lesson_preview:'معاينة الحصة',
   },
   en: {
     loading:'Loading data...',home:'Home',lectures:'My Lectures',contact:'Contact',logout:'Logout',
     sub_title:'High School Stage',sub_sub:'Choose your course to start learning',
     search_ph:'Search for a subject...',
     teachers_of:'Teachers of',teachers_sub:'Choose your preferred teacher',
+    chapters_hd:'Chapters',chapters_sub:'Choose the chapter you want to study',
     lessons_of:'Lessons by',lessons_sub:'Browse all available lessons',
     no_subjects:'No subjects available',no_subjects_sub:'Subjects will be added soon',
     no_teachers:'No teachers for this subject',no_teachers_sub:'Teachers will be added soon',
+    no_chapters:'No chapters yet',no_chapters_sub:'Chapters will be added soon',
     no_lessons:'No lessons available',no_lessons_sub:'Lessons will be added soon',
     buy:'Buy Now',watch:'Watch Now',free_watch:'Watch Free',
     activated:'Activated',general:'General',lessons_count:'lessons',course:'course',courses:'courses',
     my_hd:'My Lectures',my_sub:'All lessons you have activated',
     no_my:'No activated lessons yet',no_my_sub:'Browse subjects and start learning',
-    enter:'Enter',egp:'EGP',updated:'',days:'days ago',day:'day ago',
+    enter:'Enter',egp:'EGP',
     contact_hd:'Contact Support',contact_sub:'We are here to help you anytime',
     wa:'WhatsApp',wa_sub:'Contact directly via WhatsApp',mail:'Email',
     tg:'Telegram',tg_sub:'Follow latest updates',
     theme_label:'Theme',lang_label:'Lang',view_lessons:'View Lessons',
-    added:'Added'
+    chapter_label:'Chapter',chapter_preview:'Chapter Preview',lesson_preview:'Lesson Preview',
   }
 };
 function getLang(){ return document.documentElement.getAttribute('data-lang')||'ar'; }
@@ -766,48 +550,34 @@ function applyLang(){
   document.getElementById('bnt-logout').textContent=t('logout');
   document.getElementById('langBtn').textContent=l==='ar'?'EN':'AR';
 }
-
 function toggleLang(){
   const n=getLang()==='ar'?'en':'ar';
   document.documentElement.setAttribute('data-lang',n);
   localStorage.setItem('kalawy_lang',n);
   applyLang();
-  // Re-render current view
   if(allSubjects.length) renderSubjects(allSubjects);
   showToast(n==='en'?'Switched to English':'تم التحويل للعربية');
 }
 
-/* ============ THEME ============ */
+/* THEME */
 function getTheme(){ return document.documentElement.getAttribute('data-theme')||'light'; }
-function applyTheme(){
-  document.getElementById('themeIcon').className=getTheme()==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';
-}
-function toggleTheme(){
-  const n=getTheme()==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',n);
-  localStorage.setItem('kalawy_theme',n);
-  applyTheme();
-}
+function applyTheme(){ document.getElementById('themeIcon').className=getTheme()==='dark'?'fa-solid fa-sun':'fa-solid fa-moon'; }
+function toggleTheme(){ const n=getTheme()==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',n); localStorage.setItem('kalawy_theme',n); applyTheme(); }
 
-/* ============ TOAST ============ */
-function showToast(msg,dur=2500){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),dur);
-}
+/* TOAST */
+function showToast(msg,dur=2500){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),dur); }
 
-/* ============ LOADER ============ */
+/* LOADER */
 function showLoader(){ const s=document.getElementById('loadingScreen'); s.style.display='flex'; s.style.opacity='1'; }
 function hideLoader(){ const s=document.getElementById('loadingScreen'); s.style.opacity='0'; setTimeout(()=>s.style.display='none',400); }
 
-/* ============ INIT ============ */
+/* INIT */
 async function init(){
   const st=localStorage.getItem('kalawy_theme')||'light';
   const sl=localStorage.getItem('kalawy_lang')||'ar';
   document.documentElement.setAttribute('data-theme',st);
   document.documentElement.setAttribute('data-lang',sl);
   applyTheme(); applyLang();
-
   const {data:{session}}=await db.auth.getSession();
   if(!session){window.location.href='/login.html';return;}
   currentUser=session.user;
@@ -815,7 +585,7 @@ async function init(){
   await loadSubjects();
 }
 
-/* ============ DATA ============ */
+/* DATA */
 async function fetchBought(){
   try{
     const {data:codes}=await db.from('codes').select('lessonid').eq('usedby',currentUser.email).eq('used',true);
@@ -824,7 +594,7 @@ async function fetchBought(){
 }
 function isBought(id){ return boughtIds.includes(String(id))||localStorage.getItem('paid_lesson_'+id)==='true'; }
 
-/* ============ BREADCRUMB ============ */
+/* BREADCRUMB */
 function updateBC(parts){
   const bc=document.getElementById('breadcrumb');
   bc.innerHTML='';
@@ -843,7 +613,7 @@ function updateBC(parts){
   });
 }
 
-/* ============ NAVIGATION ============ */
+/* NAVIGATION */
 function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
@@ -859,33 +629,26 @@ function navigate(page){
 }
 
 function showView(v){
-  ['subjects','teachers','lessons'].forEach(x=>{
+  ['subjects','teachers','chapters','lessons'].forEach(x=>{
     document.getElementById('view-'+x).classList.toggle('hidden',x!==v);
   });
 }
 
-/* ============ SUBJECT ICONS ============ */
+/* SUBJECT ICONS */
 const ICONS=['fa-atom','fa-calculator','fa-flask','fa-globe','fa-language','fa-landmark','fa-code','fa-microscope','fa-book-open','fa-palette','fa-music','fa-brain'];
 const ICON_COLORS=['#1a73e8','#d93025','#0f9d58','#f9ab00','#e91e63','#7b1fa2','#00bcd4','#ff5722','#607d8b','#9c27b0','#3f51b5','#009688'];
 
-/* ============ SUBJECTS ============ */
+/* SUBJECTS */
 async function loadSubjects(){
   showLoader();
   const {data:subjects,error}=await db.from('subjects').select('*');
   const grid=document.getElementById('subjectsGrid');
   grid.innerHTML='';
-
-  if(error||!subjects||!subjects.length){
-    grid.innerHTML=emptyHTML('fa-book-open',t('no_subjects'),t('no_subjects_sub'));
-    hideLoader(); return;
-  }
-
+  if(error||!subjects||!subjects.length){ grid.innerHTML=emptyHTML('fa-book-open',t('no_subjects'),t('no_subjects_sub')); hideLoader(); return; }
   allSubjects=subjects;
-  // Get teacher counts per subject
   const {data:teachers}=await db.from('teachers').select('subject_id');
   const countMap={};
   (teachers||[]).forEach(tc=>{ countMap[tc.subject_id]=(countMap[tc.subject_id]||0)+1; });
-
   subjects.forEach(s=>{ s._count=countMap[s.id]||0; });
   renderSubjects(subjects);
   hideLoader();
@@ -923,38 +686,28 @@ function filterSubjects(){
   });
 }
 
-/* ============ TEACHERS ============ */
+/* TEACHERS */
 async function loadTeachers(subId,subName){
   showLoader();
   curSubId=subId; curSubName=subName||'---';
-
   const {data:teachers,error}=await db.from('teachers').select('*').eq('subject_id',subId);
   const grid=document.getElementById('teachersGrid');
   grid.innerHTML='';
-
   const l=getLang();
   document.getElementById('teachTitle').textContent=(l==='ar'?'مدرسو مادة ':'Teachers of ')+curSubName;
   document.getElementById('teachSub').textContent=t('teachers_sub');
-
   updateBC([
     {label:t('home'),action:()=>navigate('home')},
     {label:curSubName}
   ]);
-
   showView('teachers');
-
-  if(error||!teachers||!teachers.length){
-    grid.innerHTML=emptyHTML('fa-chalkboard-user',t('no_teachers'),t('no_teachers_sub'));
-    hideLoader(); return;
-  }
-
+  if(error||!teachers||!teachers.length){ grid.innerHTML=emptyHTML('fa-chalkboard-user',t('no_teachers'),t('no_teachers_sub')); hideLoader(); return; }
   teachers.forEach(tc=>{
     const name=tc.name||'---';
     const initial=name.charAt(0).toUpperCase();
     const avHtml=tc.image_url
       ?`<img src="${tc.image_url}" alt="${name}" class="teacher-av" onerror="this.outerHTML='<div class=\\'teacher-av-fb\\'>${initial}</div>'">`
       :`<div class="teacher-av-fb">${initial}</div>`;
-
     const card=document.createElement('div');
     card.className='teacher-card';
     card.innerHTML=`
@@ -963,26 +716,28 @@ async function loadTeachers(subId,subName){
       <div class="teacher-body">
         <div class="teacher-name">${name}</div>
         <div class="teacher-badge"><i class="fa-solid fa-tag"></i> ${curSubName}</div>
-        <button class="teacher-cta"><i class="fa-solid fa-play"></i> ${t('view_lessons')}</button>
+        <button class="teacher-cta"><i class="fa-solid fa-layer-group"></i> ${t('view_lessons')}</button>
       </div>
     `;
-    card.addEventListener('click',()=>loadLessons(tc.id,name));
+    card.addEventListener('click',()=>loadChapters(tc));
     grid.appendChild(card);
   });
-
   hideLoader();
 }
 
-/* ============ LESSONS ============ */
-async function loadLessons(teachId,teachName){
+/* ✅ NEW: CHAPTERS VIEW (like EdNuva) */
+async function loadChapters(teacher){
   showLoader();
-  curTeacherId=teachId; curTeacherName=teachName||'---';
+  curTeacherId=teacher.id;
+  curTeacherName=teacher.name||'---';
+  curTeacherObj=teacher;
 
-  const {data:lessons,error}=await db.from('lessons').select('*').eq('teacher_id',teachId);
+  // Fetch all lessons for this teacher
+  const {data:lessons,error}=await db.from('lessons').select('*').eq('teacher_id',teacher.id);
 
   const l=getLang();
-  document.getElementById('lessTitle').textContent=(l==='ar'?'حصص ':'Lessons by ')+curTeacherName;
-  document.getElementById('lessSub').textContent=t('lessons_sub');
+  document.getElementById('chapTitle').textContent=t('chapters_hd');
+  document.getElementById('chapSub').textContent=t('chapters_sub');
 
   updateBC([
     {label:t('home'),action:()=>navigate('home')},
@@ -990,23 +745,133 @@ async function loadLessons(teachId,teachName){
     {label:curTeacherName}
   ]);
 
+  // Build teacher hero
+  const initial=curTeacherName.charAt(0).toUpperCase();
+  const imgHtml=teacher.image_url
+    ?`<img src="${teacher.image_url}" alt="${curTeacherName}" class="teacher-hero-img" onerror="this.outerHTML='<div class=\\'teacher-hero-fb\\'>${initial}</div>'">`
+    :`<div class="teacher-hero-fb">${initial}</div>`;
+  document.getElementById('teacherHero').innerHTML=`
+    <div class="teacher-hero">
+      ${imgHtml}
+      <div class="teacher-hero-info">
+        <div class="teacher-hero-name">${curTeacherName}</div>
+        <div class="teacher-hero-sub">${curSubName}</div>
+        <div class="teacher-hero-badge"><i class="fa-solid fa-layer-group" style="margin-inline-end:5px"></i>${(lessons||[]).length} ${l==='ar'?'حصة':'lessons'}</div>
+      </div>
+    </div>
+  `;
+
+  showView('chapters');
+  const grid=document.getElementById('chaptersCardsGrid');
+  grid.innerHTML='';
+
+  if(error||!lessons||!lessons.length){
+    grid.innerHTML=emptyHTML('fa-layer-group',t('no_chapters'),t('no_chapters_sub'));
+    hideLoader(); return;
+  }
+
+  // Group lessons by chapter
+  const chapters={};
+  lessons.forEach(ls=>{
+    const ch=(ls.chapter&&ls.chapter.trim())?ls.chapter.trim():t('general');
+    if(!chapters[ch]){ chapters[ch]={lessons:[],image:ls.chapter_image||ls.thumbnail_url||null,index:Object.keys(chapters).length+1}; }
+    chapters[ch].lessons.push(ls);
+    // Use chapter_image if available, else first lesson thumbnail
+    if(!chapters[ch].image && (ls.chapter_image||ls.thumbnail_url)){
+      chapters[ch].image=ls.chapter_image||ls.thumbnail_url;
+    }
+  });
+
+  Object.entries(chapters).forEach(([chName,chData],idx)=>{
+    const count=chData.lessons.length;
+    const imgSrc=chData.image;
+    const thumbHtml=imgSrc
+      ?`<img src="${imgSrc}" alt="${chName}" class="chapter-card-thumb" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+      :'';
+    const phStyle=imgSrc?'style="display:none"':'';
+
+    const card=document.createElement('div');
+    card.className='chapter-card-big';
+    card.innerHTML=`
+      <div style="overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;position:relative">
+        ${thumbHtml}
+        <div class="chapter-card-thumb-ph" ${phStyle}>
+          <i class="fa-solid fa-layer-group"></i>
+          <span>${t('chapter_preview')}</span>
+        </div>
+      </div>
+      <div class="chapter-card-body">
+        <div class="chapter-card-num"><i class="fa-solid fa-layer-group"></i> ${t('chapter_label')} ${idx+1}</div>
+        <div class="chapter-card-name">${chName}</div>
+        <div class="chapter-card-count"><i class="fa-solid fa-video"></i> ${count} ${t('lessons_count')}</div>
+      </div>
+    `;
+    card.addEventListener('click',()=>loadLessonsByChapter(chData.lessons, chName));
+    grid.appendChild(card);
+  });
+
+  hideLoader();
+}
+
+/* ✅ Load lessons filtered by chapter */
+function loadLessonsByChapter(lessons, chapterName){
+  curChapter=chapterName;
+  const l=getLang();
+  document.getElementById('lessTitle').textContent=chapterName;
+  document.getElementById('lessSub').textContent=curTeacherName;
+
+  updateBC([
+    {label:t('home'),action:()=>navigate('home')},
+    {label:curSubName,action:()=>loadTeachers(curSubId,curSubName)},
+    {label:curTeacherName,action:()=>loadChapters(curTeacherObj)},
+    {label:chapterName}
+  ]);
+
   showView('lessons');
   const wrap=document.getElementById('lessonsWrap');
   wrap.innerHTML='';
 
-  if(error||!lessons||!lessons.length){
-    wrap.innerHTML=emptyHTML('fa-video',t('no_lessons'),t('no_lessons_sub'));
-    hideLoader(); return;
-  }
+  if(!lessons||!lessons.length){ wrap.innerHTML=emptyHTML('fa-video',t('no_lessons'),t('no_lessons_sub')); return; }
 
-  // Group by chapter
+  // Show all lessons in a single grid (already filtered by chapter)
+  const group=document.createElement('div');
+  group.innerHTML=`
+    <div class="chapter-hd">
+      <div class="chapter-pill"><i class="fa-solid fa-layer-group" style="margin-inline-end:5px"></i>${chapterName}</div>
+      <div class="chapter-line"></div>
+      <div class="chapter-cnt">${lessons.length} ${t('lessons_count')}</div>
+    </div>
+    <div class="lessons-grid"></div>
+  `;
+  const grid=group.querySelector('.lessons-grid');
+  renderLessonCards(lessons, grid, l);
+  wrap.appendChild(group);
+}
+
+/* Keep old loadLessons for all chapters view */
+async function loadLessons(teachId,teachName){
+  showLoader();
+  curTeacherId=teachId; curTeacherName=teachName||'---';
+  const {data:lessons,error}=await db.from('lessons').select('*').eq('teacher_id',teachId);
+  const l=getLang();
+  document.getElementById('lessTitle').textContent=(l==='ar'?'حصص ':'Lessons by ')+curTeacherName;
+  document.getElementById('lessSub').textContent=t('lessons_sub');
+  updateBC([
+    {label:t('home'),action:()=>navigate('home')},
+    {label:curSubName,action:()=>loadTeachers(curSubId,curSubName)},
+    {label:curTeacherName}
+  ]);
+  showView('lessons');
+  const wrap=document.getElementById('lessonsWrap');
+  wrap.innerHTML='';
+  if(error||!lessons||!lessons.length){ wrap.innerHTML=emptyHTML('fa-video',t('no_lessons'),t('no_lessons_sub')); hideLoader(); return; }
+
   const chapters={};
   lessons.forEach(ls=>{
     const ch=(ls.chapter&&ls.chapter.trim())?ls.chapter.trim():t('general');
     if(!chapters[ch]) chapters[ch]=[];
     chapters[ch].push(ls);
   });
-
   Object.entries(chapters).forEach(([chName,chLessons])=>{
     const group=document.createElement('div');
     group.innerHTML=`
@@ -1017,112 +882,78 @@ async function loadLessons(teachId,teachName){
       </div>
       <div class="lessons-grid"></div>
     `;
-    const grid=group.querySelector('.lessons-grid');
-
-    chLessons.forEach(ls=>{
-      const bought=isBought(ls.id);
-      const isFree=!ls.price||ls.price===0||ls.price==='0';
-      const name=ls.name||'---';
-      const price=isFree?(l==='ar'?'مجاني':'Free'):`${ls.price} ${t('egp')}`;
-
-      const thumbHtml=ls.thumbnail_url
-        ?`<img src="${ls.thumbnail_url}" alt="${name}" onerror="this.outerHTML='${phHTML()}'">`
-        :phHTML();
-
-      const ribbon=bought?`<div class="lesson-ribbon"><i class="fa-solid fa-check"></i> ${t('activated')}</div>`:'';
-
-      const timeAgo=ls.created_at?timeSince(new Date(ls.created_at),l):'';
-
-      const btn=(bought||isFree)
-        ?`<button class="btn-ls btn-watch" onclick="watchLesson('${ls.id}')"><i class="fa-solid fa-circle-play"></i> ${isFree&&!bought?t('free_watch'):t('watch')}</button>`
-        :`<button class="btn-ls btn-buy" onclick="buyLesson('${ls.id}')"><i class="fa-solid fa-cart-shopping"></i> ${t('buy')}</button>`;
-
-      const card=document.createElement('div');
-      card.className='lesson-card';
-      card.innerHTML=`
-        <div class="lesson-thumb">${thumbHtml}${ribbon}</div>
-        <div class="lesson-body">
-          <div class="lesson-title">${name}</div>
-          <div class="lesson-info">
-            <span class="lesson-teacher-tag"><i class="fa-solid fa-chalkboard-user"></i> ${curTeacherName}</span>
-          </div>
-          <div class="lesson-bottom">
-            <div class="lesson-price ${isFree?'free':''}">${price}</div>
-            ${timeAgo?`<div class="lesson-date">${timeAgo}</div>`:''}
-          </div>
-          <div class="lesson-actions">${btn}</div>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-
+    renderLessonCards(chLessons, group.querySelector('.lessons-grid'), l);
     wrap.appendChild(group);
   });
-
   hideLoader();
 }
 
-function phHTML(){
-  return `<div class="lesson-ph"><div class="lesson-ph-icon"><i class="fa-solid fa-play"></i></div><div class="lesson-ph-txt">${getLang()==='ar'?'معاينة الحصة':'Lesson Preview'}</div></div>`;
+function renderLessonCards(lessons, grid, l){
+  lessons.forEach(ls=>{
+    const bought=isBought(ls.id);
+    const isFree=!ls.price||ls.price===0||ls.price==='0';
+    const name=ls.name||'---';
+    const price=isFree?(l==='ar'?'مجاني':'Free'):`${ls.price} ${t('egp')}`;
+    const thumbHtml=ls.thumbnail_url
+      ?`<img src="${ls.thumbnail_url}" alt="${name}" onerror="this.outerHTML='${phHTML()}'">`
+      :phHTML();
+    const ribbon=bought?`<div class="lesson-ribbon"><i class="fa-solid fa-check"></i> ${t('activated')}</div>`:'';
+    const timeAgo=ls.created_at?timeSince(new Date(ls.created_at),l):'';
+    const btn=(bought||isFree)
+      ?`<button class="btn-ls btn-watch" onclick="watchLesson('${ls.id}')"><i class="fa-solid fa-circle-play"></i> ${isFree&&!bought?t('free_watch'):t('watch')}</button>`
+      :`<button class="btn-ls btn-buy" onclick="buyLesson('${ls.id}')"><i class="fa-solid fa-cart-shopping"></i> ${t('buy')}</button>`;
+    const card=document.createElement('div');
+    card.className='lesson-card';
+    card.innerHTML=`
+      <div class="lesson-thumb">${thumbHtml}${ribbon}</div>
+      <div class="lesson-body">
+        <div class="lesson-title">${name}</div>
+        <div class="lesson-info">
+          <span class="lesson-teacher-tag"><i class="fa-solid fa-chalkboard-user"></i> ${curTeacherName}</span>
+        </div>
+        <div class="lesson-bottom">
+          <div class="lesson-price ${isFree?'free':''}">${price}</div>
+          ${timeAgo?`<div class="lesson-date">${timeAgo}</div>`:''}
+        </div>
+        <div class="lesson-actions">${btn}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
 }
 
+function phHTML(){
+  return `<div class="lesson-ph"><div class="lesson-ph-icon"><i class="fa-solid fa-play"></i></div><div class="lesson-ph-txt">${t('lesson_preview')}</div></div>`;
+}
 function emptyHTML(icon,title,sub){
   return `<div class="empty-state"><div class="empty-icon"><i class="fa-solid ${icon}"></i></div><div class="empty-title">${title}</div><div class="empty-sub">${sub}</div></div>`;
 }
-
 function timeSince(date,lang){
   const seconds=Math.floor((new Date()-date)/1000);
-  const intervals=[
-    {label:lang==='ar'?'سنة':'year',sec:31536000},
-    {label:lang==='ar'?'شهر':'month',sec:2592000},
-    {label:lang==='ar'?'أسبوع':'week',sec:604800},
-    {label:lang==='ar'?'يوم':'day',sec:86400},
-    {label:lang==='ar'?'ساعة':'hour',sec:3600},
-    {label:lang==='ar'?'دقيقة':'minute',sec:60}
-  ];
-  for(const iv of intervals){
-    const cnt=Math.floor(seconds/iv.sec);
-    if(cnt>=1){
-      if(lang==='ar') return `منذ ${cnt} ${iv.label}`;
-      return `${cnt} ${iv.label}${cnt>1?'s':''} ago`;
-    }
-  }
+  const intervals=[{label:lang==='ar'?'سنة':'year',sec:31536000},{label:lang==='ar'?'شهر':'month',sec:2592000},{label:lang==='ar'?'أسبوع':'week',sec:604800},{label:lang==='ar'?'يوم':'day',sec:86400},{label:lang==='ar'?'ساعة':'hour',sec:3600},{label:lang==='ar'?'دقيقة':'minute',sec:60}];
+  for(const iv of intervals){ const cnt=Math.floor(seconds/iv.sec); if(cnt>=1){ return lang==='ar'?`منذ ${cnt} ${iv.label}`:`${cnt} ${iv.label}${cnt>1?'s':''} ago`; } }
   return lang==='ar'?'الآن':'Just now';
 }
 
-/* ============ MY LECTURES ============ */
+/* MY LECTURES */
 async function renderMyLectures(){
   showLoader();
   const box=document.getElementById('myLessonsBox');
   box.innerHTML='';
-
   const l=getLang();
   document.getElementById('myLecHd').innerHTML=l==='ar'?'محاضراتي <em>المفعّلة</em>':'My <em>Activated</em> Lectures';
   document.getElementById('myLecSub').textContent=t('my_sub');
-
-  if(!boughtIds.length){
-    box.innerHTML=emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub'));
-    hideLoader(); return;
-  }
-
+  if(!boughtIds.length){ box.innerHTML=emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub')); hideLoader(); return; }
   const {data:allLessons}=await db.from('lessons').select('*,teachers(name,image_url)');
   const myLessons=(allLessons||[]).filter(ls=>isBought(ls.id));
-
-  if(!myLessons.length){
-    box.innerHTML=emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub'));
-    hideLoader(); return;
-  }
-
+  if(!myLessons.length){ box.innerHTML=emptyHTML('fa-play-circle',t('no_my'),t('no_my_sub')); hideLoader(); return; }
   const list=document.createElement('div');
   list.className='my-list';
-
   myLessons.forEach(ls=>{
     const tName=ls.teachers?ls.teachers.name:'';
     const row=document.createElement('div');
     row.className='my-row';
-    const thHtml=ls.thumbnail_url
-      ?`<img src="${ls.thumbnail_url}" alt="${ls.name||''}">`
-      :`<i class="fa-solid fa-video"></i>`;
+    const thHtml=ls.thumbnail_url?`<img src="${ls.thumbnail_url}" alt="${ls.name||''}">`:`<i class="fa-solid fa-video"></i>`;
     row.innerHTML=`
       <div class="my-thumb">${thHtml}</div>
       <div class="my-info">
@@ -1134,25 +965,16 @@ async function renderMyLectures(){
     `;
     list.appendChild(row);
   });
-
   box.appendChild(list);
   hideLoader();
 }
 
-/* ============ ACTIONS ============ */
-function buyLesson(id){
-  localStorage.setItem('checkout_lesson_id',id);
-  window.location.href='/checkout?lesson_id='+id;
-}
-function watchLesson(id){
-  window.location.href='/lesson?id='+id;
-}
-async function logout(){
-  await db.auth.signOut();
-  window.location.href='/';
-}
+/* ACTIONS */
+function buyLesson(id){ localStorage.setItem('checkout_lesson_id',id); window.location.href='/checkout?lesson_id='+id; }
+function watchLesson(id){ window.location.href='/lesson?id='+id; }
+async function logout(){ await db.auth.signOut(); window.location.href='/'; }
 
-/* ============ START ============ */
+/* START */
 init();
 </script>
 </body>
