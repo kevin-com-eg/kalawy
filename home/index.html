@@ -662,16 +662,26 @@ document.getElementById("authForm").addEventListener("submit", async(e) => {
         return showToast('warning','Missing Fields','Please fill in all fields first');
 
       btn.textContent = "Creating account...";
-      const { data, error } = await sb.auth.signUp({
-        email, password: pass,
-        options: { data: { full_name: name, role: 'student', grade_id: parseInt(grade) } }
-      });
+
+      // Step 1: create auth user (no triggers needed)
+      const { data, error } = await sb.auth.signUp({ email, password: pass });
       if(error) throw error;
 
-      // Update profile with phone (trigger creates the row)
-      if(data.user){
-        await sb.from('profiles').update({ phone }).eq('id', data.user.id);
-      }
+      const userId = data.user?.id;
+      if(!userId) throw new Error('Signup failed — no user returned');
+
+      // Step 2: insert into profiles
+      const { error: pe } = await sb.from('profiles').insert({
+        id: userId, full_name: name, phone, role: 'student'
+      });
+      if(pe) throw pe;
+
+      // Step 3: insert into students
+      const { error: se } = await sb.from('students').insert({
+        id: userId, grade_id: parseInt(grade)
+      });
+      if(se) throw se;
+
       rememberLastEmail(email);
       showToast('success','Welcome to kalawy!','Your account has been created 🎉');
       setTimeout(() => { window.location.href = REDIRECTS.student; }, 1200);
