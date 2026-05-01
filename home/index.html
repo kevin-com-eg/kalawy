@@ -1,376 +1,769 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kalawy — تسجيل الدخول</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalawy | منصة التعليم الإلكتروني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230d1b2a'/><text x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-weight='900' font-size='28' fill='white'>KW</text></svg>">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
-  .card{background:#fff;border-radius:16px;border:1px solid #e5e5e0;padding:2rem;width:100%;max-width:400px}
-  .logo{text-align:center;margin-bottom:1.5rem}
-  .logo h1{font-size:28px;font-weight:700;color:#111;letter-spacing:-1px}
-  .logo p{font-size:13px;color:#888;margin-top:4px}
-  .tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:#f5f5f0;padding:4px;border-radius:10px}
-  .tab{flex:1;padding:8px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;background:transparent;color:#666;transition:all .15s}
-  .tab.active{background:#fff;color:#111;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-  .form-group{margin-bottom:1rem}
-  label{display:block;font-size:12px;font-weight:500;color:#555;margin-bottom:6px}
-  input,select{width:100%;padding:10px 12px;border:1px solid #e5e5e0;border-radius:10px;font-size:14px;background:#fff;color:#111;outline:none;transition:border .15s;font-family:inherit}
-  input:focus,select:focus{border-color:#111}
-  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center}
-  .btn{width:100%;padding:11px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s;margin-top:.5rem}
-  .btn-primary{background:#111;color:#fff}
-  .btn-primary:hover{opacity:.85}
-  .btn-primary:disabled{opacity:.5;cursor:not-allowed}
-  .error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;font-size:13px;padding:10px 12px;border-radius:10px;margin-bottom:1rem}
-  .success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;font-size:13px;padding:10px 12px;border-radius:10px;margin-bottom:1rem}
-  .divider{text-align:center;font-size:12px;color:#aaa;margin:1rem 0}
-  .panel{display:none}
-  .panel.active{display:block}
+:root{
+  --bg:#f5f1e8;
+  --bg2:#ebe3d6;
+  --paper:#fbf8f3;
+  --card:#fffdf9;
+  --text:#1d160f;
+  --muted:#7c7062;
+  --muted2:#9a8f82;
+  --line:rgba(51,35,18,.12);
+  --line2:rgba(51,35,18,.22);
+  --accent:#234a35;
+  --accent2:#2d6a4f;
+  --accent3:#3a7d60;
+  --accentSoft:rgba(35,74,53,.08);
+  --gold:#b8894d;
+  --goldSoft:rgba(184,137,77,.13);
+  --danger:#b33d2e;
+  --shadow:0 20px 60px rgba(31,24,18,.08);
+  --shadow2:0 12px 36px rgba(31,24,18,.12);
+  --display:'Outfit',sans-serif;
+  --sans:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --radius:24px;
+  --radius-md:18px;
+  --radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(184,137,77,.08), transparent 25%),
+    radial-gradient(circle at 100% 10%, rgba(35,74,53,.08), transparent 25%),
+    linear-gradient(180deg,#f7f3ec 0%, #f2ece2 100%);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.22;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23b8a993' stroke-opacity='.18'%3E%3Cpath d='M0 90h180M90 0v180'/%3E%3C/g%3E%3C/svg%3E");
+}
+.hidden{display:none!important}
+a{text-decoration:none}
+button,input,select,textarea{font:inherit}
 
-  /* SQL Fix Section */
-  .sql-section{margin-top:1.5rem;border-top:1px solid #f0f0f0;padding-top:1.5rem}
-  .sql-section h3{font-size:13px;font-weight:600;color:#111;margin-bottom:.75rem}
-  .sql-steps{display:flex;flex-direction:column;gap:8px}
-  .sql-step{background:#f8f8f6;border:1px solid #e5e5e0;border-radius:10px;overflow:hidden}
-  .sql-step-header{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;cursor:pointer}
-  .sql-step-header span{font-size:12px;font-weight:500;color:#555}
-  .copy-sql-btn{font-size:11px;padding:3px 10px;border:1px solid #e5e5e0;border-radius:6px;background:#fff;color:#555;cursor:pointer}
-  .sql-step pre{padding:12px;font-size:11px;line-height:1.7;color:#333;font-family:'Courier New',monospace;white-space:pre-wrap;word-break:break-word;display:none;border-top:1px solid #e5e5e0;background:#fafaf8}
-  .sql-step.open pre{display:block}
-  .step-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#111;color:#fff;border-radius:50%;font-size:10px;font-weight:700;margin-left:6px}
+.bg-orb,.bg-orb2,.bg-grid-glow{position:fixed;pointer-events:none;z-index:0;filter:blur(8px);opacity:.55}
+.bg-orb{top:90px;left:-90px;width:280px;height:280px;border-radius:50%;background:rgba(184,137,77,.10);animation:floatY 7s ease-in-out infinite}
+.bg-orb2{bottom:80px;right:-100px;width:340px;height:340px;border-radius:50%;background:rgba(35,74,53,.11);animation:floatY 9s ease-in-out infinite reverse}
+.bg-grid-glow{top:32%;left:48%;transform:translate(-50%,-50%);width:460px;height:460px;border-radius:50%;background:radial-gradient(circle, rgba(255,255,255,.55), transparent 60%)}
+
+#toast-container{position:fixed;top:22px;right:22px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{display:flex;gap:12px;align-items:flex-start;background:rgba(255,253,249,.95);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:16px;padding:14px 16px;min-width:280px;max-width:340px;box-shadow:var(--shadow2);animation:toastIn .28s ease forwards;pointer-events:all}
+.toast.success{border-left:4px solid var(--accent2)} .toast.error{border-left:4px solid var(--danger)} .toast.info{border-left:4px solid #2563eb} .toast.warning{border-left:4px solid #d97706}
+.toast-title{font-weight:800;font-size:.9rem}.toast-msg{font-size:.78rem;color:var(--muted);line-height:1.55;margin-top:2px}.toast-close{border:none;background:none;color:var(--muted2);font-size:20px;cursor:pointer}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-8px) scale(.98)}}
+.toast-exit{animation:toastOut .25s ease forwards}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(251,248,243,.94);border-bottom:1px solid var(--line);}
+.nav-w{max-width:1320px;height:76px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;z-index:1}
+.logo{display:flex;align-items:center;gap:12px;color:var(--text)}
+.logo-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#183326);display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:800;font-size:1rem;box-shadow:0 10px 24px rgba(35,74,53,.22)}
+.logo-name{font-family:var(--display);font-weight:800;font-size:1.28rem;letter-spacing:-.03em}.logo-name em{font-style:normal;color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:10px}
+.nav-link{padding:10px 14px;border-radius:999px;color:var(--muted);font-weight:600;font-size:.92rem;transition:.2s}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,.65)}
+.nav-btn{border:none;border-radius:999px;padding:12px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 14px 28px rgba(35,74,53,.18);transition:.25s}
+.nav-btn:hover{transform:translateY(-2px);box-shadow:0 18px 32px rgba(35,74,53,.22)}
+
+.page-wrap{position:relative;z-index:1}
+.hero-section{max-width:1320px;margin:0 auto;padding:42px 28px 24px;display:grid;grid-template-columns:1.08fr .92fr;gap:26px;align-items:stretch}
+.hero-left,.hero-right{position:relative}
+.hero-shell{background:linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.4));border:1px solid rgba(255,255,255,.55);box-shadow:var(--shadow);border-radius:32px;overflow:hidden;min-height:100%;}
+.hero-left .hero-shell{padding:30px}
+.hero-right .hero-shell{padding:18px}
+.glass-line{position:absolute;inset:0;background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%);transform:translateX(-100%);animation:shine 8s linear infinite;pointer-events:none}
+@keyframes shine{to{transform:translateX(100%)}}
+
+.hero-topline{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.8);border:1px solid var(--line);padding:10px 14px;border-radius:999px;font-size:.72rem;font-family:var(--mono);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.hero-topline::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent3);box-shadow:0 0 0 6px rgba(58,125,96,.12);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.72);opacity:.5}}
+
+.hero-h1{font-family:var(--display);font-size:clamp(2.5rem,5.8vw,5.5rem);line-height:.94;font-weight:800;letter-spacing:-.055em;margin-bottom:18px;max-width:760px}
+.hero-h1 .accent{display:block;background:linear-gradient(135deg,var(--gold),#d0a56a 45%, var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-p{max-width:620px;color:var(--muted);font-size:1rem;line-height:1.9;margin-bottom:24px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+.primary-btn,.ghost-btn{border:none;border-radius:999px;padding:14px 20px;font-weight:800;cursor:pointer;transition:.25s}
+.primary-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 14px 30px rgba(35,74,53,.18)}
+.primary-btn:hover{transform:translateY(-2px)}
+.ghost-btn{background:rgba(255,255,255,.75);color:var(--text);border:1px solid var(--line2)}
+.ghost-btn:hover{background:#fff}
+
+.hero-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.metric{background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:20px;padding:18px;position:relative;overflow:hidden}
+.metric::after{content:'';position:absolute;right:-30px;top:-30px;width:88px;height:88px;border-radius:50%;background:var(--accentSoft)}
+.metric .n{font-family:var(--display);font-size:1.9rem;font-weight:800;letter-spacing:-.05em}
+.metric .l{font-size:.75rem;color:var(--muted2);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-top:4px}
+
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.badge-chip{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid var(--line);font-weight:700;color:#4d463d;font-size:.84rem;transition:.25s}
+.badge-chip:hover{transform:translateY(-2px);background:#fff}
+
+.auth-card{background:rgba(255,253,249,.88);border:1px solid var(--line);border-radius:28px;padding:28px 24px 22px;box-shadow:var(--shadow2);backdrop-filter:blur(18px)}
+.auth-card::before{content:'';display:block;height:4px;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--accent2));margin-bottom:18px}
+.card-title{font-family:var(--display);font-size:1.65rem;font-weight:800;letter-spacing:-.04em}
+.card-sub{font-size:.86rem;color:var(--muted);margin-top:6px;line-height:1.7;margin-bottom:18px}
+.tabs{display:flex;gap:5px;background:rgba(35,74,53,.05);border:1px solid var(--line);padding:4px;border-radius:18px;margin-bottom:18px}
+.tab{flex:1;padding:10px 12px;border:none;background:transparent;border-radius:14px;font-weight:800;color:var(--muted);cursor:pointer;transition:.2s}
+.tab.on{background:#fff;color:var(--text);box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.fields{display:flex;flex-direction:column;gap:12px}.fw{display:flex;flex-direction:column;gap:7px}.flbl{font-size:.68rem;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono)}.f2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.inp{width:100%;background:rgba(255,255,255,.86)!important;border:1px solid var(--line2)!important;color:var(--text)!important;padding:13px 14px;border-radius:16px;outline:none;transition:.2s}
+.inp:focus{border-color:var(--accent2)!important;box-shadow:0 0 0 4px rgba(35,74,53,.08)}
+.inp::placeholder{color:var(--muted2)}
+select.inp{color:var(--muted2)!important} select.inp.filled{color:var(--text)!important}
+.pass-row{position:relative}.eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted2);cursor:pointer}
+.forgot{margin:4px 0 6px}.forgot button{background:none;border:none;color:var(--muted);font-size:.8rem;font-weight:700;cursor:pointer}
+.cta-btn{width:100%;border:none;border-radius:18px;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;cursor:pointer;box-shadow:0 14px 28px rgba(35,74,53,.16);transition:.25s}.cta-btn:hover{transform:translateY(-2px)}
+.or-line{display:flex;align-items:center;gap:10px;margin:14px 0}.or-bar{flex:1;height:1px;background:var(--line)}.or-txt{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--muted2);font-weight:700}
+.g-btn{width:100%;display:flex;justify-content:center;align-items:center;gap:10px;padding:12px;border-radius:18px;border:1px solid var(--line2);background:#fff;cursor:pointer;font-weight:800;color:#4b433a;transition:.2s}.g-btn:hover{transform:translateY(-2px)} .g-btn img{width:18px}
+.trust{display:flex;justify-content:center;gap:8px;margin-top:12px}.trust-txt{font-size:.72rem;color:var(--muted2);font-weight:600}
+
+.section{max-width:1320px;margin:0 auto;padding:32px 28px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.section-kicker{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.65);font-size:.72rem;font-family:var(--mono);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2)}
+.section-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.6rem);font-weight:800;letter-spacing:-.05em;line-height:.95}
+.section-sub{color:var(--muted);max-width:640px;line-height:1.9;font-size:.98rem}
+
+.why-wrap{display:grid;grid-template-columns:1.02fr .98fr;gap:20px;align-items:stretch}
+.why-main{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:32px;padding:26px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.why-main::after{content:'';position:absolute;inset:auto -80px -80px auto;width:220px;height:220px;border-radius:50%;background:var(--accentSoft)}
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;position:relative;z-index:1}
+.why-card{background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:24px;padding:22px;transition:.25s;transform-style:preserve-3d}
+.why-card:hover{transform:translateY(-4px) rotateX(2deg);box-shadow:var(--shadow2)}
+.why-icon{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;font-size:1.45rem;background:linear-gradient(135deg, rgba(35,74,53,.12), rgba(184,137,77,.18));border:1px solid var(--line);margin-bottom:14px}
+.why-card h3{font-family:var(--display);font-weight:800;font-size:1.24rem;letter-spacing:-.03em;margin-bottom:8px}
+.why-card p{font-size:.9rem;color:var(--muted);line-height:1.8}
+.why-side{display:grid;grid-template-rows:auto auto;gap:14px}
+.why-spot,.why-proof{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:32px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.why-spot{padding:24px;min-height:260px;background:linear-gradient(135deg, rgba(35,74,53,.92), rgba(58,125,96,.84));color:#fff}
+.why-spot h3{font-family:var(--display);font-size:2rem;line-height:.98;letter-spacing:-.04em;margin-bottom:12px}
+.why-spot p{color:rgba(255,255,255,.82);line-height:1.85;max-width:340px}
+.why-list{margin-top:18px;display:grid;gap:10px}.why-list div{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px);font-weight:700}
+.why-proof{padding:22px}
+.proof-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.proof-box{padding:18px;border-radius:22px;background:rgba(255,255,255,.82);border:1px solid var(--line)}
+.proof-box .num{font-family:var(--display);font-size:2.2rem;font-weight:800;letter-spacing:-.05em}.proof-box .txt{font-size:.8rem;color:var(--muted2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+.proof-note{margin-top:14px;padding:14px 16px;border-radius:18px;background:var(--goldSoft);border:1px solid rgba(184,137,77,.28);color:#6c5332;font-weight:700;line-height:1.7}
+
+.contact-section{padding-top:40px}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.contact-card,.contact-form-card{background:rgba(255,255,255,.74);border:1px solid var(--line);border-radius:32px;padding:26px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.contact-card::before,.contact-form-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:4px;border-radius:999px;background:linear-gradient(90deg,var(--accent2),var(--gold),transparent)}
+.contact-card h2,.contact-form-card h3{font-family:var(--display);font-size:clamp(2rem,3vw,2.8rem);font-weight:800;letter-spacing:-.05em;margin-bottom:10px}
+.contact-card p,.contact-form-card p{color:var(--muted);line-height:1.85;margin-bottom:18px}
+.contact-links{display:grid;gap:12px;margin-top:20px}
+.contact-link{display:flex;gap:14px;align-items:center;padding:16px;border-radius:22px;background:rgba(255,255,255,.84);border:1px solid var(--line);transition:.25s}
+.contact-link:hover{transform:translateX(5px);box-shadow:var(--shadow2)}
+.cl-icon{width:50px;height:50px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg, rgba(35,74,53,.12), rgba(184,137,77,.18));border:1px solid var(--line);font-size:1.15rem;flex-shrink:0}
+.cl-label{font-size:.66rem;color:var(--muted2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:4px}
+.cl-val{font-weight:800;color:var(--text)}
+.contact-form-side{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.contact-form-side input,.contact-form-side textarea{width:100%;background:rgba(255,255,255,.88);border:1px solid var(--line2);padding:14px 15px;border-radius:18px;outline:none;transition:.2s}
+.contact-form-side input:focus,.contact-form-side textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 4px rgba(35,74,53,.08)}
+.contact-send-btn{border:none;border-radius:18px;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;cursor:pointer;box-shadow:0 14px 28px rgba(35,74,53,.16);transition:.25s}.contact-send-btn:hover{transform:translateY(-2px)}
+
+footer{padding:46px 28px 24px;position:relative;z-index:1}
+.footer-box{max-width:1320px;margin:0 auto;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:32px;padding:28px;box-shadow:var(--shadow)}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px}
+.footer-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}.footer-logo-box{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#183326);display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:800}
+.footer-brand-name{font-family:var(--display);font-size:1.3rem;font-weight:800}.footer-brand-name em{font-style:normal;color:var(--gold)}
+.footer-desc{color:var(--muted);line-height:1.85;max-width:410px}.footer-socials{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.social-pill{padding:10px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.84);color:var(--muted);font-weight:700;font-size:.84rem;transition:.2s}.social-pill:hover{color:var(--text);transform:translateY(-2px)}
+.footer-col h4{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px}.footer-col ul{list-style:none}.footer-col li{margin-bottom:10px}.footer-col a,.footer-col p{color:var(--muted);font-size:.9rem}.footer-col a:hover{color:var(--text)}
+.footer-bottom{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted2);font-size:.82rem}
+
+.popup-overlay{position:fixed;inset:0;z-index:9990;background:rgba(17,17,17,.42);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.25s}
+.popup-overlay.show{opacity:1;pointer-events:all}.popup-card{width:100%;max-width:430px;background:#fffdf9;border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:var(--shadow2);transform:translateY(10px) scale(.98);transition:.28s}.popup-overlay.show .popup-card{transform:none}.popup-icon{width:60px;height:60px;border-radius:20px;background:linear-gradient(135deg, rgba(35,74,53,.12), rgba(184,137,77,.18));display:grid;place-items:center;margin-bottom:14px;font-size:1.5rem}.popup-title{font-family:var(--display);font-size:1.6rem;font-weight:800;letter-spacing:-.04em}.popup-sub{color:var(--muted);line-height:1.8;font-size:.9rem;margin:8px 0 18px}.popup-cancel-btn{border:none;background:none;color:var(--muted2);cursor:pointer;font-weight:700;margin-top:10px;width:100%;padding:10px}
+
+.floating-wa{position:fixed;bottom:22px;right:22px;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#25D366;color:#fff;box-shadow:0 16px 28px rgba(37,211,102,.34);z-index:999;text-decoration:none;animation:waPop 2.5s ease infinite}@keyframes waPop{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+.reveal{opacity:1;transform:none;transition:opacity .55s ease, transform .55s ease}.reveal.ready{opacity:0;transform:translateY(24px) scale(.98)}.reveal.ready.in{opacity:1;transform:none}
+.stagger-1{transition-delay:.08s}.stagger-2{transition-delay:.16s}.stagger-3{transition-delay:.24s}.stagger-4{transition-delay:.32s}
+
+::-webkit-scrollbar{width:7px}::-webkit-scrollbar-thumb{background:rgba(35,74,53,.24);border-radius:999px}::-webkit-scrollbar-track{background:transparent}
+
+@media(max-width:1150px){.hero-section,.why-wrap,.contact-inner,.footer-grid{grid-template-columns:1fr}}
+@media(max-width:860px){
+  .nav-w{padding:0 16px;height:68px}
+  .nav-links .nav-link{display:none}
+  .hero-section,.section,footer{padding-left:16px;padding-right:16px}
+  .hero-left .hero-shell{padding:22px}
+  .hero-h1{font-size:2.6rem}
+  .hero-metrics{grid-template-columns:1fr}
+  .why-grid,.proof-row,.f2col{grid-template-columns:1fr}
+  .contact-card,.contact-form-card,.why-main,.why-spot,.why-proof,.footer-box{border-radius:26px}
+}
 </style>
 </head>
 <body>
+<div class="bg-orb"></div><div class="bg-orb2"></div><div class="bg-grid-glow"></div>
+<div id="toast-container"></div>
 
-<div class="card">
-  <div class="logo">
-    <h1>kalawy</h1>
-    <p>منصة التعليم الإلكتروني</p>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('login')">تسجيل الدخول</button>
-    <button class="tab" onclick="switchTab('register')">حساب جديد</button>
-    <button class="tab" onclick="switchTab('sql')">إصلاح SQL</button>
-  </div>
-
-  <!-- LOGIN PANEL -->
-  <div class="panel active" id="panel-login">
-    <div id="login-error"></div>
-    <div class="form-group">
-      <label>البريد الإلكتروني</label>
-      <input type="email" id="login-email" placeholder="example@email.com"/>
+<!-- Reset Password Popup -->
+<div id="resetPopupOverlay" class="popup-overlay">
+  <div class="popup-card">
+    <div class="popup-icon">🔐</div>
+    <h3 class="popup-title">Set New Password</h3>
+    <p class="popup-sub">Welcome back! Set a new password with at least 6 characters.</p>
+    <div class="fw" style="margin-bottom:14px;">
+      <span class="flbl">New Password</span>
+      <input type="password" id="newPasswordInput" class="inp" placeholder="••••••••" autocomplete="new-password" minlength="6" dir="ltr">
     </div>
-    <div class="form-group">
-      <label>كلمة السر</label>
-      <input type="password" id="login-password" placeholder="••••••••"/>
-    </div>
-    <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">دخول</button>
-  </div>
-
-  <!-- REGISTER PANEL -->
-  <div class="panel" id="panel-register">
-    <div id="register-error"></div>
-    <div id="register-success"></div>
-    <div class="form-group">
-      <label>الاسم كامل</label>
-      <input type="text" id="reg-name" placeholder="محمد أحمد"/>
-    </div>
-    <div class="form-group">
-      <label>البريد الإلكتروني</label>
-      <input type="email" id="reg-email" placeholder="example@email.com"/>
-    </div>
-    <div class="form-group">
-      <label>كلمة السر</label>
-      <input type="password" id="reg-password" placeholder="8 أحرف على الأقل"/>
-    </div>
-    <div class="form-group">
-      <label>الصف الدراسي</label>
-      <select id="reg-grade">
-        <option value="1">أولى ثانوي</option>
-        <option value="2">تانية ثانوي</option>
-        <option value="3">تالتة ثانوي</option>
-      </select>
-    </div>
-    <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">تسجيل</button>
-  </div>
-
-  <!-- SQL FIX PANEL -->
-  <div class="panel" id="panel-sql">
-    <p style="font-size:12px;color:#888;margin-bottom:1rem">شغّل كل SQL لوحده في Supabase SQL Editor بالترتيب ↓</p>
-
-    <div class="sql-steps">
-
-      <div class="sql-step" id="step1">
-        <div class="sql-step-header" onclick="toggleStep('step1')">
-          <div><span class="step-num">1</span><span>grades + subjects + profiles + teachers + students</span></div>
-          <button class="copy-sql-btn" onclick="event.stopPropagation();copySql('sql1')">نسخ</button>
-        </div>
-        <pre id="sql1">CREATE TABLE IF NOT EXISTS grades (
-  id         int2        PRIMARY KEY,
-  name_ar    text        NOT NULL UNIQUE,
-  name_en    text        NOT NULL,
-  created_at timestamptz DEFAULT now()
-);
-
-INSERT INTO grades (id, name_ar, name_en) VALUES
-  (1, 'أولى ثانوي',  'Grade 10'),
-  (2, 'تانية ثانوي', 'Grade 11'),
-  (3, 'تالتة ثانوي', 'Grade 12')
-ON CONFLICT DO NOTHING;
-
-CREATE TABLE IF NOT EXISTS subjects (
-  id         uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-  name_ar    text        NOT NULL,
-  grade_id   int2        NOT NULL REFERENCES grades(id) ON DELETE CASCADE,
-  created_at timestamptz DEFAULT now(),
-  UNIQUE(name_ar, grade_id)
-);
-
-CREATE TABLE IF NOT EXISTS profiles (
-  id         uuid        PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  full_name  text        NOT NULL,
-  phone      text,
-  role       text        NOT NULL CHECK (role IN ('admin','teacher','student')),
-  created_at timestamptz DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS teachers (
-  id         uuid        PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
-  bio        text,
-  created_at timestamptz DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS students (
-  id         uuid        PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
-  grade_id   int2        NOT NULL REFERENCES grades(id),
-  created_at timestamptz DEFAULT now()
-);</pre>
-      </div>
-
-      <div class="sql-step" id="step2">
-        <div class="sql-step-header" onclick="toggleStep('step2')">
-          <div><span class="step-num">2</span><span>lessons + lesson_content + enrollments</span></div>
-          <button class="copy-sql-btn" onclick="event.stopPropagation();copySql('sql2')">نسخ</button>
-        </div>
-        <pre id="sql2">DO $$ BEGIN
-  CREATE TYPE content_type AS ENUM ('pdf','image','youtube','text');
-EXCEPTION WHEN duplicate_object THEN NULL;
-END $$;
-
-CREATE TABLE IF NOT EXISTS lessons (
-  id           uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-  title        text        NOT NULL,
-  subject_id   uuid        NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
-  teacher_id   uuid        NOT NULL REFERENCES teachers(id) ON DELETE CASCADE,
-  code         text        NOT NULL UNIQUE,
-  description  text,
-  scheduled_at timestamptz,
-  is_active    bool        NOT NULL DEFAULT false,
-  created_at   timestamptz DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS lesson_content (
-  id         uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
-  lesson_id  uuid         NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
-  type       content_type NOT NULL,
-  title      text,
-  url        text,
-  body       text,
-  sort_order int2         NOT NULL DEFAULT 0,
-  created_at timestamptz  DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS enrollments (
-  id          uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-  student_id  uuid        NOT NULL REFERENCES students(id) ON DELETE CASCADE,
-  lesson_id   uuid        NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
-  enrolled_at timestamptz DEFAULT now(),
-  UNIQUE(student_id, lesson_id)
-);</pre>
-      </div>
-
-      <div class="sql-step" id="step3">
-        <div class="sql-step-header" onclick="toggleStep('step3')">
-          <div><span class="step-num">3</span><span>exams + exam_questions + exam_results</span></div>
-          <button class="copy-sql-btn" onclick="event.stopPropagation();copySql('sql3')">نسخ</button>
-        </div>
-        <pre id="sql3">CREATE TABLE IF NOT EXISTS exams (
-  id               uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-  lesson_id        uuid        NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
-  title            text        NOT NULL,
-  duration_minutes int2,
-  created_at       timestamptz DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS exam_questions (
-  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  exam_id        uuid NOT NULL REFERENCES exams(id) ON DELETE CASCADE,
-  question_text  text NOT NULL,
-  option_a       text NOT NULL,
-  option_b       text NOT NULL,
-  option_c       text,
-  option_d       text,
-  correct_option text NOT NULL CHECK (correct_option IN ('a','b','c','d')),
-  sort_order     int2 NOT NULL DEFAULT 0,
-  created_at     timestamptz DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS exam_results (
-  id           uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-  exam_id      uuid        NOT NULL REFERENCES exams(id) ON DELETE CASCADE,
-  student_id   uuid        NOT NULL REFERENCES students(id) ON DELETE CASCADE,
-  score        numeric(5,2),
-  submitted_at timestamptz DEFAULT now(),
-  UNIQUE(exam_id, student_id)
-);</pre>
-      </div>
-
-      <div class="sql-step" id="step4">
-        <div class="sql-step-header" onclick="toggleStep('step4')">
-          <div><span class="step-num">4</span><span>Trigger — handle_new_user (شغّله لوحده)</span></div>
-          <button class="copy-sql-btn" onclick="event.stopPropagation();copySql('sql4')">نسخ</button>
-        </div>
-        <pre id="sql4">CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS trigger
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $func$
-BEGIN
-  INSERT INTO profiles (id, full_name, role)
-  VALUES (
-    NEW.id,
-    NEW.raw_user_meta_data ->> 'full_name',
-    COALESCE(NEW.raw_user_meta_data ->> 'role', 'student')
-  );
-  RETURN NEW;
-END;
-$func$;
-
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE FUNCTION handle_new_user();</pre>
-      </div>
-
-      <div class="sql-step" id="step5">
-        <div class="sql-step-header" onclick="toggleStep('step5')">
-          <div><span class="step-num">5</span><span>Trigger — handle_new_student (شغّله لوحده)</span></div>
-          <button class="copy-sql-btn" onclick="event.stopPropagation();copySql('sql5')">نسخ</button>
-        </div>
-        <pre id="sql5">CREATE OR REPLACE FUNCTION handle_new_student()
-RETURNS trigger
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $func$
-DECLARE
-  v_grade_id int2;
-BEGIN
-  IF NEW.role = 'student' THEN
-    SELECT (raw_user_meta_data->>'grade_id')::int2
-    INTO v_grade_id
-    FROM auth.users
-    WHERE id = NEW.id;
-
-    INSERT INTO students (id, grade_id)
-    VALUES (NEW.id, v_grade_id);
-  END IF;
-  RETURN NEW;
-END;
-$func$;
-
-DROP TRIGGER IF EXISTS on_profile_created ON profiles;
-
-CREATE TRIGGER on_profile_created
-  AFTER INSERT ON profiles
-  FOR EACH ROW
-  EXECUTE FUNCTION handle_new_student();</pre>
-      </div>
-
-    </div>
+    <button type="button" id="confirmResetBtn" class="cta-btn">Save & Sign In</button>
+    <button type="button" id="cancelResetBtn" class="popup-cancel-btn">Cancel</button>
   </div>
 </div>
 
+<!-- OTP Reset Popup -->
+<div id="otpResetPopupOverlay" class="popup-overlay">
+  <div class="popup-card">
+    <div class="popup-icon">📧</div>
+    <h3 class="popup-title">Enter Verification Code</h3>
+    <p class="popup-sub">We sent an 8-digit code to your email. Enter it below along with your new password.</p>
+    <div class="fw" style="margin-bottom:14px;">
+      <span class="flbl">Verification Code</span>
+      <input type="text" id="otpCodeInput" class="inp" placeholder="12345678" style="margin-bottom:12px;letter-spacing:6px;text-align:center;font-size:1.2rem;font-weight:700;font-family:var(--mono);" maxlength="8" autocomplete="one-time-code" inputmode="numeric" dir="ltr">
+      <span class="flbl">New Password</span>
+      <input type="password" id="otpNewPasswordInput" class="inp" placeholder="••••••••" autocomplete="new-password" minlength="8" dir="ltr">
+    </div>
+    <button type="button" id="verifyOtpBtn" class="cta-btn">Confirm & Change Password</button>
+    <button type="button" id="cancelOtpBtn" class="popup-cancel-btn">Cancel</button>
+  </div>
+</div>
+
+<!-- Google Profile Completion Popup -->
+<div id="googleProfilePopup" class="popup-overlay">
+  <div class="popup-card">
+    <div class="popup-icon">📱</div>
+    <h3 class="popup-title">One Last Step!</h3>
+    <p class="popup-sub">To complete your profile and show you the right courses, we need a few more details.</p>
+    <div class="fw" style="margin-bottom:14px;">
+      <span class="flbl">School Grade</span>
+      <select id="googleGrade" class="inp" style="margin-bottom:10px;" onchange="this.classList.add('filled')">
+        <option value="" disabled selected>Select grade...</option>
+        <option value="1">أولى ثانوي — Grade 10</option>
+        <option value="2">تانية ثانوي — Grade 11</option>
+        <option value="3">تالتة ثانوي — Grade 12</option>
+      </select>
+      <span class="flbl">Your Phone Number</span>
+      <input type="text" id="googlePhone" class="inp" placeholder="01xxxxxxxxx" style="margin-bottom:10px;" autocomplete="tel" inputmode="tel" dir="ltr">
+      <span class="flbl">Parent's Phone Number</span>
+      <input type="text" id="googleParentPhone" class="inp" placeholder="01xxxxxxxxx" autocomplete="tel" inputmode="tel" dir="ltr">
+    </div>
+    <button type="button" id="saveGoogleProfileBtn" class="cta-btn">Save & Enter Platform →</button>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-w">
+    <a class="logo" href="/">
+      <div class="logo-mark">KW</div>
+      <span class="logo-name">kala<em>wy</em></span>
+    </a>
+    <div class="nav-links">
+      <a href="#why" class="nav-link">Why Us</a>
+      <a href="#contact" class="nav-link">Get In Touch</a>
+      <button class="nav-btn" onclick="document.querySelector('.card-col').scrollIntoView({behavior:'smooth'})">Login / Sign Up</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <section class="hero-section">
+    <div class="hero-left reveal">
+      <div class="hero-shell">
+        <div class="glass-line"></div>
+        <div class="hero-topline">Advanced Learning System · Secondary School</div>
+        <h1 class="hero-h1">Learn Smarter, <span class="accent">Score Higher & Stay Ahead</span></h1>
+        <p class="hero-p">A premium learning platform for secondary school students in Egypt. Access high-quality lessons, structured exams, and real progress tracking — all in one place, built for your success.</p>
+        <div class="hero-actions">
+          <button class="primary-btn" onclick="document.querySelector('.card-col').scrollIntoView({behavior:'smooth'})">Login / Sign Up →</button>
+          <button class="ghost-btn" onclick="document.getElementById('why').scrollIntoView({behavior:'smooth'})">Explore Why Us</button>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric reveal stagger-1"><div class="n" data-count="500">0</div><div class="l">Students</div></div>
+          <div class="metric reveal stagger-2"><div class="n" data-count="200">0</div><div class="l">Lessons</div></div>
+          <div class="metric reveal stagger-3"><div class="n" data-count="98">0</div><div class="l">Satisfaction</div></div>
+        </div>
+        <div class="badges">
+          <div class="badge-chip reveal stagger-1">🎥 Video Lessons</div>
+          <div class="badge-chip reveal stagger-2">📝 Smart Exams</div>
+          <div class="badge-chip reveal stagger-3">📄 PDF & Images</div>
+          <div class="badge-chip reveal stagger-4">⚡ Lesson Codes</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right card-col reveal">
+      <div class="auth-card" id="authCard">
+        <div class="card-title">Welcome 👋</div>
+        <div class="card-sub">Sign in or create a new account to start learning now.</div>
+
+        <div class="tabs">
+          <button type="button" class="tab on" id="loginTab">Login</button>
+          <button type="button" class="tab" id="signupTab">Sign Up</button>
+        </div>
+
+        <form id="authForm" autocomplete="on">
+          <div id="extraFields" class="hidden fields" style="margin-bottom:12px;">
+            <div class="fw">
+              <span class="flbl">Full Name</span>
+              <input id="userName" name="name" class="inp" placeholder="Enter your full name..." autocomplete="name">
+            </div>
+            <div class="fw">
+              <span class="flbl">School Grade</span>
+              <select id="userGrade" class="inp" onchange="this.classList.add('filled')">
+                <option value="" disabled selected>Select grade...</option>
+                <option value="1">أولى ثانوي — Grade 10</option>
+                <option value="2">تانية ثانوي — Grade 11</option>
+                <option value="3">تالتة ثانوي — Grade 12</option>
+              </select>
+            </div>
+            <div class="f2col">
+              <div class="fw">
+                <span class="flbl">Student Phone</span>
+                <input id="userPhone" name="phone" class="inp" placeholder="01xxxxxxxxx" autocomplete="tel" inputmode="tel" dir="ltr">
+              </div>
+              <div class="fw">
+                <span class="flbl">Parent Phone</span>
+                <input id="parentPhone" name="parentPhone" class="inp" placeholder="01xxxxxxxxx" autocomplete="tel" inputmode="tel" dir="ltr">
+              </div>
+            </div>
+          </div>
+
+          <div class="fields">
+            <div class="fw">
+              <span class="flbl">Email Address</span>
+              <input id="email" name="email" type="email" class="inp" placeholder="example@email.com" autocomplete="email" autocapitalize="off" spellcheck="false" inputmode="email" dir="ltr">
+            </div>
+            <div class="fw">
+              <span class="flbl">Password</span>
+              <div class="pass-row">
+                <input id="password" name="password" type="password" class="inp" placeholder="••••••••" autocomplete="current-password" minlength="6" dir="ltr">
+                <button type="button" class="eye-btn" id="eyeBtn" aria-label="Toggle password visibility">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="forgotArea" class="forgot">
+            <button type="button" id="forgotBtn">Forgot your password?</button>
+          </div>
+
+          <button type="submit" class="cta-btn" id="actionBtn">Login →</button>
+
+          <div class="or-line">
+            <div class="or-bar"></div>
+            <span class="or-txt">OR CONTINUE WITH</span>
+            <div class="or-bar"></div>
+          </div>
+
+          <button type="button" class="g-btn" id="googleBtn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            Continue with Google
+          </button>
+
+          <div class="trust">
+            <span style="color:#16a34a;font-size:11px;">🔒</span>
+            <span class="trust-txt">Your data is protected · SSL encrypted</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="why">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker">Why kalawy</div>
+        <h2 class="section-title">Everything built to make learning easier, faster & more enjoyable.</h2>
+      </div>
+      <p class="section-sub">A modern platform designed for Egyptian secondary students — premium content, smart exams, and real progress tracking all in one clean experience.</p>
+    </div>
+
+    <div class="why-wrap">
+      <div class="why-main reveal">
+        <div class="why-grid">
+          <div class="why-card reveal stagger-1">
+            <div class="why-icon">🎬</div>
+            <h3>High-Quality Lessons</h3>
+            <p>Clear recorded explanations with a modern visual style that keeps students focused and makes difficult ideas easier to understand.</p>
+          </div>
+          <div class="why-card reveal stagger-2">
+            <div class="why-icon">🔑</div>
+            <h3>Lesson Access Codes</h3>
+            <p>Every lesson has a unique code. Students unlock content securely — no sharing, no leaks, full control for teachers.</p>
+          </div>
+          <div class="why-card reveal stagger-3">
+            <div class="why-icon">📈</div>
+            <h3>Real Progress Tracking</h3>
+            <p>Students see their results, track improvement, and stay consistent with better follow-up and performance visibility.</p>
+          </div>
+          <div class="why-card reveal stagger-4">
+            <div class="why-icon">📄</div>
+            <h3>Rich Content</h3>
+            <p>Each lesson can include YouTube videos, PDF files, images, and exams — everything a student needs in one place.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="why-side">
+        <div class="why-spot reveal stagger-2">
+          <h3>Why students stay here.</h3>
+          <p>Because kalawy is not just a platform. It is a complete learning system organized around real results.</p>
+          <div class="why-list">
+            <div>Fast sign in and clean access to lessons</div>
+            <div>Secure lesson codes — one per student</div>
+            <div>Exams with images, PDFs & auto scoring</div>
+          </div>
+        </div>
+        <div class="why-proof reveal stagger-3">
+          <div class="proof-row">
+            <div class="proof-box"><div class="num">500+</div><div class="txt">Active Students</div></div>
+            <div class="proof-box"><div class="num">200+</div><div class="txt">Lessons</div></div>
+          </div>
+          <div class="proof-note">From the first scroll, kalawy tells the value of the platform clearly — premium content, secure access, and real results for every student.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact-section" id="contact">
+    <div class="contact-inner">
+      <div class="contact-card reveal">
+        <div class="section-kicker" style="margin-bottom:16px;">Contact</div>
+        <h2>Need help or want to ask something?</h2>
+        <p>Reach out any time — we're here to help students, parents, and teachers get the most out of kalawy.</p>
+        <div class="contact-links">
+          <a href="mailto:admin@kalawy.com" class="contact-link reveal stagger-1">
+            <div class="cl-icon">✉️</div>
+            <div><div class="cl-label">Email</div><div class="cl-val">admin@kalawy.com</div></div>
+          </a>
+          <a href="https://wa.me/201000000000" target="_blank" class="contact-link reveal stagger-2">
+            <div class="cl-icon">💬</div>
+            <div><div class="cl-label">WhatsApp</div><div class="cl-val">+20 100 000 0000</div></div>
+          </a>
+          <a href="https://www.facebook.com" target="_blank" class="contact-link reveal stagger-3">
+            <div class="cl-icon">📘</div>
+            <div><div class="cl-label">Facebook</div><div class="cl-val">kalawy — منصة التعليم</div></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-form-card reveal stagger-2">
+        <div class="section-kicker" style="margin-bottom:16px;">Send a Message</div>
+        <h3>Talk to us directly.</h3>
+        <p>Send your message and it opens WhatsApp instantly with the right text.</p>
+        <div class="contact-form-side">
+          <input type="text" id="contactName" placeholder="Your full name" />
+          <input type="email" id="contactEmail" placeholder="Your email address" />
+          <textarea id="contactMsg" placeholder="Your message..." rows="6"></textarea>
+          <button class="contact-send-btn" onclick="handleContactSend()">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<a href="https://wa.me/201000000000" class="floating-wa" target="_blank" title="Contact us on WhatsApp">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+  </svg>
+</a>
+
+<footer>
+  <div class="footer-box">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-row">
+          <div class="footer-logo-box">KW</div>
+          <div class="footer-brand-name">kala<em>wy</em></div>
+        </div>
+        <p class="footer-desc">A premium educational platform for Egyptian secondary students — designed for clarity, speed, and real learning results.</p>
+        <div class="footer-socials">
+          <a href="#why" class="social-pill">Why Us</a>
+          <a href="https://wa.me/201000000000" target="_blank" class="social-pill">WhatsApp</a>
+          <a href="#contact" class="social-pill">Contact</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="#why">Why Us</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#">Video Lessons</a></li>
+          <li><a href="#">Exam Center</a></li>
+          <li><a href="#">Progress Tracking</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>admin@kalawy.com</p>
+        <p>+20 100 000 0000</p>
+        <p>Sun – Thu · 9am – 9pm</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>kalawy © 2025 · All rights reserved</span>
+    </div>
+  </div>
+</footer>
+
 <script>
-const SUPABASE_URL = 'https://xzjxmfgymbvordumrush.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e'
-const { createClient } = supabase
-const db = createClient(SUPABASE_URL, SUPABASE_KEY)
+// ─── Toast ───────────────────────────────────────────────────────────────────
+function showToast(type,title,msg,duration=4500){
+  const icons={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<div>${icons[type]||'💬'}</div><div style="flex:1"><div class="toast-title">${title}</div>${msg?`<div class="toast-msg">${msg}</div>`:''}</div><button class="toast-close" onclick="dismissToast(this.parentElement)">×</button>`;
+  c.appendChild(t);
+  setTimeout(()=>dismissToast(t),duration);
+}
+function dismissToast(el){if(!el||el.classList.contains('toast-exit'))return;el.classList.add('toast-exit');setTimeout(()=>el.remove(),260);}
 
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const names = ['login','register','sql']
-    t.classList.toggle('active', names[i] === name)
-  })
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
-  document.getElementById('panel-' + name).classList.add('active')
+// ─── Contact ──────────────────────────────────────────────────────────────────
+function handleContactSend(){
+  const name=document.getElementById('contactName').value.trim();
+  const email=document.getElementById('contactEmail').value.trim();
+  const msg=document.getElementById('contactMsg').value.trim();
+  if(!name||!email||!msg)return showToast('warning','Missing Fields','Please fill in all fields before sending.');
+  const waText=encodeURIComponent(`New message from kalawy website:\nName: ${name}\nEmail: ${email}\nMessage: ${msg}`);
+  window.open(`https://wa.me/201000000000?text=${waText}`,'_blank');
+  document.getElementById('contactName').value='';
+  document.getElementById('contactEmail').value='';
+  document.getElementById('contactMsg').value='';
+  showToast('success','Message Sent!','We will get back to you as soon as possible.');
 }
 
-function showMsg(id, msg, type='error') {
-  const el = document.getElementById(id)
-  if (!el) return
-  el.innerHTML = msg ? `<div class="${type}">${msg}</div>` : ''
+// ─── Supabase ─────────────────────────────────────────────────────────────────
+const SUPABASE_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
+const SUPABASE_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ─── Change this to the admin email you registered in Supabase ───────────────
+const ADMIN_EMAIL = "your-admin@email.com";
+
+function rememberLastEmail(email){if(email)localStorage.setItem('kw_last_email',email.trim());}
+function preloadLastEmail(){const s=localStorage.getItem('kw_last_email');const el=document.getElementById('email');if(s&&el&&!el.value)el.value=s;}
+
+// ─── Role → redirect ──────────────────────────────────────────────────────────
+const REDIRECTS = { admin:'/admin', teacher:'/teacher', student:'/student' };
+
+async function getRoleAndRedirect(userId, userEmail){
+  if(userEmail === ADMIN_EMAIL){ window.location.href = REDIRECTS.admin; return; }
+  const { data: profile } = await sb.from('profiles').select('role').eq('id', userId).single();
+  const role = profile?.role || 'student';
+  window.location.href = REDIRECTS[role] || REDIRECTS.student;
 }
 
-async function handleLogin() {
-  const email = document.getElementById('login-email').value.trim()
-  const password = document.getElementById('login-password').value
-  const btn = document.getElementById('login-btn')
-  if (!email || !password) return showMsg('login-error', 'من فضلك ادخل البريد وكلمة السر')
-  btn.disabled = true; btn.textContent = 'جاري الدخول...'
-  showMsg('login-error', '')
-  const { data, error } = await db.auth.signInWithPassword({ email, password })
-  if (error) {
-    showMsg('login-error', 'بيانات غلط أو الحساب مش موجود')
-    btn.disabled = false; btn.textContent = 'دخول'
-    return
+// ─── Session check on load ────────────────────────────────────────────────────
+async function checkSessionOnLoad(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) return;
+  const user = session.user;
+  rememberLastEmail(user.email || '');
+
+  // Check if profile is complete
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+
+  if(!profile || !profile.full_name){
+    // Google sign-in — need to complete profile
+    const popup = document.getElementById('googleProfilePopup');
+    popup.classList.add('show');
+    document.getElementById('saveGoogleProfileBtn').onclick = async () => {
+      const grade    = document.getElementById('googleGrade').value;
+      const phone    = document.getElementById('googlePhone').value.trim();
+      const parentPh = document.getElementById('googleParentPhone').value.trim();
+      if(!grade||!phone||!parentPh) return showToast('warning','Missing Data','Please complete all fields!');
+      const btn = document.getElementById('saveGoogleProfileBtn');
+      btn.textContent = "Saving...";
+      const name = user.user_metadata?.full_name || user.email;
+      // upsert profile (trigger may have already created it)
+      await sb.from('profiles').upsert({ id: user.id, full_name: name, phone, role: 'student' });
+      // upsert student
+      await sb.from('students').upsert({ id: user.id, grade_id: parseInt(grade) });
+      window.location.href = REDIRECTS.student;
+    };
+    return;
   }
-  const { data: profile } = await db.from('profiles').select('role').eq('id', data.user.id).single()
-  const role = profile?.role || 'student'
-  const redirects = { admin: '/admin', teacher: '/teacher', student: '/student' }
-  showMsg('login-error', `✓ تم الدخول! دورك: ${role}`, 'success')
-  btn.textContent = 'تم الدخول ✓'
-  // window.location.href = redirects[role]  // فعّل السطر ده لما تكون جاهز
+  // Already complete — redirect
+  getRoleAndRedirect(user.id, user.email);
 }
 
-async function handleRegister() {
-  const full_name = document.getElementById('reg-name').value.trim()
-  const email = document.getElementById('reg-email').value.trim()
-  const password = document.getElementById('reg-password').value
-  const grade_id = parseInt(document.getElementById('reg-grade').value)
-  const btn = document.getElementById('register-btn')
-  showMsg('register-error', ''); showMsg('register-success', '')
-  if (!full_name || !email || !password) return showMsg('register-error', 'من فضلك ادخل كل البيانات')
-  if (password.length < 6) return showMsg('register-error', 'كلمة السر 6 أحرف على الأقل')
-  btn.disabled = true; btn.textContent = 'جاري التسجيل...'
-  const { error } = await db.auth.signUp({
-    email, password,
-    options: { data: { full_name, role: 'student', grade_id } }
-  })
-  if (error) {
-    showMsg('register-error', error.message === 'User already registered' ? 'البريد ده مسجل قبل كده' : error.message)
-    btn.disabled = false; btn.textContent = 'تسجيل'
-    return
+preloadLastEmail();
+checkSessionOnLoad();
+
+// ─── Password recovery listener ───────────────────────────────────────────────
+sb.auth.onAuthStateChange(async(event, session) => {
+  if(event === 'PASSWORD_RECOVERY'){
+    const popup     = document.getElementById('resetPopupOverlay');
+    const passInput = document.getElementById('newPasswordInput');
+    const confirmBtn= document.getElementById('confirmResetBtn');
+    const cancelBtn = document.getElementById('cancelResetBtn');
+    popup.classList.add('show');
+    confirmBtn.onclick = async () => {
+      if(passInput.value.length < 6) return showToast('warning','Password Too Short','Must be at least 6 characters');
+      confirmBtn.textContent = "Saving...";
+      const { error } = await sb.auth.updateUser({ password: passInput.value });
+      if(error){ showToast('error','Error',error.message); confirmBtn.textContent = "Save & Sign In"; }
+      else{ showToast('success','Updated!','Password changed successfully.'); setTimeout(()=>{ sb.auth.signOut(); popup.classList.remove('show'); passInput.value=""; confirmBtn.textContent="Save & Sign In"; },2000); }
+    };
+    cancelBtn.onclick = () => { popup.classList.remove('show'); sb.auth.signOut(); };
   }
-  showMsg('register-success', '✓ تم التسجيل! تقدر تدخل دلوقتي', 'success')
-  btn.disabled = false; btn.textContent = 'تسجيل'
-}
+});
 
-function toggleStep(id) {
-  document.getElementById(id).classList.toggle('open')
-}
+// ─── Tab switch ───────────────────────────────────────────────────────────────
+let mode = "login";
+const lTab = document.getElementById("loginTab");
+const sTab = document.getElementById("signupTab");
+const extra= document.getElementById("extraFields");
+const btn  = document.getElementById("actionBtn");
+const fa   = document.getElementById("forgotArea");
+const passInput = document.getElementById("password");
 
-function copySql(id) {
-  const text = document.getElementById(id).innerText
-  navigator.clipboard.writeText(text)
-  event.target.textContent = 'تم ✓'
-  setTimeout(() => event.target.textContent = 'نسخ', 2000)
-}
+function syncUI(){ passInput.setAttribute('autocomplete', mode==='login' ? 'current-password' : 'new-password'); }
+sTab.onclick = () => { mode="signup"; extra.classList.remove("hidden"); btn.textContent="Create Account →"; fa.classList.add("hidden"); sTab.classList.add("on"); lTab.classList.remove("on"); syncUI(); };
+lTab.onclick = () => { mode="login";  extra.classList.add("hidden");    btn.textContent="Login →";          fa.classList.remove("hidden"); lTab.classList.add("on"); sTab.classList.remove("on"); syncUI(); };
+syncUI();
+
+// ─── Auth form submit ─────────────────────────────────────────────────────────
+document.getElementById("authForm").addEventListener("submit", async(e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const pass  = document.getElementById("password").value;
+
+  try {
+    if(mode === "signup"){
+      const name     = document.getElementById("userName").value.trim();
+      const grade    = document.getElementById("userGrade").value;
+      const phone    = document.getElementById("userPhone").value.trim();
+      const parentPh = document.getElementById("parentPhone").value.trim();
+      if(!name||!grade||!phone||!parentPh||!email||!pass)
+        return showToast('warning','Missing Fields','Please fill in all fields first');
+
+      btn.textContent = "Creating account...";
+      const { data, error } = await sb.auth.signUp({
+        email, password: pass,
+        options: { data: { full_name: name, role: 'student', grade_id: parseInt(grade) } }
+      });
+      if(error) throw error;
+
+      // Update profile with phone (trigger creates the row)
+      if(data.user){
+        await sb.from('profiles').update({ phone }).eq('id', data.user.id);
+      }
+      rememberLastEmail(email);
+      showToast('success','Welcome to kalawy!','Your account has been created 🎉');
+      setTimeout(() => { window.location.href = REDIRECTS.student; }, 1200);
+
+    } else {
+      btn.textContent = "Signing in...";
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if(error) throw error;
+      rememberLastEmail(email);
+      showToast('success','Welcome back!','Loading your dashboard...');
+      setTimeout(() => getRoleAndRedirect(data.user.id, data.user.email), 1000);
+    }
+  } catch(err){
+    const friendly = err.message.includes('Invalid login') ? 'Wrong email or password.' :
+                     err.message.includes('already registered') ? 'This email is already registered.' :
+                     err.message;
+    showToast('error','Error', friendly);
+    btn.textContent = mode==="login" ? "Login →" : "Create Account →";
+  }
+});
+
+// ─── Google OAuth ─────────────────────────────────────────────────────────────
+document.getElementById("googleBtn").onclick = async () => {
+  try {
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + window.location.pathname }
+    });
+    if(error) throw error;
+  } catch(e){ showToast('error','Error', e.message); }
+};
+
+// ─── Forgot password ──────────────────────────────────────────────────────────
+document.getElementById("forgotBtn").onclick = async () => {
+  const emailVal = document.getElementById("email").value.trim();
+  if(!emailVal) return showToast('warning','Email Required','Enter your email address first');
+  rememberLastEmail(emailVal);
+  document.getElementById("forgotBtn").textContent = "Sending...";
+  try {
+    const { error } = await sb.auth.resetPasswordForEmail(emailVal, {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+    if(error) throw error;
+    showToast('info','Email Sent','Check your inbox for the verification code');
+    document.getElementById('otpResetPopupOverlay').classList.add('show');
+  } catch(e){ showToast('error','Error', e.message); }
+  document.getElementById("forgotBtn").textContent = "Forgot your password?";
+};
+
+document.getElementById("cancelOtpBtn").onclick = () => document.getElementById("otpResetPopupOverlay").classList.remove('show');
+document.getElementById("verifyOtpBtn").onclick = async () => {
+  const emailVal   = document.getElementById("email").value;
+  const codeVal    = document.getElementById("otpCodeInput").value.trim();
+  const newPassVal = document.getElementById("otpNewPasswordInput").value;
+  if(!codeVal||codeVal.length!==8) return showToast('warning','Invalid Code','Please enter the 8-digit code');
+  if(newPassVal.length<8) return showToast('warning','Password Too Short','Must be at least 8 characters');
+  const vBtn = document.getElementById("verifyOtpBtn");
+  vBtn.textContent = "Verifying...";
+  try {
+    const { error:ve } = await sb.auth.verifyOtp({ email:emailVal, token:codeVal, type:'recovery' });
+    if(ve) throw ve;
+    const { error:ue } = await sb.auth.updateUser({ password:newPassVal });
+    if(ue) throw ue;
+    showToast('success','Password Changed!','Your password has been updated ✅');
+    setTimeout(() => {
+      document.getElementById('otpResetPopupOverlay').classList.remove('show');
+      document.getElementById("otpCodeInput").value = "";
+      document.getElementById("otpNewPasswordInput").value = "";
+      sb.auth.signOut();
+    }, 2000);
+  } catch(e){ showToast('error','Error', e.message); vBtn.textContent = "Confirm & Change Password"; }
+};
+
+// ─── Show/hide password ───────────────────────────────────────────────────────
+document.getElementById('eyeBtn').onclick = () => {
+  const p = document.getElementById('password');
+  p.type = p.type === 'password' ? 'text' : 'password';
+};
+
+// ─── Counters ─────────────────────────────────────────────────────────────────
+function countUp(el,t){ let v=0,s=Math.ceil(t/60); const id=setInterval(()=>{ v=Math.min(v+s,t); el.textContent=(v===t&&t>=100)?'+'+v:v; if(v>=t)clearInterval(id); },22); }
+const statsEl = document.querySelector('.hero-metrics');
+if(statsEl){ new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting&&!statsEl.dataset.counted){ statsEl.dataset.counted='1'; document.querySelectorAll('[data-count]').forEach(el=>countUp(el,+el.dataset.count)); } }); },{threshold:.25}).observe(statsEl); }
+
+// ─── Scroll reveal ────────────────────────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+  revealEls.forEach(el=>el.classList.add('ready'));
+  const observer = new IntersectionObserver(entries=>{ entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('in'); }); },{threshold:.12});
+  revealEls.forEach(el=>observer.observe(el));
+  requestAnimationFrame(()=>{ revealEls.forEach((el,i)=>{ if(i<4) el.classList.add('in'); }); });
+} else { revealEls.forEach(el=>el.classList.add('in')); }
 </script>
 </body>
 </html>
