@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>kalawy — Student</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --bg:#0e1a14;--bg2:#121f18;--sidebar:#0b1510;
+  --card:#162019;--card2:#1b2820;--card3:#1f2e25;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.11);
+  --text:#edf0eb;--muted:#7a9080;--muted2:#4a6055;
+  --accent:#3a7d5c;--accent2:#4a9b72;--accentBright:#5ec98a;--accentSoft:rgba(58,125,92,.15);
+  --gold:#c49a52;--goldSoft:rgba(196,154,82,.12);
+  --danger:#e05252;--dangerSoft:rgba(224,82,82,.12);
+  --blue:#4a7fc1;--blueSoft:rgba(74,127,193,.12);
+  --purple:#7c5cbf;--purpleSoft:rgba(124,92,191,.12);
+  --shadow:0 8px 32px rgba(0,0,0,.5);--shadow2:0 4px 16px rgba(0,0,0,.3);
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+  --r:16px;--r-sm:10px;--sidebar-w:240px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+button,input,select,textarea{font:inherit}
+.hidden{display:none!important}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--sidebar);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;z-index:50}
+.sidebar-logo{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#1a3d28);display:grid;place-items:center;font-weight:800;font-size:.95rem;color:#fff}
+.logo-name{font-weight:800;font-size:1.1rem;letter-spacing:-.03em}
+.logo-name em{font-style:normal;color:var(--gold)}
+.sidebar-nav{flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-sm);cursor:pointer;color:var(--muted);font-weight:600;font-size:.9rem;transition:.15s;border:none;background:none;width:100%;text-align:right}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.nav-item.active{color:var(--accentBright);background:var(--accentSoft)}
+.nav-icon{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-size:1rem;background:rgba(255,255,255,.05);flex-shrink:0}
+.nav-item.active .nav-icon{background:var(--accentSoft)}
+.sidebar-footer{padding:14px 10px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-sm);background:rgba(255,255,255,.04);cursor:pointer;transition:.15s}
+.user-row:hover{background:rgba(255,255,255,.07)}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;font-size:.9rem;color:#fff;flex-shrink:0}
+.user-name{font-weight:600;font-size:.85rem}
+.user-grade{font-size:.7rem;color:var(--muted);font-family:var(--mono)}
+.logout-btn{border:none;background:none;color:var(--danger);font-size:.8rem;font-weight:600;cursor:pointer;margin-top:8px;width:100%;padding:8px;border-radius:var(--r-sm);transition:.15s}
+.logout-btn:hover{background:var(--dangerSoft)}
+
+/* ── Main ── */
+.main{margin-right:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg2);position:sticky;top:0;z-index:40}
+.page-title{font-weight:800;font-size:1.25rem;letter-spacing:-.03em}
+.page-sub{font-size:.8rem;color:var(--muted);margin-top:2px}
+.content{padding:24px 28px;flex:1}
+
+/* ── Stats ── */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;transition:.2s}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:-30px;left:-30px;width:80px;height:80px;border-radius:50%;opacity:.18}
+.s-green::before{background:var(--accent2)}.s-gold::before{background:var(--gold)}.s-blue::before{background:var(--blue)}
+.stat-icon{font-size:1.3rem;margin-bottom:10px}
+.stat-num{font-weight:800;font-size:1.8rem;letter-spacing:-.04em;line-height:1}
+.stat-label{font-size:.72rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-top:5px}
+
+/* ── Cards & Panels ── */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+.panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-weight:700;font-size:.95rem}
+.panel-body{padding:18px}
+
+/* ── Browse flow ── */
+.browse-steps{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.step-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;border:1px solid var(--border2);background:var(--card2);font-size:.82rem;font-weight:600;color:var(--muted)}
+.step-pill.done{color:var(--accentBright);border-color:var(--accent);background:var(--accentSoft)}
+.step-pill.current{color:var(--text);border-color:var(--border2);background:var(--card3)}
+.step-arrow{color:var(--muted2);font-size:.8rem}
+
+.browse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.browse-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:.2s;text-align:right}
+.browse-card:hover{border-color:var(--accent);background:var(--card3);transform:translateY(-2px);box-shadow:var(--shadow2)}
+.browse-card.selected{border-color:var(--accentBright);background:var(--accentSoft)}
+.bc-icon{font-size:1.5rem;margin-bottom:8px}
+.bc-title{font-weight:700;font-size:.92rem;margin-bottom:4px}
+.bc-sub{font-size:.75rem;color:var(--muted)}
+
+/* ── Lesson card ── */
+.lesson-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:.2s;cursor:pointer}
+.lesson-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.lesson-card.locked{opacity:.7;cursor:default}
+.lc-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.lc-title{font-weight:700;font-size:.95rem}
+.lc-badge{font-size:.68rem;font-family:var(--mono);padding:3px 10px;border-radius:999px;font-weight:700;white-space:nowrap}
+.lc-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
+.lc-code-area{margin-top:12px;display:flex;gap:8px}
+.code-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:9px 12px;border-radius:var(--r-sm);outline:none;font-family:var(--mono);font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;transition:.15s}
+.code-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px var(--accentSoft)}
+.code-input::placeholder{color:var(--muted2);font-family:var(--font);letter-spacing:0;text-transform:none}
+
+/* Countdown */
+.countdown{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:var(--goldSoft);border:1px solid rgba(196,154,82,.25);font-family:var(--mono);font-size:.8rem;color:var(--gold);font-weight:700}
+
+/* ── Lesson viewer ── */
+.lesson-viewer{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.viewer-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.viewer-back{border:none;background:rgba(255,255,255,.06);color:var(--muted);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:600;transition:.15s}
+.viewer-back:hover{color:var(--text);background:rgba(255,255,255,.1)}
+.viewer-title{font-weight:800;font-size:1.1rem}
+.content-block{padding:20px;border-bottom:1px solid var(--border)}
+.content-block:last-child{border-bottom:none}
+.cb-label{font-size:.68rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.yt-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:var(--r-sm);overflow:hidden;background:#000}
+.yt-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.pdf-link{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);text-decoration:none;font-weight:600;transition:.15s}
+.pdf-link:hover{border-color:var(--accent);color:var(--accentBright)}
+.img-view{max-width:100%;border-radius:var(--r-sm);border:1px solid var(--border)}
+.text-body{line-height:1.85;color:var(--muted);white-space:pre-wrap;font-size:.92rem}
+
+/* ── Profile ── */
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:16px}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;font-size:1.8rem;color:#fff;margin-bottom:16px}
+.profile-name{font-weight:800;font-size:1.4rem;letter-spacing:-.03em;margin-bottom:4px}
+.profile-meta{font-size:.85rem;color:var(--muted)}
+.profile-fields{display:grid;gap:12px;margin-top:20px}
+.pf-row{display:flex;flex-direction:column;gap:5px}
+.pf-label{font-size:.68rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.pf-val{font-size:.92rem;font-weight:600}
+.inp{background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:10px 14px;border-radius:var(--r-sm);outline:none;transition:.15s;width:100%}
+.inp:focus{border-color:var(--accent2);box-shadow:0 0 0 3px var(--accentSoft)}
+.inp::placeholder{color:var(--muted2)}
+
+/* ── Buttons ── */
+.btn{border:none;border-radius:var(--r-sm);padding:9px 16px;font-weight:700;cursor:pointer;font-size:.86rem;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 6px 16px rgba(58,125,92,.2)}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text)}
+.btn-sm{padding:6px 12px;font-size:.8rem}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;font-family:var(--mono)}
+.badge-green{background:rgba(94,201,138,.12);color:var(--accentBright)}
+.badge-gold{background:var(--goldSoft);color:var(--gold)}
+.badge-blue{background:var(--blueSoft);color:#7aabf0}
+.badge-red{background:var(--dangerSoft);color:var(--danger)}
+
+/* ── Toast ── */
+#toast-container{position:fixed;top:18px;left:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;gap:10px;align-items:flex-start;background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;min-width:260px;max-width:320px;box-shadow:var(--shadow);animation:tin .25s ease}
+.toast.success{border-right:3px solid var(--accentBright)}.toast.error{border-right:3px solid var(--danger)}.toast.info{border-right:3px solid var(--blue)}.toast.warning{border-right:3px solid var(--gold)}
+.t-title{font-weight:700;font-size:.85rem}.t-msg{font-size:.75rem;color:var(--muted);margin-top:2px}
+@keyframes tin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.toast-exit{animation:tout .2s ease forwards}
+@keyframes tout{to{opacity:0;transform:translateY(-6px)}}
+
+/* ── Login Gate ── */
+#loginGate{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
+.login-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:32px;width:100%;max-width:360px;box-shadow:var(--shadow)}
+.login-card::before{content:'';display:block;height:3px;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--accent2));margin-bottom:20px}
+.login-title{font-weight:800;font-size:1.4rem;margin-bottom:4px}
+.login-sub{font-size:.82rem;color:var(--muted);margin-bottom:20px}
+.flbl{font-size:.7rem;font-weight:700;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+.fw{display:flex;flex-direction:column;gap:6px}
+
+/* ── Loader ── */
+.loader{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.full-loader{display:flex;align-items:center;justify-content:center;padding:60px;color:var(--muted);gap:10px;font-size:.9rem}
+
+/* ── Empty ── */
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.empty-icon{font-size:2.5rem;margin-bottom:10px}
+.empty-txt{font-size:.88rem}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:right;font-size:.7rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 14px;font-size:.86rem;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.td-mono{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+
+@media(max-width:860px){.sidebar{display:none}.main{margin-right:0}.stats-grid{grid-template-columns:1fr 1fr}.content{padding:16px}}
+@media(max-width:540px){.stats-grid{grid-template-columns:1fr}.browse-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- Login Gate -->
+<div id="loginGate">
+  <div class="login-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3a7d5c,#1a3d28);display:grid;place-items:center;font-weight:800;color:#fff">KW</div>
+      <div style="font-weight:800;font-size:1.1rem">kala<span style="color:#c49a52">wy</span></div>
+    </div>
+    <div class="login-title">أهلاً بك 👋</div>
+    <div class="login-sub">ادخل بحسابك عشان تشوف حصصك</div>
+    <div class="fw" style="margin-bottom:12px">
+      <span class="flbl">البريد الإلكتروني</span>
+      <input type="email" id="lg-email" class="inp" placeholder="example@email.com" dir="ltr">
+    </div>
+    <div class="fw" style="margin-bottom:16px">
+      <span class="flbl">كلمة السر</span>
+      <input type="password" id="lg-pass" class="inp" placeholder="••••••••" dir="ltr">
+    </div>
+    <button id="lg-btn" class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">دخول</button>
+    <div id="lg-err" style="font-size:.8rem;color:var(--danger);margin-top:10px;text-align:center"></div>
+    <div style="text-align:center;margin-top:14px;font-size:.82rem;color:var(--muted)">مش عندك حساب؟ <a href="/index.html" style="color:var(--accentBright);font-weight:700">سجّل دلوقتي</a></div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-row">
+      <div class="logo-mark">KW</div>
+      <div><div class="logo-name">kala<em>wy</em></div></div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" onclick="goTo('home')" data-page="home">
+      <div class="nav-icon">🏠</div> الرئيسية
+    </button>
+    <button class="nav-item" onclick="goTo('browse')" data-page="browse">
+      <div class="nav-icon">🔍</div> تصفح الحصص
+    </button>
+    <button class="nav-item" onclick="goTo('mylessons')" data-page="mylessons">
+      <div class="nav-icon">🎬</div> حصصي
+    </button>
+    <button class="nav-item" onclick="goTo('profile')" data-page="profile">
+      <div class="nav-icon">👤</div> بروفايلي
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-row" onclick="goTo('profile')">
+      <div class="user-avatar" id="sidebarAvatar">?</div>
+      <div>
+        <div class="user-name" id="sidebarName">...</div>
+        <div class="user-grade" id="sidebarGrade">...</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">تسجيل الخروج</button>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="topbarTitle">الرئيسية</div>
+      <div class="page-sub" id="topbarSub">مرحباً بك في kalawy</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="renderPage(currentPage)">🔄</button>
+  </div>
+  <div class="content" id="mainContent">
+    <div class="full-loader"><div class="loader"></div> جاري التحميل...</div>
+  </div>
+</main>
+
+<script>
+const SUPABASE_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
+const SUPABASE_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const GRADES = {1:'أولى ثانوي',2:'تانية ثانوي',3:'تالتة ثانوي'};
+
+let STUDENT = {}; // { id, full_name, phone, grade_id, email }
+let currentPage = 'home';
+
+// Browse state
+let browse = { subject:null, teacher:null, chapter:null };
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(type,title,msg='',dur=4000){
+  const icons={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<div style="font-size:1rem">${icons[type]}</div><div><div class="t-title">${title}</div>${msg?`<div class="t-msg">${msg}</div>`:''}</div>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add('toast-exit');setTimeout(()=>t.remove(),220);},dur);
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+async function doLogin(){
+  const email=document.getElementById('lg-email').value.trim();
+  const pass=document.getElementById('lg-pass').value;
+  const btn=document.getElementById('lg-btn');
+  const err=document.getElementById('lg-err');
+  err.textContent='';
+  if(!email||!pass)return err.textContent='ادخل البريد وكلمة السر';
+  btn.innerHTML='<span class="loader"></span>';btn.disabled=true;
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){err.textContent='بيانات غلط';btn.textContent='دخول';btn.disabled=false;return;}
+  const ok = await loadStudent(data.user.id, data.user.email);
+  if(!ok){await sb.auth.signOut();err.textContent='الحساب ده مش طالب';btn.textContent='دخول';btn.disabled=false;}
+}
+
+async function doLogout(){await sb.auth.signOut();location.reload();}
+
+async function loadStudent(uid, email){
+  const{data:profile}=await sb.from('profiles').select('role,full_name,phone').eq('id',uid).single();
+  if(!profile||profile.role!=='student') return false;
+  const{data:student}=await sb.from('students').select('grade_id').eq('id',uid).single();
+  STUDENT={id:uid,email,full_name:profile.full_name,phone:profile.phone,grade_id:student?.grade_id};
+  document.getElementById('sidebarAvatar').textContent=(profile.full_name||email)[0].toUpperCase();
+  document.getElementById('sidebarName').textContent=profile.full_name||email;
+  document.getElementById('sidebarGrade').textContent=GRADES[student?.grade_id]||'—';
+  document.getElementById('loginGate').remove();
+  goTo('home');
+  return true;
+}
+
+async function checkSession(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session)return;
+  const ok=await loadStudent(session.user.id,session.user.email);
+  if(!ok){await sb.auth.signOut();}
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+const pageInfo={
+  home:     {title:'الرئيسية',     sub:'نظرة عامة على تقدمك'},
+  browse:   {title:'تصفح الحصص',   sub:'اختار مادة → مدرس → شابتر → حصة'},
+  mylessons:{title:'حصصي',          sub:'الحصص اللي اشتركت فيها'},
+  profile:  {title:'بروفايلي',     sub:'بياناتك الشخصية'},
+};
+function goTo(page){
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+  const info=pageInfo[page]||{title:page,sub:''};
+  document.getElementById('topbarTitle').textContent=info.title;
+  document.getElementById('topbarSub').textContent=info.sub;
+  currentPage=page;
+  renderPage(page);
+}
+function renderPage(page){
+  if(page==='home')      renderHome();
+  else if(page==='browse')    renderBrowse();
+  else if(page==='mylessons') renderMyLessons();
+  else if(page==='profile')   renderProfile();
+}
+
+// ── HOME ──────────────────────────────────────────────────────────────────────
+async function renderHome(){
+  const c=document.getElementById('mainContent');
+  c.innerHTML='<div class="full-loader"><div class="loader"></div></div>';
+  const{count:enrolled}=await sb.from('enrollments').select('*',{count:'exact',head:true}).eq('student_id',STUDENT.id);
+  const{data:recent}=await sb.from('enrollments')
+    .select('enrolled_at,lessons(id,title,code,is_active,chapters(title,subjects(name_ar)))')
+    .eq('student_id',STUDENT
