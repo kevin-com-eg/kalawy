@@ -428,6 +428,66 @@ body{overflow-y:scroll;}
   .ed-nav{height:78px;padding:0 14px;gap:10px}.ed-user{width:auto;min-width:0}.ed-user-text{display:none}.ed-nav-links{display:none}.ed-right{margin-inline-start:auto;gap:10px}.ed-bc-strip{top:78px}.ed-bc-inner{height:54px;padding:0 16px}.pw{padding-top:132px}.pg{padding-inline:16px}.pg-hero{padding-top:48px;padding-bottom:34px}.pg-hero-title{font-size:2rem}#ch-grid.grid-4{grid-template-columns:1fr;gap:18px}.ch-card{min-height:245px}
 }
 
+
+/* ═══════════════════════════════════════════
+   USER REQUEST UPDATE — kalawy final polish
+   - remove choose teacher
+   - AR/EN buttons in header
+   - contact WhatsApp/email
+   - lessons cards like chapters
+   - separated login/register
+═══════════════════════════════════════════ */
+.ed-right{gap:14px;}
+.ed-lang{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:4px;direction:ltr;}
+.ed-lang .lopt{color:rgba(255,255,255,.72);background:transparent;border:0;padding:6px 13px;font-size:.78rem;line-height:1;border-radius:999px;}
+.ed-lang .lopt.on{background:var(--ed-green);color:#120528;box-shadow:none;}
+.ed-logo strong{font-size:1.18rem;font-weight:900;text-transform:none;letter-spacing:-.02em;}
+.ed-bell{cursor:pointer;border-radius:999px;padding:7px 12px;}
+.ed-bell:hover{background:rgba(255,255,255,.08)}
+#edBellCount{font-size:.92rem;white-space:nowrap;font-weight:900;}
+.ed-contact{position:relative;}
+.contact-panel{position:absolute;top:calc(100% + 14px);right:50%;transform:translateX(50%) translateY(8px);width:245px;background:#fff;border:1px solid #eef1f6;border-radius:18px;box-shadow:0 18px 45px rgba(23,17,63,.16);padding:12px;opacity:0;pointer-events:none;transition:.2s;z-index:900;direction:rtl;}
+.ed-contact.open .contact-panel{opacity:1;pointer-events:all;transform:translateX(50%) translateY(0)}
+.contact-panel::before{content:'';position:absolute;top:-7px;right:50%;width:14px;height:14px;background:#fff;border-left:1px solid #eef1f6;border-top:1px solid #eef1f6;transform:translateX(50%) rotate(45deg);}
+.contact-item{display:flex;width:100%;align-items:center;gap:10px;border:0;background:#f6f8fc;color:var(--ed-ink);font-weight:900;border-radius:14px;padding:12px;cursor:pointer;text-decoration:none;margin-bottom:8px;transition:.18s;}
+.contact-item:last-child{margin-bottom:0;}
+.contact-item:hover{background:#eef3fb;transform:translateY(-1px)}
+.contact-ico{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(0,216,121,.13);color:#0ca35d;}
+
+.ed-nav-links .contact-panel .contact-item{background:#f6f8fc!important;color:var(--ed-ink)!important;padding:12px!important;display:flex!important;justify-content:flex-start!important;gap:10px!important;font-size:.92rem!important;}
+.ed-nav-links .contact-panel .contact-item:hover{background:#eef3fb!important;color:var(--ed-ink)!important;transform:translateY(-1px)!important;}
+
+/* Login/Register separated cards */
+#loginGate{background:radial-gradient(circle at top right,rgba(0,216,121,.11),transparent 28%),linear-gradient(180deg,#fff,#f6f8fc);}
+.lg-wrap{max-width:980px;}
+.lg-logo-area{margin-bottom:22px;}
+.lg-auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+.lg-card.auth-card{height:100%;padding:26px;border:0;border-radius:24px;background:rgba(255,255,255,.92);box-shadow:0 22px 60px rgba(23,17,63,.10);}
+.lg-card.auth-card::before{height:4px;background:linear-gradient(90deg,#00d879,#7c4dff,#ff5bc5);}
+.auth-title{font-size:1.25rem;font-weight:900;color:var(--ed-ink);margin-bottom:6px;}
+.auth-sub{font-size:.86rem;color:#777a8a;margin-bottom:18px;}
+.auth-error{grid-column:1/-1;font-size:.88rem;color:var(--danger);text-align:center;font-weight:800;min-height:22px;}
+#f-up.hidden{display:block!important;}
+.lg-tabs{display:none!important;}
+
+/* Lessons with same card shape as chapters */
+#s-ls .ls-list{max-width:1320px;margin:0 auto;display:grid!important;grid-template-columns:repeat(4,minmax(230px,1fr));gap:32px;}
+#s-ls .ls-row{background:var(--ed-card)!important;border:0!important;border-radius:8px!important;box-shadow:none!important;min-height:282px;padding:34px 24px 28px;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;overflow:hidden;text-align:center;}
+#s-ls .ls-row.click:hover{transform:translateY(-3px)!important;box-shadow:0 14px 30px rgba(23,17,63,.07)!important;}
+#s-ls .ls-row.locked{opacity:.72;}
+#s-ls .ls-thumb{width:104px!important;height:104px!important;min-height:104px;border-radius:4px!important;overflow:hidden;background:#e9edf5!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:2.2rem!important;flex:0 0 auto!important;margin:10px auto 18px;}
+#s-ls .ls-thumb img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
+#s-ls .ls-body{padding:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:10px!important;width:100%;}
+#s-ls .ls-info{width:100%;}
+#s-ls .ls-num{font-size:1.02rem!important;color:var(--ed-ink)!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;margin-bottom:10px!important;}
+#s-ls .ls-title{font-size:1.22rem!important;font-weight:700!important;color:var(--ed-ink)!important;margin-bottom:8px!important;}
+#s-ls .ls-desc{font-size:.92rem!important;color:#747888!important;line-height:1.55!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+#s-ls .ls-actions{justify-content:center!important;}
+#s-ls .chip,#s-ls .time-chip{font-size:.86rem;border-radius:999px;padding:7px 14px;}
+
+@media(max-width:1180px){#s-ls .ls-list{grid-template-columns:repeat(2,minmax(240px,1fr));}}
+@media(max-width:860px){.ed-lang{padding:3px}.ed-lang .lopt{padding:5px 9px;font-size:.72rem}.lg-auth-grid{grid-template-columns:1fr}.lg-wrap{max-width:430px}#s-ls .ls-list{grid-template-columns:1fr;gap:18px}#s-ls .ls-row{min-height:245px}.contact-panel{right:0;transform:translateY(8px)}.ed-contact.open .contact-panel{transform:translateY(0)}.contact-panel::before{right:30px}}
+
 </style>
 </head>
 <body>
@@ -447,50 +507,74 @@ body{overflow-y:scroll;}
   </div>
 </div>
 
+<!-- Contact Modal -->
+<div class="mo" id="contactMo">
+  <div class="mc">
+    <div class="mc-ttl" data-ar="تواصل معنا" data-en="Contact us">تواصل معنا</div>
+    <div class="auth-sub" data-ar="اختار طريقة التواصل المناسبة" data-en="Choose a contact method">اختار طريقة التواصل المناسبة</div>
+    <button class="contact-item" onclick="openWhatsApp()" type="button">
+      <span class="contact-ico">💬</span>
+      <span data-ar="تواصل واتساب" data-en="WhatsApp contact">تواصل واتساب</span>
+    </button>
+    <button class="contact-item" onclick="openMail()" type="button">
+      <span class="contact-ico">✉️</span>
+      <span data-ar="تواصل عبر الإيميل" data-en="Email contact">تواصل عبر الإيميل</span>
+    </button>
+    <div class="ma"><button class="btn btn-ghost" onclick="closeMo('contactMo')" data-ar="إغلاق" data-en="Close">إغلاق</button></div>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div id="loginGate">
   <div class="lg-ctrls">
-    <button class="theme-btn" onclick="toggleTheme()">
+    <button class="theme-btn" onclick="toggleTheme()" type="button" aria-label="theme">
       <span class="ico ico-m">🌙</span><span class="ico ico-s">☀️</span>
       <div class="thumb"></div>
     </button>
     <div class="lang-sw">
-      <button class="lopt on" id="lg-ar" onclick="setLang('ar')">ع</button>
-      <button class="lopt" id="lg-en" onclick="setLang('en')">EN</button>
+      <button class="lopt on" id="lg-ar" onclick="setLang('ar')" type="button">Arabic</button>
+      <button class="lopt" id="lg-en" onclick="setLang('en')" type="button">English</button>
     </div>
   </div>
   <div class="lg-wrap">
     <div class="lg-logo-area">
       <div class="lg-mark">KW</div>
       <div class="lg-name">kala<em>wy</em></div>
-      <div class="lg-sub" data-ar="منصة التعليم الإلكتروني" data-en="Online Learning Platform">منصة التعليم الإلكتروني</div>
+      <div class="lg-sub" data-ar="منصة kalawy التعليمية" data-en="kalawy learning platform">منصة kalawy التعليمية</div>
     </div>
-    <div class="lg-card">
-      <div class="lg-tabs">
-        <button class="lg-tab on" id="lt-in" onclick="swTab('in')" data-ar="تسجيل الدخول" data-en="Sign In">تسجيل الدخول</button>
-        <button class="lg-tab" id="lt-up" onclick="swTab('up')" data-ar="حساب جديد" data-en="Register">حساب جديد</button>
-      </div>
-      <div id="f-in">
-        <div class="fw"><span class="fl" data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span><input class="inp" id="li-em" type="email" placeholder="example@email.com" dir="ltr"></div>
-        <div class="fw" style="margin-bottom:16px"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="li-pw" type="password" placeholder="••••••••" dir="ltr"></div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center" id="li-btn" onclick="doLogin()" data-ar="دخول" data-en="Sign In">دخول</button>
-      </div>
-      <div id="f-up" class="hidden">
-        <div class="fw"><span class="fl" data-ar="الاسم كامل" data-en="Full Name">الاسم كامل</span><input class="inp" id="rg-nm" placeholder=""></div>
-        <div class="fw"><span class="fl" data-ar="البريد" data-en="Email">البريد</span><input class="inp" id="rg-em" type="email" dir="ltr" placeholder="example@email.com"></div>
-        <div class="fw"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="rg-pw" type="password" dir="ltr" placeholder="••••••••"></div>
-        <div class="fw"><span class="fl" data-ar="الموبايل" data-en="Phone">الموبايل</span><input class="inp" id="rg-ph" dir="ltr" placeholder="01xxxxxxxxx"></div>
-        <div class="fw" style="margin-bottom:16px"><span class="fl" data-ar="الصف" data-en="Grade">الصف</span>
-          <select class="inp" id="rg-gr" onchange="this.classList.add('hv')">
-            <option value="" disabled selected data-ar="اختار" data-en="Select">اختار</option>
-            <option value="1" data-ar="أولى ثانوي" data-en="Grade 10">أولى ثانوي</option>
-            <option value="2" data-ar="تانية ثانوي" data-en="Grade 11">تانية ثانوي</option>
-            <option value="3" data-ar="تالتة ثانوي" data-en="Grade 12">تالتة ثانوي</option>
-          </select>
+
+    <div class="lg-auth-grid">
+      <div class="lg-card auth-card">
+        <div class="auth-title" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</div>
+        <div class="auth-sub" data-ar="ادخل بحساب الطالب الخاص بك" data-en="Use your student account">ادخل بحساب الطالب الخاص بك</div>
+        <div id="f-in">
+          <div class="fw"><span class="fl" data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span><input class="inp" id="li-em" type="email" placeholder="example@email.com" dir="ltr"></div>
+          <div class="fw" style="margin-bottom:16px"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="li-pw" type="password" placeholder="••••••••" dir="ltr"></div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" id="li-btn" onclick="doLogin()" data-ar="دخول" data-en="Sign in">دخول</button>
         </div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center" id="rg-btn" onclick="doRegister()" data-ar="إنشاء حساب" data-en="Create Account">إنشاء حساب</button>
       </div>
-      <div id="auth-err" style="font-size:.8rem;color:var(--danger);margin-top:10px;text-align:center"></div>
+
+      <div class="lg-card auth-card">
+        <div class="auth-title" data-ar="إنشاء حساب جديد" data-en="Create account">إنشاء حساب جديد</div>
+        <div class="auth-sub" data-ar="سجل حساب طالب جديد" data-en="Register a new student account">سجل حساب طالب جديد</div>
+        <div id="f-up">
+          <div class="fw"><span class="fl" data-ar="الاسم كامل" data-en="Full Name">الاسم كامل</span><input class="inp" id="rg-nm" placeholder=""></div>
+          <div class="fw"><span class="fl" data-ar="البريد" data-en="Email">البريد</span><input class="inp" id="rg-em" type="email" dir="ltr" placeholder="example@email.com"></div>
+          <div class="fw"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="rg-pw" type="password" dir="ltr" placeholder="••••••••"></div>
+          <div class="fw"><span class="fl" data-ar="الموبايل" data-en="Phone">الموبايل</span><input class="inp" id="rg-ph" dir="ltr" placeholder="01xxxxxxxxx"></div>
+          <div class="fw" style="margin-bottom:16px"><span class="fl" data-ar="الصف" data-en="Grade">الصف</span>
+            <select class="inp" id="rg-gr" onchange="this.classList.add('hv')">
+              <option value="" disabled selected data-ar="اختار" data-en="Select">اختار</option>
+              <option value="1" data-ar="أولى ثانوي" data-en="Grade 10">أولى ثانوي</option>
+              <option value="2" data-ar="تانية ثانوي" data-en="Grade 11">تانية ثانوي</option>
+              <option value="3" data-ar="تالتة ثانوي" data-en="Grade 12">تالتة ثانوي</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" id="rg-btn" onclick="doRegister()" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</button>
+        </div>
+      </div>
+
+      <div id="auth-err" class="auth-error"></div>
     </div>
   </div>
 </div>
@@ -501,30 +585,38 @@ body{overflow-y:scroll;}
     <div class="ed-avatar" id="edAv">ك</div>
     <div class="ed-user-text">
       <div class="ed-user-name" id="edName">كيفن هاني، وسيم شحاتة</div>
-      <div class="ed-profile-link" id="edProfileLink">اضغط هنا لعرض الملف الشخصي</div>
+      <div class="ed-profile-link" id="edProfileLink" data-ar="اضغط هنا لعرض الملف الشخصي" data-en="Click here to view profile">اضغط هنا لعرض الملف الشخصي</div>
     </div>
   </div>
 
-  <button class="ed-bell" type="button" onclick="goPage('cart')" aria-label="notifications">
+  <button class="ed-bell" type="button" onclick="toast('i', _lang==='ar'?'لا يوجد إشعارات':'No notifications')" aria-label="notifications">
     <span class="ed-bell-icon">🔔</span>
-    <span id="edBellCount">0</span>
+    <span id="edBellCount" data-ar="لا يوجد" data-en="None">لا يوجد</span>
   </button>
 
   <div class="ed-nav-links">
-    <button onclick="resetAll()">الرئيسية</button>
-    <button onclick="resetAll()">محاضرات</button>
-    <button onclick="toast('i','قريباً')">حجوزات</button>
-    <button onclick="goPage('mylessons')">ملازم</button>
-    <button onclick="goPage('cart')">الباقات</button>
-    <button onclick="toast('i','تواصل معنا قريباً')">تواصل معنا</button>
+    <button onclick="resetAll()" data-ar="الرئيسية" data-en="Home">الرئيسية</button>
+    <button onclick="resetAll()" data-ar="محاضرات" data-en="Lectures">محاضرات</button>
+    <button onclick="toast('i',_lang==='ar'?'الحجوزات قريباً':'Bookings coming soon')" data-ar="حجوزات" data-en="Bookings">حجوزات</button>
+    <button onclick="toast('i',_lang==='ar'?'الملازم قريباً':'Notes coming soon')" data-ar="ملازم" data-en="Notes">ملازم</button>
+    <button onclick="toast('i',_lang==='ar'?'الباقات قريباً':'Packages coming soon')" data-ar="الباقات" data-en="Packages">الباقات</button>
+    <div class="ed-contact" id="contactDrop">
+      <button type="button" onclick="toggleContactDrop(event)" data-ar="تواصل معنا" data-en="Contact us">تواصل معنا</button>
+      <div class="contact-panel">
+        <button class="contact-item" onclick="openWhatsApp()" type="button"><span class="contact-ico">💬</span><span data-ar="واتساب" data-en="WhatsApp">واتساب</span></button>
+        <button class="contact-item" onclick="openMail()" type="button"><span class="contact-ico">✉️</span><span data-ar="مايل" data-en="Email">مايل</span></button>
+      </div>
+    </div>
   </div>
 
   <div class="ed-right">
-    <button class="ed-choose" onclick="resetAll()">اختار مدرس</button>
-    <button class="ed-menu" onclick="resetAll()" aria-label="menu"><span></span><span></span><span></span></button>
+    <div class="ed-lang">
+      <button class="lopt on" id="n-ar" onclick="setLang('ar')" type="button">Arabic</button>
+      <button class="lopt" id="n-en" onclick="setLang('en')" type="button">English</button>
+    </div>
     <div class="ed-logo" onclick="resetAll()">
       <div class="ed-logo-mark"><span></span></div>
-      <strong>EDNUVA</strong>
+      <strong>kalawy</strong>
     </div>
   </div>
 </nav>
@@ -644,6 +736,10 @@ const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
+// غيّر الرقم والإيميل دول لبياناتك الحقيقية
+const CONTACT_WHATSAPP = '201000000000';
+const CONTACT_EMAIL = 'support@kalawy.com';
+
 // ── consts ────────────────────────────────────────────────────────────────────
 const GR_AR={1:'أولى ثانوي',2:'تانية ثانوي',3:'ثالثة ثانوي'};
 const GR_EN={1:'Grade 10',2:'Grade 11',3:'Grade 12'};
@@ -690,14 +786,30 @@ function toast(type,msg,dur=3500){
 }
 function openMo(id){document.getElementById(id).classList.add('show');}
 function closeMo(id){document.getElementById(id).classList.remove('show');}
+function toggleContactDrop(e){
+  e.stopPropagation();
+  document.getElementById('contactDrop')?.classList.toggle('open');
+}
+document.addEventListener('click',()=>document.getElementById('contactDrop')?.classList.remove('open'));
+function openWhatsApp(){
+  const msg=encodeURIComponent(_lang==='ar'?'مرحباً، أريد التواصل مع منصة kalawy':'Hello, I want to contact kalawy platform');
+  window.open(`https://wa.me/${CONTACT_WHATSAPP}?text=${msg}`,'_blank');
+}
+function openMail(){
+  const subject=encodeURIComponent(_lang==='ar'?'تواصل مع منصة kalawy':'Contact kalawy platform');
+  window.location.href=`mailto:${CONTACT_EMAIL}?subject=${subject}`;
+}
+
 
 // ── auth ──────────────────────────────────────────────────────────────────────
 function swTab(t){
-  document.getElementById('lt-in').classList.toggle('on',t==='in');
-  document.getElementById('lt-up').classList.toggle('on',t==='up');
-  document.getElementById('f-in').classList.toggle('hidden',t!=='in');
-  document.getElementById('f-up').classList.toggle('hidden',t!=='up');
-  document.getElementById('auth-err').textContent='';
+  const ltIn=document.getElementById('lt-in'), ltUp=document.getElementById('lt-up');
+  if(!ltIn||!ltUp)return;
+  ltIn.classList.toggle('on',t==='in');
+  ltUp.classList.toggle('on',t==='up');
+  document.getElementById('f-in')?.classList.toggle('hidden',t!=='in');
+  document.getElementById('f-up')?.classList.toggle('hidden',t!=='up');
+  const err=document.getElementById('auth-err'); if(err)err.textContent='';
 }
 async function doLogin(){
   const em=document.getElementById('li-em').value.trim();
@@ -778,7 +890,7 @@ function updateUI(){
 function updateCartBadge(){
   const b=document.getElementById('cart-badge');
   const ed=document.getElementById('edBellCount');
-  if(ed)ed.textContent=_cart.length||0;
+  if(ed)ed.textContent=_lang==='ar'?'لا يوجد':'None';
   if(!b)return;
   if(_cart.length){b.textContent=_cart.length;b.classList.remove('hidden');}
   else b.classList.add('hidden');
