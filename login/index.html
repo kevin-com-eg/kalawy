@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>kalawy - Sign in</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --purple:#170634;--purple2:#23094f;--green:#00d879;--green2:#22b078;--pink:#ff4fd8;
+  --text:#160a36;--muted:#6f7185;--border:#e8ebf2;--bg:#f6f8fc;--card:#ffffff;
+  --shadow:0 24px 80px rgba(23,6,52,.12);--r:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;min-height:100vh;background:radial-gradient(circle at top right,rgba(0,216,121,.12),transparent 30%),linear-gradient(180deg,#fff 0%,var(--bg) 100%);color:var(--text)}
+html[dir="ltr"] body{font-family:'Inter',sans-serif}
+button,input,select{font:inherit}.hidden{display:none!important}
+.topbar{height:90px;background:linear-gradient(180deg,var(--purple2),var(--purple));display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,54px);color:#fff;box-shadow:0 10px 35px rgba(23,6,52,.22)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}.mark{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);display:grid;place-items:center;font-weight:900;letter-spacing:-.04em;box-shadow:0 10px 28px rgba(0,216,121,.22)}.brand strong{font-size:1.45rem;font-weight:900}.brand span{color:var(--green)}
+.actions{display:flex;align-items:center;gap:10px}.lang{display:flex;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);padding:4px;border-radius:999px}.lang button{border:none;background:transparent;color:#cfd0dc;border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:800}.lang button.on{background:#fff;color:var(--purple)}
+.theme{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:8px 13px;cursor:pointer}
+.shell{min-height:calc(100vh - 90px);display:grid;place-items:center;padding:42px 18px}.auth{width:min(1040px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}.hero{padding:18px}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(0,216,121,.1);color:#008b55;font-weight:900;font-size:.84rem;margin-bottom:20px}.hero h1{font-size:clamp(2rem,4.8vw,4rem);font-weight:900;line-height:1.05;letter-spacing:-.045em;margin-bottom:16px}.hero p{font-size:1.08rem;color:var(--muted);line-height:1.8;max-width:560px}.hero-card{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;text-align:center;box-shadow:0 8px 30px rgba(23,6,52,.05)}.mini b{display:block;font-size:1.2rem;color:var(--purple);margin-bottom:4px}.mini span{font-size:.78rem;color:var(--muted);font-weight:700}
+.card{background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid rgba(232,235,242,.9);border-radius:var(--r);padding:34px;box-shadow:var(--shadow);position:relative;overflow:hidden}.card:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--pink),var(--green),#7c3cff)}.title{font-size:1.65rem;font-weight:900;margin-bottom:8px}.sub{color:var(--muted);font-weight:600;margin-bottom:24px}.field{margin-bottom:14px}.field label{display:block;font-size:.77rem;font-weight:900;color:#8b8da0;margin-bottom:7px;text-transform:uppercase;letter-spacing:.08em}.inp{width:100%;border:1px solid var(--border);border-radius:15px;background:#f9fafc;padding:14px 16px;outline:none;color:var(--text);transition:.18s}.inp:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(0,216,121,.12);background:#fff}.btn{width:100%;border:none;border-radius:16px;padding:14px 18px;font-weight:900;cursor:pointer;transition:.18s;display:flex;justify-content:center;align-items:center;gap:8px}.btn-primary{background:linear-gradient(135deg,var(--purple2),var(--purple));color:#fff;box-shadow:0 14px 28px rgba(23,6,52,.2)}.btn-primary:hover{transform:translateY(-2px);filter:brightness(1.05)}.btn-primary:disabled{opacity:.6;transform:none;cursor:not-allowed}.btn-soft{margin-top:10px;background:rgba(0,216,121,.1);color:#008b55;border:1px solid rgba(0,216,121,.22)}.linkline{text-align:center;margin-top:18px;color:var(--muted);font-weight:700}.linkline a{color:var(--purple);font-weight:900;text-decoration:none}.err{min-height:22px;margin-top:13px;color:#ef4444;text-align:center;font-weight:800;font-size:.9rem}.ok{color:#00a666}.ld{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;display:inline-block;animation:spin .65s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:880px){.auth{grid-template-columns:1fr}.hero{text-align:center}.hero p{margin:auto}.hero-card{max-width:520px;margin:22px auto 0}.topbar{height:78px}.shell{min-height:calc(100vh - 78px)}}
+@media(max-width:540px){.topbar{padding:0 14px}.brand strong{font-size:1.15rem}.mark{width:40px;height:40px}.card{padding:26px 18px}.hero-card{grid-template-columns:1fr}.actions{gap:6px}.lang button{padding:6px 10px}.hero h1{font-size:2.1rem}}
 
+body.dark{--text:#f2f3ff;--muted:#b4b6c8;--border:#30294a;--bg:#080410;--card:#130a27;background:radial-gradient(circle at top right,rgba(0,216,121,.14),transparent 30%),linear-gradient(180deg,#080410 0%,#130a27 100%)}
+body.dark .card,body.dark .mini{background:rgba(19,10,39,.86);border-color:#30294a}body.dark .inp{background:#0d071b;border-color:#30294a;color:#fff}body.dark .inp:focus{background:#120924}body.dark .linkline a{color:#7df2b9}body.dark .eyebrow{background:rgba(0,216,121,.13);color:#7df2b9}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/home/"><div class="mark">KW</div><strong>kala<span>wy</span></strong></a>
+  <div class="actions">
+    <button class="theme" onclick="toggleTheme()" type="button">🌙</button>
+    <div class="lang">
+      <button type="button" data-lang="ar" onclick="setLang('ar')">Arabic</button>
+      <button type="button" data-lang="en" onclick="setLang('en')">English</button>
+    </div>
+  </div>
+</header>
+<main class="shell">
+  <section class="auth">
+    <div class="hero">
+      <div class="eyebrow" data-ar="منصة kalawy التعليمية" data-en="kalawy learning platform">منصة kalawy التعليمية</div>
+      <h1 data-ar="ذاكر أسرع
+وادخل حصصك بسهولة" data-en="Study faster
+and access lessons easily">ذاكر أسرع<br>وادخل حصصك بسهولة</h1>
+      <p data-ar="تصميم قريب من واجهة الشابتر: بسيط، واضح، وفيه عربي وإنجليزي." data-en="A chapter-style interface: simple, clear, with Arabic and English support.">تصميم قريب من واجهة الشابتر: بسيط، واضح، وفيه عربي وإنجليزي.</p>
+      <div class="hero-card">
+        <div class="mini"><b>Chapter</b><span data-ar="شكل موحد" data-en="Same style">شكل موحد</span></div>
+        <div class="mini"><b>AR/EN</b><span data-ar="تغيير لغة" data-en="Language switch">تغيير لغة</span></div>
+        <div class="mini"><b>kalawy</b><span data-ar="منصتك" data-en="Your platform">منصتك</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="title" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</div>
+      <div class="sub" data-ar="ادخل بحساب الطالب الخاص بك" data-en="Use your student account">ادخل بحساب الطالب الخاص بك</div>
+      
+        <div class="field"><label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label><input class="inp" id="email" type="email" dir="ltr" placeholder="example@email.com"></div>
+        <div class="field"><label data-ar="كلمة السر" data-en="Password">كلمة السر</label><input class="inp" id="password" type="password" dir="ltr" placeholder="••••••••"></div>
+        <button class="btn btn-primary" id="submitBtn" onclick="doLogin()" data-ar="دخول" data-en="Sign in">دخول</button>
+        <div id="authMsg" class="err"></div>
+        <div class="linkline"><span data-ar="معندكش حساب؟" data-en="No account?">معندكش حساب؟</span> <a href="/signup/" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</a></div>
+        
+    </div>
+  </section>
+</main>
+<script>
+const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
+const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
+const sb = window.supabase.createClient(SB_URL, SB_ANON);
+let _lang = localStorage.getItem('kw-lang') || 'ar';
+function setLang(lg){
+  _lang=lg; localStorage.setItem('kw-lang',lg);
+  document.documentElement.lang=lg; document.documentElement.dir=lg==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-ar]').forEach(el=>{
+    const v=lg==='en'?el.dataset.en:el.dataset.ar;
+    if(el.tagName==='INPUT' || el.tagName==='SELECT') el.placeholder=v; else el.textContent=v;
+  });
+  document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('on',b.dataset.lang===lg));
+}
+function toggleTheme(){
+  const isDark=document.body.classList.toggle('dark');
+  localStorage.setItem('kw-auth-theme',isDark?'dark':'light');
+}
+function setLoading(btn,txt){btn.disabled=true;btn.dataset.old=btn.textContent;btn.innerHTML='<span class="ld"></span>'+txt;}
+function stopLoading(btn){btn.disabled=false;btn.textContent=btn.dataset.old||btn.textContent;}
+function err(msg,ok=false){const e=document.getElementById('authMsg');e.textContent=msg;e.classList.toggle('ok',ok);}
+window.addEventListener('DOMContentLoaded',async()=>{
+  setLang(_lang);
+  if(localStorage.getItem('kw-auth-theme')==='dark')document.body.classList.add('dark');
+  const {data:{session}} = await sb.auth.getSession();
+  if(session) location.href='/dashboard/';
+});
+
+
+async function doLogin(){
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  const btn=document.getElementById('submitBtn');
+  err('');
+  if(!email||!password) return err(_lang==='ar'?'ادخل البريد وكلمة السر':'Enter email and password');
+  setLoading(btn,_lang==='ar'?' جاري الدخول':' Signing in');
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error){stopLoading(btn);return err(_lang==='ar'?'بيانات الدخول غلط':'Wrong credentials');}
+  const {data:p}=await sb.from('profiles').select('role').eq('id',data.user.id).single();
+  if(p?.role==='admin'||p?.role==='teacher'){
+    await sb.auth.signOut(); stopLoading(btn);
+    return err(_lang==='ar'?'هذا مش حساب طالب':'This is not a student account');
+  }
+  location.href='/dashboard/';
+}
+</script>
+</body>
+</html>
