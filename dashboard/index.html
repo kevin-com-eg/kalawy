@@ -715,7 +715,7 @@ const BG_DARK=['linear-gradient(135deg,#1a4a35,#0d2820)','linear-gradient(135deg
 const BG_LIGHT=['linear-gradient(135deg,#d4f5e9,#a8ebd2)','linear-gradient(135deg,#d4e8f5,#a8d4f0)','linear-gradient(135deg,#f5e8d4,#f0d4a8)','linear-gradient(135deg,#e8d4f5,#d4a8f0)','linear-gradient(135deg,#f5d4e8,#f0a8d4)','linear-gradient(135deg,#d4f0f5,#a8e4f0)'];
 
 let ME=null, _lang='ar', _theme='light';
-let _enrolled=new Set(), _unlockedLessons=new Set(), _cart=[];
+let _enrolled=new Set(), _unlockedLessons=new Set(), _unlockedMeta={}, _cart=[];
 let _sel={sub:null,tch:null,ch:null};
 
 // ── theme & lang ──────────────────────────────────────────────────────────────
@@ -863,12 +863,30 @@ function updateCartBadge(){
   else b.classList.add('hidden');
 }
 function saveCart(){localStorage.setItem(`kw-lesson-cart-${ME.id}`,JSON.stringify(_cart));}
+function fmtRemain(ms){
+  if(ms==null) return '—';
+  if(ms<=0) return _lang==='ar'?'انتهى':'Expired';
+  const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000);
+  if(h>0) return _lang==='ar'?`${h}س ${m}د`:`${h}h ${m}m`;
+  return _lang==='ar'?`${Math.max(1,m)}د`:`${Math.max(1,m)}m`;
+}
+function lessonRemainText(id){return fmtRemain(_unlockedMeta[id]?.remainingMs);}
+
 
 // ── enrollments ───────────────────────────────────────────────────────────────
 async function loadEnrollments(){
   // النظام الجديد: فتح الحصص يكون بالكود لكل حصة، والشابتر يفتح عادي بدون اشتراك.
-  const { data: unlocked } = await sb.from('lesson_codes').select('lesson_id').eq('used_by', ME.id);
-  _unlockedLessons = new Set((unlocked||[]).map(x=>x.lesson_id).filter(Boolean));
+  const { data: unlocked } = await sb.from('lesson_codes').select('lesson_id,used_at,expires_at,lessons(access_hours)').eq('used_by', ME.id);
+  _unlockedMeta={};
+  const now=Date.now();
+  (unlocked||[]).forEach(x=>{
+    if(!x.lesson_id||!x.used_at)return;
+    const hours=Number(x.lessons?.access_hours||24);
+    const exp=x.expires_at?new Date(x.expires_at):new Date(new Date(x.used_at).getTime()+hours*60*60*1000);
+    const remainingMs=exp.getTime()-now;
+    if(remainingMs>0){_unlockedMeta[x.lesson_id]={used_at:x.used_at,expiresAt:exp.toISOString(),access_hours:hours,remainingMs};}
+  });
+  _unlockedLessons = new Set(Object.keys(_unlockedMeta));
 
   // نسيب chapter_enrollments للقديم فقط عشان مايكسرش البروفايل لو فيه بيانات قديمة.
   const { data: oldEnr } = await sb.from('chapter_enrollments').select('chapter_id').eq('student_id', ME.id);
@@ -1002,7 +1020,7 @@ async function selChapter(id,title){
   const list=document.getElementById('ls-list');
   list.innerHTML='<div class="loading"><div class="ld"></div></div>';
   await loadEnrollments();
-  const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id',id).order('created_at');
+  const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,access_hours,image_url').eq('chapter_id',id).order('created_at');
   if(!data?.length){list.innerHTML='<div class="empty-state"><div class="empty-ico">🎬</div><div>لا توجد حصص</div></div>';return;}
   const now=new Date();
   list.innerHTML=data.map((l,i)=>{
@@ -1017,9 +1035,9 @@ async function selChapter(id,title){
     let action='';
     if(!l.is_active) action=`<span class="chip c-gray">${_lang==='ar'?'غير متاح':'Unavailable'}</span>`;
     else if(future) action=`<div class="time-chip tc-f">⏰ ${ts}</div>`;
-    else if(unlocked) action=`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`;
+    else if(unlocked) action=`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span><span class="time-chip tc-p">⏳ ${lessonRemainText(l.id)}</span>`;
     else if(inCart) action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goCheckout()">🛒 Checkout</button>`;
-    else action=`<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;')})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
+    else action=`<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',access_hours:l.access_hours||24,chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;')})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
     return`<div class="ls-row ${canOpen?'click':active?'':'locked'}" ${canOpen?`onclick="goLesson('${l.id}')"`:'style="cursor:default"'}>
       ${thumb}
       <div class="ls-body">
@@ -1117,7 +1135,7 @@ async function loadMyLessons(){
   await loadEnrollments();
   if(!_unlockedLessons.size){el.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div>لم تفتح أي حصة بالكود بعد</div></div>';return;}
   const ids=[..._unlockedLessons];
-  const{data}=await sb.from('lessons').select('id,title,description,image_url,chapters(title,subjects(name_ar),profiles(full_name))').in('id',ids).eq('is_active',true).order('created_at');
+  const{data}=await sb.from('lessons').select('id,title,description,image_url,access_hours,chapters(title,subjects(name_ar),profiles(full_name))').in('id',ids).eq('is_active',true).order('created_at');
   el.innerHTML=(data||[]).map((ls,i)=>{
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
     return`<div class="my-card" onclick="goLesson('${ls.id}')">
@@ -1125,7 +1143,7 @@ async function loadMyLessons(){
       <div class="my-bd">
         <div class="my-ttl">${ls.title}</div>
         <div class="my-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div>
-        <div style="margin-top:8px"><span class="chip c-green">✅ ${_lang==='ar'?'مفتوحة':'Unlocked'}</span></div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><span class="chip c-green">✅ ${_lang==='ar'?'مفتوحة':'Unlocked'}</span><span class="time-chip tc-p">⏳ ${lessonRemainText(ls.id)}</span></div>
       </div>
     </div>`;
   }).join('')||'<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div>لا توجد حصص مفتوحة</div></div>';
@@ -1142,10 +1160,10 @@ async function loadProfileEnrolled(){
   el.innerHTML='<div class="loading"><div class="ld"></div></div>';
   await loadEnrollments();
   if(!_unlockedLessons.size){el.innerHTML='<div class="empty-state"><div class="empty-ico">🔑</div><div>لا توجد حصص مفتوحة بالكود</div></div>';return;}
-  const{data}=await sb.from('lessons').select('id,title,chapters(title,subjects(name_ar))').in('id',[..._unlockedLessons]).eq('is_active',true);
+  const{data}=await sb.from('lessons').select('id,title,access_hours,chapters(title,subjects(name_ar))').in('id',[..._unlockedLessons]).eq('is_active',true);
   el.innerHTML=(data||[]).map(ls=>`<div class="enr-item" onclick="goLesson('${ls.id}')">
       <div><div class="enr-ttl">${ls.title}</div><div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div></div>
-      <span class="chip c-green">${_lang==='ar'?'فتح →':'Open →'}</span>
+      <span class="chip c-green">${_lang==='ar'?'فتح →':'Open →'}</span><span class="time-chip tc-p">⏳ ${lessonRemainText(ls.id)}</span>
     </div>`).join('');
 }
 function openEdit(){
