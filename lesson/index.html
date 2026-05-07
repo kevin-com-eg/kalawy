@@ -51,6 +51,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
 .lh-meta{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;z-index:1;position:relative}
 .lh-chip{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:.76rem;font-weight:700;background:var(--glass);border:1px solid var(--gb);backdrop-filter:blur(10px)}
 
+
+.lesson-head-flex{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
+.lh-cover{width:138px;height:92px;border-radius:18px;overflow:hidden;background:var(--glass);border:1px solid var(--gb);box-shadow:0 10px 28px rgba(0,0,0,.25);display:grid;place-items:center;flex-shrink:0;font-size:2rem}
+.lh-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.lh-text{min-width:0;flex:1}
+@media(max-width:620px){.lesson-head-flex{align-items:flex-start}.lh-cover{width:96px;height:72px;border-radius:14px}.lh-title{font-size:1.15rem}}
+
 /* ═══════════ TABS ═══════════ */
 .lesson-tabs{display:flex;gap:4px;background:var(--glass);border:1px solid var(--gb);border-radius:var(--r-lg);padding:4px;margin-bottom:20px;backdrop-filter:blur(10px)}
 .lt{flex:1;padding:10px;border:none;border-radius:var(--r-sm);background:transparent;color:var(--t3);font-weight:700;font-size:.88rem;cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;gap:7px}
@@ -748,6 +755,25 @@ const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
+function imgSrc(v){
+  if(!v) return '';
+  v = String(v).trim();
+  if(!v) return '';
+  if(v.startsWith('http://') || v.startsWith('https://') || v.startsWith('data:') || v.startsWith('blob:')) return v;
+  if(v.startsWith('/storage/v1/object/public/')) return SB_URL + v;
+  v = v.replace(/^\/+/, '').replace(/^kalawy\//, '');
+  return `${SB_URL}/storage/v1/object/public/kalawy/${v}`;
+}
+function imgSafe(v){return imgSrc(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function fileUrl(v){return imgSrc(v);}
+function fileSafe(v){return imgSafe(v);}
+function imgErr(el, icon='🖼️'){
+  const p = el.parentElement;
+  if(p) p.innerHTML = `<div style="height:100%;display:grid;place-items:center;font-size:2rem">${icon}</div>`;
+  else el.remove();
+}
+
+
 let ME = null, LESSON = null, EXAM = null, VIDEOS = [], CONTENT = [];
 let _answers = {}, _submitted = false, _curPart = 0;
 let _timerInterval = null;
@@ -794,7 +820,7 @@ async function init(){
 
 async function loadLesson(lessonId){
   const[{data:lesson},{data:videos},{data:exams},{data:content}]=await Promise.all([
-    sb.from('lessons').select('id,title,description,is_active,scheduled_at,chapter_id,chapters(title,subjects(name_ar))').eq('id',lessonId).single(),
+    sb.from('lessons').select('id,title,description,is_active,scheduled_at,chapter_id,image_url,chapters(title,image_url,subjects(name_ar))').eq('id',lessonId).single(),
     sb.from('lesson_videos').select('*').eq('lesson_id',lessonId).order('sort_order'),
     sb.from('exams').select('id,title,duration_minutes,scheduled_at').eq('lesson_id',lessonId).limit(1),
     sb.from('lesson_content').select('*').eq('lesson_id',lessonId).order('sort_order'),
@@ -811,6 +837,7 @@ async function loadLesson(lessonId){
 }
 
 function getPdfItems(){ return (CONTENT||[]).filter(ct => String(ct.type||'').toLowerCase()==='pdf'); }
+function getImageItems(){ return (CONTENT||[]).filter(ct => String(ct.type||'').toLowerCase()==='image'); }
 function getHomeworkItems(){
   return (CONTENT||[]).filter(ct => {
     const t = String(ct.type||'').toLowerCase();
@@ -823,20 +850,26 @@ function renderPage(){
   const tabs=[
     {id:'exam',icon:'📝',label:'امتحان',small:EXAM?'متاح':'لا يوجد'},
     {id:'homework',icon:'📌',label:'واجب',small:getHomeworkItems().length?`${getHomeworkItems().length} عنصر`:'لا يوجد'},
-    {id:'pdf',icon:'📄',label:'PDF',small:getPdfItems().length?`${getPdfItems().length} ملف`:'لا يوجد'},
+    {id:'pdf',icon:'📄',label:'PDF',small:(getPdfItems().length||getImageItems().length)?`${getPdfItems().length} PDF / ${getImageItems().length} صورة`:'لا يوجد'},
     {id:'video',icon:'🎥',label:'Video',small:VIDEOS.length?`${VIDEOS.length} فيديو`:'لا يوجد'}
   ];
   const chapter=LESSON.chapters;
   document.getElementById('main').innerHTML=`
     <div class="lesson-header gl">
-      <div class="lh-chapter">${chapter?.subjects?.name_ar||''} ${chapter?.title?`← ${chapter.title}`:''}</div>
-      <div class="lh-title">${LESSON.title}</div>
-      ${LESSON.description?`<div style="font-size:.9rem;color:var(--t3);margin-top:8px;position:relative;z-index:1;line-height:1.8">${LESSON.description}</div>`:''}
-      <div class="lh-meta">
-        <div class="lh-chip">🎥 ${VIDEOS.length||0} فيديو</div>
-        <div class="lh-chip">📄 ${getPdfItems().length||0} PDF</div>
-        <div class="lh-chip">📌 ${getHomeworkItems().length||0} واجب</div>
-        ${EXAM?.duration_minutes?`<div class="lh-chip">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
+      <div class="lesson-head-flex">
+        <div class="lh-cover">${(LESSON.image_url||chapter?.image_url)?`<img src="${imgSafe(LESSON.image_url||chapter.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy">`:'🎬'}</div>
+        <div class="lh-text">
+          <div class="lh-chapter">${chapter?.subjects?.name_ar||''} ${chapter?.title?`← ${chapter.title}`:''}</div>
+          <div class="lh-title">${LESSON.title}</div>
+          ${LESSON.description?`<div style="font-size:.9rem;color:var(--t3);margin-top:8px;position:relative;z-index:1;line-height:1.8">${LESSON.description}</div>`:''}
+          <div class="lh-meta">
+            <div class="lh-chip">🎥 ${VIDEOS.length||0} فيديو</div>
+            <div class="lh-chip">📄 ${getPdfItems().length||0} PDF</div>
+            <div class="lh-chip">🖼️ ${getImageItems().length||0} صورة</div>
+            <div class="lh-chip">📌 ${getHomeworkItems().length||0} واجب</div>
+            ${EXAM?.duration_minutes?`<div class="lh-chip">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
+          </div>
+        </div>
       </div>
     </div>
     <div class="lesson-tabs gl" id="lesson-tabs">
@@ -883,7 +916,7 @@ async function renderExam(){
           ['a','b','c','d'].filter(k=>q[`option_${k}`]).map((k)=>({text:q[`option_${k}`],is_correct:q.correct_option===k}));
         return`<div class="q-card gl" id="qc-${q.id}">
           <div class="q-num-lbl">سؤال ${i+1} من ${qs.length}</div>
-          ${q.image_url?`<img class="q-img" src="${q.image_url}" alt="">`:''}
+          ${q.image_url?`<img class="q-img" src="${imgSafe(q.image_url)}" alt="" onerror="imgErr(this,'🖼️')" loading="lazy">`:''}
           <div class="q-txt" style="user-select:text">${q.question_text}</div>
           <div class="opts" id="opts-${q.id}">
             ${opts.map((o,oi)=>`
@@ -1007,7 +1040,7 @@ function renderHomework(){
       <div class="homework-card gl">
         <span class="hw-ico">📌</span>
         <div class="hw-title">${ct.title||('واجب ' + (i+1))}</div>
-        ${ct.url?`<a class="pdf-link" href="${ct.url}" target="_blank" style="margin-top:10px">فتح المرفق ←</a>`:''}
+        ${ct.url?`<a class="pdf-link" href="${fileSafe(ct.url)}" target="_blank" style="margin-top:10px">فتح المرفق ←</a>`:''}
         ${ct.body?`<div class="hw-body">${String(ct.body).replace(/\n/g,'<br>')}</div>`:''}
         ${!ct.url&&!ct.body?`<div class="hw-sub">لا توجد تفاصيل إضافية</div>`:''}
       </div>`).join('')}
@@ -1017,18 +1050,27 @@ function renderHomework(){
 function renderPDF(){
   const tc=document.getElementById('tab-content');
   const items=getPdfItems();
-  if(!items.length){
-    tc.innerHTML='<div class="empty-pg"><span style="font-size:2.8rem">📄</span><div style="font-weight:900">لا يوجد PDF لهذه الحصة</div><div style="font-size:.85rem;color:var(--t3)">أي ملف PDF هيتضاف من لوحة المدرس هيظهر هنا</div></div>';
+  const imgs=getImageItems();
+  if(!items.length && !imgs.length){
+    tc.innerHTML='<div class="empty-pg"><span style="font-size:2.8rem">📄</span><div style="font-weight:900">لا يوجد PDF أو صور لهذه الحصة</div><div style="font-size:.85rem;color:var(--t3)">أي ملف أو صورة هيتضاف من لوحة المدرس هيظهر هنا</div></div>';
     return;
   }
-  tc.innerHTML=`<div class="pdf-grid">
+  tc.innerHTML=`
+  ${items.length?`<div class="pdf-grid">
     ${items.map((ct,i)=>`
-      <a class="pdf-card gl" href="${ct.url||'#'}" target="_blank">
+      <a class="pdf-card gl" href="${fileSafe(ct.url)||'#'}" target="_blank">
         <span class="pdf-ico">📄</span>
         <div class="pdf-title">${ct.title||('ملف PDF ' + (i+1))}</div>
         <div class="pdf-sub">اضغط لفتح أو تحميل الملف</div>
       </a>`).join('')}
-  </div>`;
+  </div>`:''}
+  ${imgs.length?`<div class="content-section gl" style="margin-top:18px">
+    ${imgs.map((ct,i)=>`
+      <div class="content-item">
+        <div class="ci-head">🖼️ ${ct.title||('صورة ' + (i+1))}</div>
+        <div class="ci-body"><img class="img-c" src="${imgSafe(ct.url)}" alt="${ct.title||''}" onerror="imgErr(this,'🖼️')" loading="lazy"></div>
+      </div>`).join('')}
+  </div>`:''}`;
 }
 
 function renderContent(){ renderPDF(); }
