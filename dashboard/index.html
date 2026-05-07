@@ -681,6 +681,23 @@ const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
+function imgSrc(v){
+  if(!v) return '';
+  v = String(v).trim();
+  if(!v) return '';
+  if(v.startsWith('http://') || v.startsWith('https://') || v.startsWith('data:') || v.startsWith('blob:')) return v;
+  if(v.startsWith('/storage/v1/object/public/')) return SB_URL + v;
+  v = v.replace(/^\/+/, '').replace(/^kalawy\//, '');
+  return `${SB_URL}/storage/v1/object/public/kalawy/${v}`;
+}
+function imgSafe(v){return imgSrc(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function imgErr(el, icon='🖼️'){
+  const p = el.parentElement;
+  if(p) p.innerHTML = icon;
+  else el.remove();
+}
+
+
 // غيّر الرقم والإيميل دول لبياناتك الحقيقية
 const CONTACT_WHATSAPP = '201000000000';
 const CONTACT_EMAIL = 'support@kalawy.com';
@@ -902,7 +919,7 @@ async function loadSubjects(){
     const chip=s.grade_id===1?'bg-g':s.grade_id===2?'bg-b':'bg-y';
     const ico=EMOJIS[s.name_ar]||'📚';
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
-    const thumb=s.image_url?`<img src="${s.image_url}" alt="">`:`<div style="width:76px;height:76px;border-radius:20px;background:${grad};display:grid;place-items:center;font-size:2.2rem;box-shadow:var(--shadow)">${ico}</div>`;
+    const thumb=s.image_url?`<img src="${imgSafe(s.image_url)}" alt="" onerror="imgErr(this,'📚')" loading="lazy">`:`<div style="width:76px;height:76px;border-radius:20px;background:${grad};display:grid;place-items:center;font-size:2.2rem;box-shadow:var(--shadow)">${ico}</div>`;
     return`<div class="sub-card" onclick="selSub('${s.id}','${s.name_ar}',${s.grade_id||ME?.grade_id||3})">
       <div class="sub-icon">${thumb}</div>
       <div class="sub-name">${s.name_ar}</div>
@@ -926,7 +943,7 @@ async function selSub(id,name,gradeId){
   const bioMap=Object.fromEntries((teachers||[]).map(t=>[t.id,t.bio]));
   g.innerHTML=(profs||[]).map(p=>{
     const av=p.image_url
-      ?`<div class="tch-av"><img src="${p.image_url}" alt=""></div>`
+      ?`<div class="tch-av"><img src="${imgSafe(p.image_url)}" alt="" onerror="imgErr(this,'👤')" loading="lazy"></div>`
       :`<div class="tch-av" style="background:linear-gradient(135deg,var(--green),var(--green2));width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;color:#fff;margin:0 auto 14px;box-shadow:0 4px 14px var(--glow)">${(p.full_name||'?')[0].toUpperCase()}</div>`;
     return`<div class="tch-card" onclick="selTch('${p.id}','${p.full_name||p.id}')">
       ${av}
@@ -955,7 +972,7 @@ async function selTch(id,name){
     const lcntStr=_lang==='ar'?`${lcnt} محاضرات`:`${lcnt} lectures`;
     const chNum=ch.title||(_lang==='ar'?`الشابتر ${i+1}`:`Chapter ${i+1}`);
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
-    const thumb=ch.image_url?`<img src="${ch.image_url}" alt="${ch.title}">`:`<div style="width:100%;height:100%;background:${grad};display:flex;align-items:center;justify-content:center;font-size:2.8rem">${bks[i%bks.length]}</div>`;
+    const thumb=ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="${ch.title}" onerror="imgErr(this,'📖')" loading="lazy">`:`<div style="width:100%;height:100%;background:${grad};display:flex;align-items:center;justify-content:center;font-size:2.8rem">${bks[i%bks.length]}</div>`;
     let btn='';
     if(owned)btn=`<button class="ch-btn ch-btn-owned">✅ ${_lang==='ar'?'مشترك':'Enrolled'}</button>`;
     else if(inCart)btn=`<button class="ch-btn ch-btn-incart" onclick="event.stopPropagation();rmCart('${ch.id}')">🛒 ${_lang==='ar'?'في السلة ×':'In Cart ×'}</button>`;
@@ -988,7 +1005,7 @@ async function selChapter(id,title,owned){
     const sched=l.scheduled_at?new Date(l.scheduled_at):null;
     const future=sched&&sched>now;
     const canClick=l.is_active&&!future;
-    const thumb=l.image_url?`<div class="ls-thumb"><img src="${l.image_url}" alt=""></div>`:`<div class="ls-thumb">${future?'⏰':l.is_active?'🎬':'🔒'}</div>`;
+    const thumb=l.image_url?`<div class="ls-thumb"><img src="${imgSafe(l.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy"></div>`:`<div class="ls-thumb">${future?'⏰':l.is_active?'🎬':'🔒'}</div>`;
     const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
     let action='';
     if(!l.is_active)action=`<span class="chip c-gray">${_lang==='ar'?'غير متاح':'Unavailable'}</span>`;
@@ -1049,7 +1066,7 @@ function renderCart(){
   c.innerHTML=`<div class="cart-layout">
     <div class="cart-items">
       ${_cart.map(ch=>{
-        const t=ch.image_url?`<img src="${ch.image_url}" alt="" style="width:70px;height:55px;object-fit:cover">`:`📖`;
+        const t=ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="" style="width:70px;height:55px;object-fit:cover" onerror="imgErr(this,'📖')" loading="lazy">`:`📖`;
         return`<div class="cart-item">
           <div class="ci-thumb">${t}</div>
           <div class="ci-info"><div class="ci-name">${ch.title}</div><div class="ci-sub">${ch.description||''}</div></div>
@@ -1097,7 +1114,7 @@ async function loadMyLessons(){
   el.innerHTML=(data||[]).map((ch,i)=>{
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
     return`<div class="my-card" onclick="openMyCh('${ch.id}','${ch.title}')">
-      <div class="my-img" style="background:${grad}">${ch.image_url?`<img src="${ch.image_url}" alt="">`:'📖'}</div>
+      <div class="my-img" style="background:${grad}">${ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="" onerror="imgErr(this,'📖')" loading="lazy">`:'📖'}</div>
       <div class="my-bd">
         <div class="my-ttl">${ch.title}</div>
         <div class="my-sub">${ch.subjects?.name_ar||''} — ${ch.profiles?.full_name||''}</div>
@@ -1121,7 +1138,7 @@ async function openMyCh(chId,chTitle){
     const future=sched&&sched>now;
     const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
     const canClick=!future;
-    const thumb=l.image_url?`<div class="ls-thumb"><img src="${l.image_url}" alt=""></div>`:`<div class="ls-thumb">🎬</div>`;
+    const thumb=l.image_url?`<div class="ls-thumb"><img src="${imgSafe(l.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy"></div>`:`<div class="ls-thumb">🎬</div>`;
     return`<div class="ls-row ${canClick?'click':'locked'}" ${canClick?`onclick="goLesson('${l.id}')"`:'style="cursor:not-allowed"'}>
       ${thumb}
       <div class="ls-body">
