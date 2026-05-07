@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>kalawy — Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{--green:#18a867;--green2:#20c884;--purple:#17083d;--danger:#ef4444;--gold:#f59e0b;--bg:#f7f9fc;--card:#fff;--soft:#eef2f7;--text:#181331;--t2:#566070;--t3:#8b95a7;--border:#e5eaf2;--shadow:0 16px 45px rgba(17,24,39,.10);--r:18px;--r2:26px}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}button,input{font:inherit}.hidden{display:none!important}
+.nav{height:82px;background:var(--purple);color:#fff;display:flex;align-items:center;gap:22px;padding:0 34px;position:sticky;top:0;z-index:10;box-shadow:0 10px 30px rgba(23,8,61,.18)}
+.logo{display:flex;align-items:center;gap:11px;cursor:pointer}.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--green),#21c1ff);display:grid;place-items:center;font-weight:900;color:#fff}.brand{font-size:1.25rem;font-weight:900}.brand em{font-style:normal;color:#ffd166}.sp{flex:1}.nav-btn{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:9px 16px;font-weight:800;cursor:pointer;transition:.18s}.nav-btn:hover{background:rgba(255,255,255,.15);transform:translateY(-1px)}
+.wrap{max-width:1180px;margin:0 auto;padding:54px 22px 80px}.hero{text-align:right;margin-bottom:28px}.hero h1{font-size:clamp(2rem,4vw,3.4rem);font-weight:900;letter-spacing:-.04em;color:var(--purple)}.hero p{color:var(--t2);font-size:1.05rem;margin-top:8px}.layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:18px 22px;border-bottom:1px solid var(--border);font-weight:900;font-size:1.05rem;display:flex;align-items:center;justify-content:space-between}.items{display:flex;flex-direction:column}.item{display:flex;align-items:center;gap:16px;padding:18px 22px;border-bottom:1px solid var(--border)}.item:last-child{border-bottom:none}.thumb{width:88px;height:62px;border-radius:14px;background:var(--soft);display:grid;place-items:center;overflow:hidden;flex-shrink:0;font-size:1.7rem}.thumb img{width:100%;height:100%;object-fit:cover}.info{flex:1;min-width:0}.title{font-weight:900;font-size:1rem}.sub{font-size:.82rem;color:var(--t3);margin-top:3px}.rm{border:0;background:rgba(239,68,68,.08);color:var(--danger);border-radius:10px;padding:7px 11px;font-weight:800;cursor:pointer}.rm:hover{background:rgba(239,68,68,.14)}
+.side{padding:22px}.sum-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-weight:700;color:var(--t2)}.sum-row strong{color:var(--text)}.code-box{margin-top:18px;display:flex;flex-direction:column;gap:12px}.code-card{background:#f8fafc;border:1px solid var(--border);border-radius:16px;padding:14px}.code-title{font-weight:900;margin-bottom:10px;font-size:.95rem}.code-row{display:flex;gap:8px}.code-inp{flex:1;min-width:0;background:#fff;border:1px solid var(--border);border-radius:12px;padding:11px 12px;outline:none;font-weight:800;letter-spacing:.08em;text-transform:uppercase;direction:ltr}.code-inp:focus{border-color:var(--green2);box-shadow:0 0 0 4px rgba(32,200,132,.13)}.ok{border:0;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border-radius:12px;padding:0 15px;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(32,200,132,.22)}.ok:disabled{opacity:.5;cursor:not-allowed}.btn-main{width:100%;border:0;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border-radius:14px;padding:13px 18px;font-weight:900;cursor:pointer;margin-top:16px}.btn-ghost{width:100%;border:1px solid var(--border);background:#fff;color:var(--t2);border-radius:14px;padding:13px 18px;font-weight:900;cursor:pointer;margin-top:10px}.empty{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow);padding:60px 24px;text-align:center;color:var(--t2)}.empty .ico{font-size:3rem;margin-bottom:12px}.toast-wrap{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px}.toast{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 18px;box-shadow:var(--shadow);font-weight:800;display:flex;gap:8px;align-items:center}.toast.e{border-color:rgba(239,68,68,.25)}.toast.s{border-color:rgba(32,200,132,.28)}.ld{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.nav{padding:0 16px}.brand{font-size:1rem}.wrap{padding-top:34px}.item{align-items:flex-start}.thumb{width:78px;height:58px}}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toasts"></div>
+<nav class="nav">
+  <div class="logo" onclick="location.href='/home/'"><div class="mark">KW</div><div class="brand">kala<em>wy</em></div></div>
+  <div class="sp"></div>
+  <button class="nav-btn" onclick="location.href='/dashboard/'">الرجوع للداشبورد</button>
+</nav>
+<main class="wrap">
+  <div class="hero"><h1>Checkout</h1><p>ادخل كود الحصة هنا عشان تتفتح فوراً</p></div>
+  <div id="loading" class="empty"><div class="ico">⏳</div><div>جاري التحميل...</div></div>
+  <div id="checkout" class="layout hidden">
+    <section class="panel">
+      <div class="panel-head"><span>🛒 الحصص في السلة</span><span id="count">0</span></div>
+      <div class="items" id="items"></div>
+    </section>
+    <aside class="panel side">
+      <div class="sum-row"><span>عدد الحصص</span><strong id="sumCount">0</strong></div>
+      <div class="sum-row"><span>طريقة الفتح</span><strong>كود لكل حصة</strong></div>
+      <div class="code-box" id="codeBox"></div>
+      <button class="btn-main" onclick="location.href='/dashboard/'">اختار حصص تانية</button>
+      <button class="btn-ghost" onclick="clearCart()">تفريغ السلة</button>
+    </aside>
+  </div>
+  <div id="empty" class="empty hidden"><div class="ico">🛒</div><h2>السلة فارغة</h2><p>ارجع للداشبورد واضغط أضف للسلة على أي حصة.</p><button class="btn-main" style="max-width:260px" onclick="location.href='/dashboard/'">الرجوع للداشبورد</button></div>
+</main>
+<script>
+const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
+const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
+const sb = window.supabase.createClient(SB_URL, SB_ANON);
+let ME=null, CART=[];
+function imgSrc(v){
+  if(!v)return''; v=String(v).trim(); if(!v)return'';
+  if(v.startsWith('http://')||v.startsWith('https://')||v.startsWith('data:')||v.startsWith('blob:'))return v;
+  if(v.startsWith('/storage/v1/object/public/'))return SB_URL+v;
+  v=v.replace(/^\/+/, '').replace(/^kalawy\//,'');
+  return `${SB_URL}/storage/v1/object/public/kalawy/${v}`;
+}
+function safe(v){return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function toast(type,msg){const c=document.getElementById('toasts');const e=document.createElement('div');e.className='toast '+type;e.innerHTML=`<span>${type==='s'?'✅':type==='e'?'❌':'⚠️'}</span><span>${msg}</span>`;c.appendChild(e);setTimeout(()=>e.remove(),3500)}
+function key(){return `kw-lesson-cart-${ME.id}`}
+function save(){localStorage.setItem(key(),JSON.stringify(CART))}
+function load(){try{CART=JSON.parse(localStorage.getItem(key())||'[]')}catch{CART=[]}}
+function removeItem(id){CART=CART.filter(x=>x.id!==id);save();render()}
+function clearCart(){CART=[];save();render()}
+function render(){
+  document.getElementById('loading').classList.add('hidden');
+  if(!CART.length){document.getElementById('checkout').classList.add('hidden');document.getElementById('empty').classList.remove('hidden');return;}
+  document.getElementById('empty').classList.add('hidden');document.getElementById('checkout').classList.remove('hidden');
+  document.getElementById('count').textContent=CART.length;document.getElementById('sumCount').textContent=CART.length;
+  document.getElementById('items').innerHTML=CART.map(ls=>`<div class="item">
+    <div class="thumb">${ls.image_url?`<img src="${safe(imgSrc(ls.image_url))}" onerror="this.parentElement.innerHTML='🎬'">`:'🎬'}</div>
+    <div class="info"><div class="title">${safe(ls.title)}</div><div class="sub">${safe(ls.chapter_title||'')}</div></div>
+    <button class="rm" onclick="removeItem('${safe(ls.id)}')">حذف</button>
+  </div>`).join('');
+  document.getElementById('codeBox').innerHTML=CART.map(ls=>`<div class="code-card">
+    <div class="code-title">${safe(ls.title)}</div>
+    <div class="code-row"><input class="code-inp" id="code-${safe(ls.id)}" placeholder="LESSON CODE" oninput="this.value=this.value.toUpperCase()"><button class="ok" id="btn-${safe(ls.id)}" onclick="unlockLesson('${safe(ls.id)}','${safe(ls.title)}')">فتح</button></div>
+  </div>`).join('');
+}
+async function unlockLesson(lessonId,lessonTitle){
+  const inp=document.getElementById(`code-${lessonId}`);const btn=document.getElementById(`btn-${lessonId}`);const code=(inp?.value||'').trim().toUpperCase();
+  if(!code)return toast('w','ادخل كود الحصة');
+  btn.innerHTML='<span class="ld"></span>';btn.disabled=true;
+  const {data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).maybeSingle();
+  if(error||!row){toast('e','الكود غير صحيح');btn.textContent='فتح';btn.disabled=false;return;}
+  if(row.lesson_id!==lessonId){toast('e','الكود ده لحصة تانية');btn.textContent='فتح';btn.disabled=false;return;}
+  if(row.used_by){toast('e','الكود مستخدم قبل كده');btn.textContent='فتح';btn.disabled=false;return;}
+  const {error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
+  if(upErr){toast('e',upErr.message);btn.textContent='فتح';btn.disabled=false;return;}
+  CART=CART.filter(x=>x.id!==lessonId);save();toast('s',`تم فتح الحصة: ${lessonTitle}`);render();
+  setTimeout(()=>{location.href=`/lesson/?id=${lessonId}`},900);
+}
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){location.href='/login/';return;}
+  const {data:p}=await sb.from('profiles').select('role,full_name').eq('id',session.user.id).single();
+  if(p?.role==='admin'||p?.role==='teacher'){location.href='/dashboard/';return;}
+  ME={id:session.user.id,email:session.user.email,full_name:p?.full_name||session.user.email};load();render();
+}
+init();
+</script>
+</body>
+</html>
