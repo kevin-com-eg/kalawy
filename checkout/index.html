@@ -24,7 +24,7 @@
   <button class="nav-btn" onclick="location.href='/dashboard/'">الرجوع للداشبورد</button>
 </nav>
 <main class="wrap">
-  <div class="hero"><h1>Checkout</h1><p>ادخل كود الحصة هنا عشان تتفتح فوراً</p></div>
+  <div class="hero"><h1>Checkout</h1><p>ادخل كود الحصة هنا. بعدها الحصة هتفتح لمدة يحددها المدرس، والفيديو يفضل مقفول لحد ما تنجح في الامتحان.</p></div>
   <div id="loading" class="empty"><div class="ico">⏳</div><div>جاري التحميل...</div></div>
   <div id="checkout" class="layout hidden">
     <section class="panel">
@@ -54,6 +54,7 @@ function imgSrc(v){
   return `${SB_URL}/storage/v1/object/public/kalawy/${v}`;
 }
 function safe(v){return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function fmtHours(h){h=Number(h||24);return h>=24 && h%24===0 ? `${h/24} يوم` : `${h} ساعة`;}
 function toast(type,msg){const c=document.getElementById('toasts');const e=document.createElement('div');e.className='toast '+type;e.innerHTML=`<span>${type==='s'?'✅':type==='e'?'❌':'⚠️'}</span><span>${msg}</span>`;c.appendChild(e);setTimeout(()=>e.remove(),3500)}
 function key(){return `kw-lesson-cart-${ME.id}`}
 function save(){localStorage.setItem(key(),JSON.stringify(CART))}
@@ -67,7 +68,7 @@ function render(){
   document.getElementById('count').textContent=CART.length;document.getElementById('sumCount').textContent=CART.length;
   document.getElementById('items').innerHTML=CART.map(ls=>`<div class="item">
     <div class="thumb">${ls.image_url?`<img src="${safe(imgSrc(ls.image_url))}" onerror="this.parentElement.innerHTML='🎬'">`:'🎬'}</div>
-    <div class="info"><div class="title">${safe(ls.title)}</div><div class="sub">${safe(ls.chapter_title||'')}</div></div>
+    <div class="info"><div class="title">${safe(ls.title)}</div><div class="sub">${safe(ls.chapter_title||'')} — يفتح لمدة ${fmtHours(ls.access_hours||24)} من وقت إدخال الكود</div></div>
     <button class="rm" onclick="removeItem('${safe(ls.id)}')">حذف</button>
   </div>`).join('');
   document.getElementById('codeBox').innerHTML=CART.map(ls=>`<div class="code-card">
@@ -79,13 +80,17 @@ async function unlockLesson(lessonId,lessonTitle){
   const inp=document.getElementById(`code-${lessonId}`);const btn=document.getElementById(`btn-${lessonId}`);const code=(inp?.value||'').trim().toUpperCase();
   if(!code)return toast('w','ادخل كود الحصة');
   btn.innerHTML='<span class="ld"></span>';btn.disabled=true;
-  const {data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).maybeSingle();
+  const {data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by,used_at,expires_at').eq('code',code).maybeSingle();
   if(error||!row){toast('e','الكود غير صحيح');btn.textContent='فتح';btn.disabled=false;return;}
   if(row.lesson_id!==lessonId){toast('e','الكود ده لحصة تانية');btn.textContent='فتح';btn.disabled=false;return;}
   if(row.used_by){toast('e','الكود مستخدم قبل كده');btn.textContent='فتح';btn.disabled=false;return;}
-  const {error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
+  const {data:lessonInfo}=await sb.from('lessons').select('access_hours').eq('id',lessonId).single();
+  const now=new Date();
+  const hours=Number(lessonInfo?.access_hours||24);
+  const expiresAt=new Date(now.getTime()+hours*60*60*1000).toISOString();
+  const {error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:now.toISOString(),expires_at:expiresAt}).eq('id',row.id);
   if(upErr){toast('e',upErr.message);btn.textContent='فتح';btn.disabled=false;return;}
-  CART=CART.filter(x=>x.id!==lessonId);save();toast('s',`تم فتح الحصة: ${lessonTitle}`);render();
+  CART=CART.filter(x=>x.id!==lessonId);save();toast('s',`تم فتح الحصة لمدة ${fmtHours(hours)}: ${lessonTitle}`);render();
   setTimeout(()=>{location.href=`/lesson/?id=${lessonId}`},900);
 }
 async function init(){
