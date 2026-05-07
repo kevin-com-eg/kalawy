@@ -777,6 +777,7 @@ function imgErr(el, icon='🖼️'){
 let ME = null, ROLE = '', LESSON = null, EXAM = null, VIDEOS = [], CONTENT = [], ACCESS = null;
 let _answers = {}, _submitted = false, _curPart = 0;
 let _timerInterval = null;
+let _examQuestions = [];
 
 function setTheme(th){
   document.documentElement.setAttribute('data-theme',th);
@@ -799,6 +800,41 @@ function ytId(url){
   return m?m[1]:null;
 }
 function passScore(){ return Math.max(0, Math.min(100, Number(EXAM?.pass_score ?? 50))); }
+function normalizeOptions(q){
+  let opts = q?.options;
+  if(typeof opts === 'string'){
+    try{ opts = JSON.parse(opts); }catch{ opts = null; }
+  }
+  if(!Array.isArray(opts) || !opts.length){
+    opts = ['a','b','c','d','e','f','g','h','i','j']
+      .filter(k => q && q[`option_${k}`])
+      .map(k => ({
+        text: q[`option_${k}`],
+        is_correct: String(q.correct_option || '').toLowerCase() === k
+      }));
+  }
+  opts = opts.map((o,i)=>{
+    if(typeof o === 'string') return {text:o, is_correct:false};
+    return {text:o?.text ?? o?.label ?? o?.value ?? '', is_correct: !!o?.is_correct};
+  }).filter(o => String(o.text).trim() !== '');
+
+  // لو الاختيارات جاية من أعمدة option_a... والـ correct_option رقم أو حرف
+  if(opts.length && !opts.some(o=>o.is_correct)){
+    const c = String(q?.correct_option || '').toLowerCase();
+    const letters = 'abcdefghij';
+    let idx = letters.indexOf(c);
+    if(idx < 0 && !Number.isNaN(Number(c))) idx = Number(c);
+    if(idx >= 0 && opts[idx]) opts[idx].is_correct = true;
+  }
+  return opts;
+}
+function normalizeQuestions(qs){
+  return (qs||[]).map(q => ({...q, options: normalizeOptions(q)}));
+}
+function esc(v){
+  return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
 function accessHours(){ return Math.max(1, Number(LESSON?.access_hours ?? 24)); }
 function accessExpiry(){
   if(!ACCESS?.used_at) return null;
@@ -951,6 +987,8 @@ async function renderExam(startNow=false){
   const {data:qs,error:qErr}=await sb.from('exam_questions').select('*').eq('exam_id',EXAM.id).order('sort_order');
   if(qErr){tc.innerHTML=`<div class="result-card gl"><span class="res-ico">⚠️</span><div class="res-label">مشكلة في تحميل الأسئلة</div><div class="res-detail">${qErr.message}</div></div>`;return;}
   if(!qs?.length){tc.innerHTML='<div class="empty-pg"><span style="font-size:2.5rem">📝</span><div>لا توجد أسئلة</div></div>';return;}
+  const examQs = normalizeQuestions(qs);
+  _examQuestions = examQs;
 
   if(!startNow){
     tc.innerHTML=`
@@ -959,7 +997,7 @@ async function renderExam(startNow=false){
       <div class="res-label">امتحان قبل الفيديو</div>
       <div class="res-detail">اضغط ابدأ لما تكون جاهز. لازم تجيب ${passScore()}% أو أكتر عشان الفيديو يتفتح.</div>
       <div class="ei-meta" style="margin:18px 0 22px">
-        <div class="ei-met">📋 ${qs.length} سؤال</div>
+        <div class="ei-met">📋 ${examQs.length} سؤال</div>
         ${EXAM.duration_minutes?`<div class="ei-met">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
         <div class="ei-met">🎯 درجة النجاح ${passScore()}%</div>
       </div>
@@ -979,24 +1017,23 @@ async function renderExam(startNow=false){
       <div class="ei-title">${EXAM.title||'امتحان الحصة'}</div>
       <div class="ei-sub">حل الأسئلة ثم اضغط تسليم. لو جبت أقل من ${passScore()}% تقدر تمتحن تاني.</div>
       <div class="ei-meta">
-        <div class="ei-met">📋 ${qs.length} سؤال</div>
+        <div class="ei-met">📋 ${examQs.length} سؤال</div>
         ${EXAM.duration_minutes?`<div class="ei-met">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
         <div class="ei-met">🎯 درجة النجاح ${passScore()}%</div>
       </div>
     </div>
     <div class="exam-body" id="exam-body">
-      ${qs.map((q,i)=>{
-        const opts=Array.isArray(q.options)&&q.options.length?q.options:
-          ['a','b','c','d'].filter(k=>q[`option_${k}`]).map((k)=>({text:q[`option_${k}`],is_correct:q.correct_option===k}));
+      ${examQs.map((q,i)=>{
+        const opts=q.options||[];
         return`<div class="q-card gl" id="qc-${q.id}">
-          <div class="q-num-lbl">سؤال ${i+1} من ${qs.length}</div>
+          <div class="q-num-lbl">سؤال ${i+1} من ${examQs.length}</div>
           ${q.image_url?`<img class="q-img" src="${imgSafe(q.image_url)}" alt="" onerror="imgErr(this,'🖼️')" loading="lazy">`:''}
-          <div class="q-txt" style="user-select:text">${q.question_text}</div>
+          <div class="q-txt" style="user-select:text">${esc(q.question_text)}</div>
           <div class="opts" id="opts-${q.id}">
             ${opts.map((o,oi)=>`
               <div class="opt" id="opt-${q.id}-${oi}" onclick="pickOpt('${q.id}',${oi})">
                 <div class="opt-c">${String.fromCharCode(65+oi)}</div>
-                <div class="opt-t">${o.text}</div>
+                <div class="opt-t">${esc(o.text)}</div>
               </div>`).join('')}
           </div>
         </div>`;
@@ -1004,15 +1041,15 @@ async function renderExam(startNow=false){
     </div>
     <div class="exam-footer">
       <div class="exam-prog">
-        <span id="ans-count">0</span> / ${qs.length} تم الإجابة
+        <span id="ans-count">0</span> / ${examQs.length} تم الإجابة
         <div class="exam-prog-bar"><div class="exam-prog-fill" id="prog-fill" style="width:0%"></div></div>
       </div>
-      <button class="btn btn-p btn-lg" id="submit-btn" onclick="submitExam(${JSON.stringify(qs).replace(/</g,'&lt;')},false)">
+      <button class="btn btn-p btn-lg" id="submit-btn" onclick="submitExam(false)">
         📤 تسليم الامتحان
       </button>
     </div>
   </div>`;
-  if(EXAM.duration_minutes) startTimer(EXAM.duration_minutes*60,qs);
+  if(EXAM.duration_minutes) startTimer(EXAM.duration_minutes*60);
 }
 
 function pickOpt(qId,idx){
@@ -1027,7 +1064,7 @@ function pickOpt(qId,idx){
   if(pf)pf.style.width=Math.round(done/total*100)+'%';
 }
 
-function startTimer(totalSec,qs){
+function startTimer(totalSec){
   let sec=totalSec;
   document.getElementById('timer-bar-wrap').classList.remove('hidden');
   _timerInterval=setInterval(()=>{
@@ -1038,11 +1075,13 @@ function startTimer(totalSec,qs){
     const m=Math.floor(sec/60).toString().padStart(2,'0');
     const s=(sec%60).toString().padStart(2,'0');
     if(chip){chip.textContent=`⏱️ ${m}:${s}`;chip.classList.toggle('warn',sec<=60);}
-    if(sec<=0){clearInterval(_timerInterval);submitExam(qs,true);} 
+    if(sec<=0){clearInterval(_timerInterval);submitExam(true);} 
   },1000);
 }
 
-async function submitExam(qs,autoSubmit=false){
+async function submitExam(autoSubmit=false){
+  const qs = _examQuestions || [];
+  if(!qs.length) return toast('e','الأسئلة لم تتحمل، اعمل تحديث للصفحة');
   if(_submitted)return;
   if(!autoSubmit && Object.keys(_answers).length < qs.length){
     return toast('w','جاوب على كل الأسئلة قبل التسليم');
@@ -1054,8 +1093,7 @@ async function submitExam(qs,autoSubmit=false){
   if(btn){btn.innerHTML='<span style="width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .6s linear infinite"></span> جاري التصحيح...';btn.disabled=true;}
   let correct=0;
   qs.forEach(q=>{
-    const opts=Array.isArray(q.options)&&q.options.length?q.options:
-      ['a','b','c','d'].filter(k=>q[`option_${k}`]).map(k=>({text:q[`option_${k}`],is_correct:q.correct_option===k}));
+    const opts=q.options||[];
     const selIdx=_answers[q.id];
     if(opts[selIdx]?.is_correct)correct++;
     document.querySelectorAll(`[id^="opt-${q.id}-"]`).forEach((el,oi)=>{
