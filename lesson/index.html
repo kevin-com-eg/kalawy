@@ -927,24 +927,57 @@ function switchTab(id){
 }
 
 /* ── EXAM ── */
-async function renderExam(forceRetake=false){
+async function renderExam(startNow=false){
   const tc=document.getElementById('tab-content');
   if(!EXAM){
     tc.innerHTML='<div class="empty-pg"><span style="font-size:2.8rem">📝</span><div style="font-weight:900">لا يوجد امتحان لهذه الحصة</div><div style="font-size:.85rem;color:var(--t3)">لما المدرس يضيف امتحان هيظهر هنا</div></div>';
     return;
   }
   tc.innerHTML='<div class="loading" style="min-height:40vh"><div class="ld"></div></div>';
-  const{data:sub}=await sb.from('exam_submissions').select('id,score,passed,attempt_count').eq('exam_id',EXAM.id).eq('student_id',ME.id).maybeSingle();
-  if(sub && !forceRetake){renderResult(sub.score,true,!!sub.passed,sub.attempt_count||1);return;}
-  const{data:qs}=await sb.from('exam_questions').select('*').eq('exam_id',EXAM.id).order('sort_order');
+
+  const {data:sub,error:subErr}=await sb.from('exam_submissions')
+    .select('id,score,passed,attempt_count,updated_at')
+    .eq('exam_id',EXAM.id)
+    .eq('student_id',ME.id)
+    .order('updated_at',{ascending:false})
+    .limit(1)
+    .maybeSingle();
+  if(subErr && subErr.code!=='PGRST116'){
+    tc.innerHTML=`<div class="result-card gl"><span class="res-ico">⚠️</span><div class="res-label">مشكلة في قراءة نتيجة الامتحان</div><div class="res-detail">${subErr.message}</div><button class="btn btn-p" onclick="renderExam(false)">إعادة المحاولة</button></div>`;
+    return;
+  }
+  if(sub && !startNow){renderResult(sub.score,true,!!sub.passed,sub.attempt_count||1);return;}
+
+  const {data:qs,error:qErr}=await sb.from('exam_questions').select('*').eq('exam_id',EXAM.id).order('sort_order');
+  if(qErr){tc.innerHTML=`<div class="result-card gl"><span class="res-ico">⚠️</span><div class="res-label">مشكلة في تحميل الأسئلة</div><div class="res-detail">${qErr.message}</div></div>`;return;}
   if(!qs?.length){tc.innerHTML='<div class="empty-pg"><span style="font-size:2.5rem">📝</span><div>لا توجد أسئلة</div></div>';return;}
+
+  if(!startNow){
+    tc.innerHTML=`
+    <div class="result-card gl">
+      <span class="res-ico">📝</span>
+      <div class="res-label">امتحان قبل الفيديو</div>
+      <div class="res-detail">اضغط ابدأ لما تكون جاهز. لازم تجيب ${passScore()}% أو أكتر عشان الفيديو يتفتح.</div>
+      <div class="ei-meta" style="margin:18px 0 22px">
+        <div class="ei-met">📋 ${qs.length} سؤال</div>
+        ${EXAM.duration_minutes?`<div class="ei-met">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
+        <div class="ei-met">🎯 درجة النجاح ${passScore()}%</div>
+      </div>
+      <div class="res-actions">
+        <button class="btn btn-p btn-lg" onclick="renderExam(true)">▶️ ابدأ الامتحان</button>
+        <button class="btn btn-gl" onclick="goHome()">← رجوع</button>
+      </div>
+    </div>`;
+    return;
+  }
+
   _answers={};_submitted=false;
   tc.innerHTML=`
   <div class="exam-wrap gl">
     <div class="exam-intro">
       <div class="ei-ico">📝</div>
       <div class="ei-title">${EXAM.title||'امتحان الحصة'}</div>
-      <div class="ei-sub">لازم تجيب ${passScore()}% أو أكتر عشان الفيديو يتفتح. لو أقل، تقدر تمتحن تاني.</div>
+      <div class="ei-sub">حل الأسئلة ثم اضغط تسليم. لو جبت أقل من ${passScore()}% تقدر تمتحن تاني.</div>
       <div class="ei-meta">
         <div class="ei-met">📋 ${qs.length} سؤال</div>
         ${EXAM.duration_minutes?`<div class="ei-met">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
@@ -974,7 +1007,7 @@ async function renderExam(forceRetake=false){
         <span id="ans-count">0</span> / ${qs.length} تم الإجابة
         <div class="exam-prog-bar"><div class="exam-prog-fill" id="prog-fill" style="width:0%"></div></div>
       </div>
-      <button class="btn btn-p btn-lg" id="submit-btn" onclick="submitExam(${JSON.stringify(qs).replace(/</g,'&lt;')})">
+      <button class="btn btn-p btn-lg" id="submit-btn" onclick="submitExam(${JSON.stringify(qs).replace(/</g,'&lt;')},false)">
         📤 تسليم الامتحان
       </button>
     </div>
@@ -1005,12 +1038,15 @@ function startTimer(totalSec,qs){
     const m=Math.floor(sec/60).toString().padStart(2,'0');
     const s=(sec%60).toString().padStart(2,'0');
     if(chip){chip.textContent=`⏱️ ${m}:${s}`;chip.classList.toggle('warn',sec<=60);}
-    if(sec<=0){clearInterval(_timerInterval);submitExam(qs);}
+    if(sec<=0){clearInterval(_timerInterval);submitExam(qs,true);} 
   },1000);
 }
 
-async function submitExam(qs){
+async function submitExam(qs,autoSubmit=false){
   if(_submitted)return;
+  if(!autoSubmit && Object.keys(_answers).length < qs.length){
+    return toast('w','جاوب على كل الأسئلة قبل التسليم');
+  }
   _submitted=true;
   if(_timerInterval)clearInterval(_timerInterval);
   document.getElementById('timer-bar-wrap').classList.add('hidden');
@@ -1031,17 +1067,40 @@ async function submitExam(qs){
   });
   const score=Math.round(correct/qs.length*100);
   const passed=score>=passScore();
-  const {data:oldSub}=await sb.from('exam_submissions').select('attempt_count').eq('exam_id',EXAM.id).eq('student_id',ME.id).maybeSingle();
-  await sb.from('exam_submissions').upsert({
+  const {data:oldSub,error:oldErr}=await sb.from('exam_submissions')
+    .select('id,attempt_count')
+    .eq('exam_id',EXAM.id)
+    .eq('student_id',ME.id)
+    .order('updated_at',{ascending:false})
+    .limit(1)
+    .maybeSingle();
+  if(oldErr && oldErr.code!=='PGRST116'){
+    _submitted=false;
+    if(btn){btn.disabled=false;btn.innerHTML='📤 تسليم الامتحان';}
+    return toast('e','فشل قراءة المحاولة السابقة: '+oldErr.message);
+  }
+  const nextAttempt=(oldSub?.attempt_count||0)+1;
+  const payload={
     exam_id:EXAM.id,
     student_id:ME.id,
     score,
     passed,
-    attempt_count:(oldSub?.attempt_count||0)+1,
+    attempt_count:nextAttempt,
     updated_at:new Date().toISOString(),
     answers:Object.entries(_answers).map(([qId,idx])=>({qId,idx}))
-  });
-  setTimeout(()=>renderResult(score,false,passed,(oldSub?.attempt_count||0)+1),500);
+  };
+  let save;
+  if(oldSub?.id){
+    save=await sb.from('exam_submissions').update(payload).eq('id',oldSub.id).select().single();
+  }else{
+    save=await sb.from('exam_submissions').insert(payload).select().single();
+  }
+  if(save.error){
+    _submitted=false;
+    if(btn){btn.disabled=false;btn.innerHTML='📤 تسليم الامتحان';}
+    return toast('e','مش راضي يسلم الامتحان: '+save.error.message);
+  }
+  setTimeout(()=>renderResult(score,false,passed,nextAttempt),500);
 }
 
 function renderResult(score,alreadyDone,passed=null,attempts=1){
@@ -1055,7 +1114,7 @@ function renderResult(score,alreadyDone,passed=null,attempts=1){
     <div class="res-detail">درجة فتح الفيديو: ${passScore()}% — عدد المحاولات: ${attempts||1}${alreadyDone?' — آخر نتيجة محفوظة':' — تم حفظ نتيجتك'}</div>
     <div class="res-actions">
       ${pass&&VIDEOS.length?`<button class="btn btn-p btn-lg" onclick="switchTab('video')">▶️ شاهد الفيديو الآن</button>`:''}
-      ${!pass?`<button class="btn btn-p btn-lg" onclick="renderExam(true)">🔄 امتحن تاني</button>`:''}
+      ${!pass?`<button class="btn btn-p btn-lg" onclick="renderExam(false)">🔄 امتحن تاني</button>`:''}
       <button class="btn btn-gl" onclick="goHome()">← رجوع</button>
     </div>
   </div>`;
@@ -1064,7 +1123,7 @@ function renderResult(score,alreadyDone,passed=null,attempts=1){
 /* ── VIDEO ── */
 async function renderVideoPlayer(){
   if(EXAM){
-    const{data:sub}=await sb.from('exam_submissions').select('id,score,passed').eq('exam_id',EXAM.id).eq('student_id',ME.id).maybeSingle();
+    const{data:sub}=await sb.from('exam_submissions').select('id,score,passed,updated_at').eq('exam_id',EXAM.id).eq('student_id',ME.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();
     if(!sub || !sub.passed){
       document.getElementById('tab-content').innerHTML=`
       <div class="result-card gl" style="text-align:center">
