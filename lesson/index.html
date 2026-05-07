@@ -808,11 +808,9 @@ async function init(){
   if(!session){window.location.href='/login/';return;}
   const{data:profile}=await sb.from('profiles').select('role').eq('id',session.user.id).single();
   if(profile?.role!=='admin'&&profile?.role!=='teacher'){
-    const{data:lesson}=await sb.from('lessons').select('id,chapter_id').eq('id',lessonId).single();
-    if(lesson){
-      const{data:enr}=await sb.from('chapter_enrollments').select('id').eq('student_id',session.user.id).eq('chapter_id',lesson.chapter_id).single();
-      if(!enr){showError('غير مشترك في هذا الشابتر');return;}
-    }
+    // النظام الجديد: الحصة تتفتح بكود الحصة من جدول lesson_codes، وليس اشتراك الشابتر.
+    const{data:access}=await sb.from('lesson_codes').select('id').eq('lesson_id',lessonId).eq('used_by',session.user.id).maybeSingle();
+    if(!access){showError('لازم تضيف الحصة للسلة وتدخل كود الحصة الأول');return;}
   }
   ME={id:session.user.id};
   await loadLesson(lessonId);
