@@ -388,6 +388,10 @@ body{overflow-y:scroll;}
 .ed-nav-links{display:flex;align-items:center;justify-content:center;gap:34px;flex:1;direction:rtl;min-width:0;}
 .ed-nav-links button{background:transparent;border:0;color:#fff;font-weight:900;font-size:1rem;cursor:pointer;white-space:nowrap;padding:10px 0;transition:.18s;}
 .ed-nav-links button:hover{color:#21f28a;transform:translateY(-1px)}
+.ed-checkout-btn{position:relative!important;display:inline-flex!important;align-items:center;gap:8px;color:#fff!important}
+.ed-checkout-btn .cart-ct{position:static!important;width:auto!important;height:auto!important;min-width:20px!important;padding:2px 7px!important;border-radius:999px!important;border:0!important;background:#ff4d6d!important;color:#fff!important;font-size:.72rem!important;line-height:1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+.ed-checkout-btn .cart-ct.hidden{display:none!important}
+
 .ed-right{display:flex;align-items:center;gap:18px;flex:0 0 auto;direction:rtl;color:#fff;}
 .ed-choose{background:transparent;border:0;color:var(--ed-green);font-size:1rem;font-weight:900;cursor:pointer;white-space:nowrap;}
 .ed-menu{width:27px;height:24px;border:0;background:transparent;display:flex;flex-direction:column;gap:5px;justify-content:center;cursor:pointer;padding:0;}
@@ -542,6 +546,7 @@ body{overflow-y:scroll;}
   <div class="ed-nav-links">
     <button onclick="resetAll()" data-ar="الرئيسية" data-en="Home">الرئيسية</button>
     <button onclick="resetAll()" data-ar="محاضرات" data-en="Lectures">محاضرات</button>
+    <button class="ed-checkout-btn" onclick="goCheckout()" data-ar="Checkout" data-en="Checkout">Checkout <span class="cart-ct hidden" id="cart-badge">0</span></button>
     <button onclick="toast('i',_lang==='ar'?'الحجوزات قريباً':'Bookings coming soon')" data-ar="حجوزات" data-en="Bookings">حجوزات</button>
     <button onclick="toast('i',_lang==='ar'?'الملازم قريباً':'Notes coming soon')" data-ar="ملازم" data-en="Notes">ملازم</button>
     <button onclick="toast('i',_lang==='ar'?'الباقات قريباً':'Packages coming soon')" data-ar="الباقات" data-en="Packages">الباقات</button>
@@ -573,7 +578,7 @@ body{overflow-y:scroll;}
 <div class="bottom-tabs" id="bottomTabs">
   <button class="btab on" onclick="goPage('browse')" data-pt="browse">🔍<span data-ar="تصفح" data-en="Browse">تصفح</span></button>
   <button class="btab" onclick="goPage('mylessons')" data-pt="mylessons">📚<span data-ar="حصصي" data-en="My Lessons">حصصي</span></button>
-  <button class="btab" onclick="goPage('cart')" data-pt="cart">🛒<span data-ar="سلة" data-en="Cart">سلة</span></button>
+  <button class="btab" onclick="goCheckout()" data-pt="checkout">🛒<span data-ar="Checkout" data-en="Checkout">Checkout</span></button>
   <button class="btab" onclick="goPage('profile')" data-pt="profile">👤<span data-ar="بروفايل" data-en="Profile">بروفايل</span></button>
 </div>
 
@@ -875,7 +880,9 @@ async function loadEnrollments(){
 }
 
 // ── pages ─────────────────────────────────────────────────────────────────────
+function goCheckout(){ window.location.href='/checkout/'; }
 function goPage(page){
+  if(page==='cart'||page==='checkout'){ goCheckout(); return; }
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById(`pg-${page}`).classList.add('on');
   document.querySelectorAll('.btab').forEach(b=>b.classList.toggle('on',b.dataset.pt===page));
@@ -1011,7 +1018,7 @@ async function selChapter(id,title){
     if(!l.is_active) action=`<span class="chip c-gray">${_lang==='ar'?'غير متاح':'Unavailable'}</span>`;
     else if(future) action=`<div class="time-chip tc-f">⏰ ${ts}</div>`;
     else if(unlocked) action=`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`;
-    else if(inCart) action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();rmCart('${l.id}')">🛒 ${_lang==='ar'?'في السلة ×':'In Cart ×'}</button>`;
+    else if(inCart) action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goCheckout()">🛒 Checkout</button>`;
     else action=`<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;')})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
     return`<div class="ls-row ${canOpen?'click':active?'':'locked'}" ${canOpen?`onclick="goLesson('${l.id}')"`:'style="cursor:default"'}>
       ${thumb}
@@ -1035,7 +1042,7 @@ function addCart(lesson){
   if(_unlockedLessons.has(lesson.id)){toast('w',_lang==='ar'?'الحصة مفتوحة بالفعل':'Lesson already unlocked');return;}
   if(_cart.some(c=>c.id===lesson.id)){toast('i',_lang==='ar'?'موجودة في السلة':'Already in cart');return;}
   _cart.push(lesson);saveCart();updateCartBadge();
-  toast('s',`${_lang==='ar'?'تم إضافة الحصة':'Added lesson'} "${lesson.title}" 🛒`);
+  toast('s',`${_lang==='ar'?'تم إضافة الحصة — افتح Checkout لإدخال الكود':'Added lesson — open Checkout to enter code'} "${lesson.title}" 🛒`,5000);
   if(_sel.ch) selChapter(_sel.ch.id,_sel.ch.title);
 }
 function rmCart(lessonId){
