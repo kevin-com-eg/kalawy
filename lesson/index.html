@@ -774,7 +774,7 @@ function imgErr(el, icon='🖼️'){
 }
 
 
-let ME = null, LESSON = null, EXAM = null, VIDEOS = [], CONTENT = [];
+let ME = null, ROLE = '', LESSON = null, EXAM = null, VIDEOS = [], CONTENT = [], ACCESS = null;
 let _answers = {}, _submitted = false, _curPart = 0;
 let _timerInterval = null;
 
@@ -798,6 +798,34 @@ function ytId(url){
   const m=(url||'').match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
   return m?m[1]:null;
 }
+function passScore(){ return Math.max(0, Math.min(100, Number(EXAM?.pass_score ?? 50))); }
+function accessHours(){ return Math.max(1, Number(LESSON?.access_hours ?? 24)); }
+function accessExpiry(){
+  if(!ACCESS?.used_at) return null;
+  return new Date(new Date(ACCESS.used_at).getTime() + accessHours()*60*60*1000);
+}
+function msLeft(){ const exp=accessExpiry(); return exp ? exp.getTime()-Date.now() : null; }
+function fmtLeft(ms){
+  if(ms==null) return '—';
+  if(ms<=0) return 'انتهى الوقت';
+  const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000);
+  if(h>0) return `${h} ساعة و ${m} دقيقة`;
+  return `${Math.max(1,m)} دقيقة`;
+}
+function accessChip(){
+  if(ROLE==='admin'||ROLE==='teacher'||!ACCESS?.used_at) return '';
+  return `<div class="lh-chip" id="access-left-chip">⏳ متبقي ${fmtLeft(msLeft())}</div>`;
+}
+function startAccessCountdown(){
+  if(ROLE==='admin'||ROLE==='teacher'||!ACCESS?.used_at) return;
+  setInterval(()=>{
+    const el=document.getElementById('access-left-chip');
+    if(!el) return;
+    const left=msLeft();
+    el.textContent='⏳ متبقي '+fmtLeft(left);
+    if(left!==null && left<=0){ try{window._ytPlayer?.pauseVideo?.();}catch{} showError('انتهى وقت فتح الحصة. ادخل كود جديد من Checkout.'); }
+  },60000);
+}
 
 async function init(){
   const th=localStorage.getItem('kw-theme')||'dark'; setTheme(th);
@@ -807,20 +835,22 @@ async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='/login/';return;}
   const{data:profile}=await sb.from('profiles').select('role').eq('id',session.user.id).single();
-  if(profile?.role!=='admin'&&profile?.role!=='teacher'){
-    // النظام الجديد: الحصة تتفتح بكود الحصة من جدول lesson_codes، وليس اشتراك الشابتر.
-    const{data:access}=await sb.from('lesson_codes').select('id').eq('lesson_id',lessonId).eq('used_by',session.user.id).maybeSingle();
-    if(!access){showError('لازم تضيف الحصة للسلة وتدخل كود الحصة الأول');return;}
-  }
+  ROLE=profile?.role||'student';
   ME={id:session.user.id};
+  if(ROLE!=='admin'&&ROLE!=='teacher'){
+    // الحصة تتفتح بكود الحصة من جدول lesson_codes، وبعدها الفيديو يفضل مقفول لحد ما الطالب ينجح في الامتحان.
+    const{data:access}=await sb.from('lesson_codes').select('id,used_at,expires_at').eq('lesson_id',lessonId).eq('used_by',session.user.id).maybeSingle();
+    if(!access){showError('لازم تضيف الحصة للسلة وتدخل كود الحصة الأول');return;}
+    ACCESS=access;
+  }
   await loadLesson(lessonId);
 }
 
 async function loadLesson(lessonId){
   const[{data:lesson},{data:videos},{data:exams},{data:content}]=await Promise.all([
-    sb.from('lessons').select('id,title,description,is_active,scheduled_at,chapter_id,image_url,chapters(title,image_url,subjects(name_ar))').eq('id',lessonId).single(),
+    sb.from('lessons').select('id,title,description,is_active,scheduled_at,access_hours,chapter_id,image_url,chapters(title,image_url,subjects(name_ar))').eq('id',lessonId).single(),
     sb.from('lesson_videos').select('*').eq('lesson_id',lessonId).order('sort_order'),
-    sb.from('exams').select('id,title,duration_minutes,scheduled_at').eq('lesson_id',lessonId).limit(1),
+    sb.from('exams').select('id,title,duration_minutes,scheduled_at,pass_score').eq('lesson_id',lessonId).limit(1),
     sb.from('lesson_content').select('*').eq('lesson_id',lessonId).order('sort_order'),
   ]);
   if(!lesson){showError('الحصة غير موجودة');return;}
@@ -831,7 +861,13 @@ async function loadLesson(lessonId){
     const t=new Date(lesson.scheduled_at).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'});
     showError(`الحصة هتفتح في ${t}`);return;
   }
+  if(ROLE!=='admin'&&ROLE!=='teacher'){
+    if(!lesson.is_active){showError('الحصة مغلقة حالياً من المدرس');return;}
+    const exp=accessExpiry();
+    if(exp && exp.getTime()<=Date.now()){showError('انتهى وقت فتح الحصة. ادخل كود جديد من Checkout.');return;}
+  }
   renderPage();
+  startAccessCountdown();
 }
 
 function getPdfItems(){ return (CONTENT||[]).filter(ct => String(ct.type||'').toLowerCase()==='pdf'); }
@@ -866,6 +902,8 @@ function renderPage(){
             <div class="lh-chip">🖼️ ${getImageItems().length||0} صورة</div>
             <div class="lh-chip">📌 ${getHomeworkItems().length||0} واجب</div>
             ${EXAM?.duration_minutes?`<div class="lh-chip">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
+            ${EXAM?`<div class="lh-chip">🎯 درجة النجاح ${passScore()}%</div>`:''}
+            ${accessChip()}
           </div>
         </div>
       </div>
@@ -889,11 +927,15 @@ function switchTab(id){
 }
 
 /* ── EXAM ── */
-async function renderExam(){
+async function renderExam(forceRetake=false){
   const tc=document.getElementById('tab-content');
+  if(!EXAM){
+    tc.innerHTML='<div class="empty-pg"><span style="font-size:2.8rem">📝</span><div style="font-weight:900">لا يوجد امتحان لهذه الحصة</div><div style="font-size:.85rem;color:var(--t3)">لما المدرس يضيف امتحان هيظهر هنا</div></div>';
+    return;
+  }
   tc.innerHTML='<div class="loading" style="min-height:40vh"><div class="ld"></div></div>';
-  const{data:sub}=await sb.from('exam_submissions').select('id,score').eq('exam_id',EXAM.id).eq('student_id',ME.id).single();
-  if(sub){renderResult(sub.score,true);return;}
+  const{data:sub}=await sb.from('exam_submissions').select('id,score,passed,attempt_count').eq('exam_id',EXAM.id).eq('student_id',ME.id).maybeSingle();
+  if(sub && !forceRetake){renderResult(sub.score,true,!!sub.passed,sub.attempt_count||1);return;}
   const{data:qs}=await sb.from('exam_questions').select('*').eq('exam_id',EXAM.id).order('sort_order');
   if(!qs?.length){tc.innerHTML='<div class="empty-pg"><span style="font-size:2.5rem">📝</span><div>لا توجد أسئلة</div></div>';return;}
   _answers={};_submitted=false;
@@ -902,10 +944,11 @@ async function renderExam(){
     <div class="exam-intro">
       <div class="ei-ico">📝</div>
       <div class="ei-title">${EXAM.title||'امتحان الحصة'}</div>
-      <div class="ei-sub">أجب على جميع الأسئلة — بعد الانتهاء ستتمكن من مشاهدة الفيديو</div>
+      <div class="ei-sub">لازم تجيب ${passScore()}% أو أكتر عشان الفيديو يتفتح. لو أقل، تقدر تمتحن تاني.</div>
       <div class="ei-meta">
         <div class="ei-met">📋 ${qs.length} سؤال</div>
         ${EXAM.duration_minutes?`<div class="ei-met">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
+        <div class="ei-met">🎯 درجة النجاح ${passScore()}%</div>
       </div>
     </div>
     <div class="exam-body" id="exam-body">
@@ -987,22 +1030,33 @@ async function submitExam(qs){
     });
   });
   const score=Math.round(correct/qs.length*100);
-  await sb.from('exam_submissions').upsert({exam_id:EXAM.id,student_id:ME.id,score,answers:Object.entries(_answers).map(([qId,idx])=>({qId,idx}))});
-  setTimeout(()=>renderResult(score,false),500);
+  const passed=score>=passScore();
+  const {data:oldSub}=await sb.from('exam_submissions').select('attempt_count').eq('exam_id',EXAM.id).eq('student_id',ME.id).maybeSingle();
+  await sb.from('exam_submissions').upsert({
+    exam_id:EXAM.id,
+    student_id:ME.id,
+    score,
+    passed,
+    attempt_count:(oldSub?.attempt_count||0)+1,
+    updated_at:new Date().toISOString(),
+    answers:Object.entries(_answers).map(([qId,idx])=>({qId,idx}))
+  });
+  setTimeout(()=>renderResult(score,false,passed,(oldSub?.attempt_count||0)+1),500);
 }
 
-function renderResult(score,alreadyDone){
+function renderResult(score,alreadyDone,passed=null,attempts=1){
   const tc=document.getElementById('tab-content');
-  const pass=score>=50;
+  const pass = passed===null ? score>=passScore() : !!passed;
   tc.innerHTML=`
   <div class="result-card gl">
     <span class="res-ico">${pass?'🏆':'📖'}</span>
     <div class="res-score ${pass?'res-pass':'res-fail'}">${score}%</div>
-    <div class="res-label">${pass?'ممتاز! اجتزت الامتحان':'حاول مرة أخرى!'}</div>
-    <div class="res-detail">${alreadyDone?'سبق وأجبت على هذا الامتحان':'تم حفظ نتيجتك تلقائياً'}</div>
+    <div class="res-label">${pass?'ممتاز! الفيديو اتفتح':'الدرجة أقل من المطلوب'}</div>
+    <div class="res-detail">درجة فتح الفيديو: ${passScore()}% — عدد المحاولات: ${attempts||1}${alreadyDone?' — آخر نتيجة محفوظة':' — تم حفظ نتيجتك'}</div>
     <div class="res-actions">
-      ${VIDEOS.length?`<button class="btn btn-p btn-lg" onclick="switchTab('video')">▶️ شاهد الفيديو الآن</button>`:''}
-      <button class="btn btn-gl" onclick="renderExam()">🔄 إعادة المراجعة</button>
+      ${pass&&VIDEOS.length?`<button class="btn btn-p btn-lg" onclick="switchTab('video')">▶️ شاهد الفيديو الآن</button>`:''}
+      ${!pass?`<button class="btn btn-p btn-lg" onclick="renderExam(true)">🔄 امتحن تاني</button>`:''}
+      <button class="btn btn-gl" onclick="goHome()">← رجوع</button>
     </div>
   </div>`;
 }
@@ -1010,14 +1064,14 @@ function renderResult(score,alreadyDone){
 /* ── VIDEO ── */
 async function renderVideoPlayer(){
   if(EXAM){
-    const{data:sub}=await sb.from('exam_submissions').select('id').eq('exam_id',EXAM.id).eq('student_id',ME.id).single();
-    if(!sub){
+    const{data:sub}=await sb.from('exam_submissions').select('id,score,passed').eq('exam_id',EXAM.id).eq('student_id',ME.id).maybeSingle();
+    if(!sub || !sub.passed){
       document.getElementById('tab-content').innerHTML=`
       <div class="result-card gl" style="text-align:center">
         <span style="font-size:3rem;display:block;margin-bottom:14px">🔒</span>
         <div style="font-size:1.2rem;font-weight:900;margin-bottom:8px">الفيديو مقفول</div>
-        <div style="font-size:.88rem;color:var(--t3);margin-bottom:20px">لازم تخلص الامتحان الأول عشان تشوف الفيديو</div>
-        <button class="btn btn-p btn-lg" onclick="switchTab('exam')">📝 ابدأ الامتحان</button>
+        <div style="font-size:.88rem;color:var(--t3);margin-bottom:20px">لازم تجيب درجة النجاح في الامتحان الأول عشان تشوف الفيديو</div>
+        <button class="btn btn-p btn-lg" onclick="switchTab('exam')">📝 ابدأ / أعد الامتحان</button>
       </div>`;
       return;
     }
