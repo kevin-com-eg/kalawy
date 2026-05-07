@@ -354,6 +354,80 @@ select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
 @media(max-width:400px){
   .grid-4,.grid-3,.my-grid{grid-template-columns:1fr 1fr}
 }
+
+
+/* ═══════════════════════════════════════════
+   EDNUVA SCREENSHOT UI OVERRIDE
+   Paste/keep this at the end of <style>
+═══════════════════════════════════════════ */
+:root{
+  --ed-purple:#1a0738;
+  --ed-purple2:#240a4c;
+  --ed-ink:#17113f;
+  --ed-muted:#6d7080;
+  --ed-strip:#f4f6fb;
+  --ed-card:#f0f3f8;
+  --ed-green:#00d879;
+  --nav-h:88px;
+}
+html,body{background:#fff;color:var(--ed-ink);}
+body{overflow-y:scroll;}
+.ed-nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;height:88px;
+  background:linear-gradient(180deg,var(--ed-purple2),var(--ed-purple));
+  border:0;box-shadow:none;padding:0 22px;gap:26px;
+  direction:ltr;display:flex;align-items:center;
+}
+.ed-user{width:330px;display:flex;align-items:center;gap:14px;cursor:pointer;direction:rtl;color:#fff;flex:0 0 auto;}
+.ed-avatar{width:58px;height:58px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#4ade80,#16a34a);color:#fff;font-weight:900;font-size:1.15rem;border:2px solid rgba(255,255,255,.22);box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.ed-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.ed-user-name{font-size:1.12rem;font-weight:900;line-height:1.15;white-space:nowrap;color:#fff;}
+.ed-profile-link{font-size:.83rem;font-weight:800;color:#ff5bc5;text-decoration:underline;margin-top:6px;white-space:nowrap;}
+.ed-bell{display:flex;align-items:center;gap:8px;background:transparent;border:0;color:#fff;font-size:1.24rem;font-weight:800;cursor:pointer;padding:6px 2px;}
+.ed-bell-icon{font-size:1.45rem;line-height:1;filter:brightness(0) invert(1);}
+.ed-nav-links{display:flex;align-items:center;justify-content:center;gap:34px;flex:1;direction:rtl;min-width:0;}
+.ed-nav-links button{background:transparent;border:0;color:#fff;font-weight:900;font-size:1rem;cursor:pointer;white-space:nowrap;padding:10px 0;transition:.18s;}
+.ed-nav-links button:hover{color:#21f28a;transform:translateY(-1px)}
+.ed-right{display:flex;align-items:center;gap:18px;flex:0 0 auto;direction:rtl;color:#fff;}
+.ed-choose{background:transparent;border:0;color:var(--ed-green);font-size:1rem;font-weight:900;cursor:pointer;white-space:nowrap;}
+.ed-menu{width:27px;height:24px;border:0;background:transparent;display:flex;flex-direction:column;gap:5px;justify-content:center;cursor:pointer;padding:0;}
+.ed-menu span{height:3px;border-radius:99px;background:var(--ed-green);display:block;width:26px;}
+.ed-logo{display:flex;align-items:center;gap:8px;direction:ltr;cursor:pointer;color:#fff;}
+.ed-logo strong{font-family:Inter,Tajawal,sans-serif;font-size:1.03rem;letter-spacing:.01em;color:#fff;}
+.ed-logo-mark{width:36px;height:34px;border-radius:10px;position:relative;background:linear-gradient(135deg,#ff64b7 0%,#7c4dff 42%,#17d6ff 100%);box-shadow:0 8px 22px rgba(0,0,0,.2);}
+.ed-logo-mark span{position:absolute;inset:7px 9px;border-radius:7px;background:linear-gradient(135deg,#ff9f43,#ff4faf 45%,#22d3ee);transform:skewX(-18deg);opacity:.9;}
+.ed-bc-strip{position:fixed;top:88px;left:0;right:0;height:58px;background:var(--ed-strip);z-index:250;border:0;display:block;}
+.ed-bc-inner{max-width:1280px;margin:0 auto;height:58px;padding:0 34px;display:flex;align-items:center;justify-content:flex-end;gap:13px;direction:rtl;overflow:hidden;color:#777b8e;}
+.bc-item{font-size:.93rem;color:#6f7282;padding:0;border-radius:0;background:transparent!important;cursor:pointer;white-space:nowrap;}
+.bc-item:hover{color:var(--ed-ink);background:transparent!important;}
+.bc-item.active{color:var(--ed-ink);font-weight:700;}
+.bc-sep{color:#7d8191;font-size:.9rem;}
+.pw{padding-top:146px;background:#fff;min-height:100vh;}
+.pg{max-width:none;width:100%;padding:0 78px 90px;background:#fff;}
+.hero-bar{display:none!important;}
+.pg-hero{max-width:1280px;margin:0 auto;text-align:right;padding:86px 0 70px;direction:rtl;}
+.pg-hero-title{font-size:clamp(2rem,4.15vw,3.25rem);font-weight:900;line-height:1.25;letter-spacing:-.045em;color:var(--ed-ink);margin-bottom:6px;}
+.pg-hero-sub{font-size:1.18rem;color:#777a8a;font-weight:500;}
+#s-ch .pg-hero{padding-top:86px;padding-bottom:70px;}
+#ch-grid.grid-4{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(230px,1fr));gap:32px;}
+.ch-card{background:var(--ed-card)!important;border:0!important;border-radius:8px!important;box-shadow:none!important;min-height:282px;padding:34px 24px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+.ch-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(23,17,63,.07)!important;}
+.ch-card.owned{border:0!important;}
+.ch-top{border:0!important;padding:0 0 10px!important;color:var(--ed-ink)!important;font-size:1.22rem!important;font-weight:700!important;text-align:center;}
+.ch-img-area{padding:0!important;display:flex;justify-content:center;align-items:center;}
+.ch-img-box{width:104px!important;height:104px!important;aspect-ratio:auto!important;border:0!important;border-radius:4px!important;background:#e9edf5!important;box-shadow:none!important;font-size:2rem!important;}
+.ch-img-box img{width:100%;height:100%;object-fit:cover;display:block;}
+.ch-card:hover .ch-img-box{transform:none!important;}
+.ch-bottom{padding:18px 0 0!important;text-align:center;}
+.ch-title-main{font-size:1.22rem!important;font-weight:700!important;color:var(--ed-ink)!important;margin-bottom:9px!important;}
+.ch-count{font-size:1.02rem!important;color:#747888!important;margin:0!important;}
+.cc-action,.ch-price-pill{display:none!important;}
+.sub-card,.tch-card,.my-card,.prof-card,.enr-card,.cart-item,.co-card{box-shadow:none;border-color:#eef1f6;background:#f7f9fc;}
+@media(max-width:1180px){#ch-grid.grid-4{grid-template-columns:repeat(2,minmax(240px,1fr));}.ed-nav-links{gap:18px}.ed-user{width:275px}.ed-nav{gap:16px}}
+@media(max-width:860px){
+  .ed-nav{height:78px;padding:0 14px;gap:10px}.ed-user{width:auto;min-width:0}.ed-user-text{display:none}.ed-nav-links{display:none}.ed-right{margin-inline-start:auto;gap:10px}.ed-bc-strip{top:78px}.ed-bc-inner{height:54px;padding:0 16px}.pw{padding-top:132px}.pg{padding-inline:16px}.pg-hero{padding-top:48px;padding-bottom:34px}.pg-hero-title{font-size:2rem}#ch-grid.grid-4{grid-template-columns:1fr;gap:18px}.ch-card{min-height:245px}
+}
+
 </style>
 </head>
 <body>
@@ -421,29 +495,42 @@ select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
   </div>
 </div>
 
-<!-- NAV -->
-<nav class="nav" id="mainNav" style="display:none">
-  <div class="nav-logo" onclick="resetAll()">
-    <div class="logo-box">KW</div>
-    <div class="logo-text">kala<em>wy</em></div>
+<!-- NAV — EDNUVA LOOK -->
+<nav class="nav ed-nav" id="mainNav" style="display:none">
+  <div class="ed-user" onclick="goPage('profile')">
+    <div class="ed-avatar" id="edAv">ك</div>
+    <div class="ed-user-text">
+      <div class="ed-user-name" id="edName">كيفن هاني، وسيم شحاتة</div>
+      <div class="ed-profile-link" id="edProfileLink">اضغط هنا لعرض الملف الشخصي</div>
+    </div>
   </div>
-  <div class="nav-bc" id="navBc"></div>
-  <div class="nav-end">
-    <button class="theme-btn" onclick="toggleTheme()">
-      <span class="ico ico-m">🌙</span><span class="ico ico-s">☀️</span>
-      <div class="thumb"></div>
-    </button>
-    <div class="lang-sw">
-      <button class="lopt on" id="n-ar" onclick="setLang('ar')">ع</button>
-      <button class="lopt" id="n-en" onclick="setLang('en')">EN</button>
+
+  <button class="ed-bell" type="button" onclick="goPage('cart')" aria-label="notifications">
+    <span class="ed-bell-icon">🔔</span>
+    <span id="edBellCount">0</span>
+  </button>
+
+  <div class="ed-nav-links">
+    <button onclick="resetAll()">الرئيسية</button>
+    <button onclick="resetAll()">محاضرات</button>
+    <button onclick="toast('i','قريباً')">حجوزات</button>
+    <button onclick="goPage('mylessons')">ملازم</button>
+    <button onclick="goPage('cart')">الباقات</button>
+    <button onclick="toast('i','تواصل معنا قريباً')">تواصل معنا</button>
+  </div>
+
+  <div class="ed-right">
+    <button class="ed-choose" onclick="resetAll()">اختار مدرس</button>
+    <button class="ed-menu" onclick="resetAll()" aria-label="menu"><span></span><span></span><span></span></button>
+    <div class="ed-logo" onclick="resetAll()">
+      <div class="ed-logo-mark"><span></span></div>
+      <strong>EDNUVA</strong>
     </div>
-    <div style="position:relative" onclick="goPage('cart')" title="">
-      <button class="cart-btn">🛒</button>
-      <div class="cart-ct hidden" id="cart-badge">0</div>
-    </div>
-    <div class="nav-av" id="navAv" onclick="goPage('profile')">؟</div>
   </div>
 </nav>
+<div class="ed-bc-strip" id="edBcStrip" style="display:none">
+  <div class="nav-bc ed-bc-inner" id="navBc"></div>
+</div>
 
 <!-- BOTTOM TABS -->
 <div class="bottom-tabs" id="bottomTabs">
@@ -493,7 +580,7 @@ select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
     <div id="s-ch" class="hidden">
       <div class="pg-hero">
         <div class="pg-hero-title" data-ar="اختار الفصل/الشابتر اللي عايز تذاكره" data-en="Choose the chapter you want to study">اختار الفصل/الشابتر اللي عايز تذاكره</div>
-        <div class="pg-hero-sub" data-ar="معلش اخرناك، بس دي اخر خطوة" data-en="Almost there, this is the last step">معلش اخرناك، بس دي اخر خطوة</div>
+        <div class="pg-hero-sub" data-ar="معليش اخترناك، بس دي اخر خطوة" data-en="Almost there, this is the last step">معليش اخترناك، بس دي اخر خطوة</div>
       </div>
       <div class="grid-4" id="ch-grid"></div>
     </div>
@@ -558,7 +645,7 @@ const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
 // ── consts ────────────────────────────────────────────────────────────────────
-const GR_AR={1:'أولى ثانوي',2:'تانية ثانوي',3:'تالتة ثانوي'};
+const GR_AR={1:'أولى ثانوي',2:'تانية ثانوي',3:'ثالثة ثانوي'};
 const GR_EN={1:'Grade 10',2:'Grade 11',3:'Grade 12'};
 const EMOJIS={'الرياضيات':'📐','الفيزياء':'🔭','الكيمياء':'🧪','الأحياء':'🔬','اللغة العربية':'📖','اللغة الإنجليزية':'🌍'};
 const BG_DARK=['linear-gradient(135deg,#1a4a35,#0d2820)','linear-gradient(135deg,#1a2f5a,#0d1a35)','linear-gradient(135deg,#4a2a1a,#2a1508)','linear-gradient(135deg,#2a1a4a,#180d2a)','linear-gradient(135deg,#4a1a2a,#280d16)','linear-gradient(135deg,#1a3a4a,#0d2230)'];
@@ -665,7 +752,8 @@ async function init(user){
   try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
   document.getElementById('loginGate').remove();
   document.getElementById('mainNav').style.display='flex';
-  document.getElementById('bottomTabs').style.display='flex';
+  document.getElementById('edBcStrip').style.display='block';
+  document.getElementById('bottomTabs').style.display='';
   updateUI();
   await loadEnrollments();
   loadSubjects();
@@ -673,9 +761,11 @@ async function init(user){
 
 function se(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 function updateUI(){
-  const av=(ME.full_name||ME.email||'?')[0].toUpperCase();
-  ['hAv','navAv','pr-av'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=av;});
-  se('hNm',ME.full_name||ME.email);
+  const displayName=ME.full_name||'كيفن هاني، وسيم شحاتة';
+  const av=(displayName||ME.email||'?')[0].toUpperCase();
+  ['hAv','navAv','pr-av','edAv'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=av;});
+  se('edName',displayName);
+  se('hNm',displayName);
   se('hGd',gr(ME.grade_id));
   se('pr-nm',ME.full_name||'—');
   se('pr-em',ME.email||'—');
@@ -687,6 +777,8 @@ function updateUI(){
 }
 function updateCartBadge(){
   const b=document.getElementById('cart-badge');
+  const ed=document.getElementById('edBellCount');
+  if(ed)ed.textContent=_cart.length||0;
   if(!b)return;
   if(_cart.length){b.textContent=_cart.length;b.classList.remove('hidden');}
   else b.classList.add('hidden');
@@ -718,11 +810,20 @@ function goPage(page){
 function updateBc(){
   const bc=document.getElementById('navBc');
   if(!bc)return;
-  const home=_lang==='ar'?'الرئيسية':'Home';
-  let parts=`<span class="bc-item" onclick="resetAll()">${home}</span>`;
-  if(_sel.sub){parts+=`<span class="bc-sep">›</span><span class="bc-item" onclick="resetTo('sub')">${_sel.sub.name}</span>`;}
-  if(_sel.tch){parts+=`<span class="bc-sep">›</span><span class="bc-item" onclick="resetTo('tch')">${_sel.tch.name}</span>`;}
-  if(_sel.ch) {parts+=`<span class="bc-sep">›</span><span class="bc-item active">${_sel.ch.title}</span>`;}
+  const subjectMap={'الفيزياء':'Physics','الكيمياء':'Chemistry','الأحياء':'Biology','الرياضيات':'Mathematics','اللغة العربية':'Arabic','اللغة الإنجليزية':'English'};
+  const addSep=()=>'<span class="bc-sep">•</span>';
+  let parts=`<span class="bc-item" onclick="resetAll()">الرئيسية</span>`;
+  parts+=addSep()+`<span class="bc-item" onclick="resetAll()">محاضرات</span>`;
+  const gradeLabel=gr(_sel.sub?.grade_id||ME?.grade_id||3);
+  if(_sel.sub||_sel.tch||_sel.ch){
+    parts+=addSep()+`<span class="bc-item">${gradeLabel} 2026</span>`;
+  }
+  if(_sel.sub){
+    const sub=subjectMap[_sel.sub.name]||_sel.sub.name;
+    parts+=addSep()+`<span class="bc-item" onclick="resetTo('sub')">${sub}</span>`;
+  }
+  if(_sel.tch){parts+=addSep()+`<span class="bc-item active" onclick="resetTo('tch')">${_sel.tch.name}</span>`;}
+  if(_sel.ch){parts+=addSep()+`<span class="bc-item active">${_sel.ch.title}</span>`;}
   bc.innerHTML=parts;
 }
 
@@ -741,7 +842,7 @@ async function loadSubjects(){
     const ico=EMOJIS[s.name_ar]||'📚';
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
     const thumb=s.image_url?`<img src="${s.image_url}" alt="">`:`<div style="width:76px;height:76px;border-radius:20px;background:${grad};display:grid;place-items:center;font-size:2.2rem;box-shadow:var(--shadow)">${ico}</div>`;
-    return`<div class="sub-card" onclick="selSub('${s.id}','${s.name_ar}')">
+    return`<div class="sub-card" onclick="selSub('${s.id}','${s.name_ar}',${s.grade_id||ME?.grade_id||3})">
       <div class="sub-icon">${thumb}</div>
       <div class="sub-name">${s.name_ar}</div>
       <span class="sub-badge ${chip}">${gr(s.grade_id)}</span>
@@ -749,8 +850,8 @@ async function loadSubjects(){
   }).join('');
 }
 
-async function selSub(id,name){
-  _sel={sub:{id,name},tch:null,ch:null};showStep('tch');
+async function selSub(id,name,gradeId){
+  _sel={sub:{id,name,grade_id:gradeId},tch:null,ch:null};showStep('tch');
   se('ttl-tch',`👨‍🏫 ${name}`);
   const g=document.getElementById('tch-grid');
   g.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
@@ -791,7 +892,7 @@ async function selTch(id,name){
     const price=Number(ch.price)||0;
     const lcnt=cnt[ch.id]||0;
     const lcntStr=_lang==='ar'?`${lcnt} محاضرات`:`${lcnt} lectures`;
-    const chNum=_lang==='ar'?`الشابتر ${i+1}`:`Chapter ${i+1}`;
+    const chNum=ch.title||(_lang==='ar'?`الشابتر ${i+1}`:`Chapter ${i+1}`);
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
     const thumb=ch.image_url?`<img src="${ch.image_url}" alt="${ch.title}">`:`<div style="width:100%;height:100%;background:${grad};display:flex;align-items:center;justify-content:center;font-size:2.8rem">${bks[i%bks.length]}</div>`;
     let btn='';
