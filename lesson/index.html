@@ -306,6 +306,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 #dt-overlay{background:rgba(0,0,0,.985)!important}.dto-title{font-size:1.9rem}.dto-sub{font-size:1rem}
 @media(max-width:760px){.lesson-tabs{grid-template-columns:repeat(2,1fr);top:74px}.lt{min-height:46px}.vp-parts-horizontal{padding:10px}.vp-part-chip{min-width:145px}.yt-mask-br{width:130px;height:44px}.yt-mask-tl{width:170px;height:46px}.pc-vol,.pc-ctrl .pc-lbl{display:none}.pc-time{min-width:auto;font-size:.68rem}.pc-sel{padding:4px 5px}}
 
+
+
+/* Red rotating student phone watermark inside video */
+.kw-phone-watermark{
+  position:absolute;z-index:22;left:8%;top:10%;pointer-events:none;
+  color:#ff2020;font-family:Inter,Tajawal,monospace;font-weight:900;font-size:clamp(14px,2vw,28px);
+  letter-spacing:.04em;text-shadow:0 2px 10px rgba(0,0,0,.85),0 0 10px rgba(255,0,0,.35);
+  opacity:.92;transform:rotate(-12deg);mix-blend-mode:screen;white-space:nowrap;
+  animation:kwWmPulse 2.4s ease-in-out infinite;
+}
+@keyframes kwWmPulse{0%,100%{opacity:.56;filter:blur(0)}50%{opacity:1;filter:blur(.2px)}}
+
 </style>
 </head>
 <body>
@@ -642,6 +654,28 @@ function _showControls(){
 /* ══════════════════════════════════════════════════════════
    BUILD PLAYER HTML
    ══════════════════════════════════════════════════════════ */
+
+function phoneWatermarkText(){
+  const p=String(ME?.phone||'').trim();
+  return '--' + (p || 'NO-PHONE');
+}
+let _wmTimer=null;
+function startPhoneWatermark(){
+  if(_wmTimer) clearInterval(_wmTimer);
+  const wm=document.getElementById('kw-phone-watermark');
+  if(!wm) return;
+  const move=()=>{
+    const x=5+Math.random()*70;
+    const y=8+Math.random()*68;
+    const r=-18+Math.random()*36;
+    wm.style.left=x+'%';
+    wm.style.top=y+'%';
+    wm.style.transform=`rotate(${r}deg)`;
+  };
+  move();
+  _wmTimer=setInterval(move,2400);
+}
+
 function buildPlayer(){
   const tc = document.getElementById('tab-content');
   if(!VIDEOS.length){
@@ -669,6 +703,7 @@ function buildPlayer(){
         ${partChooser}
         <div class="cplayer" id="player-fs-wrap" onmousemove="_showControls()">
           <div id="yt-player-el"></div>
+          <div class="kw-phone-watermark" id="kw-phone-watermark">${esc(phoneWatermarkText())}</div>
           <div class="yt-guard" onclick="_onGuardClick(event)" ondblclick="toggleFs()" oncontextmenu="return false"></div>
           <div class="yt-brand-mask yt-mask-br"></div>
           <div class="yt-brand-mask yt-mask-tl"></div>
@@ -719,6 +754,7 @@ function buildPlayer(){
       </div>
     </div>
   </div>`;
+  startPhoneWatermark();
 
   if(vid){
     initPlayer(vid, 'yt-player-el');
@@ -870,9 +906,9 @@ async function init(){
   if(!lessonId){showError('لم يتم تحديد الحصة');return;}
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='/login/';return;}
-  const{data:profile}=await sb.from('profiles').select('role').eq('id',session.user.id).single();
+  const{data:profile}=await sb.from('profiles').select('role,phone').eq('id',session.user.id).single();
   ROLE=profile?.role||'student';
-  ME={id:session.user.id};
+  ME={id:session.user.id,phone:profile?.phone||''};
   if(ROLE!=='admin'&&ROLE!=='teacher'){
     // الحصة تتفتح بكود الحصة من جدول lesson_codes، وبعدها الفيديو يفضل مقفول لحد ما الطالب ينجح في الامتحان.
     const{data:access}=await sb.from('lesson_codes').select('id,used_at,expires_at').eq('lesson_id',lessonId).eq('used_by',session.user.id).maybeSingle();
