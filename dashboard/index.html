@@ -7,10 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-/* ══════════════════════════════════════════
-   KALAWY PLATFORM — v3 Polish
-   Dark / Light  ·  AR / EN
-══════════════════════════════════════════ */
 :root{
   --g1:#00d879;--g2:#1a8a5c;--g3:#22b078;
   --glow:rgba(0,216,121,.18);
@@ -49,7 +45,7 @@ body{
 button,input,select{font:inherit}
 .hidden{display:none!important}
 
-/* ══ NAV ══════════════════════════════════════════ */
+/* ══ NAV ══ */
 .main-nav{
   position:fixed;top:0;left:0;right:0;z-index:300;
   height:var(--nav-h);
@@ -58,11 +54,8 @@ button,input,select{font:inherit}
   display:flex;align-items:center;
   padding:0 clamp(14px,4vw,40px);
   gap:18px;box-shadow:0 8px 32px rgba(0,0,0,.25);
-  /* always LTR layout — RTL content inside */
   direction:ltr;
 }
-
-/* Logo */
 .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;flex-shrink:0;}
 .nav-mark{
   width:40px;height:40px;border-radius:12px;
@@ -72,27 +65,15 @@ button,input,select{font:inherit}
   box-shadow:0 6px 18px rgba(0,216,121,.22);
   font-family:'Syne',sans-serif;
 }
-.nav-logo strong{
-  font-size:1.25rem;font-weight:800;color:#fff;
-  font-family:'Syne',sans-serif;letter-spacing:-.02em;
-}
+.nav-logo strong{font-size:1.25rem;font-weight:800;color:#fff;font-family:'Syne',sans-serif;letter-spacing:-.02em;}
 .nav-logo strong em{color:var(--g1);font-style:normal;}
-
-/* Center links */
-.nav-links{
-  display:flex;align-items:center;gap:4px;
-  flex:1;justify-content:center;
-  direction:rtl;
-}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;direction:rtl;}
 .nav-links button,.nav-contact-wrap > button{
   background:transparent;border:none;color:rgba(255,255,255,.72);
   font-weight:700;font-size:.88rem;cursor:pointer;
-  padding:8px 13px;border-radius:10px;
-  transition:.18s;white-space:nowrap;
+  padding:8px 13px;border-radius:10px;transition:.18s;white-space:nowrap;
 }
-.nav-links button:hover,.nav-contact-wrap > button:hover{
-  background:rgba(255,255,255,.09);color:#fff;
-}
+.nav-links button:hover,.nav-contact-wrap > button:hover{background:rgba(255,255,255,.09);color:#fff;}
 .nav-cart-btn{
   display:inline-flex;align-items:center;gap:7px;
   background:rgba(0,216,121,.12)!important;
@@ -100,148 +81,40 @@ button,input,select{font:inherit}
   border:1px solid rgba(0,216,121,.22)!important;
   border-radius:10px!important;
 }
-.nav-cart-btn:hover{
-  background:rgba(0,216,121,.2)!important;
-}
-.cart-pill{
-  background:var(--danger);color:#fff;
-  font-size:.68rem;font-weight:900;
-  padding:2px 7px;border-radius:999px;
-  line-height:1;
-}
-
-/* Right controls */
+.nav-cart-btn:hover{background:rgba(0,216,121,.2)!important;}
+.cart-pill{background:var(--danger);color:#fff;font-size:.68rem;font-weight:900;padding:2px 7px;border-radius:999px;line-height:1;}
 .nav-end{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-
-/* ── Dark/Light toggle ── */
-.theme-toggle{
-  display:flex;align-items:center;gap:0;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:999px;padding:4px;cursor:pointer;
-  transition:.2s;
-}
+.theme-toggle{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px;cursor:pointer;transition:.2s;}
 .theme-toggle:hover{background:rgba(255,255,255,.14);}
-.theme-side{
-  width:30px;height:26px;border-radius:999px;
-  display:grid;place-items:center;
-  font-size:.88rem;transition:.22s;
-  color:rgba(255,255,255,.45);
-}
-.theme-side.active{
-  background:rgba(255,255,255,.15);
-  color:#fff;
-}
-
-/* ── AR/EN toggle ── */
-.lang-toggle{
-  display:flex;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:999px;padding:3px;gap:2px;
-}
-.lang-btn{
-  padding:5px 12px;border:none;background:transparent;
-  color:rgba(255,255,255,.5);
-  border-radius:999px;cursor:pointer;
-  font-weight:800;font-size:.76rem;transition:.18s;
-}
-.lang-btn.on{
-  background:var(--g1);
-  color:#0f0525;
-  box-shadow:0 3px 10px rgba(0,216,121,.3);
-}
-
-/* User avatar */
-.nav-av{
-  width:36px;height:36px;border-radius:50%;
-  background:linear-gradient(135deg,var(--g2),var(--g3));
-  display:grid;place-items:center;
-  font-weight:800;font-size:.88rem;color:#fff;
-  cursor:pointer;box-shadow:0 3px 12px var(--glow);
-  flex-shrink:0;transition:transform .2s;border:2px solid rgba(255,255,255,.18);
-}
+.theme-side{width:30px;height:26px;border-radius:999px;display:grid;place-items:center;font-size:.88rem;transition:.22s;color:rgba(255,255,255,.45);}
+.theme-side.active{background:rgba(255,255,255,.15);color:#fff;}
+.lang-toggle{display:flex;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:3px;gap:2px;}
+.lang-btn{padding:5px 12px;border:none;background:transparent;color:rgba(255,255,255,.5);border-radius:999px;cursor:pointer;font-weight:800;font-size:.76rem;transition:.18s;}
+.lang-btn.on{background:var(--g1);color:#0f0525;box-shadow:0 3px 10px rgba(0,216,121,.3);}
+.nav-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g2),var(--g3));display:grid;place-items:center;font-weight:800;font-size:.88rem;color:#fff;cursor:pointer;box-shadow:0 3px 12px var(--glow);flex-shrink:0;transition:transform .2s;border:2px solid rgba(255,255,255,.18);}
 .nav-av:hover{transform:scale(1.08);}
-
-/* Bell */
-.nav-bell{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-  border-radius:999px;padding:6px 12px;cursor:pointer;
-  color:rgba(255,255,255,.8);font-size:.82rem;font-weight:800;
-  transition:.18s;
-}
+.nav-bell{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;cursor:pointer;color:rgba(255,255,255,.8);font-size:.82rem;font-weight:800;transition:.18s;}
 .nav-bell:hover{background:rgba(255,255,255,.13);color:#fff;}
-.bell-ct{
-  background:var(--danger);color:#fff;
-  font-size:.65rem;font-weight:900;
-  padding:2px 6px;border-radius:999px;line-height:1;
-}
+.bell-ct{background:var(--danger);color:#fff;font-size:.65rem;font-weight:900;padding:2px 6px;border-radius:999px;line-height:1;}
 
 /* Contact dropdown */
 .nav-contact-wrap{position:relative;}
-.contact-drop{
-  position:absolute;top:calc(100% + 12px);
-  left:50%;transform:translateX(-50%) translateY(8px);
-  width:230px;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:18px;box-shadow:var(--sh-lg);
-  padding:10px;opacity:0;pointer-events:none;
-  transition:.2s;z-index:900;direction:rtl;
-}
+.contact-drop{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(8px);width:230px;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--sh-lg);padding:10px;opacity:0;pointer-events:none;transition:.2s;z-index:900;direction:rtl;}
 .nav-contact-wrap.open .contact-drop{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0);}
-.contact-drop::before{
-  content:'';position:absolute;top:-7px;left:50%;
-  width:13px;height:13px;
-  background:var(--card);border-left:1px solid var(--border);border-top:1px solid var(--border);
-  transform:translateX(-50%) rotate(45deg);
-}
-.cdrop-item{
-  display:flex;align-items:center;gap:10px;width:100%;
-  border:none;background:var(--bg2);color:var(--text);
-  border-radius:12px;padding:11px 13px;cursor:pointer;
-  text-decoration:none;font-weight:800;font-size:.88rem;
-  margin-bottom:7px;transition:.15s;
-}
+.contact-drop::before{content:'';position:absolute;top:-7px;left:50%;width:13px;height:13px;background:var(--card);border-left:1px solid var(--border);border-top:1px solid var(--border);transform:translateX(-50%) rotate(45deg);}
+.cdrop-item{display:flex;align-items:center;gap:10px;width:100%;border:none;background:var(--bg2);color:var(--text);border-radius:12px;padding:11px 13px;cursor:pointer;text-decoration:none;font-weight:800;font-size:.88rem;margin-bottom:7px;transition:.15s;}
 .cdrop-item:last-child{margin-bottom:0;}
 .cdrop-item:hover{background:var(--bg3);transform:translateY(-1px);}
-.cdrop-ico{
-  width:32px;height:32px;border-radius:9px;
-  display:grid;place-items:center;font-size:1rem;
-}
+.cdrop-ico{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:1rem;}
 .cico-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;}
 .cico-em{background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff;}
 
-/* ══ BREADCRUMB STRIP ══ */
-.bc-strip{
-  position:fixed;top:var(--nav-h);left:0;right:0;height:52px;
-  background:var(--bg);border-bottom:1px solid var(--border);
-  z-index:250;display:flex;align-items:center;
-  padding:0 clamp(14px,4vw,40px);gap:8px;direction:rtl;
-  box-shadow:0 2px 8px rgba(0,0,0,.05);
-}
-.bc-item{
-  font-size:.84rem;color:var(--t3);cursor:pointer;
-  padding:3px 8px;border-radius:7px;transition:.15s;white-space:nowrap;
-}
+/* ══ BREADCRUMB ══ */
+.bc-strip{position:fixed;top:var(--nav-h);left:0;right:0;height:52px;background:var(--bg);border-bottom:1px solid var(--border);z-index:250;display:flex;align-items:center;padding:0 clamp(14px,4vw,40px);gap:8px;direction:rtl;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.bc-item{font-size:.84rem;color:var(--t3);cursor:pointer;padding:3px 8px;border-radius:7px;transition:.15s;white-space:nowrap;}
 .bc-item:hover{color:var(--text);background:var(--bg2);}
 .bc-item.active{color:var(--text);font-weight:700;cursor:default;}
 .bc-sep{color:var(--t3);font-size:.7rem;}
-
-/* ══ BOTTOM TABS (mobile) ══ */
-.bottom-tabs{
-  display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:var(--card);border-top:1px solid var(--border);
-  padding:6px 0;justify-content:space-around;
-}
-.btab{
-  flex:1;border:none;background:none;
-  font-size:1.15rem;padding:8px 4px;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;
-  gap:2px;color:var(--t3);transition:.15s;
-}
-.btab.on{color:var(--g1);}
-.btab span{font-size:.6rem;font-weight:700;}
 
 /* ══ PAGES ══ */
 .pw{padding-top:calc(var(--nav-h) + 52px);background:var(--bg);min-height:100vh;}
@@ -251,11 +124,7 @@ button,input,select{font:inherit}
 
 /* ══ PAGE HERO ══ */
 .pg-hero{text-align:center;padding:40px 20px 28px;}
-.pg-hero-title{
-  font-size:clamp(1.6rem,3.5vw,2.3rem);font-weight:900;
-  letter-spacing:-.04em;margin-bottom:8px;
-  font-family:'Syne',sans-serif;
-}
+.pg-hero-title{font-size:clamp(1.6rem,3.5vw,2.3rem);font-weight:900;letter-spacing:-.04em;margin-bottom:8px;font-family:'Syne',sans-serif;}
 .pg-hero-sub{font-size:.95rem;color:var(--t3);font-weight:600;}
 
 /* ══ GRIDS ══ */
@@ -263,17 +132,9 @@ button,input,select{font:inherit}
 .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:18px;}
 
 /* ══ SUBJECT CARD ══ */
-.sub-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-lg);padding:26px 20px;text-align:center;
-  cursor:pointer;transition:var(--tr);box-shadow:var(--sh);
-}
+.sub-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 20px;text-align:center;cursor:pointer;transition:var(--tr);box-shadow:var(--sh);}
 .sub-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);border-color:var(--border-h);}
-.sub-icon{
-  width:72px;height:72px;border-radius:18px;
-  margin:0 auto 14px;display:flex;align-items:center;
-  justify-content:center;font-size:2.1rem;overflow:hidden;box-shadow:var(--sh);
-}
+.sub-icon{width:72px;height:72px;border-radius:18px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;overflow:hidden;box-shadow:var(--sh);}
 .sub-icon img{width:72px;height:72px;object-fit:cover;border-radius:18px;}
 .sub-name{font-weight:900;font-size:.96rem;margin-bottom:7px;}
 .sub-badge{display:inline-flex;align-items:center;padding:3px 11px;border-radius:999px;font-size:.7rem;font-weight:700;}
@@ -282,92 +143,41 @@ button,input,select{font:inherit}
 .bg-y{background:rgba(245,158,10,.09);color:var(--gold);border:1px solid rgba(245,158,10,.18);}
 
 /* ══ TEACHER CARD ══ */
-.tch-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-lg);padding:24px 18px;text-align:center;
-  cursor:pointer;transition:var(--tr);box-shadow:var(--sh);
-}
+.tch-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px 18px;text-align:center;cursor:pointer;transition:var(--tr);box-shadow:var(--sh);}
 .tch-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);}
-.tch-av{
-  width:66px;height:66px;border-radius:50%;
-  margin:0 auto 12px;display:flex;align-items:center;
-  justify-content:center;font-size:1.5rem;font-weight:900;
-  color:#fff;overflow:hidden;
-  box-shadow:0 4px 14px var(--glow);
-  border:2px solid rgba(34,176,120,.28);
-}
+.tch-av{width:66px;height:66px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;color:#fff;overflow:hidden;box-shadow:0 4px 14px var(--glow);border:2px solid rgba(34,176,120,.28);}
 .tch-av img{width:66px;height:66px;border-radius:50%;object-fit:cover;}
 .tch-name{font-weight:800;font-size:.95rem;margin-bottom:4px;}
 .tch-bio{font-size:.76rem;color:var(--t3);line-height:1.5;}
 
-/* ══ CHAPTER CARD (Ednova style) ══ */
-.ch-card{
-  background:#f0f3f8;border:none;border-radius:8px;
-  min-height:275px;padding:30px 22px 26px;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;cursor:pointer;
-  transition:var(--tr);overflow:hidden;
-}
+/* ══ CHAPTER CARD ══ */
+.ch-card{background:#f0f3f8;border:none;border-radius:8px;min-height:275px;padding:30px 22px 26px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:var(--tr);overflow:hidden;}
 [data-theme="dark"] .ch-card{background:#101e15;}
 .ch-card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.12);}
-.ch-top{
-  font-weight:700;font-size:1.1rem;color:var(--text);
-  text-align:center;padding-bottom:10px;width:100%;
-}
+.ch-top{font-weight:700;font-size:1.1rem;color:var(--text);text-align:center;padding-bottom:10px;width:100%;}
 .ch-img-area{display:flex;justify-content:center;align-items:center;}
-.ch-img-box{
-  width:100px;height:100px;border-radius:5px;
-  background:#e9edf5;display:flex;align-items:center;
-  justify-content:center;font-size:2.5rem;overflow:hidden;
-  transition:transform .28s;
-}
+.ch-img-box{width:100px;height:100px;border-radius:5px;background:#e9edf5;display:flex;align-items:center;justify-content:center;font-size:2.5rem;overflow:hidden;transition:transform .28s;}
 [data-theme="dark"] .ch-img-box{background:#182418;}
 .ch-img-box img{width:100%;height:100%;object-fit:cover;display:block;}
 .ch-bottom{padding:16px 0 0;text-align:center;width:100%;}
 .ch-title-main{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:6px;}
 .ch-count{font-size:.9rem;color:var(--t3);}
 
-/* ══ LESSON ROWS (same card shape as chapters) ══ */
-#s-ls .ls-list{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(235px,1fr));
-  gap:24px;
-}
-#s-ls .ls-row{
-  background:#f0f3f8;border:none;border-radius:8px;
-  min-height:275px;padding:30px 22px 26px;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;text-align:center;overflow:hidden;
-  box-shadow:none;transition:var(--tr);
-}
+/* ══ LESSON ROWS ══ */
+#s-ls .ls-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:24px;}
+#s-ls .ls-row{background:#f0f3f8;border:none;border-radius:8px;min-height:275px;padding:30px 22px 26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;box-shadow:none;transition:var(--tr);}
 [data-theme="dark"] #s-ls .ls-row{background:#101e15;}
 #s-ls .ls-row.click{cursor:pointer;}
 #s-ls .ls-row.click:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.12);}
 #s-ls .ls-row.locked{opacity:.65;cursor:not-allowed;}
-#s-ls .ls-thumb{
-  width:100px;height:100px;min-height:100px;
-  border-radius:5px;background:#e9edf5;
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.2rem;flex:0 0 auto;margin:10px auto 16px;
-  overflow:hidden;
-}
+#s-ls .ls-thumb{width:100px;height:100px;min-height:100px;border-radius:5px;background:#e9edf5;display:flex;align-items:center;justify-content:center;font-size:2.2rem;flex:0 0 auto;margin:10px auto 16px;overflow:hidden;}
 [data-theme="dark"] #s-ls .ls-thumb{background:#182418;}
 #s-ls .ls-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-#s-ls .ls-body{
-  padding:0;display:flex;flex-direction:column;
-  align-items:center;gap:8px;width:100%;
-}
+#s-ls .ls-body{padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;}
 #s-ls .ls-info{width:100%;}
-#s-ls .ls-num{
-  font-size:.8rem;color:var(--t3);font-weight:700;
-  margin-bottom:6px;text-transform:none;letter-spacing:0;
-}
+#s-ls .ls-num{font-size:.8rem;color:var(--t3);font-weight:700;margin-bottom:6px;}
 #s-ls .ls-title{font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:6px;}
-#s-ls .ls-desc{
-  font-size:.82rem;color:var(--t3);line-height:1.55;
-  display:-webkit-box;-webkit-line-clamp:2;
-  -webkit-box-orient:vertical;overflow:hidden;
-}
+#s-ls .ls-desc{font-size:.82rem;color:var(--t3);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 #s-ls .ls-actions{justify-content:center!important;}
 
 /* ══ CHIP ══ */
@@ -381,19 +191,8 @@ button,input,select{font:inherit}
 .tc-p{background:rgba(34,176,120,.1);color:var(--g3);border:1px solid rgba(34,176,120,.2);}
 
 /* ══ HERO BAR ══ */
-.hero-bar{
-  display:flex;align-items:center;gap:16px;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-xl);padding:18px 24px;
-  box-shadow:var(--sh);margin-top:20px;
-}
-.h-av{
-  width:48px;height:48px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--g2),var(--g3));
-  display:grid;place-items:center;
-  font-weight:900;font-size:1.1rem;color:#fff;
-  box-shadow:0 4px 14px var(--glow);
-}
+.hero-bar{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:18px 24px;box-shadow:var(--sh);margin-top:20px;}
+.h-av{width:48px;height:48px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--g2),var(--g3));display:grid;place-items:center;font-weight:900;font-size:1.1rem;color:#fff;box-shadow:0 4px 14px var(--glow);}
 .h-name{font-weight:800;font-size:1rem;}
 .h-grade{font-size:.76rem;color:var(--t3);margin-top:2px;}
 .h-stats{margin-inline-start:auto;display:flex;gap:12px;}
@@ -404,72 +203,33 @@ button,input,select{font:inherit}
 /* ══ CART ══ */
 .cart-layout{display:grid;grid-template-columns:1fr 330px;gap:20px;align-items:start;}
 .cart-items{display:flex;flex-direction:column;gap:11px;}
-.cart-item{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-lg);padding:15px;
-  display:flex;align-items:center;gap:13px;box-shadow:var(--sh);
-}
-.ci-thumb{
-  width:68px;height:54px;border-radius:10px;flex-shrink:0;
-  background:var(--bg2);display:flex;align-items:center;
-  justify-content:center;font-size:1.4rem;overflow:hidden;
-}
+.cart-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px;display:flex;align-items:center;gap:13px;box-shadow:var(--sh);}
+.ci-thumb{width:68px;height:54px;border-radius:10px;flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;overflow:hidden;}
 .ci-thumb img{width:68px;height:54px;object-fit:cover;}
 .ci-info{flex:1;}
 .ci-name{font-weight:800;font-size:.92rem;margin-bottom:2px;}
 .ci-sub{font-size:.74rem;color:var(--t3);}
-.ci-remove{
-  background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);
-  color:var(--danger);border-radius:8px;
-  padding:6px 10px;cursor:pointer;font-size:.8rem;font-weight:700;
-  transition:.15s;white-space:nowrap;
-}
+.ci-remove{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);color:var(--danger);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.8rem;font-weight:700;transition:.15s;white-space:nowrap;}
 .ci-remove:hover{background:rgba(239,68,68,.16);}
-
-/* Checkout card */
-.co-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-xl);padding:22px;
-  position:sticky;top:calc(var(--nav-h)+68px);box-shadow:var(--sh);
-}
+.co-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:22px;position:sticky;top:calc(var(--nav-h)+68px);box-shadow:var(--sh);}
 .co-ttl{font-weight:900;font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .co-divider{border:none;border-top:1px solid var(--border);margin:10px 0;}
 .co-row{display:flex;justify-content:space-between;padding:5px 0;font-size:.88rem;color:var(--t3);}
 .co-total{display:flex;justify-content:space-between;padding-top:10px;font-weight:900;font-size:1.05rem;}
 .co-total .val{color:var(--g3);}
-
-/* Code items */
-.co-lesson-block{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r);padding:12px;margin-top:10px;
-}
+.co-lesson-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-top:10px;}
 .co-lesson-name{font-weight:800;font-size:.86rem;margin-bottom:8px;color:var(--text);}
 .code-row{display:flex;gap:7px;}
-.code-input{
-  flex:1;background:var(--card);border:1.5px solid var(--border);
-  color:var(--text);padding:9px 12px;border-radius:10px;
-  outline:none;font-size:.84rem;letter-spacing:.08em;
-  text-transform:uppercase;transition:.18s;
-  font-weight:700;
-}
+.code-input{flex:1;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:9px 12px;border-radius:10px;outline:none;font-size:.84rem;letter-spacing:.08em;text-transform:uppercase;transition:.18s;font-weight:700;}
 .code-input:focus{border-color:var(--g3);box-shadow:0 0 0 3px var(--glow);}
 .code-input::placeholder{text-transform:none;color:var(--t3);letter-spacing:normal;font-size:.8rem;font-weight:600;}
-.code-ok{
-  background:linear-gradient(135deg,var(--g2),var(--g3));
-  color:#fff;border:none;border-radius:10px;
-  padding:9px 14px;font-weight:800;cursor:pointer;
-  font-size:.84rem;transition:.18s;white-space:nowrap;
-}
+.code-ok{background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;border:none;border-radius:10px;padding:9px 14px;font-weight:800;cursor:pointer;font-size:.84rem;transition:.18s;white-space:nowrap;}
 .code-ok:hover{filter:brightness(1.08);transform:translateY(-1px);}
 .code-ok:disabled{opacity:.45;cursor:not-allowed;transform:none;}
 
 /* ══ MY LESSONS ══ */
 .my-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:18px;}
-.my-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-lg);overflow:hidden;cursor:pointer;
-  transition:var(--tr);box-shadow:var(--sh);
-}
+.my-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:var(--tr);box-shadow:var(--sh);}
 .my-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);}
 .my-img{height:116px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:2.4rem;overflow:hidden;}
 .my-img img{width:100%;height:100%;object-fit:cover;}
@@ -479,37 +239,16 @@ button,input,select{font:inherit}
 
 /* ══ PROFILE ══ */
 .prof-wrap{display:grid;grid-template-columns:270px 1fr;gap:18px;}
-.prof-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-xl);padding:26px;text-align:center;
-  box-shadow:var(--sh);
-}
-.prof-av{
-  width:70px;height:70px;border-radius:50%;
-  background:linear-gradient(135deg,var(--g2),var(--g3));
-  display:grid;place-items:center;
-  font-size:1.75rem;font-weight:900;color:#fff;
-  margin:0 auto 13px;box-shadow:0 6px 20px var(--glow);
-}
+.prof-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:26px;text-align:center;box-shadow:var(--sh);}
+.prof-av{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--g2),var(--g3));display:grid;place-items:center;font-size:1.75rem;font-weight:900;color:#fff;margin:0 auto 13px;box-shadow:0 6px 20px var(--glow);}
 .prof-name{font-size:1.15rem;font-weight:900;margin-bottom:3px;}
 .prof-email{font-size:.76rem;color:var(--t3);margin-bottom:14px;}
 .inf-list{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
-.inf-r{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px 11px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:var(--r);
-}
+.inf-r{display:flex;justify-content:space-between;align-items:center;padding:8px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);}
 .inf-k{font-size:.7rem;color:var(--t3);}
 .inf-v{font-weight:700;font-size:.86rem;}
-.enr-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--r-xl);padding:20px;box-shadow:var(--sh);
-}
-.enr-item{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 13px;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r);margin-bottom:7px;cursor:pointer;transition:.15s;
-}
+.enr-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px;box-shadow:var(--sh);}
+.enr-item{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:7px;cursor:pointer;transition:.15s;}
 .enr-item:hover{border-color:rgba(34,176,120,.3);}
 .enr-ttl{font-weight:700;font-size:.88rem;}
 .enr-sub{font-size:.72rem;color:var(--t3);margin-top:2px;}
@@ -569,6 +308,98 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
 .notif-body{font-size:.8rem;color:var(--t2);line-height:1.65;white-space:pre-wrap;}
 .notif-meta{font-size:.7rem;color:var(--t3);margin-top:6px;}
 
+/* ══ FOOTER ══ */
+.site-footer{
+  background:linear-gradient(135deg,#070312,#100828);
+  color:#c8d8d0;
+  padding:60px clamp(20px,6vw,80px) 30px;
+  direction:ltr;
+}
+.footer-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1.4fr 1fr 1fr;
+  gap:48px;align-items:start;
+}
+.footer-brand{}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.footer-mark{
+  width:44px;height:44px;border-radius:13px;
+  background:linear-gradient(135deg,#5b21f5,#00d879 60%,#ff3ecf);
+  display:grid;place-items:center;
+  font-weight:900;font-size:.95rem;color:#fff;
+  font-family:'Syne',sans-serif;
+  box-shadow:0 6px 18px rgba(0,216,121,.25);
+}
+.footer-logo-name{font-size:1.35rem;font-weight:800;color:#fff;font-family:'Syne',sans-serif;letter-spacing:-.02em;}
+.footer-logo-name em{color:#00d879;font-style:normal;}
+.footer-desc{font-size:.88rem;line-height:1.75;color:#8aaa96;margin-bottom:24px;max-width:280px;}
+.footer-socials{display:flex;gap:10px;}
+.fsoc-btn{
+  width:40px;height:40px;border-radius:12px;
+  display:grid;place-items:center;cursor:pointer;
+  transition:.2s;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+}
+.fsoc-btn:hover{transform:translateY(-3px);background:rgba(255,255,255,.1);}
+.fsoc-btn svg,.fsoc-btn span{font-size:1.05rem;}
+
+.footer-col-title{
+  font-size:.7rem;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:#4a7a5c;margin-bottom:18px;
+}
+.footer-links{display:flex;flex-direction:column;gap:10px;}
+.footer-link{
+  font-size:.88rem;color:#8aaa96;cursor:pointer;
+  transition:.15s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.footer-link:hover{color:#00d879;transform:translateX(4px);}
+[data-lang="ar"] .footer-link:hover{transform:translateX(-4px);}
+
+.footer-contact-item{
+  display:flex;align-items:center;gap:10px;
+  font-size:.86rem;color:#8aaa96;margin-bottom:12px;
+}
+.footer-contact-item a{color:#8aaa96;text-decoration:none;transition:.15s;}
+.footer-contact-item a:hover{color:#00d879;}
+.fcon-ico{
+  width:34px;height:34px;border-radius:10px;flex-shrink:0;
+  display:grid;place-items:center;font-size:.95rem;
+}
+.fcon-wa{background:linear-gradient(135deg,#25d366,#128c7e);}
+.fcon-em{background:linear-gradient(135deg,#ea4335,#c5221f);}
+.fcon-tg{background:linear-gradient(135deg,#2ca5e0,#1a73c5);}
+
+.footer-bottom{
+  max-width:1200px;margin:40px auto 0;
+  border-top:1px solid rgba(255,255,255,.07);
+  padding-top:22px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:10px;
+}
+.footer-copy{font-size:.78rem;color:#4a7a5c;}
+.footer-made{font-size:.78rem;color:#4a7a5c;}
+.footer-made span{color:#ef4444;}
+
+/* ══ FLOATING WHATSAPP ══ */
+.wa-float{
+  position:fixed;bottom:28px;right:28px;
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:8000;
+  box-shadow:0 6px 24px rgba(37,211,102,.45);
+  transition:.25s;border:none;
+  animation:waPulse 2.4s ease infinite;
+}
+[data-lang="ar"] .wa-float{right:auto;left:28px;}
+.wa-float:hover{transform:scale(1.12);box-shadow:0 10px 32px rgba(37,211,102,.6);}
+.wa-float svg{width:28px;height:28px;fill:#fff;}
+@keyframes waPulse{
+  0%,100%{box-shadow:0 6px 24px rgba(37,211,102,.45);}
+  50%{box-shadow:0 6px 32px rgba(37,211,102,.7),0 0 0 8px rgba(37,211,102,.12);}
+}
+
 /* ══ RESPONSIVE ══ */
 @media(max-width:1024px){
   .cart-layout{grid-template-columns:1fr;}
@@ -576,16 +407,20 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
   .prof-wrap{grid-template-columns:1fr;}
   #ch-grid.grid-4{grid-template-columns:repeat(2,1fr);}
   #s-ls .ls-list{grid-template-columns:repeat(2,1fr);}
+  .footer-inner{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:800px){
   .main-nav{height:68px;padding:0 12px;gap:10px;}
   :root{--nav-h:68px;}
   .nav-links{display:none;}
-  .bottom-tabs{display:flex;}
-  .pw{padding-bottom:70px;}
+  .pw{padding-bottom:0;}
   .pg{padding-inline:14px;}
   .pg-hero{padding-top:36px;padding-bottom:20px;}
   .h-stats{display:none;}
+  .footer-inner{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;text-align:center;}
+  .wa-float{bottom:20px;right:16px;}
+  [data-lang="ar"] .wa-float{right:auto;left:16px;}
 }
 @media(max-width:580px){
   #ch-grid.grid-4,#s-ls .ls-list,.grid-3,.my-grid{grid-template-columns:1fr;}
@@ -622,13 +457,10 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
 
 <!-- NAV -->
 <nav class="main-nav" id="mainNav" style="display:none">
-  <!-- Logo -->
   <a class="nav-logo" href="#" onclick="resetAll();return false;">
     <div class="nav-mark">KW</div>
     <strong>kala<em>wy</em></strong>
   </a>
-
-  <!-- Center links -->
   <div class="nav-links">
     <button onclick="resetAll()" data-ar="الرئيسية" data-en="Home">الرئيسية</button>
     <button onclick="goPage('mylessons')" data-ar="📚 حصصي" data-en="📚 My Lessons">📚 حصصي</button>
@@ -638,7 +470,6 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
     </button>
     <button onclick="toast('i',_lang==='ar'?'الملازم قريباً 📝':'Notes coming soon 📝')" data-ar="ملازم" data-en="Notes">ملازم</button>
     <button onclick="toast('i',_lang==='ar'?'الباقات قريباً':'Packages soon')" data-ar="الباقات" data-en="Packages">الباقات</button>
-    <!-- Contact dropdown -->
     <div class="nav-contact-wrap" id="contactDrop">
       <button type="button" onclick="toggleContact(event)" data-ar="تواصل معنا" data-en="Contact">تواصل معنا ▾</button>
       <div class="contact-drop">
@@ -655,27 +486,18 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
       </div>
     </div>
   </div>
-
-  <!-- Right controls -->
   <div class="nav-end">
-    <!-- Bell -->
     <button class="nav-bell" type="button" onclick="openNotifications()">
       🔔 <span class="bell-ct hidden" id="bell-ct">0</span>
     </button>
-
-    <!-- Dark / Light toggle -->
     <div class="theme-toggle" onclick="toggleTheme()" title="Dark / Light">
       <div class="theme-side" id="side-dark">🌙</div>
       <div class="theme-side active" id="side-light">☀️</div>
     </div>
-
-    <!-- AR / EN -->
     <div class="lang-toggle">
       <button class="lang-btn on" id="btn-ar" onclick="setLang('ar')" type="button">عربي</button>
       <button class="lang-btn" id="btn-en" onclick="setLang('en')" type="button">EN</button>
     </div>
-
-    <!-- Avatar -->
     <div class="nav-av" id="navAv" onclick="goPage('profile')" title="Profile">ك</div>
   </div>
 </nav>
@@ -685,17 +507,15 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
   <div id="navBc" style="display:flex;align-items:center;gap:7px;direction:rtl;width:100%;overflow:hidden;"></div>
 </div>
 
-<!-- Bottom tabs -->
-<div class="bottom-tabs" id="bottomTabs">
-  <button class="btab on" onclick="goPage('browse')" data-pt="browse">🔍<span data-ar="تصفح" data-en="Browse">تصفح</span></button>
-  <button class="btab" onclick="goPage('mylessons')" data-pt="mylessons">📚<span data-ar="حصصي" data-en="My Lessons">حصصي</span></button>
-  <button class="btab" onclick="goPage('cart')" data-pt="cart">🛒<span data-ar="السلة" data-en="Cart">السلة</span></button>
-  <button class="btab" onclick="goPage('profile')" data-pt="profile">👤<span data-ar="بروفايل" data-en="Profile">بروفايل</span></button>
-</div>
+<!-- Floating WhatsApp -->
+<button class="wa-float" onclick="openWhatsApp()" title="WhatsApp" id="waFloat" style="display:none">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+  </svg>
+</button>
 
 <!-- PAGES -->
 <div class="pw">
-
   <!-- BROWSE -->
   <div class="pg on" id="pg-browse">
     <div class="hero-bar">
@@ -706,8 +526,6 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
         <div class="hst"><div class="n" id="st-ls">0</div><div class="l" data-ar="في السلة" data-en="In Cart">في السلة</div></div>
       </div>
     </div>
-
-    <!-- Subjects -->
     <div id="s-sub">
       <div class="pg-hero">
         <div class="pg-hero-title" data-ar="📚 اختار المادة" data-en="📚 Choose a Subject">📚 اختار المادة</div>
@@ -715,8 +533,6 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
       </div>
       <div class="grid-3" id="sub-grid"><div class="loading"><div class="ld"></div></div></div>
     </div>
-
-    <!-- Teachers -->
     <div id="s-tch" class="hidden">
       <div class="pg-hero">
         <div class="pg-hero-title" id="ttl-tch">👨‍🏫</div>
@@ -724,8 +540,6 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
       </div>
       <div class="grid-3" id="tch-grid"></div>
     </div>
-
-    <!-- Chapters -->
     <div id="s-ch" class="hidden">
       <div class="pg-hero">
         <div class="pg-hero-title" data-ar="📖 اختار الشابتر" data-en="📖 Choose a Chapter">📖 اختار الشابتر</div>
@@ -733,8 +547,6 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
       </div>
       <div class="grid-4" id="ch-grid"></div>
     </div>
-
-    <!-- Lessons -->
     <div id="s-ls" class="hidden">
       <div class="pg-hero">
         <div class="pg-hero-title" id="ttl-ls">🎬</div>
@@ -788,89 +600,120 @@ select.inp.hv{color:var(--text);}select.inp:not(.hv){color:var(--t3);}
   </div>
 </div>
 
+<!-- FOOTER -->
+<footer class="site-footer" id="siteFooter" style="display:none">
+  <div class="footer-inner">
+    <!-- Brand -->
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-mark">KW</div>
+        <span class="footer-logo-name">kala<em>wy</em></span>
+      </div>
+      <p class="footer-desc" data-ar="منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً لكل طالب." data-en="An educational platform designed to make studying easier and more organized for every student.">منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً لكل طالب.</p>
+      <div class="footer-socials">
+        <button class="fsoc-btn" onclick="openWhatsApp()" title="WhatsApp">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        </button>
+        <button class="fsoc-btn" onclick="openMail()" title="Email">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ea4335"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </button>
+        <button class="fsoc-btn" onclick="window.open('https://t.me/kalawy','_blank')" title="Telegram">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#2ca5e0"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div>
+      <div class="footer-col-title" data-ar="روابط سريعة" data-en="Quick Links">روابط سريعة</div>
+      <div class="footer-links">
+        <a class="footer-link" onclick="resetAll()" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</a>
+        <a class="footer-link" onclick="goPage('mylessons')" data-ar="📚 حصصي" data-en="📚 My Lessons">📚 حصصي</a>
+        <a class="footer-link" onclick="goPage('cart')" data-ar="🛒 السلة" data-en="🛒 Cart">🛒 السلة</a>
+        <a class="footer-link" onclick="goPage('profile')" data-ar="👤 حسابي" data-en="👤 My Account">👤 حسابي</a>
+        <a class="footer-link" onclick="doLogout()" data-ar="🚪 تسجيل الخروج" data-en="🚪 Sign Out">🚪 تسجيل الخروج</a>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div>
+      <div class="footer-col-title" data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</div>
+      <div class="footer-contact-item">
+        <div class="fcon-ico fcon-wa">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        </div>
+        <a onclick="openWhatsApp()" style="cursor:pointer" data-ar="WhatsApp" data-en="WhatsApp">WhatsApp</a>
+      </div>
+      <div class="footer-contact-item">
+        <div class="fcon-ico fcon-em">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </div>
+        <a href="mailto:support@kalawy.com">support@kalawy.com</a>
+      </div>
+      <div class="footer-contact-item">
+        <div class="fcon-ico fcon-tg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </div>
+        <a href="https://t.me/kalawy" target="_blank">Telegram @kalawy</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 kalawy — <span data-ar="جميع الحقوق محفوظة" data-en="All rights reserved">جميع الحقوق محفوظة</span></div>
+    <div class="footer-made"><span data-ar="صُنع بـ" data-en="Made with">صُنع بـ</span> <span>❤️</span> <span data-ar="للطلاب" data-en="for students">للطلاب</span></div>
+  </div>
+</footer>
+
 <script>
-/* ── Config ─────────────────────────────────────────── */
 const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
 const CONTACT_WA   = '201000000000';
 const CONTACT_MAIL = 'support@kalawy.com';
 
-/* ── Helpers ─────────────────────────────────────────── */
 const GR_AR={1:'أولى ثانوي',2:'تانية ثانوي',3:'ثالثة ثانوي'};
 const GR_EN={1:'Grade 10',2:'Grade 11',3:'Grade 12'};
 const EMOJIS={'الرياضيات':'📐','الفيزياء':'🔭','الكيمياء':'🧪','الأحياء':'🔬','اللغة العربية':'📖','اللغة الإنجليزية':'🌍'};
 const BG_DARK=['linear-gradient(135deg,#1a4a35,#0d2820)','linear-gradient(135deg,#1a2f5a,#0d1a35)','linear-gradient(135deg,#4a2a1a,#2a1508)','linear-gradient(135deg,#2a1a4a,#180d2a)','linear-gradient(135deg,#4a1a2a,#280d16)','linear-gradient(135deg,#1a3a4a,#0d2230)'];
 const BG_LIGHT=['linear-gradient(135deg,#d4f5e9,#a8ebd2)','linear-gradient(135deg,#d4e8f5,#a8d4f0)','linear-gradient(135deg,#f5e8d4,#f0d4a8)','linear-gradient(135deg,#e8d4f5,#d4a8f0)','linear-gradient(135deg,#f5d4e8,#f0a8d4)','linear-gradient(135deg,#d4f0f5,#a8e4f0)'];
 
-function imgSrc(v){
-  if(!v)return'';v=String(v).trim();if(!v)return'';
-  if(/^(https?:|data:|blob:)/.test(v))return v;
-  if(v.startsWith('/storage/v1/object/public/'))return SB_URL+v;
-  v=v.replace(/^\/+/,'').replace(/^kalawy\//,'');
-  return`${SB_URL}/storage/v1/object/public/kalawy/${v}`;
-}
+function imgSrc(v){if(!v)return'';v=String(v).trim();if(!v)return'';if(/^(https?:|data:|blob:)/.test(v))return v;if(v.startsWith('/storage/v1/object/public/'))return SB_URL+v;v=v.replace(/^\/+/,'').replace(/^kalawy\//,'');return`${SB_URL}/storage/v1/object/public/kalawy/${v}`;}
 function imgSafe(v){return imgSrc(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function imgErr(el,ico='🖼️'){const p=el.parentElement;if(p)p.innerHTML=ico;else el.remove();}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function se(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 function gr(id){return(_lang==='ar'?GR_AR:GR_EN)[id]||id;}
 
-/* ── State ───────────────────────────────────────────── */
 let ME=null, _lang='ar', _theme='light';
 let _unlockedLessons=new Set(), _cart=[], _enrolled=new Set();
 let _followedTeachers=new Set(), _notifications=[];
 let _sel={sub:null,tch:null,ch:null};
 
-/* ── Theme ───────────────────────────────────────────── */
-function applyTheme(th){
-  _theme=th;
-  document.documentElement.setAttribute('data-theme',th);
-  localStorage.setItem('kw-theme',th);
-  // toggle button
-  document.getElementById('side-dark')?.classList.toggle('active',th==='dark');
-  document.getElementById('side-light')?.classList.toggle('active',th==='light');
-}
+function applyTheme(th){_theme=th;document.documentElement.setAttribute('data-theme',th);localStorage.setItem('kw-theme',th);document.getElementById('side-dark')?.classList.toggle('active',th==='dark');document.getElementById('side-light')?.classList.toggle('active',th==='light');}
 function toggleTheme(){applyTheme(_theme==='dark'?'light':'dark');}
 
-/* ── Lang ────────────────────────────────────────────── */
 function setLang(lg){
   _lang=lg;
   document.documentElement.setAttribute('data-lang',lg);
   document.documentElement.setAttribute('dir',lg==='ar'?'rtl':'ltr');
   document.documentElement.lang=lg;
   localStorage.setItem('kw-lang',lg);
-  // buttons
   ['btn-ar','btn-en'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',el.id==='btn-'+lg);});
-  // text
-  document.querySelectorAll('[data-ar]').forEach(el=>{
-    const v=lg==='en'?el.dataset.en:el.dataset.ar;
-    if(v!==undefined){if(el.tagName==='INPUT'||el.tagName==='SELECT')el.placeholder=v;else el.innerHTML=v;}
-  });
+  document.querySelectorAll('[data-ar]').forEach(el=>{const v=lg==='en'?el.dataset.en:el.dataset.ar;if(v!==undefined){if(el.tagName==='INPUT'||el.tagName==='SELECT')el.placeholder=v;else el.innerHTML=v;}});
   document.querySelectorAll('option[data-ar]').forEach(o=>{o.textContent=lg==='en'?o.dataset.en:o.dataset.ar;});
   if(ME)updateUI();
 }
 
-/* ── Toast ───────────────────────────────────────────── */
-function toast(type,msg,dur=3500){
-  const icons={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
-  const c=document.getElementById('toasts');
-  const el=document.createElement('div');
-  el.className=`toast t${type}`;
-  el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;
-  c.appendChild(el);
-  setTimeout(()=>{el.classList.add('tx');setTimeout(()=>el.remove(),220);},dur);
-}
+function toast(type,msg,dur=3500){const icons={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};const c=document.getElementById('toasts');const el=document.createElement('div');el.className=`toast t${type}`;el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;c.appendChild(el);setTimeout(()=>{el.classList.add('tx');setTimeout(()=>el.remove(),220);},dur);}
 function openMo(id){document.getElementById(id).classList.add('show');}
 function closeMo(id){document.getElementById(id).classList.remove('show');}
 
-/* Contact */
 function toggleContact(e){e.stopPropagation();document.getElementById('contactDrop')?.classList.toggle('open');}
 document.addEventListener('click',()=>document.getElementById('contactDrop')?.classList.remove('open'));
 function openWhatsApp(){const m=encodeURIComponent(_lang==='ar'?'مرحباً، أريد التواصل مع منصة kalawy':'Hello, I want to contact kalawy');window.open(`https://wa.me/${CONTACT_WA}?text=${m}`,'_blank');}
 function openMail(){window.location.href=`mailto:${CONTACT_MAIL}?subject=${encodeURIComponent('kalawy')}`;}
 
-/* ── Auth ────────────────────────────────────────────── */
 async function doLogout(){await sb.auth.signOut();location.href='/login/';}
 
 async function checkSession(){
@@ -890,10 +733,10 @@ async function init(user){
   ]);
   ME={id:user.id,email:user.email||p?.email||'',full_name:p?.full_name||'',phone:p?.phone||'',grade_id:st?.grade_id};
   try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
-  // show UI
   document.getElementById('mainNav').style.display='flex';
   document.getElementById('bcStrip').style.display='flex';
-  document.getElementById('bottomTabs').style.display='flex';
+  document.getElementById('siteFooter').style.display='block';
+  document.getElementById('waFloat').style.display='flex';
   updateUI();
   await Promise.all([loadFollows(),loadEnrollments()]);
   await loadNotifications(false);
@@ -912,35 +755,25 @@ function updateUI(){
   se('st-ls',_cart.length);
   updateCartBadge();
 }
-function updateCartBadge(){
-  const b=document.getElementById('cart-badge');
-  if(!b)return;
-  if(_cart.length){b.textContent=_cart.length;b.classList.remove('hidden');}
-  else b.classList.add('hidden');
-}
+function updateCartBadge(){const b=document.getElementById('cart-badge');if(!b)return;if(_cart.length){b.textContent=_cart.length;b.classList.remove('hidden');}else b.classList.add('hidden');}
 function saveCart(){localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(_cart));}
 
-/* ── Enrollments ─────────────────────────────────────── */
 async function loadEnrollments(){
   const{data:unlocked}=await sb.from('lesson_codes').select('lesson_id').eq('used_by',ME.id);
   _unlockedLessons=new Set((unlocked||[]).map(x=>x.lesson_id).filter(Boolean));
   const{data:oldEnr}=await sb.from('chapter_enrollments').select('chapter_id').eq('student_id',ME.id);
   _enrolled=new Set((oldEnr||[]).map(e=>e.chapter_id));
-  se('st-ch',_unlockedLessons.size);
-  se('pr-ch',_unlockedLessons.size);
+  se('st-ch',_unlockedLessons.size);se('pr-ch',_unlockedLessons.size);
 }
 
-/* ── Pages ───────────────────────────────────────────── */
 function goPage(page){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById(`pg-${page}`)?.classList.add('on');
-  document.querySelectorAll('.btab').forEach(b=>b.classList.toggle('on',b.dataset.pt===page));
   if(page==='mylessons')loadMyLessons();
   if(page==='cart')renderCart();
   if(page==='profile'){updateUI();loadProfileEnrolled();}
 }
 
-/* ── Breadcrumb ──────────────────────────────────────── */
 function updateBc(){
   const bc=document.getElementById('navBc');if(!bc)return;
   const subMap={'الفيزياء':'Physics','الكيمياء':'Chemistry','الأحياء':'Biology','الرياضيات':'Mathematics','اللغة العربية':'Arabic','اللغة الإنجليزية':'English'};
@@ -956,276 +789,37 @@ function showStep(s){['sub','tch','ch','ls'].forEach(x=>document.getElementById(
 function resetTo(s){if(s==='sub'){_sel={sub:null,tch:null,ch:null};showStep('sub');}else if(s==='tch'){_sel.tch=null;_sel.ch=null;showStep('tch');}else if(s==='ch'){_sel.ch=null;showStep('ch');}}
 function resetAll(){_sel={sub:null,tch:null,ch:null};showStep('sub');goPage('browse');}
 
-/* ── Follow / Notifications ─────────────────────────── */
-async function loadFollows(){
-  if(!ME?.id)return;
-  const{data}=await sb.from('teacher_followers').select('teacher_id').eq('student_id',ME.id);
-  _followedTeachers=new Set((data||[]).map(x=>x.teacher_id));
-}
-async function toggleFollowTeacher(teacherId,teacherName,ev){
-  ev?.stopPropagation?.();
-  if(!ME?.id)return toast('w','سجل دخول الأول');
-  const isOn=_followedTeachers.has(teacherId);
-  if(isOn){
-    const{error}=await sb.from('teacher_followers').delete().eq('student_id',ME.id).eq('teacher_id',teacherId);
-    if(error)return toast('e',error.message);
-    _followedTeachers.delete(teacherId);
-    toast('i',(_lang==='ar'?'إلغاء متابعة ':'Unfollowed ')+(teacherName||''));
-  }else{
-    const{error}=await sb.from('teacher_followers').insert({student_id:ME.id,teacher_id:teacherId});
-    if(error)return toast('e',error.message);
-    _followedTeachers.add(teacherId);
-    toast('s',(_lang==='ar'?'تمت متابعة ':'Following ')+(teacherName||'')+' ✅');
-  }
-  await loadNotifications(false);
-  if(_sel.sub)selSub(_sel.sub.id,_sel.sub.name,_sel.sub.grade_id);
-}
-async function loadNotifications(updateList=true){
-  if(!ME?.id)return;
-  const{data}=await sb.from('notifications').select('id,title,body,type,created_at,sender:sender_id(full_name)').order('created_at',{ascending:false}).limit(50);
-  _notifications=data||[];
-  const ct=document.getElementById('bell-ct');
-  if(ct){if(_notifications.length){ct.textContent=_notifications.length;ct.classList.remove('hidden');}else ct.classList.add('hidden');}
-  if(updateList)renderNotifications();
-}
+async function loadFollows(){if(!ME?.id)return;const{data}=await sb.from('teacher_followers').select('teacher_id').eq('student_id',ME.id);_followedTeachers=new Set((data||[]).map(x=>x.teacher_id));}
+async function toggleFollowTeacher(teacherId,teacherName,ev){ev?.stopPropagation?.();if(!ME?.id)return toast('w','سجل دخول الأول');const isOn=_followedTeachers.has(teacherId);if(isOn){const{error}=await sb.from('teacher_followers').delete().eq('student_id',ME.id).eq('teacher_id',teacherId);if(error)return toast('e',error.message);_followedTeachers.delete(teacherId);toast('i',(_lang==='ar'?'إلغاء متابعة ':'Unfollowed ')+(teacherName||''));}else{const{error}=await sb.from('teacher_followers').insert({student_id:ME.id,teacher_id:teacherId});if(error)return toast('e',error.message);_followedTeachers.add(teacherId);toast('s',(_lang==='ar'?'تمت متابعة ':'Following ')+(teacherName||'')+' ✅');}await loadNotifications(false);if(_sel.sub)selSub(_sel.sub.id,_sel.sub.name,_sel.sub.grade_id);}
+async function loadNotifications(updateList=true){if(!ME?.id)return;const{data}=await sb.from('notifications').select('id,title,body,type,created_at,sender:sender_id(full_name)').order('created_at',{ascending:false}).limit(50);_notifications=data||[];const ct=document.getElementById('bell-ct');if(ct){if(_notifications.length){ct.textContent=_notifications.length;ct.classList.remove('hidden');}else ct.classList.add('hidden');}if(updateList)renderNotifications();}
 function notifTypeLabel(t){return({lesson:'حصة',exam:'امتحان',post:'منشور',homework:'واجب',pdf:'PDF',video:'فيديو'}[t]||'إشعار');}
-function renderNotifications(){
-  const el=document.getElementById('notifList');if(!el)return;
-  if(!_notifications.length){el.innerHTML=`<div class="empty-state"><div class="empty-ico">🔕</div><div>${_lang==='ar'?'لا توجد إشعارات':'No notifications yet'}</div></div>`;return;}
-  el.innerHTML=_notifications.map(n=>{
-    const dt=n.created_at?new Date(n.created_at).toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
-    return`<div class="notif-card"><div class="notif-top"><div class="notif-title">${esc(n.title||'إشعار')}</div><span class="notif-type">${notifTypeLabel(n.type)}</span></div>${n.body?`<div class="notif-body">${esc(n.body)}</div>`:''}<div class="notif-meta">${esc(n.sender?.full_name||'kalawy')} • ${dt}</div></div>`;
-  }).join('');
-}
-async function openNotifications(){
-  openMo('notifMo');
-  document.getElementById('notifList').innerHTML='<div class="loading"><div class="ld"></div></div>';
-  await loadNotifications(true);
-}
+function renderNotifications(){const el=document.getElementById('notifList');if(!el)return;if(!_notifications.length){el.innerHTML=`<div class="empty-state"><div class="empty-ico">🔕</div><div>${_lang==='ar'?'لا توجد إشعارات':'No notifications yet'}</div></div>`;return;}el.innerHTML=_notifications.map(n=>{const dt=n.created_at?new Date(n.created_at).toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';return`<div class="notif-card"><div class="notif-top"><div class="notif-title">${esc(n.title||'إشعار')}</div><span class="notif-type">${notifTypeLabel(n.type)}</span></div>${n.body?`<div class="notif-body">${esc(n.body)}</div>`:''}<div class="notif-meta">${esc(n.sender?.full_name||'kalawy')} • ${dt}</div></div>`;}).join('');}
+async function openNotifications(){openMo('notifMo');document.getElementById('notifList').innerHTML='<div class="loading"><div class="ld"></div></div>';await loadNotifications(true);}
 
-/* ── Browse ──────────────────────────────────────────── */
-async function loadSubjects(){
-  const g=document.getElementById('sub-grid');
-  const{data,error}=await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
-  if(error||!data?.length){g.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">${error?'⚠️':'📚'}</div><div>${error?error.message:(_lang==='ar'?'لا توجد مواد':'No subjects yet')}</div></div>`;return;}
-  g.innerHTML=data.map((s,i)=>{
-    const chip=s.grade_id===1?'bg-g':s.grade_id===2?'bg-b':'bg-y';
-    const ico=EMOJIS[s.name_ar]||'📚';
-    const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
-    const thumb=s.image_url?`<img src="${imgSafe(s.image_url)}" alt="" onerror="imgErr(this,'📚')" loading="lazy">`:`<div style="width:72px;height:72px;border-radius:18px;background:${grad};display:grid;place-items:center;font-size:2.1rem">${ico}</div>`;
-    return`<div class="sub-card" onclick="selSub('${s.id}','${s.name_ar}',${s.grade_id||3})"><div class="sub-icon">${thumb}</div><div class="sub-name">${s.name_ar}</div><span class="sub-badge ${chip}">${gr(s.grade_id)}</span></div>`;
-  }).join('');
-}
+async function loadSubjects(){const g=document.getElementById('sub-grid');const{data,error}=await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');if(error||!data?.length){g.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">${error?'⚠️':'📚'}</div><div>${error?error.message:(_lang==='ar'?'لا توجد مواد':'No subjects yet')}</div></div>`;return;}g.innerHTML=data.map((s,i)=>{const chip=s.grade_id===1?'bg-g':s.grade_id===2?'bg-b':'bg-y';const ico=EMOJIS[s.name_ar]||'📚';const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];const thumb=s.image_url?`<img src="${imgSafe(s.image_url)}" alt="" onerror="imgErr(this,'📚')" loading="lazy">`:`<div style="width:72px;height:72px;border-radius:18px;background:${grad};display:grid;place-items:center;font-size:2.1rem">${ico}</div>`;return`<div class="sub-card" onclick="selSub('${s.id}','${s.name_ar}',${s.grade_id||3})"><div class="sub-icon">${thumb}</div><div class="sub-name">${s.name_ar}</div><span class="sub-badge ${chip}">${gr(s.grade_id)}</span></div>`;}).join('');}
 
-async function selSub(id,name,gradeId){
-  _sel={sub:{id,name,grade_id:gradeId},tch:null,ch:null};showStep('tch');
-  se('ttl-tch',`👨‍🏫 ${name}`);
-  const g=document.getElementById('tch-grid');
-  g.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
-  const{data:chaps}=await sb.from('chapters').select('teacher_id').eq('subject_id',id);
-  const tIds=[...new Set((chaps||[]).map(c=>c.teacher_id).filter(Boolean))];
-  if(!tIds.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div>لا يوجد مدرسين</div></div>';return;}
-  const[{data:profs},{data:teachers}]=await Promise.all([
-    sb.from('profiles').select('id,full_name,image_url').in('id',tIds),
-    sb.from('teachers').select('id,bio').in('id',tIds),
-  ]);
-  const bioMap=Object.fromEntries((teachers||[]).map(t=>[t.id,t.bio]));
-  g.innerHTML=(profs||[]).map(p=>{
-    const av=p.image_url?`<div class="tch-av"><img src="${imgSafe(p.image_url)}" alt="" onerror="imgErr(this,'👤')" loading="lazy"></div>`:`<div class="tch-av" style="background:linear-gradient(135deg,var(--g2),var(--g3))">${(p.full_name||'?')[0].toUpperCase()}</div>`;
-    const isFollow=_followedTeachers.has(p.id);
-    const safeName=(p.full_name||'').replace(/'/g,"\\'");
-    return`<div class="tch-card" onclick="selTch('${p.id}','${p.full_name||p.id}')">
-      ${av}
-      <div class="tch-name">${p.full_name||'—'}</div>
-      <div class="tch-bio">${bioMap[p.id]||(_lang==='ar'?'مدرس معتمد':'Certified Teacher')}</div>
-      <div style="margin-top:8px"><span class="chip c-green">✓ ${_lang==='ar'?'مدرس':'Teacher'}</span></div>
-      <button class="follow-btn${isFollow?' on':''}" onclick="toggleFollowTeacher('${p.id}','${safeName}',event)">${isFollow?(_lang==='ar'?'✓ متابع':'✓ Following'):(_lang==='ar'?'+ Follow':'+ Follow')}</button>
-    </div>`;
-  }).join('');
-}
+async function selSub(id,name,gradeId){_sel={sub:{id,name,grade_id:gradeId},tch:null,ch:null};showStep('tch');se('ttl-tch',`👨‍🏫 ${name}`);const g=document.getElementById('tch-grid');g.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';const{data:chaps}=await sb.from('chapters').select('teacher_id').eq('subject_id',id);const tIds=[...new Set((chaps||[]).map(c=>c.teacher_id).filter(Boolean))];if(!tIds.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div>لا يوجد مدرسين</div></div>';return;}const[{data:profs},{data:teachers}]=await Promise.all([sb.from('profiles').select('id,full_name,image_url').in('id',tIds),sb.from('teachers').select('id,bio').in('id',tIds),]);const bioMap=Object.fromEntries((teachers||[]).map(t=>[t.id,t.bio]));g.innerHTML=(profs||[]).map(p=>{const av=p.image_url?`<div class="tch-av"><img src="${imgSafe(p.image_url)}" alt="" onerror="imgErr(this,'👤')" loading="lazy"></div>`:`<div class="tch-av" style="background:linear-gradient(135deg,var(--g2),var(--g3))">${(p.full_name||'?')[0].toUpperCase()}</div>`;const isFollow=_followedTeachers.has(p.id);const safeName=(p.full_name||'').replace(/'/g,"\\'");return`<div class="tch-card" onclick="selTch('${p.id}','${p.full_name||p.id}')">${av}<div class="tch-name">${p.full_name||'—'}</div><div class="tch-bio">${bioMap[p.id]||(_lang==='ar'?'مدرس معتمد':'Certified Teacher')}</div><div style="margin-top:8px"><span class="chip c-green">✓ ${_lang==='ar'?'مدرس':'Teacher'}</span></div><button class="follow-btn${isFollow?' on':''}" onclick="toggleFollowTeacher('${p.id}','${safeName}',event)">${isFollow?(_lang==='ar'?'✓ متابع':'✓ Following'):(_lang==='ar'?'+ Follow':'+ Follow')}</button></div>`;}).join('');}
 
-async function selTch(id,name){
-  _sel.tch={id,name};_sel.ch=null;showStep('ch');
-  const g=document.getElementById('ch-grid');
-  g.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
-  const{data}=await sb.from('chapters').select('id,title,description,sort_order,image_url,price').eq('subject_id',_sel.sub.id).eq('teacher_id',id).order('sort_order');
-  if(!data?.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">📖</div><div>لا توجد شابترات</div></div>';return;}
-  const chIds=data.map(c=>c.id);
-  const{data:lc}=await sb.from('lessons').select('chapter_id').in('chapter_id',chIds).eq('is_active',true);
-  const cnt={};(lc||[]).forEach(l=>{cnt[l.chapter_id]=(cnt[l.chapter_id]||0)+1;});
-  const bks=['📘','📗','📙','📕','📓','📔'];
-  g.innerHTML=data.map((ch,i)=>{
-    const lcnt=cnt[ch.id]||0;
-    const lcntStr=_lang==='ar'?`${lcnt} محاضرات`:`${lcnt} lectures`;
-    const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
-    const thumb=ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="${ch.title}" onerror="imgErr(this,'📖')" loading="lazy">`:`<div style="width:100%;height:100%;background:${grad};display:flex;align-items:center;justify-content:center;font-size:2.8rem">${bks[i%bks.length]}</div>`;
-    return`<div class="ch-card" onclick="selChapter('${ch.id}','${ch.title}')">
-      <div class="ch-top">${ch.title}</div>
-      <div class="ch-img-area"><div class="ch-img-box">${thumb}</div></div>
-      <div class="ch-bottom"><div class="ch-title-main">${ch.title}</div><div class="ch-count">${lcntStr}</div></div>
-    </div>`;
-  }).join('');
-}
+async function selTch(id,name){_sel.tch={id,name};_sel.ch=null;showStep('ch');const g=document.getElementById('ch-grid');g.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';const{data}=await sb.from('chapters').select('id,title,description,sort_order,image_url,price').eq('subject_id',_sel.sub.id).eq('teacher_id',id).order('sort_order');if(!data?.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">📖</div><div>لا توجد شابترات</div></div>';return;}const chIds=data.map(c=>c.id);const{data:lc}=await sb.from('lessons').select('chapter_id').in('chapter_id',chIds).eq('is_active',true);const cnt={};(lc||[]).forEach(l=>{cnt[l.chapter_id]=(cnt[l.chapter_id]||0)+1;});const bks=['📘','📗','📙','📕','📓','📔'];g.innerHTML=data.map((ch,i)=>{const lcnt=cnt[ch.id]||0;const lcntStr=_lang==='ar'?`${lcnt} محاضرات`:`${lcnt} lectures`;const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];const thumb=ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="${ch.title}" onerror="imgErr(this,'📖')" loading="lazy">`:`<div style="width:100%;height:100%;background:${grad};display:flex;align-items:center;justify-content:center;font-size:2.8rem">${bks[i%bks.length]}</div>`;return`<div class="ch-card" onclick="selChapter('${ch.id}','${ch.title}')"><div class="ch-top">${ch.title}</div><div class="ch-img-area"><div class="ch-img-box">${thumb}</div></div><div class="ch-bottom"><div class="ch-title-main">${ch.title}</div><div class="ch-count">${lcntStr}</div></div></div>`;}).join('');}
 
-async function selChapter(id,title){
-  _sel.ch={id,title};showStep('ls');
-  se('ttl-ls',`🎬 ${title}`);
-  se('ttl-ls-sub',`${_sel.sub.name} — ${_sel.tch.name}`);
-  const list=document.getElementById('ls-list');
-  list.innerHTML='<div class="loading"><div class="ld"></div></div>';
-  await loadEnrollments();
-  const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id',id).order('created_at');
-  if(!data?.length){list.innerHTML='<div class="empty-state"><div class="empty-ico">🎬</div><div>لا توجد حصص</div></div>';return;}
-  const now=new Date();
-  list.innerHTML=data.map((l,i)=>{
-    const sched=l.scheduled_at?new Date(l.scheduled_at):null;
-    const future=sched&&sched>now;
-    const unlocked=_unlockedLessons.has(l.id);
-    const inCart=_cart.some(c=>c.id===l.id);
-    const canOpen=l.is_active&&!future&&unlocked;
-    const thumb=l.image_url?`<div class="ls-thumb"><img src="${imgSafe(l.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy"></div>`:`<div class="ls-thumb">${future?'⏰':unlocked?'🎬':'🔑'}</div>`;
-    const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
-    let action='';
-    const lessonData=JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;');
-    if(!l.is_active)action=`<span class="chip c-gray">${_lang==='ar'?'غير متاحة':'Unavailable'}</span>`;
-    else if(future)action=`<div class="time-chip tc-f">⏰ ${ts}</div>`;
-    else if(unlocked)action=`<span class="chip c-green">✅ ${_lang==='ar'?'مفتوحة — ادخل':'Unlocked — Enter'}</span>`;
-    else if(inCart)action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goPage('cart')">🛒 ${_lang==='ar'?'اكمل الدفع':'Go to Cart'}</button>`;
-    else action=`<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${lessonData})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
-    return`<div class="ls-row ${canOpen?'click':l.is_active&&!future?'':'locked'}" ${canOpen?`onclick="goLesson('${l.id}')"`:'style="cursor:default"'}>
-      ${thumb}
-      <div class="ls-body">
-        <div class="ls-info">
-          <div class="ls-num">${_lang==='ar'?`الحصة ${i+1}`:`Lesson ${i+1}`}</div>
-          <div class="ls-title">${l.title}</div>
-          ${l.description?`<div class="ls-desc">${l.description}</div>`:''}
-        </div>
-        <div class="ls-actions">${action}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
+async function selChapter(id,title){_sel.ch={id,title};showStep('ls');se('ttl-ls',`🎬 ${title}`);se('ttl-ls-sub',`${_sel.sub.name} — ${_sel.tch.name}`);const list=document.getElementById('ls-list');list.innerHTML='<div class="loading"><div class="ld"></div></div>';await loadEnrollments();const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id',id).order('created_at');if(!data?.length){list.innerHTML='<div class="empty-state"><div class="empty-ico">🎬</div><div>لا توجد حصص</div></div>';return;}const now=new Date();list.innerHTML=data.map((l,i)=>{const sched=l.scheduled_at?new Date(l.scheduled_at):null;const future=sched&&sched>now;const unlocked=_unlockedLessons.has(l.id);const inCart=_cart.some(c=>c.id===l.id);const canOpen=l.is_active&&!future&&unlocked;const thumb=l.image_url?`<div class="ls-thumb"><img src="${imgSafe(l.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy"></div>`:`<div class="ls-thumb">${future?'⏰':unlocked?'🎬':'🔑'}</div>`;const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';let action='';const lessonData=JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;');if(!l.is_active)action=`<span class="chip c-gray">${_lang==='ar'?'غير متاحة':'Unavailable'}</span>`;else if(future)action=`<div class="time-chip tc-f">⏰ ${ts}</div>`;else if(unlocked)action=`<span class="chip c-green">✅ ${_lang==='ar'?'مفتوحة — ادخل':'Unlocked — Enter'}</span>`;else if(inCart)action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goPage('cart')">🛒 ${_lang==='ar'?'اكمل الدفع':'Go to Cart'}</button>`;else action=`<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${lessonData})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;return`<div class="ls-row ${canOpen?'click':l.is_active&&!future?'':'locked'}" ${canOpen?`onclick="goLesson('${l.id}')"`:'style="cursor:default"'}>${thumb}<div class="ls-body"><div class="ls-info"><div class="ls-num">${_lang==='ar'?`الحصة ${i+1}`:`Lesson ${i+1}`}</div><div class="ls-title">${l.title}</div>${l.description?`<div class="ls-desc">${l.description}</div>`:''}</div><div class="ls-actions">${action}</div></div></div>`;}).join('');}
 
 function goLesson(id){window.location.href=`/lesson/?id=${id}`;}
 
-/* ── Cart ────────────────────────────────────────────── */
-function addCart(lesson){
-  if(_unlockedLessons.has(lesson.id)){toast('w',_lang==='ar'?'الحصة مفتوحة بالفعل ✅':'Already unlocked ✅');return;}
-  if(_cart.some(c=>c.id===lesson.id)){toast('i',_lang==='ar'?'موجودة في السلة بالفعل':'Already in cart');return;}
-  _cart.push(lesson);saveCart();updateCartBadge();
-  se('st-ls',_cart.length);
-  toast('s',`🛒 ${_lang==='ar'?'أُضيف للسلة':'Added to cart'}: "${lesson.title}"`,5000);
-  if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);
-}
-function rmCart(lessonId){
-  _cart=_cart.filter(c=>c.id!==lessonId);saveCart();updateCartBadge();
-  se('st-ls',_cart.length);
-  toast('i',_lang==='ar'?'تم الحذف من السلة':'Removed from cart');
-  if(document.getElementById('pg-cart').classList.contains('on'))renderCart();
-  if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);
-}
+function addCart(lesson){if(_unlockedLessons.has(lesson.id)){toast('w',_lang==='ar'?'الحصة مفتوحة بالفعل ✅':'Already unlocked ✅');return;}if(_cart.some(c=>c.id===lesson.id)){toast('i',_lang==='ar'?'موجودة في السلة بالفعل':'Already in cart');return;}_cart.push(lesson);saveCart();updateCartBadge();se('st-ls',_cart.length);toast('s',`🛒 ${_lang==='ar'?'أُضيف للسلة':'Added to cart'}: "${lesson.title}"`,5000);if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);}
+function rmCart(lessonId){_cart=_cart.filter(c=>c.id!==lessonId);saveCart();updateCartBadge();se('st-ls',_cart.length);toast('i',_lang==='ar'?'تم الحذف من السلة':'Removed from cart');if(document.getElementById('pg-cart').classList.contains('on'))renderCart();if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);}
 
-function renderCart(){
-  const c=document.getElementById('cart-content');
-  if(!_cart.length){
-    c.innerHTML=`<div class="empty-state"><div class="empty-ico">🛒</div><div>${_lang==='ar'?'السلة فارغة — أضف حصص من التصفح':'Cart is empty — browse lessons to add'}</div></div>`;
-    return;
-  }
-  const codeItems=_cart.map(ls=>`
-    <div class="co-lesson-block">
-      <div class="co-lesson-name">📖 ${ls.title}${ls.chapter_title?` <span style="color:var(--t3);font-weight:600">— ${ls.chapter_title}</span>`:''}</div>
-      <div class="code-row">
-        <input class="code-input" id="pc-${ls.id}" placeholder="${_lang==='ar'?'كود الحصة...':'Lesson code...'}" maxlength="24" oninput="this.value=this.value.toUpperCase()">
-        <button class="code-ok" onclick="checkoutLesson('${ls.id}','${ls.title}')" id="cobtn-${ls.id}">✓</button>
-        <button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">×</button>
-      </div>
-    </div>`).join('');
-  c.innerHTML=`<div class="cart-layout">
-    <div class="cart-items">
-      ${_cart.map(ls=>{
-        const t=ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:68px;height:54px;object-fit:cover" onerror="imgErr(this,'🎬')" loading="lazy">`:`🎬`;
-        return`<div class="cart-item"><div class="ci-thumb">${t}</div><div class="ci-info"><div class="ci-name">${ls.title}</div><div class="ci-sub">${ls.chapter_title||''}</div></div><button class="ci-remove" onclick="rmCart('${ls.id}')">🗑 ${_lang==='ar'?'حذف':'Remove'}</button></div>`;
-      }).join('')}
-    </div>
-    <div class="co-card">
-      <div class="co-ttl">🔑 ${_lang==='ar'?'فتح الحصص بالكود':'Unlock Lessons by Code'}</div>
-      <hr class="co-divider">
-      <div class="co-row"><span>${_lang==='ar'?'عدد الحصص':'Lessons'}</span><span>${_cart.length}</span></div>
-      <div class="co-total"><span>${_lang==='ar'?'طريقة الفتح':'Method'}</span><span class="val">${_lang==='ar'?'كود لكل حصة':'Code per lesson'}</span></div>
-      <hr class="co-divider" style="margin-top:14px">
-      <div style="font-size:.78rem;color:var(--t3);margin-bottom:10px;line-height:1.6">${_lang==='ar'?'📋 ادخل كود الحصة اللي أخدته من المدرس أو الأدمن عشان تفتح الحصة':'📋 Enter the lesson code from your teacher / admin to unlock access'}</div>
-      ${codeItems}
-    </div>
-  </div>`;
-}
+function renderCart(){const c=document.getElementById('cart-content');if(!_cart.length){c.innerHTML=`<div class="empty-state"><div class="empty-ico">🛒</div><div>${_lang==='ar'?'السلة فارغة — أضف حصص من التصفح':'Cart is empty — browse lessons to add'}</div></div>`;return;}const codeItems=_cart.map(ls=>`<div class="co-lesson-block"><div class="co-lesson-name">📖 ${ls.title}${ls.chapter_title?` <span style="color:var(--t3);font-weight:600">— ${ls.chapter_title}</span>`:''}</div><div class="code-row"><input class="code-input" id="pc-${ls.id}" placeholder="${_lang==='ar'?'كود الحصة...':'Lesson code...'}" maxlength="24" oninput="this.value=this.value.toUpperCase()"><button class="code-ok" onclick="checkoutLesson('${ls.id}','${ls.title}')" id="cobtn-${ls.id}">✓</button><button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">×</button></div></div>`).join('');c.innerHTML=`<div class="cart-layout"><div class="cart-items">${_cart.map(ls=>{const t=ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:68px;height:54px;object-fit:cover" onerror="imgErr(this,'🎬')" loading="lazy">`:`🎬`;return`<div class="cart-item"><div class="ci-thumb">${t}</div><div class="ci-info"><div class="ci-name">${ls.title}</div><div class="ci-sub">${ls.chapter_title||''}</div></div><button class="ci-remove" onclick="rmCart('${ls.id}')">🗑 ${_lang==='ar'?'حذف':'Remove'}</button></div>`;}).join('')}</div><div class="co-card"><div class="co-ttl">🔑 ${_lang==='ar'?'فتح الحصص بالكود':'Unlock Lessons by Code'}</div><hr class="co-divider"><div class="co-row"><span>${_lang==='ar'?'عدد الحصص':'Lessons'}</span><span>${_cart.length}</span></div><div class="co-total"><span>${_lang==='ar'?'طريقة الفتح':'Method'}</span><span class="val">${_lang==='ar'?'كود لكل حصة':'Code per lesson'}</span></div><hr class="co-divider" style="margin-top:14px"><div style="font-size:.78rem;color:var(--t3);margin-bottom:10px;line-height:1.6">${_lang==='ar'?'📋 ادخل كود الحصة اللي أخدته من المدرس أو الأدمن عشان تفتح الحصة':'📋 Enter the lesson code from your teacher / admin to unlock access'}</div>${codeItems}</div></div>`;}
 
-async function checkoutLesson(lessonId,lessonTitle){
-  const inp=document.getElementById(`pc-${lessonId}`);
-  const code=inp?.value.trim().toUpperCase();
-  const btn=document.getElementById(`cobtn-${lessonId}`);
-  if(!code){toast('w',_lang==='ar'?'ادخل كود الحصة':'Enter lesson code');return;}
-  btn.innerHTML='<div class="ld"></div>';btn.disabled=true;
-  const{data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).single();
-  if(error||!row){toast('e',_lang==='ar'?'الكود غلط أو غير موجود':'Invalid code');btn.innerHTML='✓';btn.disabled=false;return;}
-  if(row.lesson_id!==lessonId){toast('e',_lang==='ar'?'الكود لحصة تانية':'Wrong lesson code');btn.innerHTML='✓';btn.disabled=false;return;}
-  if(row.used_by){toast('e',_lang==='ar'?'الكود استخدم قبل كده':'Code already used');btn.innerHTML='✓';btn.disabled=false;return;}
-  const{error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
-  if(upErr){toast('e',upErr.message);btn.innerHTML='✓';btn.disabled=false;return;}
-  _unlockedLessons.add(lessonId);_cart=_cart.filter(c=>c.id!==lessonId);saveCart();
-  await loadEnrollments();
-  updateCartBadge();se('st-ls',_cart.length);
-  toast('s',`🎉 ${_lang==='ar'?'تم فتح الحصة':'Lesson unlocked'}: "${lessonTitle}"`,5000);
-  renderCart();
-  if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);
-}
+async function checkoutLesson(lessonId,lessonTitle){const inp=document.getElementById(`pc-${lessonId}`);const code=inp?.value.trim().toUpperCase();const btn=document.getElementById(`cobtn-${lessonId}`);if(!code){toast('w',_lang==='ar'?'ادخل كود الحصة':'Enter lesson code');return;}btn.innerHTML='<div class="ld"></div>';btn.disabled=true;const{data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).single();if(error||!row){toast('e',_lang==='ar'?'الكود غلط أو غير موجود':'Invalid code');btn.innerHTML='✓';btn.disabled=false;return;}if(row.lesson_id!==lessonId){toast('e',_lang==='ar'?'الكود لحصة تانية':'Wrong lesson code');btn.innerHTML='✓';btn.disabled=false;return;}if(row.used_by){toast('e',_lang==='ar'?'الكود استخدم قبل كده':'Code already used');btn.innerHTML='✓';btn.disabled=false;return;}const{error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);if(upErr){toast('e',upErr.message);btn.innerHTML='✓';btn.disabled=false;return;}_unlockedLessons.add(lessonId);_cart=_cart.filter(c=>c.id!==lessonId);saveCart();await loadEnrollments();updateCartBadge();se('st-ls',_cart.length);toast('s',`🎉 ${_lang==='ar'?'تم فتح الحصة':'Lesson unlocked'}: "${lessonTitle}"`,5000);renderCart();if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);}
 
-/* ── My Lessons ──────────────────────────────────────── */
-async function loadMyLessons(){
-  const el=document.getElementById('my-list');
-  el.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
-  await loadEnrollments();
-  if(!_unlockedLessons.size){el.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div>${_lang==='ar'?'لم تفتح أي حصة بعد':'No lessons unlocked yet'}</div></div>`;return;}
-  const{data}=await sb.from('lessons').select('id,title,description,image_url,chapters(title,subjects(name_ar))').in('id',[..._unlockedLessons]).eq('is_active',true).order('created_at');
-  el.innerHTML=(data||[]).map((ls,i)=>{
-    const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
-    return`<div class="my-card" onclick="goLesson('${ls.id}')">
-      <div class="my-img" style="${ls.image_url?'':'background:'+grad}">${ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy">`:'🎬'}</div>
-      <div class="my-bd"><div class="my-ttl">${ls.title}</div><div class="my-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div><div style="margin-top:8px"><span class="chip c-green">✅ ${_lang==='ar'?'مفتوحة':'Unlocked'}</span></div></div>
-    </div>`;
-  }).join('')||`<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div>${_lang==='ar'?'لا توجد حصص':'No lessons'}</div></div>`;
-}
+async function loadMyLessons(){const el=document.getElementById('my-list');el.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';await loadEnrollments();if(!_unlockedLessons.size){el.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div>${_lang==='ar'?'لم تفتح أي حصة بعد':'No lessons unlocked yet'}</div></div>`;return;}const{data}=await sb.from('lessons').select('id,title,description,image_url,chapters(title,subjects(name_ar))').in('id',[..._unlockedLessons]).eq('is_active',true).order('created_at');el.innerHTML=(data||[]).map((ls,i)=>{const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];return`<div class="my-card" onclick="goLesson('${ls.id}')"><div class="my-img" style="${ls.image_url?'':'background:'+grad}">${ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy">`:'🎬'}</div><div class="my-bd"><div class="my-ttl">${ls.title}</div><div class="my-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div><div style="margin-top:8px"><span class="chip c-green">✅ ${_lang==='ar'?'مفتوحة':'Unlocked'}</span></div></div></div>`;}).join('')||`<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div>${_lang==='ar'?'لا توجد حصص':'No lessons'}</div></div>`;}
 
-/* ── Profile ─────────────────────────────────────────── */
-async function loadProfileEnrolled(){
-  const el=document.getElementById('pr-enrolled');
-  el.innerHTML='<div class="loading"><div class="ld"></div></div>';
-  await loadEnrollments();
-  if(!_unlockedLessons.size){el.innerHTML=`<div class="empty-state"><div class="empty-ico">🔑</div><div>${_lang==='ar'?'لا توجد حصص مفتوحة':'No lessons unlocked'}</div></div>`;return;}
-  const{data}=await sb.from('lessons').select('id,title,chapters(title,subjects(name_ar))').in('id',[..._unlockedLessons]).eq('is_active',true);
-  el.innerHTML=(data||[]).map(ls=>`<div class="enr-item" onclick="goLesson('${ls.id}')">
-    <div><div class="enr-ttl">${ls.title}</div><div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div></div>
-    <span class="chip c-green">${_lang==='ar'?'فتح →':'Open →'}</span>
-  </div>`).join('');
-}
-function openEdit(){
-  document.getElementById('ed-nm').value=ME.full_name||'';
-  document.getElementById('ed-ph').value=ME.phone||'';
-  openMo('editMo');
-}
-async function saveProfile(){
-  const nm=document.getElementById('ed-nm').value.trim();
-  const ph=document.getElementById('ed-ph').value.trim();
-  if(!nm)return toast('w',_lang==='ar'?'ادخل اسمك':'Enter your name');
-  const btn=document.getElementById('ed-sv');
-  btn.innerHTML='<div class="ld"></div>';btn.disabled=true;
-  await sb.from('profiles').update({full_name:nm,phone:ph||null}).eq('id',ME.id);
-  ME.full_name=nm;ME.phone=ph;
-  btn.innerHTML=_lang==='ar'?'💾 حفظ':'💾 Save';btn.disabled=false;
-  updateUI();closeMo('editMo');
-  toast('s',_lang==='ar'?'تم الحفظ بنجاح ✅':'Saved successfully ✅');
-}
+async function loadProfileEnrolled(){const el=document.getElementById('pr-enrolled');el.innerHTML='<div class="loading"><div class="ld"></div></div>';await loadEnrollments();if(!_unlockedLessons.size){el.innerHTML=`<div class="empty-state"><div class="empty-ico">🔑</div><div>${_lang==='ar'?'لا توجد حصص مفتوحة':'No lessons unlocked'}</div></div>`;return;}const{data}=await sb.from('lessons').select('id,title,chapters(title,subjects(name_ar))').in('id',[..._unlockedLessons]).eq('is_active',true);el.innerHTML=(data||[]).map(ls=>`<div class="enr-item" onclick="goLesson('${ls.id}')"><div><div class="enr-ttl">${ls.title}</div><div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div></div><span class="chip c-green">${_lang==='ar'?'فتح →':'Open →'}</span></div>`).join('');}
 
-/* ── Init ────────────────────────────────────────────── */
+function openEdit(){document.getElementById('ed-nm').value=ME.full_name||'';document.getElementById('ed-ph').value=ME.phone||'';openMo('editMo');}
+async function saveProfile(){const nm=document.getElementById('ed-nm').value.trim();const ph=document.getElementById('ed-ph').value.trim();if(!nm)return toast('w',_lang==='ar'?'ادخل اسمك':'Enter your name');const btn=document.getElementById('ed-sv');btn.innerHTML='<div class="ld"></div>';btn.disabled=true;await sb.from('profiles').update({full_name:nm,phone:ph||null}).eq('id',ME.id);ME.full_name=nm;ME.phone=ph;btn.innerHTML=_lang==='ar'?'💾 حفظ':'💾 Save';btn.disabled=false;updateUI();closeMo('editMo');toast('s',_lang==='ar'?'تم الحفظ بنجاح ✅':'Saved successfully ✅');}
+
 window.addEventListener('DOMContentLoaded', checkSession);
 </script>
 </body>
