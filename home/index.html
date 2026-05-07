@@ -1,510 +1,394 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark" data-lang="ar">
+<html lang="ar" dir="rtl" data-theme="light" data-lang="ar">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kalawy — منصة التعليم</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>kalawy</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-/* ════════════════════════════════════════════
-   KALAWY STUDENT PORTAL — Ednova-style UI
-   Dark/Light · AR/EN · Smooth animations
-════════════════════════════════════════════ */
-:root {
-  --accent:#00c896; --accent2:#0099ff; --glow:rgba(0,200,150,.22);
-  --gold:#f5c76e; --danger:#ff6b6b;
-  --r:14px; --r-sm:10px; --r-lg:22px; --r-xl:32px; --nav-h:68px;
-  --trans: all .35s cubic-bezier(.4,0,.2,1);
+/* ═══════════════════════════════════════════
+   KALAWY — Ednova-style UI
+   Dark / Light  ·  AR / EN
+═══════════════════════════════════════════ */
+:root{
+  --green:#1a8a5c;--green2:#22b078;--green3:#2dd680;
+  --glow:rgba(26,138,92,.2);--gold:#f59f0a;
+  --danger:#ef4444;--r:12px;--r-lg:18px;--r-xl:24px;
+  --nav-h:72px;
+  --tr:all .3s cubic-bezier(.4,0,.2,1);
+}
+/* LIGHT */
+[data-theme="light"]{
+  --bg:#f5f7f6;--bg2:#eef1ef;--bg3:#e6ebe8;
+  --card:#ffffff;--card-h:#f8fbf9;
+  --nav-bg:#ffffff;--nav-border:#e8edeb;
+  --text:#0d1f17;--t2:#4a6b58;--t3:#8aaa96;
+  --border:#dde6e1;--border-h:#b8d0c4;
+  --shadow:0 2px 12px rgba(0,0,0,.06);--shadow-lg:0 8px 32px rgba(0,0,0,.12);
+  --shadow-card:0 1px 6px rgba(0,0,0,.08);
+}
+/* DARK */
+[data-theme="dark"]{
+  --bg:#08120e;--bg2:#0d1a14;--bg3:#121f18;
+  --card:#131e18;--card-h:#182619;
+  --nav-bg:#0d1a14;--nav-border:#1e2e24;
+  --text:#e8f5ee;--t2:#7aaa8c;--t3:#4a6a58;
+  --border:#1e2e24;--border-h:#2a4035;
+  --shadow:0 2px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 32px rgba(0,0,0,.6);
+  --shadow-card:0 1px 6px rgba(0,0,0,.35);
 }
 
-/* ── DARK ── */
-[data-theme="dark"] {
-  --bg:#07100c; --bg2:#0b1610; --bg3:#0f1d14;
-  --surface:rgba(255,255,255,.05); --surface-h:rgba(255,255,255,.09);
-  --border:rgba(255,255,255,.08); --border-h:rgba(255,255,255,.18);
-  --shine:rgba(255,255,255,.05);
-  --shadow:0 4px 24px rgba(0,0,0,.45); --shadow-lg:0 12px 48px rgba(0,0,0,.6);
-  --text:#eef4ee; --t2:#88aa90; --t3:#4a6852;
-  --card-bg:#111d16; --card-hover:#162219;
-  --nav-bg:rgba(7,16,12,.88);
-  --orb1:rgba(0,200,150,.09); --orb2:rgba(0,153,255,.07);
-}
-/* ── LIGHT ── */
-[data-theme="light"] {
-  --bg:#f0f7f3; --bg2:#e4f0e9; --bg3:#d8eadf;
-  --surface:rgba(255,255,255,.82); --surface-h:rgba(255,255,255,.96);
-  --border:rgba(0,80,40,.1); --border-h:rgba(0,80,40,.22);
-  --shine:rgba(255,255,255,.7);
-  --shadow:0 4px 24px rgba(0,60,30,.08); --shadow-lg:0 12px 48px rgba(0,60,30,.14);
-  --text:#0a1a10; --t2:#2a5a38; --t3:#6a9a78;
-  --card-bg:#ffffff; --card-hover:#f5fbf7;
-  --nav-bg:rgba(240,247,243,.92);
-  --orb1:rgba(0,200,150,.14); --orb2:rgba(0,153,255,.1);
-}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .35s,color .3s}
+[data-lang="en"] body,[data-lang="en"] *{font-family:'Inter',sans-serif!important}
+[data-lang="en"]{direction:ltr}[data-lang="ar"]{direction:rtl}
+button,input,select{font:inherit}
+.hidden{display:none!important}
 
-* { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior:smooth; }
-
-body {
-  font-family: 'Tajawal', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  transition: background .4s ease, color .3s ease;
+/* ════ NAV ════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
+  background:var(--nav-bg);border-bottom:1px solid var(--nav-border);
+  display:flex;align-items:center;padding:0 32px;gap:20px;
+  transition:background .35s,border-color .3s;
+  box-shadow:var(--shadow);
 }
-[data-lang="en"] body, [data-lang="en"] * { font-family: 'Inter', sans-serif !important; }
-[data-lang="en"] { direction: ltr; }
-[data-lang="ar"] { direction: rtl; }
-button, input, select { font: inherit; }
-.hidden { display:none !important; }
-
-/* ── BG ORBS ── */
-.bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
-.orb { position:absolute; border-radius:50%; filter:blur(90px); animation:drift 14s ease-in-out infinite; }
-.o1 { width:560px; height:560px; background:var(--orb1); top:-140px; right:-100px; }
-.o2 { width:450px; height:450px; background:var(--orb2); bottom:-100px; left:-100px; animation-delay:-6s; }
-@keyframes drift { 0%,100%{transform:translate(0,0)} 40%{transform:translate(30px,-40px)} 70%{transform:translate(-25px,28px)} }
-
-/* ── NAV ── */
-.nav {
-  position: fixed; top:0; left:0; right:0; z-index:200; height:var(--nav-h);
-  background: var(--nav-bg);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items:center; padding:0 28px; gap:16px;
-  transition: background .35s ease;
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-box{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  display:grid;place-items:center;font-weight:900;font-size:.92rem;color:#fff;
+  box-shadow:0 4px 12px var(--glow);
+  transition:transform .2s;
 }
-.nav-logo { display:flex; align-items:center; gap:10px; cursor:pointer; }
-.nav-mark {
-  width:38px; height:38px; border-radius:12px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display:grid; place-items:center; font-weight:900; font-size:.9rem; color:#fff;
-  box-shadow: 0 4px 14px var(--glow); flex-shrink:0;
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-.nav-logo:hover .nav-mark { transform: scale(1.08) rotate(-3deg); }
-.nav-wm { font-weight:900; font-size:1.15rem; letter-spacing:-.03em; }
-.nav-wm em { font-style:normal; color:var(--gold); }
-.nav-sp { flex:1; }
+.nav-logo:hover .logo-box{transform:scale(1.08) rotate(-4deg)}
+.logo-text{font-weight:900;font-size:1.15rem;letter-spacing:-.03em;color:var(--text)}
+.logo-text em{font-style:normal;color:var(--gold)}
 
 /* breadcrumb */
-.breadcrumb { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.bc { font-size:.82rem; color:var(--t3); cursor:pointer; transition:.15s; padding:3px 6px; border-radius:6px; }
-.bc:hover { color:var(--text); background:var(--surface); }
-.bc.current { color:var(--text); font-weight:700; cursor:default; }
-.bc-sep { font-size:.7rem; color:var(--t3); }
+.nav-bc{display:flex;align-items:center;gap:5px;flex:1;margin:0 20px;overflow:hidden}
+.bc-item{font-size:.82rem;color:var(--t3);cursor:pointer;white-space:nowrap;padding:3px 6px;border-radius:6px;transition:.15s}
+.bc-item:hover{color:var(--text);background:var(--bg2)}
+.bc-item.active{color:var(--text);font-weight:700;cursor:default}
+.bc-sep{color:var(--t3);font-size:.7rem}
 
-.nav-right { display:flex; align-items:center; gap:10px; }
+.nav-end{display:flex;align-items:center;gap:10px}
 
-/* ── THEME TOGGLE ── */
-.theme-toggle {
-  width:52px; height:28px; border-radius:999px; border:none; cursor:pointer; position:relative;
-  background: linear-gradient(135deg, #1a2a3a, #0d1d2a);
-  transition: background .4s ease;
-  overflow:hidden;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,.4), 0 0 0 1px var(--border);
+/* theme toggle */
+.theme-btn{
+  width:52px;height:28px;border-radius:999px;border:none;cursor:pointer;
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1c2e38,#0a1520);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.3),0 0 0 1px var(--border);
+  transition:background .4s;
 }
-[data-theme="light"] .theme-toggle { background: linear-gradient(135deg, #87ceeb, #ffd700); }
-.theme-toggle .track { position:absolute; inset:0; display:flex; align-items:center; padding:0 5px; justify-content:space-between; }
-.theme-toggle .ico { font-size:.7rem; transition: opacity .3s; }
-.theme-toggle .ico-moon { opacity:1; }
-.theme-toggle .ico-sun  { opacity:.4; }
-[data-theme="light"] .theme-toggle .ico-moon { opacity:.4; }
-[data-theme="light"] .theme-toggle .ico-sun  { opacity:1; }
-.theme-toggle .thumb {
-  position:absolute; top:3px; width:22px; height:22px; border-radius:50%;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,.35);
-  transition: all .35s cubic-bezier(.34,1.56,.64,1);
-  right: 3px;
+[data-theme="light"] .theme-btn{background:linear-gradient(135deg,#87ceeb,#ffd700)}
+.theme-btn .thumb{
+  position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
+  transition:all .38s cubic-bezier(.34,1.56,.64,1);
 }
-[data-lang="en"] .theme-toggle .thumb { right:auto; left:3px; }
-[data-theme="light"] .theme-toggle .thumb { right:auto; left:3px; background:linear-gradient(135deg,#fff,#ffe066); }
-[data-theme="light"][data-lang="en"] .theme-toggle .thumb { right:auto; left:3px; }
-[data-theme="dark"][data-lang="en"]  .theme-toggle .thumb { left:3px; right:auto; }
-[data-theme="dark"][data-lang="ar"]  .theme-toggle .thumb { right:3px; left:auto; }
-[data-theme="light"][data-lang="ar"] .theme-toggle .thumb { right:27px; left:auto; }
-[data-theme="light"][data-lang="en"] .theme-toggle .thumb { left:27px; right:auto; }
+[data-lang="ar"] .theme-btn .thumb{right:3px}
+[data-lang="en"] .theme-btn .thumb{left:3px}
+[data-theme="light"][data-lang="ar"] .theme-btn .thumb{right:27px;background:linear-gradient(135deg,#fff,#ffe066)}
+[data-theme="light"][data-lang="en"] .theme-btn .thumb{left:27px;background:linear-gradient(135deg,#fff,#ffe066)}
+.theme-btn .ico{position:absolute;font-size:.68rem;top:50%;transform:translateY(-50%);transition:.3s}
+.theme-btn .ico-m{right:5px}[data-lang="en"] .theme-btn .ico-m{right:auto;left:5px}
+.theme-btn .ico-s{left:5px}[data-lang="en"] .theme-btn .ico-s{left:auto;right:5px}
+[data-theme="light"] .theme-btn .ico-m{opacity:.3}
+[data-theme="dark"] .theme-btn .ico-s{opacity:.3}
 
-/* ── LANG TOGGLE ── */
-.lang-pill {
-  display:flex; align-items:center; gap:2px;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:999px; padding:3px; backdrop-filter:blur(10px);
-  transition: background .3s;
-}
-.lang-opt {
-  padding:5px 13px; border-radius:999px; border:none; background:transparent;
-  color:var(--t3); font-weight:700; font-size:.78rem; cursor:pointer;
-  transition: all .2s ease;
-}
-.lang-opt.on {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color:#fff; box-shadow:0 2px 10px var(--glow);
-}
+/* lang */
+.lang-sw{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px}
+.lopt{padding:4px 13px;border-radius:999px;border:none;background:transparent;color:var(--t3);font-weight:700;font-size:.76rem;cursor:pointer;transition:.2s}
+.lopt.on{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 2px 8px var(--glow)}
 
-/* nav avatar */
-.nav-av {
-  width:36px; height:36px; border-radius:50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display:grid; place-items:center; font-weight:800; font-size:.88rem; color:#fff;
-  cursor:pointer; box-shadow:0 3px 12px var(--glow); flex-shrink:0;
-  transition: transform .2s ease;
-}
-.nav-av:hover { transform: scale(1.08); }
+/* cart */
+.cart-btn{position:relative;background:none;border:none;cursor:pointer;font-size:1.2rem;padding:6px;border-radius:9px;transition:.15s;color:var(--text)}
+.cart-btn:hover{background:var(--bg2)}
+.cart-ct{position:absolute;top:-2px;right:-2px;width:17px;height:17px;border-radius:50%;background:var(--danger);color:#fff;font-size:.6rem;font-weight:900;display:grid;place-items:center;border:2px solid var(--nav-bg)}
+[data-lang="en"] .cart-ct{right:auto;left:-2px}
 
-/* cart badge */
-.cart-wrap { position:relative; }
-.cart-ico { font-size:1.1rem; cursor:pointer; padding:6px; border-radius:8px; transition:.15s; }
-.cart-ico:hover { background:var(--surface); }
-.cart-badge {
-  position:absolute; top:-2px; right:-2px; width:17px; height:17px; border-radius:50%;
-  background:var(--danger); color:#fff; font-size:.6rem; font-weight:900;
-  display:grid; place-items:center; border:2px solid var(--bg);
-}
-[data-lang="en"] .cart-badge { right:auto; left:-2px; }
+/* avatar */
+.nav-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:grid;place-items:center;font-weight:800;font-size:.88rem;color:#fff;cursor:pointer;box-shadow:0 3px 10px var(--glow);flex-shrink:0;transition:transform .2s}
+.nav-av:hover{transform:scale(1.08)}
 
-/* ── PAGES ── */
-.pw { padding-top:var(--nav-h); position:relative; z-index:1; }
-.pg { display:none; max-width:1280px; margin:0 auto; padding:28px 28px 60px; }
-.pg.on { display:block; animation:fadeUp .32s ease; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+/* ════ PAGES ════ */
+.pw{padding-top:var(--nav-h)}
+.pg{display:none;max-width:1300px;margin:0 auto;padding:0 32px 80px}
+.pg.on{display:block;animation:fu .28s ease}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-/* ── HERO ── */
-.hero {
-  border-radius:var(--r-xl); padding:28px 32px; margin-bottom:28px;
-  background: linear-gradient(135deg, rgba(0,200,150,.1), rgba(0,153,255,.06));
-  border:1px solid var(--border);
-  box-shadow: var(--shadow-lg);
-  display:flex; align-items:center; gap:22px; position:relative; overflow:hidden;
-  transition: var(--trans);
-}
-.hero::after {
-  content:''; position:absolute; top:-70px; right:-70px;
-  width:200px; height:200px; border-radius:50%;
-  background:radial-gradient(circle,var(--glow),transparent 70%); pointer-events:none;
-}
-.h-av {
-  width:58px; height:58px; border-radius:50%; flex-shrink:0; z-index:1;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display:grid; place-items:center; font-weight:900; font-size:1.4rem; color:#fff;
-  box-shadow:0 6px 20px var(--glow);
-}
-.h-txt { z-index:1; }
-.h-gr  { font-size:.74rem; color:var(--t3); margin-bottom:3px; }
-.h-nm  { font-size:1.3rem; font-weight:900; letter-spacing:-.02em; }
-.h-gd  { font-size:.76rem; color:var(--t2); margin-top:4px; }
-.h-sts { margin-right:auto; display:flex; gap:12px; z-index:1; }
-[data-lang="en"] .h-sts { margin-right:0; margin-left:auto; }
-.hst {
-  text-align:center; padding:10px 18px;
-  background:rgba(255,255,255,.06); border:1px solid var(--border); border-radius:14px;
-  backdrop-filter:blur(10px);
-}
-[data-theme="light"] .hst { background:rgba(255,255,255,.7); }
-.hst .n { font-size:1.45rem; font-weight:900; color:var(--accent); line-height:1; }
-.hst .l { font-size:.62rem; color:var(--t3); text-transform:uppercase; letter-spacing:.1em; margin-top:3px; }
+/* ════ PAGE TITLE (like Ednova) ════ */
+.pg-hero{text-align:center;padding:44px 20px 32px}
+.pg-hero-title{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.pg-hero-sub{font-size:.95rem;color:var(--t3)}
 
-/* ── PAGE TITLE (like Ednova) ── */
-.page-hero {
-  text-align:center; padding:36px 20px 20px;
-}
-.page-hero-title {
-  font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; letter-spacing:-.03em; margin-bottom:8px;
-}
-.page-hero-sub { font-size:.92rem; color:var(--t3); }
+/* ════ GRID COMMON ════ */
+.grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
 
-/* ── SECTION HEADER ── */
-.sec-hd { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
-.sec-bk {
-  display:flex; align-items:center; gap:6px;
-  padding:8px 16px; border-radius:999px; border:1px solid var(--border);
-  background:var(--surface); backdrop-filter:blur(10px);
-  color:var(--t2); font-weight:700; font-size:.82rem; cursor:pointer; transition:.18s;
+/* ════ SUBJECT CARD ════ */
+.sub-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:28px 22px;text-align:center;cursor:pointer;
+  transition:var(--tr);box-shadow:var(--shadow-card);
 }
-.sec-bk:hover { color:var(--text); border-color:var(--border-h); }
-.sec-ttl { font-size:1.05rem; font-weight:800; }
-.sec-sub { font-size:.8rem; color:var(--t3); margin-top:2px; }
+.sub-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
+.sub-icon{width:76px;height:76px;border-radius:20px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;box-shadow:var(--shadow)}
+.sub-icon img{width:76px;height:76px;object-fit:cover;border-radius:20px}
+.sub-name{font-weight:900;font-size:1rem;margin-bottom:8px}
+.sub-badge{display:inline-flex;align-items:center;padding:3px 12px;border-radius:999px;font-size:.72rem;font-weight:700}
+.bg-g{background:rgba(34,176,120,.12);color:var(--green2);border:1px solid rgba(34,176,120,.22)}
+.bg-b{background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.2)}
+.bg-y{background:rgba(245,158,10,.1);color:var(--gold);border:1px solid rgba(245,158,10,.2)}
 
-/* ══ SUBJECTS — Ednova-style ══ */
-.subjects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
-.subject-card {
-  background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-lg);
-  padding:26px 20px; text-align:center; cursor:pointer;
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
-  position:relative; overflow:hidden;
-}
-.subject-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); background:var(--card-hover); border-color:var(--border-h); }
-.subject-card .s-thumb-wrap { position:relative; margin:0 auto 16px; width:80px; height:80px; }
-.subject-card .s-img { width:80px; height:80px; border-radius:18px; object-fit:cover; display:block; box-shadow:var(--shadow); }
-.subject-card .s-emoji { width:80px; height:80px; border-radius:18px; font-size:2.2rem; display:grid; place-items:center; box-shadow:var(--shadow); }
-.subject-card .s-name { font-weight:900; font-size:1rem; margin-bottom:8px; }
-.chip { display:inline-flex; align-items:center; padding:4px 12px; border-radius:999px; font-size:.72rem; font-weight:700; }
-.cg { background:rgba(0,200,150,.1); color:var(--accent); border:1px solid rgba(0,200,150,.2); }
-.cb { background:rgba(0,153,255,.1); color:#60a5fa; border:1px solid rgba(0,153,255,.2); }
-.cy { background:rgba(245,199,110,.1); color:var(--gold); border:1px solid rgba(245,199,110,.2); }
-.cr { background:rgba(255,107,107,.1); color:var(--danger); border:1px solid rgba(255,107,107,.2); }
-.c-gr { background:var(--surface); color:var(--t3); border:1px solid var(--border); }
+/* ════ TEACHER CARD ════ */
+.tch-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 20px;text-align:center;cursor:pointer;transition:var(--tr);box-shadow:var(--shadow-card)}
+.tch-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.tch-av{width:68px;height:68px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;color:#fff;overflow:hidden;box-shadow:0 4px 14px var(--glow);border:2px solid rgba(34,176,120,.3)}
+.tch-av img{width:68px;height:68px;border-radius:50%;object-fit:cover}
+.tch-name{font-weight:800;font-size:.98rem;margin-bottom:5px}
+.tch-bio{font-size:.78rem;color:var(--t3);line-height:1.5}
 
-/* ══ TEACHERS ══ */
-.teachers-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
-.teacher-card {
-  background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-lg);
-  padding:24px 18px; text-align:center; cursor:pointer;
-  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+/* ════ CHAPTER CARD — exact Ednova ════ */
+.ch-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);
+  overflow:hidden;cursor:pointer;transition:var(--tr);box-shadow:var(--shadow-card);
 }
-.teacher-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); background:var(--card-hover); }
-.t-av { width:64px; height:64px; border-radius:50%; margin:0 auto 12px; display:grid; place-items:center; font-size:1.5rem; font-weight:900; color:#fff; border:2px solid rgba(0,200,150,.3); box-shadow:0 5px 18px var(--glow); }
-.t-av img { width:64px; height:64px; border-radius:50%; object-fit:cover; }
-.t-nm { font-weight:800; font-size:.95rem; margin-bottom:5px; }
-.t-bi { font-size:.76rem; color:var(--t3); line-height:1.5; }
+.ch-card:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg)}
+.ch-card.owned{border-color:rgba(34,176,120,.35)}
+/* title top */
+.ch-top{padding:14px 16px 10px;font-weight:700;font-size:.9rem;color:var(--t2);text-align:center;border-bottom:1px solid var(--border)}
+/* image center — like Ednova */
+.ch-img-area{padding:14px;display:flex;justify-content:center}
+.ch-img-box{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:2.8rem;transition:transform .3s}
+.ch-card:hover .ch-img-box{transform:scale(1.03)}
+.ch-img-box img{width:100%;height:100%;object-fit:cover;display:block}
+/* bottom */
+.ch-bottom{padding:4px 16px 16px;text-align:center}
+.ch-title-main{font-weight:900;font-size:.95rem;margin-bottom:5px;color:var(--text)}
+.ch-count{font-size:.78rem;color:var(--t3);margin-bottom:10px}
+.ch-price-pill{display:inline-flex;align-items:center;padding:3px 12px;border-radius:999px;font-size:.72rem;font-weight:700;margin-bottom:8px}
+.price-paid{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 2px 8px var(--glow)}
+.price-free{background:rgba(34,176,120,.1);color:var(--green2);border:1px solid rgba(34,176,120,.2)}
+.ch-btn{width:100%;padding:9px;border-radius:999px;border:none;font-weight:700;font-size:.82rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.ch-btn-owned {background:rgba(34,176,120,.1);color:var(--green2);border:1px solid rgba(34,176,120,.2);cursor:default}
+.ch-btn-paid  {background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 3px 10px var(--glow)}
+.ch-btn-paid:hover{opacity:.9;transform:translateY(-1px)}
+.ch-btn-free  {background:rgba(34,176,120,.1);color:var(--green2);border:1px solid rgba(34,176,120,.2)}
+.ch-btn-free:hover{background:rgba(34,176,120,.18)}
+.ch-btn-incart{background:rgba(245,158,10,.1);color:var(--gold);border:1px solid rgba(245,158,10,.2)}
+.ch-btn-enter {background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 3px 10px var(--glow)}
+.ch-btn-enter:hover{opacity:.9}
 
-/* ══ CHAPTERS — Ednova style ══ */
-.chapters-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:18px; }
-.chapter-card {
-  background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-lg);
-  overflow:hidden; cursor:pointer;
-  transition: transform .28s cubic-bezier(.4,0,.2,1), box-shadow .28s ease, background .25s ease;
-  position:relative;
-}
-.chapter-card:hover { transform:translateY(-7px); box-shadow:var(--shadow-lg); }
-.chapter-card.owned { border-color:rgba(0,200,150,.3); }
+/* ════ LESSON ROW ════ */
+.ls-list{display:flex;flex-direction:column;gap:10px}
+.ls-row{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);display:flex;align-items:stretch;overflow:hidden;transition:var(--tr);box-shadow:var(--shadow-card)}
+.ls-row.click{cursor:pointer}
+.ls-row.click:hover{transform:translateX(-5px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
+[data-lang="en"] .ls-row.click:hover{transform:translateX(5px)}
+.ls-row.locked{opacity:.6;cursor:not-allowed}
+.ls-thumb{width:90px;flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.ls-thumb img{width:90px;height:100%;object-fit:cover;display:block}
+.ls-body{flex:1;padding:14px 18px;display:flex;align-items:center;gap:14px}
+.ls-info{flex:1}
+.ls-num{font-size:.68rem;color:var(--t3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em}
+.ls-title{font-weight:800;font-size:.96rem;margin-bottom:3px}
+.ls-desc{font-size:.78rem;color:var(--t3)}
+.ls-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-/* Ednova-style card — title top, image center, title bottom, count */
-.cc-title-top {
-  padding:16px 16px 10px;
-  font-weight:800; font-size:.92rem; text-align:center;
-}
-.cc-img-wrap {
-  width:60%; margin:0 auto;
-  aspect-ratio:4/3; overflow:hidden; border-radius:var(--r-sm);
-  border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-size:2.8rem;
-  transition: transform .3s ease;
-}
-.chapter-card:hover .cc-img-wrap { transform:scale(1.04); }
-.cc-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
-.cc-bottom { padding:12px 16px 16px; text-align:center; }
-.cc-title-bot { font-weight:900; font-size:.95rem; margin-bottom:6px; }
-.cc-count { font-size:.76rem; color:var(--t3); margin-bottom:10px; }
-.cc-price-badge {
-  display:inline-flex; align-items:center; padding:3px 10px; border-radius:999px;
-  font-size:.7rem; font-weight:700; margin-bottom:8px;
-}
-.cc-action { margin-top:6px; }
-.add-cart-btn {
-  width:100%; padding:9px; border-radius:999px; border:none;
-  font-weight:700; font-size:.82rem; cursor:pointer; transition:.2s;
-  display:flex; align-items:center; justify-content:center; gap:6px;
-}
-.btn-free   { background:rgba(0,200,150,.12); color:var(--accent); border:1px solid rgba(0,200,150,.25); }
-.btn-paid   { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 3px 12px var(--glow); }
-.btn-incart { background:rgba(245,199,110,.12); color:var(--gold); border:1px solid rgba(245,199,110,.25); }
-.btn-owned  { background:rgba(0,200,150,.08); color:var(--accent); border:1px solid rgba(0,200,150,.18); cursor:default; }
-.btn-enter  { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 3px 12px var(--glow); }
-.btn-enter:hover { opacity:.9; transform:translateY(-1px); }
+/* ════ CHIP ════ */
+.chip{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:700}
+.c-green{background:rgba(34,176,120,.1);color:var(--green2);border:1px solid rgba(34,176,120,.2)}
+.c-gold{background:rgba(245,158,10,.1);color:var(--gold);border:1px solid rgba(245,158,10,.2)}
+.c-red{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.2)}
+.c-gray{background:var(--bg2);color:var(--t3);border:1px solid var(--border)}
+.time-chip{display:flex;align-items:center;gap:4px;font-size:.72rem;padding:4px 10px;border-radius:999px}
+.tc-f{background:rgba(245,158,10,.1);color:var(--gold);border:1px solid rgba(245,158,10,.2)}
+.tc-p{background:rgba(34,176,120,.1);color:var(--green2);border:1px solid rgba(34,176,120,.2)}
 
-/* ══ LESSONS ══ */
-.lessons-list { display:flex; flex-direction:column; gap:10px; }
-.lesson-row {
-  background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-lg);
-  display:flex; align-items:stretch; overflow:hidden;
-  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
+/* ════ HERO BAR (user info) ════ */
+.hero-bar{
+  display:flex;align-items:center;gap:18px;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:20px 26px;margin-bottom:0;box-shadow:var(--shadow-card);
+  margin-top:24px;
 }
-.lesson-row.clickable { cursor:pointer; }
-.lesson-row.clickable:hover { transform:translateX(-5px); box-shadow:var(--shadow-lg); background:var(--card-hover); }
-[data-lang="en"] .lesson-row.clickable:hover { transform:translateX(5px); }
-.lesson-row.locked { opacity:.6; cursor:not-allowed; }
-.l-thumb-col { width:90px; flex-shrink:0; background:var(--bg3); display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
-.l-thumb-col img { width:90px; height:100%; object-fit:cover; }
-.l-info-col { flex:1; padding:15px 18px; display:flex; align-items:center; gap:14px; }
-.l-info { flex:1; }
-.l-num { font-size:.68rem; color:var(--t3); margin-bottom:2px; }
-.l-title { font-weight:800; font-size:.94rem; margin-bottom:3px; }
-.l-desc { font-size:.76rem; color:var(--t3); }
-.l-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.time-chip { display:flex; align-items:center; gap:4px; font-size:.7rem; padding:4px 10px; border-radius:999px; }
-.tc-f { background:rgba(245,199,110,.1); color:var(--gold); border:1px solid rgba(245,199,110,.2); }
-.tc-p { background:rgba(0,200,150,.1); color:var(--accent); border:1px solid rgba(0,200,150,.2); }
+.h-av{width:50px;height:50px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--green),var(--green2));display:grid;place-items:center;font-weight:900;font-size:1.2rem;color:#fff;box-shadow:0 4px 14px var(--glow)}
+.h-name{font-weight:800;font-size:1.05rem}
+.h-grade{font-size:.78rem;color:var(--t3);margin-top:2px}
+.h-stats{margin-right:auto;display:flex;gap:14px}
+[data-lang="en"] .h-stats{margin-right:0;margin-left:auto}
+.hst{text-align:center;padding:8px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.hst .n{font-size:1.35rem;font-weight:900;color:var(--green2);line-height:1}
+.hst .l{font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
 
-/* ══ CART PAGE ══ */
-.cart-layout { display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start; }
-.cart-items { display:flex; flex-direction:column; gap:12px; }
-.cart-item {
-  background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-lg);
-  padding:18px; display:flex; align-items:center; gap:14px;
-}
-.ci-thumb { width:70px; height:55px; border-radius:12px; flex-shrink:0; background:var(--bg3); display:flex; align-items:center; justify-content:center; font-size:1.4rem; overflow:hidden; }
-.ci-thumb img { width:70px; height:55px; object-fit:cover; }
-.ci-info { flex:1; }
-.ci-name { font-weight:800; font-size:.94rem; margin-bottom:3px; }
-.ci-sub { font-size:.76rem; color:var(--t3); }
-.ci-price { font-weight:900; font-size:1.1rem; color:var(--accent); white-space:nowrap; }
-.checkout-card {
-  background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-xl);
-  padding:24px; position:sticky; top:calc(var(--nav-h) + 16px);
-}
-.co-title { font-weight:900; font-size:1.1rem; margin-bottom:18px; }
-.co-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:.9rem; }
-.co-total { display:flex; justify-content:space-between; padding-top:12px; font-weight:900; font-size:1.1rem; }
-.co-total .val { color:var(--accent); }
-.co-chapter-list { margin-top:16px; display:flex; flex-direction:column; gap:10px; }
-.co-ch { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-sm); padding:12px; }
-.co-ch-name { font-weight:700; font-size:.88rem; margin-bottom:8px; }
-.co-ch-inp-row { display:flex; gap:7px; }
-.co-inp {
-  flex:1; background:var(--bg); border:1px solid var(--border); color:var(--text);
-  padding:9px 12px; border-radius:var(--r-sm); outline:none; font-size:.86rem;
-  letter-spacing:.06em; text-transform:uppercase; transition:.15s;
-}
-.co-inp:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--glow); }
-.co-inp::placeholder { text-transform:none; color:var(--t3); letter-spacing:normal; font-size:.8rem; }
+/* ════ CART ════ */
+.cart-layout{display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:start}
+.cart-items{display:flex;flex-direction:column;gap:12px}
+.cart-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-card)}
+.ci-thumb{width:70px;height:55px;border-radius:10px;flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;overflow:hidden}
+.ci-thumb img{width:70px;height:55px;object-fit:cover}
+.ci-info{flex:1}
+.ci-name{font-weight:800;font-size:.94rem;margin-bottom:3px}
+.ci-sub{font-size:.76rem;color:var(--t3)}
+.ci-price{font-weight:900;font-size:1.1rem;color:var(--green2);white-space:nowrap}
+.co-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px;position:sticky;top:calc(var(--nav-h)+16px);box-shadow:var(--shadow-card)}
+.co-ttl{font-weight:900;font-size:1.05rem;margin-bottom:16px}
+.co-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.9rem}
+.co-total{display:flex;justify-content:space-between;padding-top:12px;font-weight:900;font-size:1.1rem}
+.co-total .val{color:var(--green2)}
+.co-items{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.co-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.co-item-name{font-weight:700;font-size:.88rem;margin-bottom:8px}
+.co-row-inp{display:flex;gap:7px}
+.co-inp{flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:var(--r);outline:none;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase;transition:.18s}
+.co-inp:focus{border-color:var(--green2);box-shadow:0 0 0 3px var(--glow)}
+.co-inp::placeholder{text-transform:none;color:var(--t3);letter-spacing:normal;font-size:.82rem}
 
-/* ══ MY LESSONS ══ */
-.my-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
-.my-card {
-  background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-lg);
-  overflow:hidden; cursor:pointer;
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-.my-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); }
-.my-card-img { height:120px; background:var(--bg3); display:flex; align-items:center; justify-content:center; font-size:2.5rem; overflow:hidden; }
-.my-card-img img { width:100%; height:100%; object-fit:cover; }
-.my-card-bd { padding:14px; }
-.my-card-ttl { font-weight:800; font-size:.92rem; margin-bottom:4px; }
-.my-card-sub { font-size:.76rem; color:var(--t3); }
+/* ════ MY LESSONS ════ */
+.my-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.my-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:var(--tr);box-shadow:var(--shadow-card)}
+.my-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.my-img{height:120px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:2.5rem;overflow:hidden}
+.my-img img{width:100%;height:100%;object-fit:cover}
+.my-bd{padding:14px}
+.my-ttl{font-weight:800;font-size:.92rem;margin-bottom:4px}
+.my-sub{font-size:.76rem;color:var(--t3)}
 
-/* ══ PROFILE ══ */
-.prof-wrap { display:grid; grid-template-columns:280px 1fr; gap:18px; }
-.prof-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-xl); padding:26px; text-align:center; }
-.prof-av { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:grid; place-items:center; font-size:1.8rem; font-weight:900; color:#fff; margin:0 auto 14px; box-shadow:0 8px 24px var(--glow); }
-.prof-nm { font-size:1.2rem; font-weight:900; margin-bottom:4px; }
-.prof-em { font-size:.76rem; color:var(--t3); margin-bottom:16px; }
-.inf-list { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
-.inf-r { display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-sm); }
-.inf-k { font-size:.7rem; color:var(--t3); }
-.inf-v { font-weight:700; font-size:.88rem; }
-.enr-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r-xl); padding:22px; }
-.enr-item { display:flex; align-items:center; justify-content:space-between; padding:11px 14px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-sm); margin-bottom:8px; cursor:pointer; transition:.15s; }
-.enr-item:hover { border-color:rgba(0,200,150,.3); }
-.enr-ttl { font-weight:700; font-size:.9rem; }
-.enr-sub { font-size:.74rem; color:var(--t3); margin-top:2px; }
+/* ════ PROFILE ════ */
+.prof-wrap{display:grid;grid-template-columns:280px 1fr;gap:20px}
+.prof-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px;text-align:center;box-shadow:var(--shadow-card)}
+.prof-av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:grid;place-items:center;font-size:1.8rem;font-weight:900;color:#fff;margin:0 auto 14px;box-shadow:0 6px 20px var(--glow)}
+.prof-name{font-size:1.2rem;font-weight:900;margin-bottom:4px}
+.prof-email{font-size:.78rem;color:var(--t3);margin-bottom:16px}
+.inf-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.inf-r{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
+.inf-k{font-size:.72rem;color:var(--t3)}
+.inf-v{font-weight:700;font-size:.88rem}
+.enr-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:22px;box-shadow:var(--shadow-card)}
+.enr-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:.15s}
+.enr-item:hover{border-color:rgba(34,176,120,.3)}
+.enr-ttl{font-weight:700;font-size:.9rem}
+.enr-sub{font-size:.74rem;color:var(--t3);margin-top:2px}
 
-/* ══ BUTTONS ══ */
-.btn { border:none; border-radius:var(--r-sm); padding:10px 18px; font-weight:700; cursor:pointer; font-size:.88rem; transition:.18s; display:inline-flex; align-items:center; gap:6px; }
-.btn-p { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 14px var(--glow); }
-.btn-p:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 6px 20px var(--glow); }
-.btn-p:disabled { opacity:.45; cursor:not-allowed; transform:none; }
-.btn-gl { background:var(--surface); color:var(--t2); border:1px solid var(--border); backdrop-filter:blur(10px); }
-.btn-gl:hover { color:var(--text); border-color:var(--border-h); }
-.btn-danger { background:rgba(255,107,107,.1); color:var(--danger); border:1px solid rgba(255,107,107,.2); }
-.btn-sm { padding:6px 12px; font-size:.8rem; }
+/* ════ BUTTONS ════ */
+.btn{border:none;border-radius:var(--r);padding:10px 18px;font-weight:700;cursor:pointer;font-size:.88rem;transition:.18s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 4px 12px var(--glow)}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-ghost{background:var(--bg2);color:var(--t2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border-h)}
+.btn-danger{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.2)}
+.btn-sm{padding:6px 12px;font-size:.8rem;border-radius:8px}
 
-/* ══ TOAST ══ */
-#toasts { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none; }
-.toast { display:flex; gap:10px; align-items:center; background:var(--card-bg); backdrop-filter:blur(24px); border:1px solid var(--border); border-radius:14px; padding:12px 18px; box-shadow:var(--shadow-lg); animation:tin .22s ease; pointer-events:all; white-space:nowrap; }
-.ts{border-color:rgba(0,200,150,.35)}.te{border-color:rgba(255,107,107,.35)}.tw{border-color:rgba(245,199,110,.35)}.ti{border-color:rgba(0,153,255,.35)}
+/* ════ TOAST ════ */
+#toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 18px;box-shadow:var(--shadow-lg);animation:tin .22s ease;pointer-events:all;white-space:nowrap;font-weight:700;font-size:.87rem}
+.ts{border-color:rgba(34,176,120,.35)}.te{border-color:rgba(239,68,68,.35)}.tw{border-color:rgba(245,158,10,.35)}.ti{border-color:rgba(59,130,246,.35)}
 @keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes tout{to{opacity:0;transform:translateY(8px)}}
 .tx{animation:tout .2s ease forwards}
 
-/* ══ MODAL ══ */
-.mo{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.22s}
+/* ════ MODAL ════ */
+.mo{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.22s}
 .mo.show{opacity:1;pointer-events:all}
-.mc{border-radius:var(--r-xl);padding:28px;width:100%;max-width:400px;background:var(--card-bg);border:1px solid var(--border);box-shadow:var(--shadow-lg);transform:translateY(10px) scale(.97);transition:.24s}
+.mc{border-radius:var(--r-xl);padding:28px;width:100%;max-width:400px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow-lg);transform:translateY(10px) scale(.97);transition:.24s}
 .mo.show .mc{transform:none}
 .mc-ttl{font-weight:900;font-size:1.05rem;margin-bottom:18px}
 .fw{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
 .fl{font-size:.68rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
-.inp{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:var(--r-sm);outline:none;transition:.18s;width:100%}
-.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.inp{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:var(--r);outline:none;transition:.18s;width:100%}
+.inp:focus{border-color:var(--green2);box-shadow:0 0 0 3px var(--glow)}
 .inp::placeholder{color:var(--t3)}
 select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
 .ma{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 
 /* Loader */
-.ld{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
-[data-theme="light"] .ld{border:2px solid rgba(0,0,0,.1);border-top-color:var(--accent)}
+.ld{display:inline-block;width:15px;height:15px;border:2px solid rgba(0,0,0,.1);border-top-color:var(--green2);border-radius:50%;animation:spin .6s linear infinite}
+[data-theme="dark"] .ld{border:2px solid rgba(255,255,255,.1);border-top-color:var(--green2)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading{display:flex;align-items:center;justify-content:center;padding:60px;gap:12px;color:var(--t3)}
-.empty{display:flex;flex-direction:column;align-items:center;padding:60px;gap:12px;color:var(--t3);text-align:center}
+.empty-state{display:flex;flex-direction:column;align-items:center;padding:60px;gap:12px;color:var(--t3);text-align:center}
 .empty-ico{font-size:3rem}
 
-/* ── LOGIN GATE ── */
-#lg{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
-#lg::before{content:'';position:absolute;inset:0;background:var(--bg);transition:background .4s}
-.lgw{width:100%;max-width:400px;position:relative;z-index:1}
-.lg-logo{text-align:center;margin-bottom:28px}
-.lg-mark{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:900;font-size:1.2rem;color:#fff;margin:0 auto 12px;box-shadow:0 10px 28px var(--glow)}
-.lg-nm{font-size:1.6rem;font-weight:900;letter-spacing:-.04em}
-.lg-nm em{font-style:normal;color:var(--gold)}
-.lg-sub{font-size:.82rem;color:var(--t3);margin-top:4px}
-.lg-card{border-radius:var(--r-xl);padding:28px;background:var(--card-bg);border:1px solid var(--border);box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
-.lg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--accent),var(--accent2))}
-.lg-tabs{display:flex;gap:3px;background:var(--bg2);padding:3px;border-radius:12px;margin-bottom:18px;border:1px solid var(--border)}
-.lg-tab{flex:1;padding:9px;border:none;border-radius:10px;font-weight:700;font-size:.86rem;cursor:pointer;transition:.18s;background:transparent;color:var(--t3)}
-.lg-tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 3px 12px var(--glow)}
+/* ════ LOGIN GATE ════ */
+#loginGate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.lg-wrap{width:100%;max-width:400px}
+.lg-logo-area{text-align:center;margin-bottom:28px}
+.lg-mark{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,var(--green),var(--green2));display:grid;place-items:center;font-weight:900;font-size:1.2rem;color:#fff;margin:0 auto 12px;box-shadow:0 8px 24px var(--glow)}
+.lg-name{font-size:1.6rem;font-weight:900;letter-spacing:-.04em}
+.lg-name em{font-style:normal;color:var(--gold)}
+.lg-sub{font-size:.82rem;color:var(--t3);margin-top:3px}
+.lg-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.lg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green),var(--green2))}
+.lg-tabs{display:flex;gap:3px;background:var(--bg2);border:1px solid var(--border);padding:3px;border-radius:12px;margin-bottom:18px}
+.lg-tab{flex:1;padding:9px;border:none;border-radius:10px;font-weight:700;font-size:.86rem;cursor:pointer;transition:.2s;background:transparent;color:var(--t3)}
+.lg-tab.on{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 3px 10px var(--glow)}
+.lg-ctrls{position:absolute;top:16px;right:16px;display:flex;gap:8px;z-index:2}
+[data-lang="en"] .lg-ctrls{right:auto;left:16px}
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .h-sts{display:none}
-  .cart-layout{grid-template-columns:1fr}
-  .prof-wrap{grid-template-columns:1fr}
-  .checkout-card{position:static}
-  .subjects-grid,.chapters-grid{grid-template-columns:repeat(2,1fr)}
-  .teachers-grid{grid-template-columns:repeat(2,1fr)}
-  .pg{padding:20px 16px 50px}
+/* Bottom tabs (mobile) */
+.bottom-tabs{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--nav-bg);border-top:1px solid var(--nav-border);padding:6px 0;justify-content:space-around}
+.btab{flex:1;border:none;background:none;font-size:1.2rem;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3);transition:.15s}
+.btab.on{color:var(--green2)}
+.btab span{font-size:.6rem;font-weight:700}
+
+/* ════ RESPONSIVE ════ */
+@media(max-width:1024px){.grid-4{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:860px){
+  .cart-layout,.prof-wrap{grid-template-columns:1fr}
+  .co-card{position:static}
+  .pg{padding:0 16px 100px}
   .nav{padding:0 16px}
+  .nav-bc{display:none}
+  .bottom-tabs{display:flex}
+  .h-stats{display:none}
 }
-@media(max-width:520px){
-  .subjects-grid,.chapters-grid,.teachers-grid{grid-template-columns:1fr 1fr}
-  .my-grid{grid-template-columns:1fr 1fr}
+@media(max-width:620px){
+  .grid-4,.grid-3,.my-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:400px){
+  .grid-4,.grid-3,.my-grid{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-canvas" aria-hidden="true">
-  <div class="orb o1"></div><div class="orb o2"></div>
-</div>
 <div id="toasts"></div>
 
 <!-- Edit Modal -->
 <div class="mo" id="editMo">
   <div class="mc">
-    <div class="mc-ttl" id="ed-ttl">تعديل البيانات</div>
-    <div class="fw"><span class="fl" id="ed-fl-nm">الاسم</span><input class="inp" id="ed-nm"></div>
-    <div class="fw"><span class="fl" id="ed-fl-ph">الموبايل</span><input class="inp" id="ed-ph" dir="ltr" placeholder="01xxxxxxxxx"></div>
+    <div class="mc-ttl" data-ar="تعديل البيانات" data-en="Edit Profile">تعديل البيانات</div>
+    <div class="fw"><span class="fl" data-ar="الاسم" data-en="Name">الاسم</span><input class="inp" id="ed-nm"></div>
+    <div class="fw"><span class="fl" data-ar="الموبايل" data-en="Phone">الموبايل</span><input class="inp" id="ed-ph" dir="ltr"></div>
     <div class="ma">
-      <button class="btn btn-gl" onclick="closeMo('editMo')" id="ed-cancel">إلغاء</button>
-      <button class="btn btn-p" id="ed-sv" onclick="saveProfile()">حفظ</button>
+      <button class="btn btn-ghost" onclick="closeMo('editMo')" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+      <button class="btn btn-primary" id="ed-sv" onclick="saveProfile()" data-ar="حفظ" data-en="Save">حفظ</button>
     </div>
   </div>
 </div>
 
-<!-- Login Gate -->
-<div id="lg">
-  <div class="bg-canvas" aria-hidden="true" style="position:absolute">
-    <div class="orb o1"></div><div class="orb o2"></div>
-  </div>
-  <div style="position:absolute;top:18px;right:18px;display:flex;gap:10px;z-index:2" id="lg-ctrls">
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-      <div class="track"><span class="ico ico-moon">🌙</span><span class="ico ico-sun">☀️</span></div>
+<!-- LOGIN -->
+<div id="loginGate">
+  <div class="lg-ctrls">
+    <button class="theme-btn" onclick="toggleTheme()">
+      <span class="ico ico-m">🌙</span><span class="ico ico-s">☀️</span>
       <div class="thumb"></div>
     </button>
-    <div class="lang-pill">
-      <button class="lang-opt on" id="lg-ar" onclick="setLang('ar')">ع</button>
-      <button class="lang-opt" id="lg-en" onclick="setLang('en')">EN</button>
+    <div class="lang-sw">
+      <button class="lopt on" id="lg-ar" onclick="setLang('ar')">ع</button>
+      <button class="lopt" id="lg-en" onclick="setLang('en')">EN</button>
     </div>
   </div>
-  <div class="lgw">
-    <div class="lg-logo">
+  <div class="lg-wrap">
+    <div class="lg-logo-area">
       <div class="lg-mark">KW</div>
-      <div class="lg-nm">kala<em>wy</em></div>
+      <div class="lg-name">kala<em>wy</em></div>
       <div class="lg-sub" data-ar="منصة التعليم الإلكتروني" data-en="Online Learning Platform">منصة التعليم الإلكتروني</div>
     </div>
     <div class="lg-card">
@@ -512,19 +396,17 @@ select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
         <button class="lg-tab on" id="lt-in" onclick="swTab('in')" data-ar="تسجيل الدخول" data-en="Sign In">تسجيل الدخول</button>
         <button class="lg-tab" id="lt-up" onclick="swTab('up')" data-ar="حساب جديد" data-en="Register">حساب جديد</button>
       </div>
-      <!-- Login -->
       <div id="f-in">
-        <div class="fw"><span class="fl" data-ar="البريد" data-en="Email">البريد</span><input class="inp" id="li-em" type="email" placeholder="example@email.com" dir="ltr"></div>
-        <div class="fw" style="margin-bottom:14px"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="li-pw" type="password" placeholder="••••••••" dir="ltr"></div>
-        <button class="btn btn-p" style="width:100%;justify-content:center" id="li-btn" onclick="doLogin()" data-ar="دخول" data-en="Sign In">دخول</button>
+        <div class="fw"><span class="fl" data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span><input class="inp" id="li-em" type="email" placeholder="example@email.com" dir="ltr"></div>
+        <div class="fw" style="margin-bottom:16px"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="li-pw" type="password" placeholder="••••••••" dir="ltr"></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" id="li-btn" onclick="doLogin()" data-ar="دخول" data-en="Sign In">دخول</button>
       </div>
-      <!-- Register -->
       <div id="f-up" class="hidden">
-        <div class="fw"><span class="fl" data-ar="الاسم كامل" data-en="Full Name">الاسم كامل</span><input class="inp" id="rg-nm"></div>
-        <div class="fw"><span class="fl" data-ar="البريد" data-en="Email">البريد</span><input class="inp" id="rg-em" type="email" placeholder="example@email.com" dir="ltr"></div>
-        <div class="fw"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="rg-pw" type="password" placeholder="••••••••" dir="ltr"></div>
-        <div class="fw"><span class="fl" data-ar="الموبايل" data-en="Phone">الموبايل</span><input class="inp" id="rg-ph" placeholder="01xxxxxxxxx" dir="ltr"></div>
-        <div class="fw" style="margin-bottom:14px"><span class="fl" data-ar="الصف الدراسي" data-en="Grade">الصف الدراسي</span>
+        <div class="fw"><span class="fl" data-ar="الاسم كامل" data-en="Full Name">الاسم كامل</span><input class="inp" id="rg-nm" placeholder=""></div>
+        <div class="fw"><span class="fl" data-ar="البريد" data-en="Email">البريد</span><input class="inp" id="rg-em" type="email" dir="ltr" placeholder="example@email.com"></div>
+        <div class="fw"><span class="fl" data-ar="كلمة السر" data-en="Password">كلمة السر</span><input class="inp" id="rg-pw" type="password" dir="ltr" placeholder="••••••••"></div>
+        <div class="fw"><span class="fl" data-ar="الموبايل" data-en="Phone">الموبايل</span><input class="inp" id="rg-ph" dir="ltr" placeholder="01xxxxxxxxx"></div>
+        <div class="fw" style="margin-bottom:16px"><span class="fl" data-ar="الصف" data-en="Grade">الصف</span>
           <select class="inp" id="rg-gr" onchange="this.classList.add('hv')">
             <option value="" disabled selected data-ar="اختار" data-en="Select">اختار</option>
             <option value="1" data-ar="أولى ثانوي" data-en="Grade 10">أولى ثانوي</option>
@@ -532,7 +414,7 @@ select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
             <option value="3" data-ar="تالتة ثانوي" data-en="Grade 12">تالتة ثانوي</option>
           </select>
         </div>
-        <button class="btn btn-p" style="width:100%;justify-content:center" id="rg-btn" onclick="doRegister()" data-ar="إنشاء حساب" data-en="Create Account">إنشاء حساب</button>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" id="rg-btn" onclick="doRegister()" data-ar="إنشاء حساب" data-en="Create Account">إنشاء حساب</button>
       </div>
       <div id="auth-err" style="font-size:.8rem;color:var(--danger);margin-top:10px;text-align:center"></div>
     </div>
@@ -542,40 +424,33 @@ select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
 <!-- NAV -->
 <nav class="nav" id="mainNav" style="display:none">
   <div class="nav-logo" onclick="resetAll()">
-    <div class="nav-mark">KW</div>
-    <div class="nav-wm">kala<em>wy</em></div>
+    <div class="logo-box">KW</div>
+    <div class="logo-text">kala<em>wy</em></div>
   </div>
-
-  <!-- BREADCRUMB -->
-  <div class="breadcrumb" id="breadcrumb" style="margin-right:16px;margin-left:16px"></div>
-
-  <div class="nav-sp"></div>
-  <div class="nav-right">
-    <!-- theme toggle -->
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-      <div class="track"><span class="ico ico-moon">🌙</span><span class="ico ico-sun">☀️</span></div>
+  <div class="nav-bc" id="navBc"></div>
+  <div class="nav-end">
+    <button class="theme-btn" onclick="toggleTheme()">
+      <span class="ico ico-m">🌙</span><span class="ico ico-s">☀️</span>
       <div class="thumb"></div>
     </button>
-    <!-- lang -->
-    <div class="lang-pill">
-      <button class="lang-opt on" id="n-ar" onclick="setLang('ar')">ع</button>
-      <button class="lang-opt" id="n-en" onclick="setLang('en')">EN</button>
+    <div class="lang-sw">
+      <button class="lopt on" id="n-ar" onclick="setLang('ar')">ع</button>
+      <button class="lopt" id="n-en" onclick="setLang('en')">EN</button>
     </div>
-    <!-- cart -->
-    <div class="cart-wrap" onclick="goPage('cart')" title="Cart">
-      <div class="cart-ico">🛒</div>
-      <div class="cart-badge hidden" id="cart-badge">0</div>
+    <div style="position:relative" onclick="goPage('cart')" title="">
+      <button class="cart-btn">🛒</button>
+      <div class="cart-ct hidden" id="cart-badge">0</div>
     </div>
     <div class="nav-av" id="navAv" onclick="goPage('profile')">؟</div>
   </div>
 </nav>
 
-<!-- NAV TABS (mobile-friendly) -->
-<div id="nav-tabs-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--nav-bg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:none;justify-content:space-around;padding:8px 0">
-  <button onclick="goPage('browse')" style="flex:1;border:none;background:none;font-size:1.3rem;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3)" data-ptab="browse">🔍<span style="font-size:.6rem" data-ar="تصفح" data-en="Browse">تصفح</span></button>
-  <button onclick="goPage('mylessons')" style="flex:1;border:none;background:none;font-size:1.3rem;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3)" data-ptab="mylessons">📚<span style="font-size:.6rem" data-ar="حصصي" data-en="Lessons">حصصي</span></button>
-  <button onclick="goPage('cart')" style="flex:1;border:none;background:none;font-size:1.3rem;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3)" data-ptab="cart">🛒<span style="font-size:.6rem" data-ar="سلة" data-en="Cart">سلة</span></button>
-  <button onclick="goPage('profile')" style="flex:1;border:none;background:none;font-size:1.3rem;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3)" data-ptab="profile">👤<span style="font-size:.6rem" data-ar="بروفايل" data-en="Profile">بروفايل</span></button>
+<!-- BOTTOM TABS -->
+<div class="bottom-tabs" id="bottomTabs">
+  <button class="btab on" onclick="goPage('browse')" data-pt="browse">🔍<span data-ar="تصفح" data-en="Browse">تصفح</span></button>
+  <button class="btab" onclick="goPage('mylessons')" data-pt="mylessons">📚<span data-ar="حصصي" data-en="My Lessons">حصصي</span></button>
+  <button class="btab" onclick="goPage('cart')" data-pt="cart">🛒<span data-ar="سلة" data-en="Cart">سلة</span></button>
+  <button class="btab" onclick="goPage('profile')" data-pt="profile">👤<span data-ar="بروفايل" data-en="Profile">بروفايل</span></button>
 </div>
 
 <!-- PAGES -->
@@ -583,97 +458,95 @@ select.inp.hv{color:var(--text)}select.inp:not(.hv){color:var(--t3)}
 
   <!-- BROWSE -->
   <div class="pg on" id="pg-browse">
-    <div class="hero">
+    <!-- hero bar -->
+    <div class="hero-bar">
       <div class="h-av" id="hAv">؟</div>
-      <div class="h-txt">
-        <div class="h-gr" data-ar="أهلاً بيك،" data-en="Welcome,">أهلاً بيك،</div>
-        <div class="h-nm" id="hNm">...</div>
-        <div class="h-gd" id="hGd">...</div>
+      <div>
+        <div class="h-name" id="hNm">...</div>
+        <div class="h-grade" id="hGd">...</div>
       </div>
-      <div class="h-sts">
+      <div class="h-stats">
         <div class="hst"><div class="n" id="st-ch">0</div><div class="l" data-ar="شابتراتي" data-en="Chapters">شابتراتي</div></div>
         <div class="hst"><div class="n" id="st-ls">0</div><div class="l" data-ar="حصص" data-en="Lessons">حصص</div></div>
       </div>
     </div>
 
-    <!-- browse steps -->
-    <div id="browse-area">
-
-      <!-- S1: Subjects -->
-      <div id="s-sub">
-        <div class="page-hero">
-          <div class="page-hero-title" data-ar="📚 اختار المادة" data-en="📚 Choose a Subject">📚 اختار المادة</div>
-          <div class="page-hero-sub" data-ar="اختار المادة اللي عايز تذاكرها" data-en="Select the subject you want to study">اختار المادة اللي عايز تذاكرها</div>
-        </div>
-        <div class="subjects-grid" id="sub-grid"><div class="loading"><div class="ld"></div></div></div>
+    <!-- S1: Subjects -->
+    <div id="s-sub">
+      <div class="pg-hero">
+        <div class="pg-hero-title" data-ar="📚 اختار المادة" data-en="📚 Choose a Subject">📚 اختار المادة</div>
+        <div class="pg-hero-sub" data-ar="اختار المادة اللي عايز تذاكرها" data-en="Select the subject you want to study">اختار المادة اللي عايز تذاكرها</div>
       </div>
+      <div class="grid-3" id="sub-grid"><div class="loading"><div class="ld"></div></div></div>
+    </div>
 
-      <!-- S2: Teachers -->
-      <div id="s-tch" class="hidden">
-        <div class="page-hero">
-          <div class="page-hero-title" id="ttl-tch">👨‍🏫</div>
-          <div class="page-hero-sub" data-ar="اختار المدرس اللي عايز تذاكر معاه" data-en="Choose your teacher">اختار المدرس اللي عايز تذاكر معاه</div>
-        </div>
-        <div class="teachers-grid" id="tch-grid"></div>
+    <!-- S2: Teachers -->
+    <div id="s-tch" class="hidden">
+      <div class="pg-hero">
+        <div class="pg-hero-title" id="ttl-tch">👨‍🏫</div>
+        <div class="pg-hero-sub" data-ar="اختار المدرس اللي عايز تذاكر معاه" data-en="Choose your teacher">اختار المدرس اللي عايز تذاكر معاه</div>
       </div>
+      <div class="grid-3" id="tch-grid"></div>
+    </div>
 
-      <!-- S3: Chapters — Ednova style -->
-      <div id="s-ch" class="hidden">
-        <div class="page-hero">
-          <div class="page-hero-title" id="ttl-ch">📖</div>
-          <div class="page-hero-sub" data-ar="معلش اخرناك، بس دي اخر خطوة" data-en="Almost there! Choose your chapter">معلش اخرناك، بس دي اخر خطوة</div>
-        </div>
-        <div class="chapters-grid" id="ch-grid"></div>
+    <!-- S3: Chapters — Ednova exact -->
+    <div id="s-ch" class="hidden">
+      <div class="pg-hero">
+        <div class="pg-hero-title" data-ar="اختار الفصل/الشابتر اللي عايز تذاكره" data-en="Choose the chapter you want to study">اختار الفصل/الشابتر اللي عايز تذاكره</div>
+        <div class="pg-hero-sub" data-ar="معلش اخرناك، بس دي اخر خطوة" data-en="Almost there, this is the last step">معلش اخرناك، بس دي اخر خطوة</div>
       </div>
+      <div class="grid-4" id="ch-grid"></div>
+    </div>
 
-      <!-- S4: Lessons -->
-      <div id="s-ls" class="hidden">
-        <div class="page-hero">
-          <div class="page-hero-title" id="ttl-ls">🎬</div>
-          <div class="page-hero-sub" id="ttl-ls-sub"></div>
-        </div>
-        <div class="lessons-list" id="ls-list"></div>
+    <!-- S4: Lessons -->
+    <div id="s-ls" class="hidden">
+      <div class="pg-hero">
+        <div class="pg-hero-title" id="ttl-ls">🎬</div>
+        <div class="pg-hero-sub" id="ttl-ls-sub"></div>
       </div>
-
+      <div class="ls-list" id="ls-list"></div>
     </div>
   </div>
 
   <!-- MY LESSONS -->
   <div class="pg" id="pg-mylessons">
-    <div class="page-hero">
-      <div class="page-hero-title" data-ar="📚 شابتراتي" data-en="📚 My Chapters">📚 شابتراتي</div>
-      <div class="page-hero-sub" data-ar="الشابترات اللي اشتركت فيها" data-en="Your enrolled chapters">الشابترات اللي اشتركت فيها</div>
+    <div class="pg-hero">
+      <div class="pg-hero-title" data-ar="📚 شابتراتي" data-en="📚 My Chapters">📚 شابتراتي</div>
+      <div class="pg-hero-sub" data-ar="الشابترات اللي اشتركت فيها" data-en="Chapters you're enrolled in">الشابترات اللي اشتركت فيها</div>
     </div>
     <div class="my-grid" id="my-list"><div class="loading" style="grid-column:1/-1"><div class="ld"></div></div></div>
   </div>
 
   <!-- CART -->
   <div class="pg" id="pg-cart">
-    <div class="page-hero">
-      <div class="page-hero-title" data-ar="🛒 سلة الشراء" data-en="🛒 Cart">🛒 سلة الشراء</div>
-      <div class="page-hero-sub" data-ar="راجع طلبك وادفع بكود" data-en="Review your order and pay with a code">راجع طلبك وادفع بكود</div>
+    <div class="pg-hero">
+      <div class="pg-hero-title" data-ar="🛒 سلة الشراء" data-en="🛒 Cart">🛒 سلة الشراء</div>
+      <div class="pg-hero-sub" data-ar="راجع طلبك وادفع بكود" data-en="Review your order and pay with a code">راجع طلبك وادفع بكود</div>
     </div>
     <div id="cart-content"></div>
   </div>
 
   <!-- PROFILE -->
   <div class="pg" id="pg-profile">
+    <div class="pg-hero">
+      <div class="pg-hero-title" data-ar="👤 حسابي" data-en="👤 My Account">👤 حسابي</div>
+    </div>
     <div class="prof-wrap">
       <div class="prof-card">
         <div class="prof-av" id="pr-av">؟</div>
-        <div class="prof-nm" id="pr-nm">...</div>
-        <div class="prof-em" id="pr-em">...</div>
+        <div class="prof-name" id="pr-nm">...</div>
+        <div class="prof-email" id="pr-em">...</div>
         <div class="inf-list">
           <div class="inf-r"><span class="inf-k" data-ar="الصف" data-en="Grade">الصف</span><span class="inf-v" id="pr-gd">—</span></div>
           <div class="inf-r"><span class="inf-k" data-ar="الموبايل" data-en="Phone">الموبايل</span><span class="inf-v" id="pr-ph" dir="ltr">—</span></div>
           <div class="inf-r"><span class="inf-k" data-ar="شابتراتي" data-en="Chapters">شابتراتي</span><span class="inf-v" id="pr-ch">—</span></div>
         </div>
-        <button class="btn btn-gl" style="width:100%;justify-content:center;margin-top:14px" onclick="openEdit()">✏️ <span data-ar="تعديل" data-en="Edit">تعديل</span></button>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:14px" onclick="openEdit()">✏️ <span data-ar="تعديل" data-en="Edit">تعديل</span></button>
         <button class="btn btn-danger" style="width:100%;justify-content:center;margin-top:8px" onclick="doLogout()" data-ar="تسجيل الخروج" data-en="Sign Out">تسجيل الخروج</button>
       </div>
       <div class="enr-card">
-        <div class="page-hero-title" style="font-size:1.1rem;margin-bottom:16px" data-ar="الشابترات المشتركة" data-en="Enrolled Chapters">الشابترات المشتركة</div>
-        <div id="pr-enrolled"></div>
+        <div style="font-weight:900;font-size:1rem;margin-bottom:16px" data-ar="الشابترات المشتركة" data-en="Enrolled Chapters">الشابترات المشتركة</div>
+        <div id="pr-enrolled"><div class="loading"><div class="ld"></div></div></div>
       </div>
     </div>
   </div>
@@ -684,100 +557,59 @@ const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
-const GRADES_AR = {1:'أولى ثانوي',2:'تانية ثانوي',3:'تالتة ثانوي'};
-const GRADES_EN = {1:'Grade 10',2:'Grade 11',3:'Grade 12'};
-const EMOJIS    = {'الرياضيات':'📐','الفيزياء':'🔭','الكيمياء':'🧪','الأحياء':'🔬','اللغة العربية':'📖','اللغة الإنجليزية':'🌍'};
-const GRD_DARK  = ['linear-gradient(135deg,#1a4a35,#0d2820)','linear-gradient(135deg,#1a2f5a,#0d1a35)','linear-gradient(135deg,#4a2a1a,#2a1508)','linear-gradient(135deg,#2a1a4a,#180d2a)','linear-gradient(135deg,#4a1a2a,#280d16)','linear-gradient(135deg,#1a3a4a,#0d2230)'];
-const GRD_LIGHT = ['linear-gradient(135deg,#d4f5e9,#a8ebd2)','linear-gradient(135deg,#d4e8f5,#a8d4f0)','linear-gradient(135deg,#f5e8d4,#f0d4a8)','linear-gradient(135deg,#e8d4f5,#d4a8f0)','linear-gradient(135deg,#f5d4e8,#f0a8d4)','linear-gradient(135deg,#d4f0f5,#a8e4f0)'];
+// ── consts ────────────────────────────────────────────────────────────────────
+const GR_AR={1:'أولى ثانوي',2:'تانية ثانوي',3:'تالتة ثانوي'};
+const GR_EN={1:'Grade 10',2:'Grade 11',3:'Grade 12'};
+const EMOJIS={'الرياضيات':'📐','الفيزياء':'🔭','الكيمياء':'🧪','الأحياء':'🔬','اللغة العربية':'📖','اللغة الإنجليزية':'🌍'};
+const BG_DARK=['linear-gradient(135deg,#1a4a35,#0d2820)','linear-gradient(135deg,#1a2f5a,#0d1a35)','linear-gradient(135deg,#4a2a1a,#2a1508)','linear-gradient(135deg,#2a1a4a,#180d2a)','linear-gradient(135deg,#4a1a2a,#280d16)','linear-gradient(135deg,#1a3a4a,#0d2230)'];
+const BG_LIGHT=['linear-gradient(135deg,#d4f5e9,#a8ebd2)','linear-gradient(135deg,#d4e8f5,#a8d4f0)','linear-gradient(135deg,#f5e8d4,#f0d4a8)','linear-gradient(135deg,#e8d4f5,#d4a8f0)','linear-gradient(135deg,#f5d4e8,#f0a8d4)','linear-gradient(135deg,#d4f0f5,#a8e4f0)'];
 
-let ME = null, _lang = 'ar', _theme = 'dark';
-let _enrolled = new Set(); // chapter_ids
-let _cart = [];
-let _sel = {sub:null, tch:null, ch:null};
+let ME=null, _lang='ar', _theme='light';
+let _enrolled=new Set(), _cart=[];
+let _sel={sub:null,tch:null,ch:null};
 
-// ── i18n ──────────────────────────────────────────────────────────────────────
-function gr(id) { return (_lang==='ar'?GRADES_AR:GRADES_EN)[id]||id; }
-const T = {
-  ar: {
-    'Browse':'تصفح','My Lessons':'حصصي','Cart':'سلة','Profile':'بروفايل',
-    'Subjects':'المواد','Teachers':'المدرسين','Chapters':'الشابترات','Lessons':'الحصص',
-    'Enrolled':'مشترك','Free':'مجاني','Add to Cart':'أضف للسلة','In Cart':'في السلة ×',
-    'Enter':'ادخل','Not available':'غير متاح','Opens at':'يفتح في',
-    'Lesson':'الحصة','of':'من','Edit Profile':'تعديل البيانات','Sign Out':'تسجيل الخروج',
-    'Save':'حفظ','Cancel':'إلغاء','Full Name':'الاسم كامل','Phone':'الموبايل',
-    'Grade':'الصف','Chapters Enrolled':'شابتراتي',
-    'checkout-note':'ادفع خارج وجيب الكود من المسؤول',
-    'Pay Code':'كود الدفع','Confirm':'تأكيد',
-    'No chapters enrolled':'لم تشترك في أي شابتر بعد',
-    'Certified Teacher':'مدرس معتمد',
-    'lectures':'محاضرات','lecture':'محاضرة',
-  },
-  en: {
-    'Browse':'Browse','My Lessons':'My Lessons','Cart':'Cart','Profile':'Profile',
-    'Subjects':'Subjects','Teachers':'Teachers','Chapters':'Chapters','Lessons':'Lessons',
-    'Enrolled':'Enrolled','Free':'Free','Add to Cart':'Add to Cart','In Cart':'In Cart ×',
-    'Enter':'Enter','Not available':'Not available','Opens at':'Opens at',
-    'Lesson':'Lesson','of':'of','Edit Profile':'Edit Profile','Sign Out':'Sign Out',
-    'Save':'Save','Cancel':'Cancel','Full Name':'Full Name','Phone':'Phone',
-    'Grade':'Grade','Chapters Enrolled':'My Chapters',
-    'checkout-note':'Pay outside and get the code from admin',
-    'Pay Code':'Payment Code','Confirm':'Confirm',
-    'No chapters enrolled':'No chapters enrolled yet',
-    'Certified Teacher':'Certified Teacher',
-    'lectures':'lectures','lecture':'lecture',
-  }
-};
-function t(key) { return (T[_lang]||T.ar)[key]||key; }
-
-// ── Theme ─────────────────────────────────────────────────────────────────────
-function setTheme(th) {
-  _theme = th;
-  document.documentElement.setAttribute('data-theme', th);
-  localStorage.setItem('kw-theme', th);
+// ── theme & lang ──────────────────────────────────────────────────────────────
+function setTheme(th){
+  _theme=th;
+  document.documentElement.setAttribute('data-theme',th);
+  localStorage.setItem('kw-theme',th);
 }
-function toggleTheme() { setTheme(_theme==='dark'?'light':'dark'); }
+function toggleTheme(){setTheme(_theme==='dark'?'light':'dark');}
+function gr(id){return(_lang==='ar'?GR_AR:GR_EN)[id]||id;}
 
-// ── Lang ──────────────────────────────────────────────────────────────────────
-function setLang(lg) {
-  _lang = lg;
-  document.documentElement.setAttribute('data-lang', lg);
-  document.documentElement.setAttribute('dir', lg==='ar'?'rtl':'ltr');
-  localStorage.setItem('kw-lang', lg);
-  // update toggles
+function setLang(lg){
+  _lang=lg;
+  document.documentElement.setAttribute('data-lang',lg);
+  document.documentElement.setAttribute('dir',lg==='ar'?'rtl':'ltr');
+  localStorage.setItem('kw-lang',lg);
   ['n-ar','n-en','lg-ar','lg-en'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',el.id.endsWith(lg));});
-  // update data-ar/en elements
   document.querySelectorAll('[data-ar]').forEach(el=>{
-    const val=lg==='en'?el.dataset.en:el.dataset.ar;
-    if(val!==undefined){
-      if(el.tagName==='INPUT'||el.tagName==='SELECT')el.placeholder=val;
-      else el.textContent=val;
-    }
+    const v=lg==='en'?el.dataset.en:el.dataset.ar;
+    if(v!==undefined){if(el.tagName==='INPUT'||el.tagName==='SELECT')el.placeholder=v;else el.textContent=v;}
   });
-  document.querySelectorAll('option[data-ar]').forEach(opt=>{
-    opt.textContent=lg==='en'?opt.dataset.en:opt.dataset.ar;
-  });
+  document.querySelectorAll('option[data-ar]').forEach(o=>{o.textContent=lg==='en'?o.dataset.en:o.dataset.ar;});
   if(ME)updateUI();
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
+// ── toast ─────────────────────────────────────────────────────────────────────
 function toast(type,msg,dur=3500){
   const icons={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
   const c=document.getElementById('toasts');
   const el=document.createElement('div');
   el.className=`toast t${type}`;
-  el.innerHTML=`<span>${icons[type]}</span><span style="font-weight:700;font-size:.87rem">${msg}</span>`;
+  el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;
   c.appendChild(el);
   setTimeout(()=>{el.classList.add('tx');setTimeout(()=>el.remove(),220);},dur);
 }
 function openMo(id){document.getElementById(id).classList.add('show');}
 function closeMo(id){document.getElementById(id).classList.remove('show');}
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
-function swTab(tab){
-  document.getElementById('lt-in').classList.toggle('on',tab==='in');
-  document.getElementById('lt-up').classList.toggle('on',tab==='up');
-  document.getElementById('f-in').classList.toggle('hidden',tab!=='in');
-  document.getElementById('f-up').classList.toggle('hidden',tab!=='up');
+// ── auth ──────────────────────────────────────────────────────────────────────
+function swTab(t){
+  document.getElementById('lt-in').classList.toggle('on',t==='in');
+  document.getElementById('lt-up').classList.toggle('on',t==='up');
+  document.getElementById('f-in').classList.toggle('hidden',t!=='in');
+  document.getElementById('f-up').classList.toggle('hidden',t!=='up');
   document.getElementById('auth-err').textContent='';
 }
 async function doLogin(){
@@ -789,7 +621,7 @@ async function doLogin(){
   if(!em||!pw)return err.textContent=_lang==='ar'?'ادخل البريد وكلمة السر':'Enter email and password';
   btn.innerHTML='<span class="ld"></span>';btn.disabled=true;
   const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
-  if(error){err.textContent=_lang==='ar'?'بيانات غلط':'Wrong credentials';btn.textContent=t('Enrolled');btn.textContent=_lang==='ar'?'دخول':'Sign In';btn.disabled=false;return;}
+  if(error){err.textContent=_lang==='ar'?'بيانات غلط':'Wrong credentials';btn.textContent=_lang==='ar'?'دخول':'Sign In';btn.disabled=false;return;}
   const{data:p}=await sb.from('profiles').select('role').eq('id',data.user.id).single();
   if(p?.role==='admin'||p?.role==='teacher'){await sb.auth.signOut();err.textContent=_lang==='ar'?'هذا مش حساب طالب':'Not a student account';btn.textContent=_lang==='ar'?'دخول':'Sign In';btn.disabled=false;return;}
   await init(data.user);
@@ -816,7 +648,7 @@ async function doRegister(){
 }
 async function doLogout(){await sb.auth.signOut();location.reload();}
 async function checkSession(){
-  const th=localStorage.getItem('kw-theme')||'dark'; setTheme(th);
+  const th=localStorage.getItem('kw-theme')||'light'; setTheme(th);
   const lg=localStorage.getItem('kw-lang')||'ar'; setLang(lg);
   const{data:{session}}=await sb.auth.getSession();
   if(!session)return;
@@ -831,123 +663,100 @@ async function init(user){
   ]);
   ME={id:user.id,email:user.email||p?.email||'',full_name:p?.full_name||'',phone:p?.phone||'',grade_id:st?.grade_id};
   try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
-  document.getElementById('lg').remove();
+  document.getElementById('loginGate').remove();
   document.getElementById('mainNav').style.display='flex';
-  document.getElementById('nav-tabs-bar').style.display='flex';
+  document.getElementById('bottomTabs').style.display='flex';
   updateUI();
   await loadEnrollments();
   loadSubjects();
 }
 
-function setEl(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function se(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 function updateUI(){
   const av=(ME.full_name||ME.email||'?')[0].toUpperCase();
   ['hAv','navAv','pr-av'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=av;});
-  setEl('hNm',ME.full_name||ME.email);
-  setEl('hGd',gr(ME.grade_id));
-  setEl('pr-nm',ME.full_name||'—');
-  setEl('pr-em',ME.email||'—');
-  setEl('pr-gd',gr(ME.grade_id));
-  setEl('pr-ph',ME.phone||'—');
-  setEl('pr-ch',_enrolled.size);
-  setEl('st-ch',_enrolled.size);
+  se('hNm',ME.full_name||ME.email);
+  se('hGd',gr(ME.grade_id));
+  se('pr-nm',ME.full_name||'—');
+  se('pr-em',ME.email||'—');
+  se('pr-gd',gr(ME.grade_id));
+  se('pr-ph',ME.phone||'—');
+  se('pr-ch',_enrolled.size);
+  se('st-ch',_enrolled.size);
   updateCartBadge();
 }
 function updateCartBadge(){
   const b=document.getElementById('cart-badge');
   if(!b)return;
-  if(_cart.length>0){b.textContent=_cart.length;b.classList.remove('hidden');}
+  if(_cart.length){b.textContent=_cart.length;b.classList.remove('hidden');}
   else b.classList.add('hidden');
 }
 function saveCart(){localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(_cart));}
 
-// ── Enrollments ───────────────────────────────────────────────────────────────
+// ── enrollments ───────────────────────────────────────────────────────────────
 async function loadEnrollments(){
   const{data}=await sb.from('chapter_enrollments').select('chapter_id').eq('student_id',ME.id);
   _enrolled=new Set((data||[]).map(e=>e.chapter_id));
-  setEl('st-ch',_enrolled.size);setEl('pr-ch',_enrolled.size);
-  // lesson count
+  se('st-ch',_enrolled.size);se('pr-ch',_enrolled.size);
   if(_enrolled.size){
     const{count}=await sb.from('lessons').select('id',{count:'exact',head:true}).in('chapter_id',[..._enrolled]).eq('is_active',true);
-    setEl('st-ls',count||0);
+    se('st-ls',count||0);
   }
 }
 
-// ── Pages ─────────────────────────────────────────────────────────────────────
+// ── pages ─────────────────────────────────────────────────────────────────────
 function goPage(page){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById(`pg-${page}`).classList.add('on');
-  document.querySelectorAll('[data-ptab]').forEach(b=>b.style.color=b.dataset.ptab===page?'var(--accent)':'var(--t3)');
+  document.querySelectorAll('.btab').forEach(b=>b.classList.toggle('on',b.dataset.pt===page));
   if(page==='mylessons')loadMyLessons();
   if(page==='cart')renderCart();
   if(page==='profile'){updateUI();loadProfileEnrolled();}
 }
-function show(id){document.getElementById(id)?.classList.remove('hidden');}
-function hide(id){document.getElementById(id)?.classList.add('hidden');}
 
-// ── BREADCRUMB ────────────────────────────────────────────────────────────────
-function updateBreadcrumb(){
-  const bc=document.getElementById('breadcrumb');
-  const parts=[];
-  parts.push(`<span class="bc" onclick="resetAll()">${_lang==='ar'?'الرئيسية':'Home'}</span>`);
-  if(_sel.sub){
-    parts.push(`<span class="bc-sep">›</span>`);
-    parts.push(`<span class="bc" onclick="resetTo('sub')">${_sel.sub.name}</span>`);
-  }
-  if(_sel.tch){
-    parts.push(`<span class="bc-sep">›</span>`);
-    parts.push(`<span class="bc" onclick="resetTo('tch')">${_sel.tch.name}</span>`);
-  }
-  if(_sel.ch){
-    parts.push(`<span class="bc-sep">›</span>`);
-    parts.push(`<span class="bc current">${_sel.ch.title}</span>`);
-  }
-  bc.innerHTML=parts.join('');
+// ── breadcrumb ────────────────────────────────────────────────────────────────
+function updateBc(){
+  const bc=document.getElementById('navBc');
+  if(!bc)return;
+  const home=_lang==='ar'?'الرئيسية':'Home';
+  let parts=`<span class="bc-item" onclick="resetAll()">${home}</span>`;
+  if(_sel.sub){parts+=`<span class="bc-sep">›</span><span class="bc-item" onclick="resetTo('sub')">${_sel.sub.name}</span>`;}
+  if(_sel.tch){parts+=`<span class="bc-sep">›</span><span class="bc-item" onclick="resetTo('tch')">${_sel.tch.name}</span>`;}
+  if(_sel.ch) {parts+=`<span class="bc-sep">›</span><span class="bc-item active">${_sel.ch.title}</span>`;}
+  bc.innerHTML=parts;
 }
 
-// ── Browse ────────────────────────────────────────────────────────────────────
-function showStep(step){
-  ['sub','tch','ch','ls'].forEach(s=>document.getElementById(`s-${s}`).classList.toggle('hidden',s!==step));
-  updateBreadcrumb();
-}
-function resetTo(step){
-  if(step==='sub'){_sel={sub:null,tch:null,ch:null};showStep('sub');}
-  else if(step==='tch'){_sel.tch=null;_sel.ch=null;showStep('tch');}
-  else if(step==='ch'){_sel.ch=null;showStep('ch');}
-}
+// ── browse ────────────────────────────────────────────────────────────────────
+function showStep(s){['sub','tch','ch','ls'].forEach(x=>document.getElementById(`s-${x}`).classList.toggle('hidden',x!==s));updateBc();}
+function resetTo(s){if(s==='sub'){_sel={sub:null,tch:null,ch:null};showStep('sub');}else if(s==='tch'){_sel.tch=null;_sel.ch=null;showStep('tch');}else if(s==='ch'){_sel.ch=null;showStep('ch');}}
 function resetAll(){_sel={sub:null,tch:null,ch:null};showStep('sub');goPage('browse');}
 
-// Subjects
+// subjects
 async function loadSubjects(){
   const g=document.getElementById('sub-grid');
   const{data}=await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
-  if(!data?.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico">📚</div><div>${_lang==='ar'?'لا توجد مواد':'No subjects yet'}</div></div>`;return;}
-  const isDark=_theme==='dark';
+  if(!data?.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">📚</div><div>لا توجد مواد بعد</div></div>';return;}
   g.innerHTML=data.map((s,i)=>{
-    const grad=isDark?GRD_DARK[i%GRD_DARK.length]:GRD_LIGHT[i%GRD_LIGHT.length];
+    const chip=s.grade_id===1?'bg-g':s.grade_id===2?'bg-b':'bg-y';
     const ico=EMOJIS[s.name_ar]||'📚';
-    const chip=s.grade_id===1?'cg':s.grade_id===2?'cb':'cy';
-    const thumb=s.image_url
-      ?`<img class="s-img" src="${s.image_url}" alt="">`
-      :`<div class="s-emoji" style="background:${grad}">${ico}</div>`;
-    return`<div class="subject-card" onclick="selSub('${s.id}','${s.name_ar}')">
-      <div class="s-thumb-wrap">${thumb}</div>
-      <div class="s-name">${s.name_ar}</div>
-      <span class="chip ${chip}">${gr(s.grade_id)}</span>
+    const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
+    const thumb=s.image_url?`<img src="${s.image_url}" alt="">`:`<div style="width:76px;height:76px;border-radius:20px;background:${grad};display:grid;place-items:center;font-size:2.2rem;box-shadow:var(--shadow)">${ico}</div>`;
+    return`<div class="sub-card" onclick="selSub('${s.id}','${s.name_ar}')">
+      <div class="sub-icon">${thumb}</div>
+      <div class="sub-name">${s.name_ar}</div>
+      <span class="sub-badge ${chip}">${gr(s.grade_id)}</span>
     </div>`;
   }).join('');
 }
 
-// Teachers
 async function selSub(id,name){
-  _sel.sub={id,name};_sel.tch=null;_sel.ch=null;
-  showStep('tch');
-  setEl('ttl-tch',`👨‍🏫 ${name}`);
+  _sel={sub:{id,name},tch:null,ch:null};showStep('tch');
+  se('ttl-tch',`👨‍🏫 ${name}`);
   const g=document.getElementById('tch-grid');
-  g.innerHTML=`<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>`;
+  g.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
   const{data:chaps}=await sb.from('chapters').select('teacher_id').eq('subject_id',id);
   const tIds=[...new Set((chaps||[]).map(c=>c.teacher_id).filter(Boolean))];
-  if(!tIds.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div>${_lang==='ar'?'لا يوجد مدرسين':'No teachers'}</div></div>`;return;}
+  if(!tIds.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div>لا يوجد مدرسين</div></div>';return;}
   const[{data:profs},{data:teachers}]=await Promise.all([
     sb.from('profiles').select('id,full_name,image_url').in('id',tIds),
     sb.from('teachers').select('id,bio').in('id',tIds),
@@ -955,113 +764,97 @@ async function selSub(id,name){
   const bioMap=Object.fromEntries((teachers||[]).map(t=>[t.id,t.bio]));
   g.innerHTML=(profs||[]).map(p=>{
     const av=p.image_url
-      ?`<img src="${p.image_url}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover">`
-      :`<div class="t-av" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">${(p.full_name||'?')[0].toUpperCase()}</div>`;
-    return`<div class="teacher-card" onclick="selTch('${p.id}','${p.full_name||p.id}')">
-      <div style="display:flex;justify-content:center;margin-bottom:12px">${av}</div>
-      <div class="t-nm">${p.full_name||'—'}</div>
-      <div class="t-bi">${bioMap[p.id]||t('Certified Teacher')}</div>
-      <div style="margin-top:10px;text-align:center"><span class="chip cg">✓ ${_lang==='ar'?'مدرس معتمد':'Teacher'}</span></div>
+      ?`<div class="tch-av"><img src="${p.image_url}" alt=""></div>`
+      :`<div class="tch-av" style="background:linear-gradient(135deg,var(--green),var(--green2));width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;color:#fff;margin:0 auto 14px;box-shadow:0 4px 14px var(--glow)">${(p.full_name||'?')[0].toUpperCase()}</div>`;
+    return`<div class="tch-card" onclick="selTch('${p.id}','${p.full_name||p.id}')">
+      ${av}
+      <div class="tch-name">${p.full_name||'—'}</div>
+      <div class="tch-bio">${bioMap[p.id]||(_lang==='ar'?'مدرس معتمد':'Certified Teacher')}</div>
+      <div style="margin-top:10px;text-align:center"><span class="chip c-green">✓ ${_lang==='ar'?'مدرس':'Teacher'}</span></div>
     </div>`;
   }).join('');
 }
 
-// Chapters — Ednova style
 async function selTch(id,name){
-  _sel.tch={id,name};_sel.ch=null;
-  showStep('ch');
-  setEl('ttl-ch',`📖 ${_sel.sub.name} — ${name}`);
+  _sel.tch={id,name};_sel.ch=null;showStep('ch');
   const g=document.getElementById('ch-grid');
-  g.innerHTML=`<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>`;
+  g.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
   const{data}=await sb.from('chapters').select('id,title,description,sort_order,image_url,price').eq('subject_id',_sel.sub.id).eq('teacher_id',id).order('sort_order');
-  if(!data?.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico">📖</div><div>${_lang==='ar'?'لا توجد شابترات':'No chapters'}</div></div>`;return;}
-  // count lessons
+  if(!data?.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">📖</div><div>لا توجد شابترات</div></div>';return;}
   const chIds=data.map(c=>c.id);
   const{data:lc}=await sb.from('lessons').select('chapter_id').in('chapter_id',chIds).eq('is_active',true);
   const cnt={};(lc||[]).forEach(l=>{cnt[l.chapter_id]=(cnt[l.chapter_id]||0)+1;});
-  const isDark=_theme==='dark';
-  const books=['📘','📗','📙','📕','📓','📔'];
+  const bks=['📘','📗','📙','📕','📓','📔'];
   g.innerHTML=data.map((ch,i)=>{
-    const grad=isDark?GRD_DARK[i%GRD_DARK.length]:GRD_LIGHT[i%GRD_LIGHT.length];
     const owned=_enrolled.has(ch.id);
     const inCart=_cart.some(c=>c.id===ch.id);
     const price=Number(ch.price)||0;
     const lcnt=cnt[ch.id]||0;
-    const lcntStr=_lang==='ar'?`${lcnt} محاضرة`:`${lcnt} lectures`;
-    let cartBtn='';
-    if(owned)
-      cartBtn=`<button class="add-cart-btn btn-owned" onclick="event.stopPropagation()">✅ ${_lang==='ar'?'مشترك':'Enrolled'}</button>`;
-    else if(inCart)
-      cartBtn=`<button class="add-cart-btn btn-incart" onclick="event.stopPropagation();rmCart('${ch.id}')">🛒 ${_lang==='ar'?'في السلة ×':'In Cart ×'}</button>`;
-    else if(price===0)
-      cartBtn=`<button class="add-cart-btn btn-free" onclick="event.stopPropagation();enrollFree('${ch.id}','${ch.title}')">🎁 ${_lang==='ar'?'اشترك مجاناً':'Enroll Free'}</button>`;
-    else
-      cartBtn=`<button class="add-cart-btn btn-paid" onclick="event.stopPropagation();addCart(${JSON.stringify(ch).replace(/"/g,'&quot;')})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
-    // Ednova style: title top, image center, title bottom, count, button
-    const thumb=ch.image_url
-      ?`<img src="${ch.image_url}" alt="${ch.title}" style="width:100%;height:100%;object-fit:cover;display:block">`
-      :`<div style="background:${grad};width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem">${books[i%books.length]}</div>`;
-    return`<div class="chapter-card ${owned?'owned':''}" onclick="selChapter('${ch.id}','${ch.title}',${owned})">
-      <div class="cc-title-top">${ch.title}</div>
-      <div style="padding:0 20px">
-        <div class="cc-img-wrap">${thumb}</div>
-      </div>
-      <div class="cc-bottom">
-        <div class="cc-title-bot">${ch.title}</div>
-        <div class="cc-count">${lcntStr}</div>
-        ${!owned&&price>0?`<div class="cc-price-badge" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff">${price} ج.م</div>`:''}
-        <div class="cc-action">${cartBtn}</div>
+    const lcntStr=_lang==='ar'?`${lcnt} محاضرات`:`${lcnt} lectures`;
+    const chNum=_lang==='ar'?`الشابتر ${i+1}`:`Chapter ${i+1}`;
+    const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
+    const thumb=ch.image_url?`<img src="${ch.image_url}" alt="${ch.title}">`:`<div style="width:100%;height:100%;background:${grad};display:flex;align-items:center;justify-content:center;font-size:2.8rem">${bks[i%bks.length]}</div>`;
+    let btn='';
+    if(owned)btn=`<button class="ch-btn ch-btn-owned">✅ ${_lang==='ar'?'مشترك':'Enrolled'}</button>`;
+    else if(inCart)btn=`<button class="ch-btn ch-btn-incart" onclick="event.stopPropagation();rmCart('${ch.id}')">🛒 ${_lang==='ar'?'في السلة ×':'In Cart ×'}</button>`;
+    else if(price===0)btn=`<button class="ch-btn ch-btn-free" onclick="event.stopPropagation();enrollFree('${ch.id}','${ch.title}')">🎁 ${_lang==='ar'?'اشترك مجاناً':'Enroll Free'}</button>`;
+    else btn=`<button class="ch-btn ch-btn-paid" onclick="event.stopPropagation();addCart(${JSON.stringify(ch).replace(/"/g,'&quot;')})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
+    return`<div class="ch-card ${owned?'owned':''}" onclick="selChapter('${ch.id}','${ch.title}',${owned})">
+      <div class="ch-top">${chNum}</div>
+      <div class="ch-img-area"><div class="ch-img-box">${thumb}</div></div>
+      <div class="ch-bottom">
+        <div class="ch-title-main">${ch.title}</div>
+        <div class="ch-count">${lcntStr}</div>
+        ${!owned&&price>0?`<div><span class="ch-price-pill price-paid">${price} ج.م</span></div>`:''}
+        <div class="cc-action" style="margin-top:8px">${btn}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-// Lessons
 async function selChapter(id,title,owned){
   if(!owned){toast('w',_lang==='ar'?'لازم تشترك في الشابتر الأول':'Enroll in this chapter first');return;}
-  _sel.ch={id,title};
-  showStep('ls');
-  setEl('ttl-ls',`🎬 ${title}`);
-  setEl('ttl-ls-sub',`${_sel.sub.name} — ${_sel.tch.name}`);
+  _sel.ch={id,title};showStep('ls');
+  se('ttl-ls',`🎬 ${title}`);
+  se('ttl-ls-sub',`${_sel.sub.name} — ${_sel.tch.name}`);
   const list=document.getElementById('ls-list');
-  list.innerHTML=`<div class="loading"><div class="ld"></div></div>`;
+  list.innerHTML='<div class="loading"><div class="ld"></div></div>';
   const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id',id).order('created_at');
-  if(!data?.length){list.innerHTML=`<div class="empty"><div class="empty-ico">🎬</div><div>${_lang==='ar'?'لا توجد حصص':'No lessons'}</div></div>`;return;}
+  if(!data?.length){list.innerHTML='<div class="empty-state"><div class="empty-ico">🎬</div><div>لا توجد حصص</div></div>';return;}
   const now=new Date();
   list.innerHTML=data.map((l,i)=>{
     const sched=l.scheduled_at?new Date(l.scheduled_at):null;
     const future=sched&&sched>now;
     const canClick=l.is_active&&!future;
-    const thumb=l.image_url?`<div class="l-thumb-col"><img src="${l.image_url}" alt=""></div>`:`<div class="l-thumb-col">${future?'⏰':l.is_active?'🎬':'🔒'}</div>`;
+    const thumb=l.image_url?`<div class="ls-thumb"><img src="${l.image_url}" alt=""></div>`:`<div class="ls-thumb">${future?'⏰':l.is_active?'🎬':'🔒'}</div>`;
+    const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
     let action='';
-    if(!l.is_active)action=`<span class="chip c-gr">${_lang==='ar'?'غير متاح':'Not available'}</span>`;
-    else if(future){const ts=sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'});action=`<span class="time-chip tc-f">⏰ ${ts}</span>`;}
-    else action=`<span class="chip cg">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`;
-    return`<div class="lesson-row ${canClick?'clickable':future||!l.is_active?'locked':''}" ${canClick?`onclick="openLesson('${l.id}')"`:'style="cursor:not-allowed"'}>
+    if(!l.is_active)action=`<span class="chip c-gray">${_lang==='ar'?'غير متاح':'Unavailable'}</span>`;
+    else if(future)action=`<div class="time-chip tc-f">⏰ ${ts}</div>`;
+    else action=`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`;
+    return`<div class="ls-row ${canClick?'click':future||!l.is_active?'locked':''}" ${canClick?`onclick="goLesson('${l.id}')"`:'style="cursor:not-allowed"'}>
       ${thumb}
-      <div class="l-info-col">
-        <div class="l-info">
-          <div class="l-num">${_lang==='ar'?`الحصة ${i+1}`:`Lesson ${i+1}`}</div>
-          <div class="l-title">${l.title}</div>
-          ${l.description?`<div class="l-desc">${l.description}</div>`:''}
+      <div class="ls-body">
+        <div class="ls-info">
+          <div class="ls-num">${_lang==='ar'?`الحصة ${i+1}`:`Lesson ${i+1}`}</div>
+          <div class="ls-title">${l.title}</div>
+          ${l.description?`<div class="ls-desc">${l.description}</div>`:''}
         </div>
-        <div class="l-meta">${action}</div>
+        <div class="ls-actions">${action}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-// Open lesson → navigate to lesson.html
-function openLesson(lessonId){
-  window.location.href=`lesson.html?id=${lessonId}`;
-}
+// → lesson.html
+function goLesson(lessonId){window.location.href=`lesson.html?id=${lessonId}`;}
 
-// ── CART ──────────────────────────────────────────────────────────────────────
+// ── cart ──────────────────────────────────────────────────────────────────────
 function addCart(ch){
-  if(_enrolled.has(ch.id)){toast('w',_lang==='ar'?'أنت مشترك في هذا الشابتر':'Already enrolled');return;}
+  if(_enrolled.has(ch.id)){toast('w',_lang==='ar'?'أنت مشترك بالفعل':'Already enrolled');return;}
   if(_cart.some(c=>c.id===ch.id)){toast('i',_lang==='ar'?'موجود في السلة':'Already in cart');return;}
   _cart.push(ch);saveCart();updateCartBadge();
-  toast('s',`${_lang==='ar'?'تم إضافة':'Added'} "${ch.title}" ${_lang==='ar'?'للسلة':'to cart'} 🛒`);
+  toast('s',`${_lang==='ar'?'تم إضافة':'Added'} "${ch.title}" 🛒`);
   selTch(_sel.tch.id,_sel.tch.name);
 }
 function rmCart(chId){
@@ -1075,53 +868,51 @@ async function enrollFree(chId,chTitle){
   if(error&&!error.message.includes('unique')){toast('e',error.message);return;}
   _enrolled.add(chId);await loadEnrollments();
   toast('s',`🎉 ${_lang==='ar'?'تم الاشتراك في':'Enrolled in'} "${chTitle}"!`);
-  if(_sel.tch)selTch(_sel.tch.id,_sel.tch.name);
+  selTch(_sel.tch.id,_sel.tch.name);
 }
 
 function renderCart(){
   const c=document.getElementById('cart-content');
-  if(!_cart.length){c.innerHTML=`<div class="empty"><div class="empty-ico">🛒</div><div>${_lang==='ar'?'السلة فارغة':'Cart is empty'}</div></div>`;return;}
+  if(!_cart.length){c.innerHTML=`<div class="empty-state"><div class="empty-ico">🛒</div><div>${_lang==='ar'?'السلة فارغة':'Cart is empty'}</div></div>`;return;}
   const total=_cart.reduce((s,ch)=>s+(Number(ch.price)||0),0);
-  const chRows=_cart.map(ch=>`
-    <div class="co-ch">
-      <div class="co-ch-name">${ch.title} — <strong style="color:var(--accent)">${Number(ch.price)||0} ج.م</strong></div>
-      <div class="co-ch-inp-row">
-        <input class="co-inp" id="pcode-${ch.id}" placeholder="${t('Pay Code')}" maxlength="24" oninput="this.value=this.value.toUpperCase()">
-        <button class="btn btn-p btn-sm" onclick="checkoutCh('${ch.id}','${ch.title}')" id="cobtn-${ch.id}">✓</button>
+  const coItems=_cart.map(ch=>`
+    <div class="co-item">
+      <div class="co-item-name">${ch.title} — <strong style="color:var(--green2)">${Number(ch.price)||0} ج.م</strong></div>
+      <div class="co-row-inp">
+        <input class="co-inp" id="pc-${ch.id}" placeholder="${_lang==='ar'?'كود الدفع':'Payment Code'}" maxlength="24" oninput="this.value=this.value.toUpperCase()">
+        <button class="btn btn-primary btn-sm" onclick="checkoutCh('${ch.id}','${ch.title}')" id="cobtn-${ch.id}">✓</button>
         <button class="btn btn-danger btn-sm" onclick="rmCart('${ch.id}')">×</button>
       </div>
     </div>`).join('');
   c.innerHTML=`<div class="cart-layout">
-    <div>
-      <div class="cart-items">
-        ${_cart.map(ch=>{
-          const thumb=ch.image_url?`<img src="${ch.image_url}" alt="" style="width:70px;height:55px;object-fit:cover;border-radius:12px">`:`<div style="font-size:1.5rem">📖</div>`;
-          return`<div class="cart-item">
-            <div class="ci-thumb">${thumb}</div>
-            <div class="ci-info"><div class="ci-name">${ch.title}</div><div class="ci-sub">${ch.description||''}</div></div>
-            <div class="ci-price">${Number(ch.price)||0} ج.م</div>
-            <button class="btn btn-danger btn-sm" onclick="rmCart('${ch.id}')">×</button>
-          </div>`;
-        }).join('')}
-      </div>
+    <div class="cart-items">
+      ${_cart.map(ch=>{
+        const t=ch.image_url?`<img src="${ch.image_url}" alt="" style="width:70px;height:55px;object-fit:cover">`:`📖`;
+        return`<div class="cart-item">
+          <div class="ci-thumb">${t}</div>
+          <div class="ci-info"><div class="ci-name">${ch.title}</div><div class="ci-sub">${ch.description||''}</div></div>
+          <div class="ci-price">${Number(ch.price)||0} ج.م</div>
+          <button class="btn btn-danger btn-sm" onclick="rmCart('${ch.id}')">×</button>
+        </div>`;
+      }).join('')}
     </div>
-    <div class="checkout-card">
-      <div class="co-title">🧾 ${_lang==='ar'?'إتمام الشراء':'Checkout'}</div>
+    <div class="co-card">
+      <div class="co-ttl">🧾 ${_lang==='ar'?'إتمام الشراء':'Checkout'}</div>
       <div class="co-row"><span>${_lang==='ar'?'الشابترات':'Chapters'}</span><span>${_cart.length}</span></div>
       <div class="co-total"><span>${_lang==='ar'?'الإجمالي':'Total'}</span><span class="val">${total} ج.م</span></div>
-      <div class="co-chapter-list">
-        <div style="font-size:.72rem;color:var(--t3);margin-bottom:8px">${t('checkout-note')}</div>
-        ${chRows}
+      <div class="co-items">
+        <div style="font-size:.74rem;color:var(--t3);margin-bottom:8px">${_lang==='ar'?'ادفع خارج وجيب كود من المسؤول':'Pay outside and get a code from admin'}</div>
+        ${coItems}
       </div>
     </div>
   </div>`;
 }
 
 async function checkoutCh(chId,chTitle){
-  const inp=document.getElementById(`pcode-${chId}`);
+  const inp=document.getElementById(`pc-${chId}`);
   const code=inp?.value.trim().toUpperCase();
   const btn=document.getElementById(`cobtn-${chId}`);
-  if(!code)return toast('w',_lang==='ar'?`ادخل كود "${chTitle}"`:`Enter code for "${chTitle}"`);
+  if(!code)return toast('w',`${_lang==='ar'?'ادخل كود':'Enter code for'} "${chTitle}"`);
   btn.innerHTML='<span class="ld"></span>';btn.disabled=true;
   const{data:row,error}=await sb.from('payment_codes').select('id,chapter_id,used_by').eq('code',code).single();
   if(error||!row){toast('e',_lang==='ar'?'الكود مش صح':'Invalid code');btn.innerHTML='✓';btn.disabled=false;return;}
@@ -1135,80 +926,70 @@ async function checkoutCh(chId,chTitle){
   updateCartBadge();renderCart();
 }
 
-// ── My Lessons ────────────────────────────────────────────────────────────────
+// ── my lessons ────────────────────────────────────────────────────────────────
 async function loadMyLessons(){
   const el=document.getElementById('my-list');
-  el.innerHTML=`<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>`;
-  if(!_enrolled.size){el.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ico">📚</div><div>${t('No chapters enrolled')}</div></div>`;return;}
-  const chIds=[..._enrolled];
-  const{data}=await sb.from('chapters').select('id,title,image_url,subjects(name_ar),profiles(full_name)').in('id',chIds);
-  const isDark=_theme==='dark';
+  el.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
+  if(!_enrolled.size){el.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">📚</div><div>لم تشترك في أي شابتر بعد</div></div>';return;}
+  const{data}=await sb.from('chapters').select('id,title,image_url,subjects(name_ar),profiles(full_name)').in('id',[..._enrolled]);
   el.innerHTML=(data||[]).map((ch,i)=>{
-    const grad=isDark?GRD_DARK[i%GRD_DARK.length]:GRD_LIGHT[i%GRD_LIGHT.length];
-    return`<div class="my-card" onclick="openMyChapter('${ch.id}','${ch.title}')">
-      <div class="my-card-img" style="background:${grad}">
-        ${ch.image_url?`<img src="${ch.image_url}" alt="">`:`📖`}
-      </div>
-      <div class="my-card-bd">
-        <div class="my-card-ttl">${ch.title}</div>
-        <div class="my-card-sub">${ch.subjects?.name_ar||''} — ${ch.profiles?.full_name||''}</div>
-        <div style="margin-top:8px"><span class="chip cg">✅ ${_lang==='ar'?'مشترك':'Enrolled'}</span></div>
+    const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
+    return`<div class="my-card" onclick="openMyCh('${ch.id}','${ch.title}')">
+      <div class="my-img" style="background:${grad}">${ch.image_url?`<img src="${ch.image_url}" alt="">`:'📖'}</div>
+      <div class="my-bd">
+        <div class="my-ttl">${ch.title}</div>
+        <div class="my-sub">${ch.subjects?.name_ar||''} — ${ch.profiles?.full_name||''}</div>
+        <div style="margin-top:8px"><span class="chip c-green">✅ ${_lang==='ar'?'مشترك':'Enrolled'}</span></div>
       </div>
     </div>`;
   }).join('');
 }
 
-async function openMyChapter(chId,chTitle){
-  // find lessons and navigate directly to lesson.html for first lesson
-  goPage('browse');
+async function openMyCh(chId,chTitle){
   _sel.ch={id:chId,title:chTitle};
-  showStep('ls');
-  setEl('ttl-ls',`🎬 ${chTitle}`);
+  goPage('browse');showStep('ls');
+  se('ttl-ls',`🎬 ${chTitle}`);se('ttl-ls-sub','');
   const list=document.getElementById('ls-list');
-  list.innerHTML=`<div class="loading"><div class="ld"></div></div>`;
+  list.innerHTML='<div class="loading"><div class="ld"></div></div>';
   const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id',chId).eq('is_active',true).order('created_at');
-  if(!data?.length){list.innerHTML=`<div class="empty"><div class="empty-ico">🎬</div><div>${_lang==='ar'?'لا توجد حصص':'No lessons'}</div></div>`;return;}
+  if(!data?.length){list.innerHTML='<div class="empty-state"><div class="empty-ico">🎬</div><div>لا توجد حصص</div></div>';return;}
   const now=new Date();
   list.innerHTML=data.map((l,i)=>{
     const sched=l.scheduled_at?new Date(l.scheduled_at):null;
     const future=sched&&sched>now;
-    const canClick=!future;
-    const thumb=l.image_url?`<div class="l-thumb-col"><img src="${l.image_url}" alt=""></div>`:`<div class="l-thumb-col">🎬</div>`;
     const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
-    return`<div class="lesson-row ${canClick?'clickable':'locked'}" ${canClick?`onclick="openLesson('${l.id}')"`:'style="cursor:not-allowed"'}>
+    const canClick=!future;
+    const thumb=l.image_url?`<div class="ls-thumb"><img src="${l.image_url}" alt=""></div>`:`<div class="ls-thumb">🎬</div>`;
+    return`<div class="ls-row ${canClick?'click':'locked'}" ${canClick?`onclick="goLesson('${l.id}')"`:'style="cursor:not-allowed"'}>
       ${thumb}
-      <div class="l-info-col">
-        <div class="l-info">
-          <div class="l-num">${_lang==='ar'?`الحصة ${i+1}`:`Lesson ${i+1}`}</div>
-          <div class="l-title">${l.title}</div>
-          ${l.description?`<div class="l-desc">${l.description}</div>`:''}
+      <div class="ls-body">
+        <div class="ls-info">
+          <div class="ls-num">${_lang==='ar'?`الحصة ${i+1}`:`Lesson ${i+1}`}</div>
+          <div class="ls-title">${l.title}</div>
+          ${l.description?`<div class="ls-desc">${l.description}</div>`:''}
         </div>
-        <div class="l-meta">
-          ${future?`<span class="time-chip tc-f">⏰ ${ts}</span>`:`<span class="chip cg">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`}
+        <div class="ls-actions">
+          ${future?`<div class="time-chip tc-f">⏰ ${ts}</div>`:`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`}
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── Profile ───────────────────────────────────────────────────────────────────
+// ── profile ───────────────────────────────────────────────────────────────────
 async function loadProfileEnrolled(){
   const el=document.getElementById('pr-enrolled');
-  el.innerHTML=`<div class="loading"><div class="ld"></div></div>`;
-  const{data}=await sb.from('chapter_enrollments').select('chapter_id,chapters(id,title,image_url,subjects(name_ar))').eq('student_id',ME.id).order('enrolled_at',{ascending:false});
-  if(!data?.length){el.innerHTML=`<div class="empty"><div class="empty-ico">📚</div><div>${t('No chapters enrolled')}</div></div>`;return;}
+  el.innerHTML='<div class="loading"><div class="ld"></div></div>';
+  const{data}=await sb.from('chapter_enrollments').select('chapter_id,chapters(id,title,subjects(name_ar))').eq('student_id',ME.id).order('enrolled_at',{ascending:false});
+  if(!data?.length){el.innerHTML='<div class="empty-state"><div class="empty-ico">📚</div><div>لا توجد شابترات</div></div>';return;}
   el.innerHTML=(data||[]).map(e=>{
     const ch=e.chapters;if(!ch)return '';
-    return`<div class="enr-item" onclick="openMyChapter('${ch.id}','${ch.title}');goPage('browse')">
-      <div>
-        <div class="enr-ttl">${ch.title}</div>
-        <div class="enr-sub">${ch.subjects?.name_ar||''}</div>
-      </div>
-      <span class="chip cg">${_lang==='ar'?'فتح →':'Open →'}</span>
+    return`<div class="enr-item" onclick="openMyCh('${ch.id}','${ch.title}');goPage('browse')">
+      <div><div class="enr-ttl">${ch.title}</div><div class="enr-sub">${ch.subjects?.name_ar||''}</div></div>
+      <span class="chip c-green">${_lang==='ar'?'فتح →':'Open →'}</span>
     </div>`;
   }).join('');
 }
-
 function openEdit(){
   document.getElementById('ed-nm').value=ME.full_name||'';
   document.getElementById('ed-ph').value=ME.phone||'';
@@ -1217,17 +998,17 @@ function openEdit(){
 async function saveProfile(){
   const nm=document.getElementById('ed-nm').value.trim();
   const ph=document.getElementById('ed-ph').value.trim();
-  if(!nm)return toast('w',_lang==='ar'?'ادخل اسمك':'Enter your name');
+  if(!nm)return toast('w',_lang==='ar'?'ادخل اسمك':'Enter name');
   const btn=document.getElementById('ed-sv');
   btn.innerHTML='<span class="ld"></span>';btn.disabled=true;
   await sb.from('profiles').update({full_name:nm,phone:ph||null}).eq('id',ME.id);
   ME.full_name=nm;ME.phone=ph;
-  btn.textContent=t('Save');btn.disabled=false;
+  btn.textContent=_lang==='ar'?'حفظ':'Save';btn.disabled=false;
   updateUI();closeMo('editMo');
   toast('s',_lang==='ar'?'تم الحفظ ✅':'Saved ✅');
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ── init ──────────────────────────────────────────────────────────────────────
 document.getElementById('li-pw').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 checkSession();
 </script>
