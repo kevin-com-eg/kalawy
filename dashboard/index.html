@@ -892,7 +892,11 @@ function resetAll(){_sel={sub:null,tch:null,ch:null};showStep('sub');goPage('bro
 // subjects
 async function loadSubjects(){
   const g=document.getElementById('sub-grid');
-  const{data}=await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
+  const {data,error}=await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
+  if(error){
+    g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">⚠️</div><div>في مشكلة في تحميل المواد</div><small style="direction:ltr;display:block;margin-top:6px;color:var(--t3)">'+error.message+'</small></div>';
+    return;
+  }
   if(!data?.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">📚</div><div>لا توجد مواد بعد</div></div>';return;}
   g.innerHTML=data.map((s,i)=>{
     const chip=s.grade_id===1?'bg-g':s.grade_id===2?'bg-b':'bg-y';
@@ -1167,8 +1171,11 @@ async function saveProfile(){
 }
 
 // ── init ──────────────────────────────────────────────────────────────────────
-document.getElementById('li-pw').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-checkSession();
+const _loginPwEl = document.getElementById('li-pw');
+if (_loginPwEl) {
+  _loginPwEl.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+}
+window.addEventListener('DOMContentLoaded', checkSession);
 </script>
 </body>
 </html>
