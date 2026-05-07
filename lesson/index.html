@@ -254,6 +254,51 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
   .res-score{font-size:3rem}
   .pc-ctrl .pc-lbl{display:none}
 }
+
+
+/* ═══════════ KALAWY FINAL UI OVERRIDES — tabs + stealth player ═══════════ */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 20% 10%,rgba(0,200,150,.10),transparent 28%),radial-gradient(circle at 85% 20%,rgba(0,153,255,.10),transparent 30%),linear-gradient(180deg,var(--bg),var(--bg2));}
+.main{max-width:1240px}
+.nav{height:70px;padding:0 28px;border-bottom-color:rgba(255,255,255,.12)}
+.main{padding-top:70px}
+.nav-mark{width:42px;height:42px;border-radius:14px;font-size:.95rem}
+.nav-wm{font-size:1.25rem}.back-btn{border-radius:999px;padding:9px 16px}
+.lesson-header{margin-top:28px;padding:30px;border-radius:32px;background:linear-gradient(135deg,rgba(0,200,150,.14),rgba(0,153,255,.08)),var(--glass);border:1px solid var(--gb);box-shadow:var(--shadow)}
+.lh-title{font-size:clamp(1.35rem,3vw,2.15rem)}
+.lh-meta{gap:10px}.lh-chip{padding:8px 14px;background:rgba(255,255,255,.06)}
+.lesson-tabs{position:sticky;top:78px;z-index:120;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px;margin-bottom:22px;border-radius:22px;background:rgba(9,20,16,.78);box-shadow:var(--shadow);backdrop-filter:blur(24px) saturate(180%)}
+[data-theme="light"] .lesson-tabs{background:rgba(255,255,255,.72)}
+.lt{min-height:50px;border-radius:16px;font-size:.95rem;border:1px solid transparent;position:relative;overflow:hidden}
+.lt:hover{background:rgba(255,255,255,.08);border-color:var(--gb)}
+.lt.on{background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 10px 28px var(--glow);transform:translateY(-1px)}
+.lt .tab-small{display:block;font-size:.62rem;font-weight:700;opacity:.68;margin-top:2px}
+.vplayer-wrap{border-radius:30px;overflow:hidden;border:1px solid var(--gb);box-shadow:var(--shadow-lg)}
+.vp-layout{display:block;min-height:0}.vp-single{display:block}.vp-main{display:flex;flex-direction:column;background:rgba(0,0,0,.16)}
+.vp-parts-horizontal{display:flex;gap:10px;padding:14px;background:rgba(255,255,255,.035);border-bottom:1px solid var(--gb);overflow-x:auto;scrollbar-width:thin}
+.vp-part-chip{min-width:170px;max-width:240px;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;border:1px solid var(--gb);background:rgba(255,255,255,.04);cursor:pointer;transition:.18s;white-space:nowrap;color:var(--t2)}
+.vp-part-chip:hover{transform:translateY(-2px);border-color:rgba(0,200,150,.35);color:var(--text)}
+.vp-part-chip.on{background:linear-gradient(135deg,rgba(0,200,150,.23),rgba(0,153,255,.16));border-color:rgba(0,200,150,.45);color:var(--text);box-shadow:0 8px 22px rgba(0,200,150,.12)}
+.vp-part-chip .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:.76rem;font-weight:900;flex-shrink:0}
+.vp-part-chip.on .num{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.vp-part-chip .txt{overflow:hidden;text-overflow:ellipsis;font-weight:800;font-size:.84rem}.vp-part-chip .now{color:var(--accent);font-size:.68rem;font-weight:900;margin-inline-start:auto}
+.cplayer{border-radius:0;background:#050505;isolation:isolate}
+/* stealth crop: the YouTube iframe is scaled and covered by our own controls */
+.cplayer #yt-player-el{position:absolute;inset:-7%;width:114%;height:114%;z-index:1;overflow:hidden;background:#000}
+.cplayer #yt-player-el iframe{width:100%!important;height:100%!important;border:none;display:block;pointer-events:none;transform:scale(1.02);transform-origin:center center;filter:saturate(1.04) contrast(1.02)}
+.yt-guard{z-index:14}.pc{z-index:30}.pc-flash{z-index:32}
+.yt-brand-mask{position:absolute;z-index:18;pointer-events:none;background:#000}
+.yt-mask-br{right:0;bottom:0;width:168px;height:54px;background:linear-gradient(135deg,transparent 0%,#000 32%,#000 100%)}
+.yt-mask-tl{left:0;top:0;width:230px;height:56px;background:linear-gradient(315deg,transparent 0%,#000 38%,#000 100%)}
+.pc-top{padding:18px 20px 0}.pc-top-title{font-size:.95rem}.pc-bottom{padding:0 16px 14px}.pc-row{gap:10px}.pc-btn{font-size:1.1rem;background:rgba(255,255,255,.08)}
+.pc-sel{background:rgba(10,10,10,.82);border-color:rgba(255,255,255,.22)}.pc-time{min-width:112px}
+.vp-info{padding:16px 18px;background:rgba(255,255,255,.035)}
+.pdf-grid,.homework-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.pdf-card,.homework-card{padding:18px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid var(--gb);box-shadow:var(--shadow);transition:.18s;text-decoration:none;color:var(--text);display:block;min-height:126px}
+.pdf-card:hover,.homework-card:hover{transform:translateY(-3px);border-color:rgba(0,200,150,.35)}
+.pdf-ico,.hw-ico{font-size:2rem;margin-bottom:10px;display:block}.pdf-title,.hw-title{font-size:.95rem;font-weight:900;margin-bottom:6px}.pdf-sub,.hw-sub{font-size:.78rem;color:var(--t3);line-height:1.7}.hw-body{margin-top:10px;color:var(--t2);font-size:.86rem;line-height:1.85;user-select:text}
+#dt-overlay{background:rgba(0,0,0,.985)!important}.dto-title{font-size:1.9rem}.dto-sub{font-size:1rem}
+@media(max-width:760px){.lesson-tabs{grid-template-columns:repeat(2,1fr);top:74px}.lt{min-height:46px}.vp-parts-horizontal{padding:10px}.vp-part-chip{min-width:145px}.yt-mask-br{width:130px;height:44px}.yt-mask-tl{width:170px;height:46px}.pc-vol,.pc-ctrl .pc-lbl{display:none}.pc-time{min-width:auto;font-size:.68rem}.pc-sel{padding:4px 5px}}
+
 </style>
 </head>
 <body>
@@ -261,9 +306,9 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
 <!-- ═══ DevTools Overlay (global) ═══ -->
 <div id="dt-overlay">
   <div class="dto-icon">🚫</div>
-  <div class="dto-title">تم اكتشاف أدوات المطور</div>
-  <div class="dto-sub">يتم إيقاف الفيديو تلقائياً عند فتح أدوات المطور. أغلقها للمتابعة.</div>
-  <div class="dto-warn">DevTools Detected — Video paused for security</div>
+  <div class="dto-title">تم قفل الحصة</div>
+  <div class="dto-sub">تم اكتشاف أدوات المطور. أغلقها ثم افتح الصفحة مرة أخرى.</div>
+  <div class="dto-warn">DevTools Detected — Lesson locked</div>
 </div>
 
 <!-- ═══ BG ═══ -->
@@ -296,10 +341,32 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
    ██████  SECURITY LAYER  ██████
    ══════════════════════════════════════════════════════════ */
 (function(){
+  let _dtLocked = false;
+
+  window.hardLockDevTools = function(reason='devtools'){
+    if(_dtLocked) return;
+    _dtLocked = true;
+    try{ if(window._ytPlayer){ window._ytPlayer.pauseVideo(); window._ytPlayer.destroy?.(); } }catch{}
+    try{ document.exitFullscreen?.(); }catch{}
+    const overlay = document.getElementById('dt-overlay');
+    if(overlay){
+      overlay.style.display = 'flex';
+      overlay.innerHTML = `
+        <div class="dto-icon">🚫</div>
+        <div class="dto-title">تم قفل الحصة</div>
+        <div class="dto-sub">تم اكتشاف أدوات المطور أو محاولة فحص الكود. أغلق DevTools وافتح الصفحة مرة أخرى.</div>
+        <div class="dto-warn">Security lock: ${reason}</div>
+        <button class="btn btn-p" onclick="location.reload()">إعادة فتح الحصة</button>`;
+    }
+    const main = document.getElementById('tab-content');
+    if(main) main.innerHTML = '';
+    try{ window.close(); }catch{}
+  };
+
   /* 1. Disable right-click everywhere */
   document.addEventListener('contextmenu', e => { e.preventDefault(); return false; }, true);
 
-  /* 2. Block DevTools keyboard shortcuts */
+  /* 2. Block DevTools keyboard shortcuts and lock the lesson */
   document.addEventListener('keydown', e => {
     const key = e.key.toUpperCase();
     const blocked =
@@ -307,38 +374,38 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
       (e.ctrlKey && e.shiftKey && ['I','J','C','K'].includes(key)) ||
       (e.ctrlKey && ['U','S'].includes(key)) ||
       (e.metaKey && e.altKey && ['I','J'].includes(key));
-    if(blocked){ e.preventDefault(); e.stopPropagation(); return false; }
+    if(blocked){ e.preventDefault(); e.stopPropagation(); hardLockDevTools('shortcut'); return false; }
   }, true);
 
-  /* 3. DevTools size-heuristic detection */
-  let _dtWasOpen = false;
+  /* 3. DevTools detection — based on the common devtools-detect size heuristic */
+  let _openTicks = 0;
   function checkDevTools(){
-    const THRESHOLD = 150;
-    const byWidth  = window.outerWidth  - window.innerWidth  > THRESHOLD;
-    const byHeight = window.outerHeight - window.innerHeight > THRESHOLD;
+    if(_dtLocked) return;
+    const THRESHOLD = 160;
+    const byWidth  = Math.abs(window.outerWidth  - window.innerWidth)  > THRESHOLD;
+    const byHeight = Math.abs(window.outerHeight - window.innerHeight) > THRESHOLD;
     const isOpen   = byWidth || byHeight;
-    const overlay  = document.getElementById('dt-overlay');
-    if(overlay) overlay.style.display = isOpen ? 'flex' : 'none';
-    if(isOpen && !_dtWasOpen){
-      _dtWasOpen = true;
-      if(window._ytPlayer) try{ window._ytPlayer.pauseVideo(); }catch{}
-    }
-    if(!isOpen) _dtWasOpen = false;
+    _openTicks = isOpen ? _openTicks + 1 : 0;
+    if(_openTicks >= 2) hardLockDevTools('panel-open');
   }
-  setInterval(checkDevTools, 600);
+  setInterval(checkDevTools, 500);
 
-  /* 4. Disable text selection (except exam text) */
+  /* 4. Disable text selection except useful text */
   document.addEventListener('selectstart', e => {
-    if(!e.target.closest('.txt-c,.q-txt,.opt-t')) e.preventDefault();
+    if(!e.target.closest('.txt-c,.q-txt,.opt-t,.hw-body')) e.preventDefault();
   });
 
   /* 5. Disable drag */
   document.addEventListener('dragstart', e => e.preventDefault());
 
-  /* 6. Debugger trap — slows down DevTools scripts */
+  /* 6. Debugger trap */
   (function dbgLoop(){
-    try{ (function(){ const _s=+new Date; debugger; if(+new Date-_s>100){ if(window._ytPlayer) try{window._ytPlayer.pauseVideo();}catch{} } })(); }catch{}
-    setTimeout(dbgLoop, 3000);
+    try{
+      const start = performance.now();
+      debugger;
+      if(performance.now() - start > 120) hardLockDevTools('debugger');
+    }catch{}
+    setTimeout(dbgLoop, 2500);
   })();
 })();
 
@@ -373,7 +440,7 @@ window.onYouTubeIframeAPIReady = function(){
 };
 (function loadYtApi(){
   const s = document.createElement('script');
-  s.src = 'https://www.youtube.com/iframe_api';
+  s.src = 'https://www.youtube.com/iframe_api'; // YouTube API; iframe host is youtube-nocookie below
   s.onerror = () => { /* handled by ad block detection */ };
   document.head.appendChild(s);
 })();
@@ -399,6 +466,7 @@ function initPlayer(videoId, containerId){
       try{ window._ytPlayer.loadVideoById(videoId); return; }catch{}
     }
     window._ytPlayer = new YT.Player(containerId, {
+      host: 'https://www.youtube-nocookie.com',
       height: '100%',
       width:  '100%',
       videoId: videoId,
@@ -408,10 +476,12 @@ function initPlayer(videoId, containerId){
         rel:            0,
         modestbranding: 1,
         iv_load_policy: 3,
+        enablejsapi:    1,
         fs:             0,
         disablekb:      1,
         playsinline:    1,
         showinfo:       0,
+        branding:       0,
         color:          'white',
         origin:         window.location.origin || 'https://kalawy.vercel.app'
       },
@@ -575,135 +645,80 @@ function buildPlayer(){
   const p  = VIDEOS[_curPart];
   const vid = ytId(p.youtube_url);
 
-  const sidebar = !single ? `
-    <div class="vp-sidebar">
-      <div class="vp-sidebar-title">📋 أجزاء الحصة</div>
-      <div class="vp-parts">
-        ${VIDEOS.map((v,i)=>`
-          <div class="vp-part${i===_curPart?' on':''}" onclick="changePart(${i})">
-            <div class="vp-pnum">${i+1}</div>
-            <div class="vp-ptitle">${v.title}</div>
-            ${i===_curPart?'<div class="vp-now">▶ الآن</div>':''}
-          </div>`).join('')}
-      </div>
+  const partChooser = !single ? `
+    <div class="vp-parts-horizontal" aria-label="اختيار جزء الفيديو">
+      ${VIDEOS.map((v,i)=>`
+        <button class="vp-part-chip${i===_curPart?' on':''}" onclick="changePart(${i})" title="${v.title||'فيديو'}">
+          <span class="num">${i+1}</span>
+          <span class="txt">${v.title||('فيديو ' + (i+1))}</span>
+          ${i===_curPart?'<span class="now">الآن</span>':''}
+        </button>`).join('')}
     </div>` : '';
 
   tc.innerHTML = `
   <div class="vplayer-wrap gl">
-    <div class="${single?'vp-single':'vp-layout'}">
+    <div class="vp-layout">
       <div class="vp-main">
-        <!-- ── Protected Player ── -->
-        <div class="cplayer" id="player-fs-wrap"
-          onmousemove="_showControls()"
-          onmouseleave="">
-
-          <!-- YT iframe goes here via API -->
+        ${partChooser}
+        <div class="cplayer" id="player-fs-wrap" onmousemove="_showControls()">
           <div id="yt-player-el"></div>
-
-          <!-- Click guard: blocks right-click, relays play/pause & fullscreen -->
-          <div class="yt-guard"
-            onclick="_onGuardClick(event)"
-            ondblclick="toggleFs()"
-            oncontextmenu="return false"></div>
-
-          <!-- Center flash -->
+          <div class="yt-guard" onclick="_onGuardClick(event)" ondblclick="toggleFs()" oncontextmenu="return false"></div>
+          <div class="yt-brand-mask yt-mask-br"></div>
+          <div class="yt-brand-mask yt-mask-tl"></div>
           <div id="pc-flash" class="pc-flash"></div>
 
-          <!-- Controls overlay -->
           <div class="pc" id="pc-controls">
-            <!-- Top -->
             <div class="pc-top">
-              <div class="pc-top-title" id="pc-top-title">${p.title}</div>
+              <div class="pc-top-title" id="pc-top-title">${p.title||'فيديو الحصة'}</div>
             </div>
-
-            <!-- Bottom -->
             <div class="pc-bottom">
-              <!-- Progress track -->
               <div class="pc-progress" id="pc-progress" onmousedown="startSeek(event)">
-                <div class="pc-track">
-                  <div class="pc-fill" id="pc-fill" style="width:0%"></div>
-                </div>
+                <div class="pc-track"><div class="pc-fill" id="pc-fill" style="width:0%"></div></div>
                 <div class="pc-thumb" id="pc-thumb" style="left:0%"></div>
               </div>
-
-              <!-- Controls row -->
               <div class="pc-row">
-                <!-- Play/Pause -->
                 <button class="pc-btn" id="pc-play-btn" onclick="togglePlay()" title="تشغيل / إيقاف">▶</button>
-
-                <!-- Volume -->
-                <input type="range" class="pc-vol" min="0" max="100" value="100"
-                  oninput="_setVol(this.value)" title="الصوت">
-
-                <!-- Time -->
+                <input type="range" class="pc-vol" min="0" max="100" value="100" oninput="_setVol(this.value)" title="الصوت">
                 <div class="pc-time" id="pc-time">0:00 / 0:00</div>
-
                 <div class="pc-spacer"></div>
-
-                <!-- Speed -->
-                <div class="pc-ctrl">
-                  <span class="pc-lbl">سرعة</span>
+                <div class="pc-ctrl"><span class="pc-lbl">سرعة</span>
                   <select class="pc-sel" id="pc-speed-sel" onchange="setSpeed(this.value)">
-                    <option value="0.5">0.5×</option>
-                    <option value="0.75">0.75×</option>
-                    <option value="1" selected>1×</option>
-                    <option value="1.25">1.25×</option>
-                    <option value="1.5">1.5×</option>
-                    <option value="2">2×</option>
+                    <option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option>
                   </select>
                 </div>
-
-                <!-- Quality -->
-                <div class="pc-ctrl">
-                  <span class="pc-lbl">جودة</span>
-                  <select class="pc-sel" id="pc-quality-sel" onchange="setQuality(this.value)">
-                    <option value="default">تلقائي</option>
-                  </select>
+                <div class="pc-ctrl"><span class="pc-lbl">جودة</span>
+                  <select class="pc-sel" id="pc-quality-sel" onchange="setQuality(this.value)"><option value="default">تلقائي</option></select>
                 </div>
-
-                <!-- Fullscreen -->
                 <button class="pc-btn" onclick="toggleFs()" title="ملء الشاشة">⛶</button>
               </div>
             </div>
           </div>
 
-          <!-- Ad Blocker Warning (inside player) -->
           <div class="shield-overlay hidden" id="adb-overlay">
             <div class="so-ico">🛡️</div>
             <div class="so-title">تم اكتشاف حاجب إعلانات</div>
-            <div class="so-sub">
-              يرجى إيقاف <strong>Brave Shields</strong> أو <strong>AdBlock</strong> لمشاهدة الفيديو
-            </div>
-            <div class="so-steps">
-              <b>Brave:</b> انقر على أيقونة الأسد في شريط العنوان<br>
-              اضغط "Shields are UP" ثم أوقف الحماية لهذا الموقع<br>
-              <b>uBlock / AdBlock:</b> انقر على الأيقونة واضغط Power لتعطيلها
-            </div>
+            <div class="so-sub">يرجى إيقاف <strong>Brave Shields</strong> أو <strong>AdBlock</strong> لمشاهدة الفيديو</div>
+            <div class="so-steps"><b>Brave:</b> اضغط أيقونة الأسد ثم أوقف Shields لهذا الموقع<br><b>uBlock / AdBlock:</b> اضغط الأيقونة ثم Power لتعطيلها</div>
             <button class="btn btn-p" style="margin-top:4px" onclick="location.reload()">🔄 إعادة المحاولة</button>
           </div>
         </div>
-        <!-- ── End Protected Player ── -->
-
-        <!-- Bottom info / nav -->
         <div class="vp-info">
-          <div class="vp-info-title">${!single?`الجزء ${_curPart+1} / ${VIDEOS.length} — `:''}${p.title}</div>
+          <div class="vp-info-title">${!single?`الجزء ${_curPart+1} / ${VIDEOS.length} — `:''}${p.title||'فيديو الحصة'}</div>
           <div class="vp-nav-btns">
-            ${_curPart>0?`<button class="btn btn-gl" onclick="changePart(${_curPart-1})">⬅ السابق</button>`:''}
-            ${_curPart<VIDEOS.length-1?`<button class="btn btn-p" onclick="changePart(${_curPart+1})">التالي ➡</button>`:''}
+            ${_curPart>0?`<button class="btn btn-gl" onclick="changePart(${_curPart-1})">السابق</button>`:''}
+            ${_curPart<VIDEOS.length-1?`<button class="btn btn-p" onclick="changePart(${_curPart+1})">التالي</button>`:''}
           </div>
         </div>
       </div>
-      ${sidebar}
     </div>
   </div>`;
 
-  /* Kick off the player */
   if(vid){
     initPlayer(vid, 'yt-player-el');
   } else {
     document.getElementById('yt-player-el').innerHTML =
       `<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--t3);flex-direction:column;gap:8px">
-         <span style="font-size:2rem">⚠️</span><div>رابط يوتيوب غير صحيح</div>
+         <span style="font-size:2rem">⚠️</span><div>رابط الفيديو غير صحيح</div>
        </div>`;
   }
 }
@@ -743,7 +758,7 @@ function setTheme(th){
   document.getElementById('n-dk').classList.toggle('on',th==='dark');
   document.getElementById('n-lt').classList.toggle('on',th==='light');
 }
-function goHome(){ window.location.href='kalawy-student.html'; }
+function goHome(){ window.location.href='/dashboard/'; }
 function toast(type,msg,dur=3500){
   const icons={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
   const c=document.getElementById('toasts');
@@ -764,7 +779,7 @@ async function init(){
   const lessonId=params.get('id');
   if(!lessonId){showError('لم يتم تحديد الحصة');return;}
   const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='kalawy-student.html';return;}
+  if(!session){window.location.href='/login/';return;}
   const{data:profile}=await sb.from('profiles').select('role').eq('id',session.user.id).single();
   if(profile?.role!=='admin'&&profile?.role!=='teacher'){
     const{data:lesson}=await sb.from('lessons').select('id,chapter_id').eq('id',lessonId).single();
@@ -795,39 +810,51 @@ async function loadLesson(lessonId){
   renderPage();
 }
 
+function getPdfItems(){ return (CONTENT||[]).filter(ct => String(ct.type||'').toLowerCase()==='pdf'); }
+function getHomeworkItems(){
+  return (CONTENT||[]).filter(ct => {
+    const t = String(ct.type||'').toLowerCase();
+    const text = `${ct.title||''} ${ct.body||''}`.toLowerCase();
+    return ['homework','assignment','hw','واجب'].includes(t) || text.includes('واجب') || text.includes('homework') || text.includes('assignment');
+  });
+}
+
 function renderPage(){
-  const tabs=[];
-  if(EXAM)tabs.push({id:'exam',icon:'📝',label:'الامتحان'});
-  if(VIDEOS.length)tabs.push({id:'video',icon:'🎥',label:'الفيديو'});
-  if(CONTENT.length)tabs.push({id:'content',icon:'📋',label:'المحتوى'});
+  const tabs=[
+    {id:'exam',icon:'📝',label:'امتحان',small:EXAM?'متاح':'لا يوجد'},
+    {id:'homework',icon:'📌',label:'واجب',small:getHomeworkItems().length?`${getHomeworkItems().length} عنصر`:'لا يوجد'},
+    {id:'pdf',icon:'📄',label:'PDF',small:getPdfItems().length?`${getPdfItems().length} ملف`:'لا يوجد'},
+    {id:'video',icon:'🎥',label:'Video',small:VIDEOS.length?`${VIDEOS.length} فيديو`:'لا يوجد'}
+  ];
   const chapter=LESSON.chapters;
   document.getElementById('main').innerHTML=`
     <div class="lesson-header gl">
       <div class="lh-chapter">${chapter?.subjects?.name_ar||''} ${chapter?.title?`← ${chapter.title}`:''}</div>
       <div class="lh-title">${LESSON.title}</div>
-      ${LESSON.description?`<div style="font-size:.85rem;color:var(--t3);margin-top:6px;position:relative;z-index:1">${LESSON.description}</div>`:''}
+      ${LESSON.description?`<div style="font-size:.9rem;color:var(--t3);margin-top:8px;position:relative;z-index:1;line-height:1.8">${LESSON.description}</div>`:''}
       <div class="lh-meta">
-        ${EXAM?`<div class="lh-chip">📝 امتحان قبل الفيديو</div>`:''}
-        ${VIDEOS.length?`<div class="lh-chip">🎥 ${VIDEOS.length} جزء</div>`:''}
+        <div class="lh-chip">🎥 ${VIDEOS.length||0} فيديو</div>
+        <div class="lh-chip">📄 ${getPdfItems().length||0} PDF</div>
+        <div class="lh-chip">📌 ${getHomeworkItems().length||0} واجب</div>
         ${EXAM?.duration_minutes?`<div class="lh-chip">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}
       </div>
     </div>
-    ${tabs.length>1?`
     <div class="lesson-tabs gl" id="lesson-tabs">
-      ${tabs.map((t,i)=>`<button class="lt${i===0?' on':''}" onclick="switchTab('${t.id}')" id="tab-${t.id}">${t.icon} ${t.label}</button>`).join('')}
-    </div>`:''}
+      ${tabs.map((t,i)=>`<button class="lt${i===0?' on':''}" onclick="switchTab('${t.id}')" id="tab-${t.id}"><span>${t.icon} ${t.label}</span><span class="tab-small">${t.small}</span></button>`).join('')}
+    </div>
     <div id="tab-content"></div>
   `;
-  if(tabs[0]) switchTab(tabs[0].id);
+  switchTab('exam');
 }
 
 function switchTab(id){
   document.querySelectorAll('.lt').forEach(t=>t.classList.remove('on'));
   const btn=document.getElementById(`tab-${id}`);
   if(btn)btn.classList.add('on');
-  if(id==='exam')    renderExam();
-  else if(id==='video')   renderVideoPlayer();
-  else if(id==='content') renderContent();
+  if(id==='exam') renderExam();
+  else if(id==='homework') renderHomework();
+  else if(id==='pdf') renderPDF();
+  else if(id==='video') renderVideoPlayer();
 }
 
 /* ── EXAM ── */
@@ -967,22 +994,44 @@ async function renderVideoPlayer(){
   _curPart=0; buildPlayer();
 }
 
-/* ── CONTENT ── */
-function renderContent(){
+/* ── HOMEWORK / PDF ── */
+function renderHomework(){
   const tc=document.getElementById('tab-content');
-  if(!CONTENT.length){tc.innerHTML='<div class="empty-pg"><span style="font-size:2.5rem">📭</span><div>لا يوجد محتوى</div></div>';return;}
-  const icons={youtube:'🎥 فيديو',pdf:'📄 ملف PDF',image:'🖼️ صورة',text:'📝 نص'};
-  tc.innerHTML=`<div class="content-section gl">
-    ${CONTENT.map(ct=>{
-      let body='';
-      if(ct.type==='youtube'){const v=ytId(ct.url||'');body=v?`<div style="position:relative;width:100%;aspect-ratio:16/9"><iframe style="width:100%;height:100%;border:none;border-radius:var(--r-sm)" src="https://www.youtube.com/embed/${v}?rel=0" allowfullscreen></iframe></div>`:`<div style="color:var(--t3);padding:10px">رابط غير صحيح</div>`;}
-      else if(ct.type==='pdf')body=`<a class="pdf-link" href="${ct.url}" target="_blank">📄 ${ct.title||'فتح الملف'} ←</a>`;
-      else if(ct.type==='image')body=`<img class="img-c" src="${ct.url}" alt="${ct.title||''}">`;
-      else if(ct.type==='text')body=`<div class="txt-c">${(ct.body||'').replace(/\n/g,'<br>')}</div>`;
-      return`<div class="content-item"><div class="ci-head">${icons[ct.type]||ct.type}${ct.title?` — ${ct.title}`:''}</div><div class="ci-body">${body}</div></div>`;
-    }).join('')}
+  const items=getHomeworkItems();
+  if(!items.length){
+    tc.innerHTML='<div class="empty-pg"><span style="font-size:2.8rem">📌</span><div style="font-weight:900">لا يوجد واجب لهذه الحصة</div><div style="font-size:.85rem;color:var(--t3)">لما المدرس يضيف واجب هيظهر هنا</div></div>';
+    return;
+  }
+  tc.innerHTML=`<div class="homework-grid">
+    ${items.map((ct,i)=>`
+      <div class="homework-card gl">
+        <span class="hw-ico">📌</span>
+        <div class="hw-title">${ct.title||('واجب ' + (i+1))}</div>
+        ${ct.url?`<a class="pdf-link" href="${ct.url}" target="_blank" style="margin-top:10px">فتح المرفق ←</a>`:''}
+        ${ct.body?`<div class="hw-body">${String(ct.body).replace(/\n/g,'<br>')}</div>`:''}
+        ${!ct.url&&!ct.body?`<div class="hw-sub">لا توجد تفاصيل إضافية</div>`:''}
+      </div>`).join('')}
   </div>`;
 }
+
+function renderPDF(){
+  const tc=document.getElementById('tab-content');
+  const items=getPdfItems();
+  if(!items.length){
+    tc.innerHTML='<div class="empty-pg"><span style="font-size:2.8rem">📄</span><div style="font-weight:900">لا يوجد PDF لهذه الحصة</div><div style="font-size:.85rem;color:var(--t3)">أي ملف PDF هيتضاف من لوحة المدرس هيظهر هنا</div></div>';
+    return;
+  }
+  tc.innerHTML=`<div class="pdf-grid">
+    ${items.map((ct,i)=>`
+      <a class="pdf-card gl" href="${ct.url||'#'}" target="_blank">
+        <span class="pdf-ico">📄</span>
+        <div class="pdf-title">${ct.title||('ملف PDF ' + (i+1))}</div>
+        <div class="pdf-sub">اضغط لفتح أو تحميل الملف</div>
+      </a>`).join('')}
+  </div>`;
+}
+
+function renderContent(){ renderPDF(); }
 
 function showError(msg){
   document.getElementById('main').innerHTML=`
