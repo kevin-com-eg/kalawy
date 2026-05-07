@@ -710,7 +710,7 @@ const BG_DARK=['linear-gradient(135deg,#1a4a35,#0d2820)','linear-gradient(135deg
 const BG_LIGHT=['linear-gradient(135deg,#d4f5e9,#a8ebd2)','linear-gradient(135deg,#d4e8f5,#a8d4f0)','linear-gradient(135deg,#f5e8d4,#f0d4a8)','linear-gradient(135deg,#e8d4f5,#d4a8f0)','linear-gradient(135deg,#f5d4e8,#f0a8d4)','linear-gradient(135deg,#d4f0f5,#a8e4f0)'];
 
 let ME=null, _lang='ar', _theme='light';
-let _enrolled=new Set(), _cart=[];
+let _enrolled=new Set(), _unlockedLessons=new Set(), _cart=[];
 let _sel={sub:null,tch:null,ch:null};
 
 // ── theme & lang ──────────────────────────────────────────────────────────────
@@ -823,7 +823,7 @@ async function init(user){
     sb.from('students').select('grade_id').eq('id',user.id).single(),
   ]);
   ME={id:user.id,email:user.email||p?.email||'',full_name:p?.full_name||'',phone:p?.phone||'',grade_id:st?.grade_id};
-  try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
+  try{_cart=JSON.parse(localStorage.getItem(`kw-lesson-cart-${ME.id}`)||'[]');}catch{_cart=[];}
   document.getElementById('loginGate')?.remove();
   document.getElementById('mainNav').style.display='flex';
   document.getElementById('edBcStrip').style.display='block';
@@ -857,17 +857,21 @@ function updateCartBadge(){
   if(_cart.length){b.textContent=_cart.length;b.classList.remove('hidden');}
   else b.classList.add('hidden');
 }
-function saveCart(){localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(_cart));}
+function saveCart(){localStorage.setItem(`kw-lesson-cart-${ME.id}`,JSON.stringify(_cart));}
 
 // ── enrollments ───────────────────────────────────────────────────────────────
 async function loadEnrollments(){
-  const{data}=await sb.from('chapter_enrollments').select('chapter_id').eq('student_id',ME.id);
-  _enrolled=new Set((data||[]).map(e=>e.chapter_id));
-  se('st-ch',_enrolled.size);se('pr-ch',_enrolled.size);
-  if(_enrolled.size){
-    const{count}=await sb.from('lessons').select('id',{count:'exact',head:true}).in('chapter_id',[..._enrolled]).eq('is_active',true);
-    se('st-ls',count||0);
-  }
+  // النظام الجديد: فتح الحصص يكون بالكود لكل حصة، والشابتر يفتح عادي بدون اشتراك.
+  const { data: unlocked } = await sb.from('lesson_codes').select('lesson_id').eq('used_by', ME.id);
+  _unlockedLessons = new Set((unlocked||[]).map(x=>x.lesson_id).filter(Boolean));
+
+  // نسيب chapter_enrollments للقديم فقط عشان مايكسرش البروفايل لو فيه بيانات قديمة.
+  const { data: oldEnr } = await sb.from('chapter_enrollments').select('chapter_id').eq('student_id', ME.id);
+  _enrolled = new Set((oldEnr||[]).map(e=>e.chapter_id));
+
+  se('st-ch', _unlockedLessons.size);
+  se('pr-ch', _unlockedLessons.size);
+  se('st-ls', _unlockedLessons.size);
 }
 
 // ── pages ─────────────────────────────────────────────────────────────────────
@@ -965,53 +969,51 @@ async function selTch(id,name){
   const cnt={};(lc||[]).forEach(l=>{cnt[l.chapter_id]=(cnt[l.chapter_id]||0)+1;});
   const bks=['📘','📗','📙','📕','📓','📔'];
   g.innerHTML=data.map((ch,i)=>{
-    const owned=_enrolled.has(ch.id);
-    const inCart=_cart.some(c=>c.id===ch.id);
-    const price=Number(ch.price)||0;
     const lcnt=cnt[ch.id]||0;
     const lcntStr=_lang==='ar'?`${lcnt} محاضرات`:`${lcnt} lectures`;
     const chNum=ch.title||(_lang==='ar'?`الشابتر ${i+1}`:`Chapter ${i+1}`);
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
     const thumb=ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="${ch.title}" onerror="imgErr(this,'📖')" loading="lazy">`:`<div style="width:100%;height:100%;background:${grad};display:flex;align-items:center;justify-content:center;font-size:2.8rem">${bks[i%bks.length]}</div>`;
-    let btn='';
-    if(owned)btn=`<button class="ch-btn ch-btn-owned">✅ ${_lang==='ar'?'مشترك':'Enrolled'}</button>`;
-    else if(inCart)btn=`<button class="ch-btn ch-btn-incart" onclick="event.stopPropagation();rmCart('${ch.id}')">🛒 ${_lang==='ar'?'في السلة ×':'In Cart ×'}</button>`;
-    else if(price===0)btn=`<button class="ch-btn ch-btn-free" onclick="event.stopPropagation();enrollFree('${ch.id}','${ch.title}')">🎁 ${_lang==='ar'?'اشترك مجاناً':'Enroll Free'}</button>`;
-    else btn=`<button class="ch-btn ch-btn-paid" onclick="event.stopPropagation();addCart(${JSON.stringify(ch).replace(/"/g,'&quot;')})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
-    return`<div class="ch-card ${owned?'owned':''}" onclick="selChapter('${ch.id}','${ch.title}',${owned})">
+    const btn=`<button class="ch-btn ch-btn-enter" onclick="event.stopPropagation();selChapter('${ch.id}','${ch.title}')">${_lang==='ar'?'افتح الحصص':'Open Lessons'}</button>`;
+    return`<div class="ch-card" onclick="selChapter('${ch.id}','${ch.title}')">
       <div class="ch-top">${chNum}</div>
       <div class="ch-img-area"><div class="ch-img-box">${thumb}</div></div>
       <div class="ch-bottom">
         <div class="ch-title-main">${ch.title}</div>
         <div class="ch-count">${lcntStr}</div>
-        ${!owned&&price>0?`<div><span class="ch-price-pill price-paid">${price} ج.م</span></div>`:''}
         <div class="cc-action" style="margin-top:8px">${btn}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-async function selChapter(id,title,owned){
-  if(!owned){toast('w',_lang==='ar'?'لازم تشترك في الشابتر الأول':'Enroll in this chapter first');return;}
+async function selChapter(id,title){
+  // الشابتر يفتح عادي، لكن كل حصة تتفتح بكودها.
   _sel.ch={id,title};showStep('ls');
   se('ttl-ls',`🎬 ${title}`);
   se('ttl-ls-sub',`${_sel.sub.name} — ${_sel.tch.name}`);
   const list=document.getElementById('ls-list');
   list.innerHTML='<div class="loading"><div class="ld"></div></div>';
+  await loadEnrollments();
   const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id',id).order('created_at');
   if(!data?.length){list.innerHTML='<div class="empty-state"><div class="empty-ico">🎬</div><div>لا توجد حصص</div></div>';return;}
   const now=new Date();
   list.innerHTML=data.map((l,i)=>{
     const sched=l.scheduled_at?new Date(l.scheduled_at):null;
     const future=sched&&sched>now;
-    const canClick=l.is_active&&!future;
-    const thumb=l.image_url?`<div class="ls-thumb"><img src="${imgSafe(l.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy"></div>`:`<div class="ls-thumb">${future?'⏰':l.is_active?'🎬':'🔒'}</div>`;
+    const unlocked=_unlockedLessons.has(l.id);
+    const inCart=_cart.some(c=>c.id===l.id);
+    const canOpen=l.is_active&&!future&&unlocked;
+    const active=l.is_active&&!future;
+    const thumb=l.image_url?`<div class="ls-thumb"><img src="${imgSafe(l.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy"></div>`:`<div class="ls-thumb">${future?'⏰':unlocked?'🎬':'🔑'}</div>`;
     const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
     let action='';
-    if(!l.is_active)action=`<span class="chip c-gray">${_lang==='ar'?'غير متاح':'Unavailable'}</span>`;
-    else if(future)action=`<div class="time-chip tc-f">⏰ ${ts}</div>`;
-    else action=`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`;
-    return`<div class="ls-row ${canClick?'click':future||!l.is_active?'locked':''}" ${canClick?`onclick="goLesson('${l.id}')"`:'style="cursor:not-allowed"'}>
+    if(!l.is_active) action=`<span class="chip c-gray">${_lang==='ar'?'غير متاح':'Unavailable'}</span>`;
+    else if(future) action=`<div class="time-chip tc-f">⏰ ${ts}</div>`;
+    else if(unlocked) action=`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`;
+    else if(inCart) action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();rmCart('${l.id}')">🛒 ${_lang==='ar'?'في السلة ×':'In Cart ×'}</button>`;
+    else action=`<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;')})">🛒 ${_lang==='ar'?'أضف للسلة':'Add to Cart'}</button>`;
+    return`<div class="ls-row ${canOpen?'click':active?'':'locked'}" ${canOpen?`onclick="goLesson('${l.id}')"`:'style="cursor:default"'}>
       ${thumb}
       <div class="ls-body">
         <div class="ls-info">
@@ -1029,145 +1031,115 @@ async function selChapter(id,title,owned){
 function goLesson(lessonId){window.location.href=`/lesson/?id=${lessonId}`;}
 
 // ── cart ──────────────────────────────────────────────────────────────────────
-function addCart(ch){
-  if(_enrolled.has(ch.id)){toast('w',_lang==='ar'?'أنت مشترك بالفعل':'Already enrolled');return;}
-  if(_cart.some(c=>c.id===ch.id)){toast('i',_lang==='ar'?'موجود في السلة':'Already in cart');return;}
-  _cart.push(ch);saveCart();updateCartBadge();
-  toast('s',`${_lang==='ar'?'تم إضافة':'Added'} "${ch.title}" 🛒`);
-  selTch(_sel.tch.id,_sel.tch.name);
+function addCart(lesson){
+  if(_unlockedLessons.has(lesson.id)){toast('w',_lang==='ar'?'الحصة مفتوحة بالفعل':'Lesson already unlocked');return;}
+  if(_cart.some(c=>c.id===lesson.id)){toast('i',_lang==='ar'?'موجودة في السلة':'Already in cart');return;}
+  _cart.push(lesson);saveCart();updateCartBadge();
+  toast('s',`${_lang==='ar'?'تم إضافة الحصة':'Added lesson'} "${lesson.title}" 🛒`);
+  if(_sel.ch) selChapter(_sel.ch.id,_sel.ch.title);
 }
-function rmCart(chId){
-  _cart=_cart.filter(c=>c.id!==chId);saveCart();updateCartBadge();
+function rmCart(lessonId){
+  _cart=_cart.filter(c=>c.id!==lessonId);saveCart();updateCartBadge();
   toast('i',_lang==='ar'?'تم الإزالة':'Removed');
   if(document.getElementById('pg-cart').classList.contains('on'))renderCart();
-  if(_sel.tch)selTch(_sel.tch.id,_sel.tch.name);
+  if(_sel.ch) selChapter(_sel.ch.id,_sel.ch.title);
 }
 async function enrollFree(chId,chTitle){
-  const{error}=await sb.from('chapter_enrollments').insert({student_id:ME.id,chapter_id:chId});
-  if(error&&!error.message.includes('unique')){toast('e',error.message);return;}
-  _enrolled.add(chId);await loadEnrollments();
-  toast('s',`🎉 ${_lang==='ar'?'تم الاشتراك في':'Enrolled in'} "${chTitle}"!`);
-  selTch(_sel.tch.id,_sel.tch.name);
+  toast('i',_lang==='ar'?'الاشتراك الآن بالكود لكل حصة من السلة':'Lessons are unlocked by code from cart');
+  selChapter(chId,chTitle);
 }
 
 function renderCart(){
   const c=document.getElementById('cart-content');
   if(!_cart.length){c.innerHTML=`<div class="empty-state"><div class="empty-ico">🛒</div><div>${_lang==='ar'?'السلة فارغة':'Cart is empty'}</div></div>`;return;}
-  const total=_cart.reduce((s,ch)=>s+(Number(ch.price)||0),0);
-  const coItems=_cart.map(ch=>`
+  const coItems=_cart.map(ls=>`
     <div class="co-item">
-      <div class="co-item-name">${ch.title} — <strong style="color:var(--green2)">${Number(ch.price)||0} ج.م</strong></div>
+      <div class="co-item-name">${ls.title}${ls.chapter_title?` — <span style="color:var(--t3)">${ls.chapter_title}</span>`:''}</div>
       <div class="co-row-inp">
-        <input class="co-inp" id="pc-${ch.id}" placeholder="${_lang==='ar'?'كود الدفع':'Payment Code'}" maxlength="24" oninput="this.value=this.value.toUpperCase()">
-        <button class="btn btn-primary btn-sm" onclick="checkoutCh('${ch.id}','${ch.title}')" id="cobtn-${ch.id}">✓</button>
-        <button class="btn btn-danger btn-sm" onclick="rmCart('${ch.id}')">×</button>
+        <input class="co-inp" id="pc-${ls.id}" placeholder="${_lang==='ar'?'كود الحصة':'Lesson Code'}" maxlength="24" oninput="this.value=this.value.toUpperCase()">
+        <button class="btn btn-primary btn-sm" onclick="checkoutLesson('${ls.id}','${ls.title}')" id="cobtn-${ls.id}">✓</button>
+        <button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">×</button>
       </div>
     </div>`).join('');
   c.innerHTML=`<div class="cart-layout">
     <div class="cart-items">
-      ${_cart.map(ch=>{
-        const t=ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="" style="width:70px;height:55px;object-fit:cover" onerror="imgErr(this,'📖')" loading="lazy">`:`📖`;
+      ${_cart.map(ls=>{
+        const t=ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:70px;height:55px;object-fit:cover" onerror="imgErr(this,'🎬')" loading="lazy">`:`🎬`;
         return`<div class="cart-item">
           <div class="ci-thumb">${t}</div>
-          <div class="ci-info"><div class="ci-name">${ch.title}</div><div class="ci-sub">${ch.description||''}</div></div>
-          <div class="ci-price">${Number(ch.price)||0} ج.م</div>
-          <button class="btn btn-danger btn-sm" onclick="rmCart('${ch.id}')">×</button>
+          <div class="ci-info"><div class="ci-name">${ls.title}</div><div class="ci-sub">${ls.chapter_title||''}</div></div>
+          <button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">×</button>
         </div>`;
       }).join('')}
     </div>
     <div class="co-card">
-      <div class="co-ttl">🧾 ${_lang==='ar'?'إتمام الشراء':'Checkout'}</div>
-      <div class="co-row"><span>${_lang==='ar'?'الشابترات':'Chapters'}</span><span>${_cart.length}</span></div>
-      <div class="co-total"><span>${_lang==='ar'?'الإجمالي':'Total'}</span><span class="val">${total} ج.م</span></div>
+      <div class="co-ttl">🔑 ${_lang==='ar'?'فتح الحصص بالكود':'Unlock Lessons'}</div>
+      <div class="co-row"><span>${_lang==='ar'?'الحصص':'Lessons'}</span><span>${_cart.length}</span></div>
+      <div class="co-total"><span>${_lang==='ar'?'الإجمالي':'Total'}</span><span class="val">${_lang==='ar'?'كود لكل حصة':'Code per lesson'}</span></div>
       <div class="co-items">
-        <div style="font-size:.74rem;color:var(--t3);margin-bottom:8px">${_lang==='ar'?'ادفع خارج وجيب كود من المسؤول':'Pay outside and get a code from admin'}</div>
+        <div style="font-size:.74rem;color:var(--t3);margin-bottom:8px">${_lang==='ar'?'ادخل كود الحصة اللي أخدته من المدرس / الأدمن':'Enter the lesson code from admin / teacher'}</div>
         ${coItems}
       </div>
     </div>
   </div>`;
 }
 
-async function checkoutCh(chId,chTitle){
-  const inp=document.getElementById(`pc-${chId}`);
+async function checkoutLesson(lessonId,lessonTitle){
+  const inp=document.getElementById(`pc-${lessonId}`);
   const code=inp?.value.trim().toUpperCase();
-  const btn=document.getElementById(`cobtn-${chId}`);
-  if(!code)return toast('w',`${_lang==='ar'?'ادخل كود':'Enter code for'} "${chTitle}"`);
+  const btn=document.getElementById(`cobtn-${lessonId}`);
+  if(!code)return toast('w',`${_lang==='ar'?'ادخل كود الحصة':'Enter lesson code for'} "${lessonTitle}"`);
   btn.innerHTML='<span class="ld"></span>';btn.disabled=true;
-  const{data:row,error}=await sb.from('payment_codes').select('id,chapter_id,used_by').eq('code',code).single();
+  const{data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).single();
   if(error||!row){toast('e',_lang==='ar'?'الكود مش صح':'Invalid code');btn.innerHTML='✓';btn.disabled=false;return;}
-  if(row.chapter_id!==chId){toast('e',_lang==='ar'?'هذا الكود لشابتر تاني':'Wrong chapter code');btn.innerHTML='✓';btn.disabled=false;return;}
+  if(row.lesson_id!==lessonId){toast('e',_lang==='ar'?'هذا الكود لحصة تانية':'Wrong lesson code');btn.innerHTML='✓';btn.disabled=false;return;}
   if(row.used_by){toast('e',_lang==='ar'?'الكود اتستخدم قبل كده':'Code already used');btn.innerHTML='✓';btn.disabled=false;return;}
-  await sb.from('payment_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
-  await sb.from('chapter_enrollments').insert({student_id:ME.id,chapter_id:chId});
-  _enrolled.add(chId);_cart=_cart.filter(c=>c.id!==chId);saveCart();
+  const{error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
+  if(upErr){toast('e',upErr.message);btn.innerHTML='✓';btn.disabled=false;return;}
+  _unlockedLessons.add(lessonId);_cart=_cart.filter(c=>c.id!==lessonId);saveCart();
   await loadEnrollments();
-  toast('s',`🎉 ${_lang==='ar'?'تم الاشتراك في':'Enrolled in'} "${chTitle}"!`,5000);
+  toast('s',`🎉 ${_lang==='ar'?'تم فتح الحصة':'Lesson unlocked'} "${lessonTitle}"`,5000);
   updateCartBadge();renderCart();
+  if(_sel.ch) selChapter(_sel.ch.id,_sel.ch.title);
 }
 
 // ── my lessons ────────────────────────────────────────────────────────────────
 async function loadMyLessons(){
   const el=document.getElementById('my-list');
   el.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="ld"></div></div>';
-  if(!_enrolled.size){el.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">📚</div><div>لم تشترك في أي شابتر بعد</div></div>';return;}
-  const{data}=await sb.from('chapters').select('id,title,image_url,subjects(name_ar),profiles(full_name)').in('id',[..._enrolled]);
-  el.innerHTML=(data||[]).map((ch,i)=>{
+  await loadEnrollments();
+  if(!_unlockedLessons.size){el.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div>لم تفتح أي حصة بالكود بعد</div></div>';return;}
+  const ids=[..._unlockedLessons];
+  const{data}=await sb.from('lessons').select('id,title,description,image_url,chapters(title,subjects(name_ar),profiles(full_name))').in('id',ids).eq('is_active',true).order('created_at');
+  el.innerHTML=(data||[]).map((ls,i)=>{
     const grad=_theme==='dark'?BG_DARK[i%BG_DARK.length]:BG_LIGHT[i%BG_LIGHT.length];
-    return`<div class="my-card" onclick="openMyCh('${ch.id}','${ch.title}')">
-      <div class="my-img" style="background:${grad}">${ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="" onerror="imgErr(this,'📖')" loading="lazy">`:'📖'}</div>
+    return`<div class="my-card" onclick="goLesson('${ls.id}')">
+      <div class="my-img" style="background:${grad}">${ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy">`:'🎬'}</div>
       <div class="my-bd">
-        <div class="my-ttl">${ch.title}</div>
-        <div class="my-sub">${ch.subjects?.name_ar||''} — ${ch.profiles?.full_name||''}</div>
-        <div style="margin-top:8px"><span class="chip c-green">✅ ${_lang==='ar'?'مشترك':'Enrolled'}</span></div>
+        <div class="my-ttl">${ls.title}</div>
+        <div class="my-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div>
+        <div style="margin-top:8px"><span class="chip c-green">✅ ${_lang==='ar'?'مفتوحة':'Unlocked'}</span></div>
       </div>
     </div>`;
-  }).join('');
+  }).join('')||'<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div>لا توجد حصص مفتوحة</div></div>';
 }
 
 async function openMyCh(chId,chTitle){
-  _sel.ch={id:chId,title:chTitle};
-  goPage('browse');showStep('ls');
-  se('ttl-ls',`🎬 ${chTitle}`);se('ttl-ls-sub','');
-  const list=document.getElementById('ls-list');
-  list.innerHTML='<div class="loading"><div class="ld"></div></div>';
-  const{data}=await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id',chId).eq('is_active',true).order('created_at');
-  if(!data?.length){list.innerHTML='<div class="empty-state"><div class="empty-ico">🎬</div><div>لا توجد حصص</div></div>';return;}
-  const now=new Date();
-  list.innerHTML=data.map((l,i)=>{
-    const sched=l.scheduled_at?new Date(l.scheduled_at):null;
-    const future=sched&&sched>now;
-    const ts=sched?sched.toLocaleString(_lang==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
-    const canClick=!future;
-    const thumb=l.image_url?`<div class="ls-thumb"><img src="${imgSafe(l.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy"></div>`:`<div class="ls-thumb">🎬</div>`;
-    return`<div class="ls-row ${canClick?'click':'locked'}" ${canClick?`onclick="goLesson('${l.id}')"`:'style="cursor:not-allowed"'}>
-      ${thumb}
-      <div class="ls-body">
-        <div class="ls-info">
-          <div class="ls-num">${_lang==='ar'?`الحصة ${i+1}`:`Lesson ${i+1}`}</div>
-          <div class="ls-title">${l.title}</div>
-          ${l.description?`<div class="ls-desc">${l.description}</div>`:''}
-        </div>
-        <div class="ls-actions">
-          ${future?`<div class="time-chip tc-f">⏰ ${ts}</div>`:`<span class="chip c-green">▶️ ${_lang==='ar'?'ادخل':'Enter'}</span>`}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+  // بقايا النظام القديم: لو اتناديت، افتح الشابتر عادي.
+  selChapter(chId,chTitle);
 }
 
 // ── profile ───────────────────────────────────────────────────────────────────
 async function loadProfileEnrolled(){
   const el=document.getElementById('pr-enrolled');
   el.innerHTML='<div class="loading"><div class="ld"></div></div>';
-  const{data}=await sb.from('chapter_enrollments').select('chapter_id,chapters(id,title,subjects(name_ar))').eq('student_id',ME.id).order('enrolled_at',{ascending:false});
-  if(!data?.length){el.innerHTML='<div class="empty-state"><div class="empty-ico">📚</div><div>لا توجد شابترات</div></div>';return;}
-  el.innerHTML=(data||[]).map(e=>{
-    const ch=e.chapters;if(!ch)return '';
-    return`<div class="enr-item" onclick="openMyCh('${ch.id}','${ch.title}');goPage('browse')">
-      <div><div class="enr-ttl">${ch.title}</div><div class="enr-sub">${ch.subjects?.name_ar||''}</div></div>
+  await loadEnrollments();
+  if(!_unlockedLessons.size){el.innerHTML='<div class="empty-state"><div class="empty-ico">🔑</div><div>لا توجد حصص مفتوحة بالكود</div></div>';return;}
+  const{data}=await sb.from('lessons').select('id,title,chapters(title,subjects(name_ar))').in('id',[..._unlockedLessons]).eq('is_active',true);
+  el.innerHTML=(data||[]).map(ls=>`<div class="enr-item" onclick="goLesson('${ls.id}')">
+      <div><div class="enr-ttl">${ls.title}</div><div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div></div>
       <span class="chip c-green">${_lang==='ar'?'فتح →':'Open →'}</span>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
 function openEdit(){
   document.getElementById('ed-nm').value=ME.full_name||'';
