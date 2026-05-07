@@ -63,6 +63,7 @@ and access lessons easily">ذاكر أسرع<br>وادخل حصصك بسهولة
         <div class="field"><label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label><input class="inp" id="email" type="email" dir="ltr" placeholder="example@email.com"></div>
         <div class="field"><label data-ar="كلمة السر" data-en="Password">كلمة السر</label><input class="inp" id="password" type="password" dir="ltr" placeholder="••••••••"></div>
         <div class="field"><label data-ar="الموبايل" data-en="Phone">الموبايل</label><input class="inp" id="phone" dir="ltr" placeholder="01xxxxxxxxx"></div>
+        <div class="field"><label data-ar="رقم ولي الأمر" data-en="Parent phone">رقم ولي الأمر</label><input class="inp" id="parent_phone" dir="ltr" placeholder="01xxxxxxxxx"></div>
         <div class="field"><label data-ar="الصف" data-en="Grade">الصف</label>
           <select class="inp" id="grade">
             <option value="" data-ar="اختار الصف" data-en="Select grade">اختار الصف</option>
@@ -107,17 +108,18 @@ async function doSignup(){
   const email=document.getElementById('email').value.trim();
   const password=document.getElementById('password').value;
   const phone=document.getElementById('phone').value.trim();
+  const parent_phone=document.getElementById('parent_phone').value.trim();
   const grade_id=document.getElementById('grade').value;
   const btn=document.getElementById('submitBtn');
   err('');
-  if(!full_name||!email||!password||!grade_id) return err(_lang==='ar'?'ادخل كل البيانات':'Fill all fields');
+  if(!full_name||!email||!password||!parent_phone||!grade_id) return err(_lang==='ar'?'ادخل كل البيانات ورقم ولي الأمر':'Fill all fields and parent phone');
   if(password.length<6) return err(_lang==='ar'?'كلمة السر لازم تكون 6 أحرف أو أكتر':'Password must be at least 6 characters');
   setLoading(btn,_lang==='ar'?' جاري الإنشاء':' Creating');
   const {data,error}=await sb.auth.signUp({email,password});
   if(error){stopLoading(btn);return err(error.message);}
   const uid=data.user?.id;
   if(!uid){stopLoading(btn);return err(_lang==='ar'?'راجع الإيميل للتأكيد ثم سجل دخول':'Check your email then sign in');}
-  const {error:pErr}=await sb.from('profiles').upsert({id:uid,full_name,phone:phone||null,role:'student',email},{onConflict:'id'});
+  const {error:pErr}=await sb.from('profiles').upsert({id:uid,full_name,phone:phone||null,parent_phone:parent_phone||null,role:'student',email},{onConflict:'id'});
   const {error:sErr}=await sb.from('students').upsert({id:uid,grade_id:Number(grade_id)},{onConflict:'id'});
   if(pErr||sErr){stopLoading(btn);return err((pErr||sErr).message);}
   err(_lang==='ar'?'تم إنشاء الحساب، سجل دخول الآن':'Account created, sign in now',true);
