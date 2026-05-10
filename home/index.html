@@ -3,937 +3,734 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kalawy — منصة التعليم</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<title>kalawy – منصة التعليم</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-/* ═══════════════════════════════════════════════
-   KALAWY HOME — Deep Purple Edition
-═══════════════════════════════════════════════ */
-:root {
-  --pu1: #0d0520;
-  --pu2: #160a38;
-  --pu3: #1f1050;
-  --pu4: #2d1880;
-  --acc: #7c3aed;
-  --acc2: #a855f7;
-  --acc3: #c084fc;
-  --grn: #00e688;
-  --grn2: #00b86e;
-  --pk: #e879f9;
-  --txt: #f5f0ff;
-  --muted: #9d8ec4;
-  --border: rgba(124,58,237,.22);
-  --card: rgba(22,10,56,.7);
-  --sh: 0 24px 64px rgba(0,0,0,.45);
-  --r: 18px;
-  --r-lg: 26px;
-  --nav-h: 74px;
-  --tr: all .26s cubic-bezier(.4,0,.2,1);
+/* ── Variables ─────────────────────────────────────────── */
+:root{
+  --p1:#0f0525;--p2:#1e0a45;--p3:#2d1266;
+  --g1:#00e688;--g2:#00b86e;
+  --pk:#ff3ecf;
+  --txt:#0f0525;--muted:#6b6f87;--border:#e3e7f0;
+  --bg:#f7f8fd;--card:#fff;
+  --sh:0 20px 70px rgba(15,5,37,.11);
+  --r:20px;
+  --font-body:'Cairo',sans-serif;
+  --font-display:'Syne',sans-serif;
+}
+html[dir="ltr"]{--font-body:'Syne',sans-serif;--font-display:'Syne',sans-serif;}
+
+/* Dark mode */
+body.dark{
+  --txt:#f0eeff;--muted:#9b9db8;--border:#241750;
+  --bg:#080214;--card:#110930;
+  background:linear-gradient(160deg,#080214 0%,#0e0527 100%);
+}
+body.dark .topbar{background:rgba(8,2,20,.92);border-bottom-color:#241750;}
+body.dark .card-glass{background:rgba(17,9,48,.75);border-color:#241750;}
+body.dark .preview-wrap{background:rgba(17,9,48,.7);border-color:#241750;}
+body.dark .why-card{background:rgba(17,9,48,.8);border-color:#241750;}
+body.dark .contact-box{background:rgba(17,9,48,.8);border-color:#241750;}
+body.dark .footer{background:#040112;border-top-color:#1a0d40;}
+body.dark .footer-logo span{color:var(--g1);}
+body.dark .nav a{color:#ccc8e8;}
+body.dark .chapter-card{background:#0d0626;border-color:#2a175e;}
+body.dark .screen-top{background:linear-gradient(135deg,#1e0a45,#0f0525);}
+body.dark .why-icon{background:rgba(0,230,136,.12);}
+
+/* ── Base ─────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  min-height:100vh;
+  background:linear-gradient(160deg,#fff 0%,var(--bg) 100%);
+  color:var(--txt);
+}
+button,input,a{font:inherit}
+.hidden{display:none!important}
+
+/* ── Topbar ──────────────────────────────────────────── */
+.topbar{
+  height:78px;
+  background:rgba(15,5,37,.97);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,5vw,72px);
+  position:sticky;top:0;z-index:100;
+}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;}
+.mark{
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,#5b21f5,var(--g1) 60%,var(--pk));
+  display:grid;place-items:center;
+  font-weight:900;font-size:1rem;letter-spacing:-.05em;color:#fff;
+  box-shadow:0 8px 22px rgba(0,230,136,.25);
+  font-family:var(--font-display);
+}
+.brand strong{font-size:1.45rem;font-weight:800;color:#fff;font-family:var(--font-display);}
+.brand strong em{color:var(--g1);font-style:normal;}
+
+.nav{display:flex;align-items:center;gap:28px;}
+.nav a{
+  color:rgba(255,255,255,.72);text-decoration:none;
+  font-weight:700;font-size:.93rem;
+  transition:color .18s;
+  position:relative;
+}
+.nav a::after{
+  content:'';position:absolute;bottom:-3px;left:0;right:0;
+  height:2px;background:var(--g1);border-radius:2px;
+  transform:scaleX(0);transform-origin:right;transition:transform .22s;
+}
+html[dir="ltr"] .nav a::after{transform-origin:left;}
+.nav a:hover{color:#fff;}
+.nav a:hover::after{transform:scaleX(1);}
+.nav .soon{opacity:.5;cursor:default;}
+.nav .soon::after{display:none;}
+
+.actions{display:flex;align-items:center;gap:8px;}
+.lang-sw{
+  display:flex;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;padding:3px;
+}
+.lang-sw button{
+  border:none;background:transparent;color:rgba(255,255,255,.55);
+  border-radius:999px;padding:6px 13px;cursor:pointer;
+  font-weight:800;font-size:.82rem;transition:.18s;
+}
+.lang-sw button.on{background:#fff;color:var(--p1);}
+.topbar-btn{
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.07);
+  color:#fff;border-radius:999px;
+  padding:8px 14px;cursor:pointer;
+  font-size:1rem;transition:.18s;
+}
+.topbar-btn:hover{background:rgba(255,255,255,.15);}
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero{
+  position:relative;overflow:hidden;
+  padding:96px clamp(16px,6vw,88px) 80px;
+}
+.hero-bg{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.hero-bg::before{
+  content:'';position:absolute;
+  right:-8%;top:-20%;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(0,230,136,.14),transparent 65%);
+}
+.hero-bg::after{
+  content:'';position:absolute;
+  left:-5%;bottom:-10%;
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(255,62,207,.09),transparent 65%);
+}
+.hero-grid{
+  max-width:1240px;margin:auto;
+  display:grid;grid-template-columns:1fr 460px;
+  gap:52px;align-items:center;position:relative;z-index:1;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 16px;border-radius:999px;
+  background:rgba(0,230,136,.1);border:1px solid rgba(0,230,136,.2);
+  color:var(--g2);font-weight:800;font-size:.84rem;
+  margin-bottom:22px;
+}
+.badge span{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--g1);display:inline-block;
+  animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.6}}
 
-body {
-  font-family: 'Cairo', sans-serif;
-  background: var(--pu1);
-  color: var(--txt);
-  min-height: 100vh;
-  overflow-x: hidden;
+.hero h1{
+  font-size:clamp(2.6rem,5.5vw,5rem);
+  font-weight:900;line-height:1.05;
+  letter-spacing:-.04em;
+  margin-bottom:20px;color:var(--txt);
+  font-family:var(--font-display);
 }
-html[lang="en"] body { font-family: 'Syne', sans-serif; }
+.hero h1 .accent{color:var(--g2);}
+html[dir="ltr"] .hero h1{font-family:var(--font-display);}
 
-/* bg mesh */
-body::before {
-  content: '';
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(124,58,237,.18) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 60% at 10% 90%, rgba(168,85,247,.12) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,230,136,.04) 0%, transparent 70%);
+.hero p{
+  font-size:1.08rem;color:var(--muted);
+  line-height:1.85;max-width:580px;font-weight:600;
 }
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px;}
+.btn{
+  border:none;border-radius:14px;
+  padding:13px 22px;font-weight:800;
+  text-decoration:none;display:inline-flex;
+  align-items:center;gap:8px;cursor:pointer;transition:.2s;
+  font-size:.95rem;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--p2),var(--p3));
+  color:#fff;box-shadow:0 12px 32px rgba(15,5,37,.22);
+}
+.btn-primary:hover{transform:translateY(-2px);filter:brightness(1.1);}
+.btn-outline{
+  background:transparent;color:var(--g2);
+  border:1.5px solid rgba(0,230,136,.35);
+}
+.btn-outline:hover{background:rgba(0,230,136,.09);transform:translateY(-2px);}
 
-a, button, input, textarea, select { font: inherit; }
-.hidden { display: none !important; }
+/* ── Preview Card ─────────────────────────────────────── */
+.preview-wrap{
+  background:rgba(255,255,255,.9);
+  border:1px solid rgba(227,231,240,.9);
+  border-radius:28px;padding:20px;
+  box-shadow:var(--sh);
+  backdrop-filter:blur(20px);
+}
+.screen-top{
+  height:50px;
+  background:linear-gradient(135deg,var(--p2),var(--p1));
+  border-radius:18px 18px 10px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;color:#fff;font-weight:800;
+  margin-bottom:16px;
+}
+.dots{display:flex;gap:5px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);}
 
-/* ═══ NAV ═══════════════════════════════════════ */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-  height: var(--nav-h);
-  background: rgba(13,5,32,.88);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center;
-  padding: 0 clamp(16px,5vw,72px);
-  gap: 20px;
+.chapter-card{
+  background:#f3f4fb;border:1px solid #ecedf5;
+  border-radius:16px;padding:22px 16px;text-align:center;
 }
-
-.nav-brand {
-  display: flex; align-items: center; gap: 10px;
-  text-decoration: none; flex-shrink: 0;
+.chapter-card h3{font-size:1.1rem;color:var(--p1);margin-bottom:12px;font-weight:900;}
+.thumb{
+  height:130px;border-radius:12px;
+  background:linear-gradient(135deg,#050816,#1830a5 54%,#ff236d);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:1.7rem;font-weight:900;
+  letter-spacing:-.03em;margin:0 auto 16px;max-width:210px;
+  font-family:var(--font-display);
 }
-.nav-mark {
-  width: 42px; height: 42px; border-radius: 13px;
-  background: linear-gradient(135deg, var(--acc), var(--acc2), var(--pk));
-  display: grid; place-items: center;
-  font-family: 'Syne', sans-serif;
-  font-weight: 900; font-size: .92rem; color: #fff;
-  box-shadow: 0 6px 20px rgba(124,58,237,.4);
-}
-.nav-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.35rem; font-weight: 800; color: #fff;
-}
-.nav-name em { color: var(--grn); font-style: normal; }
-
-.nav-links {
-  flex: 1; display: flex; align-items: center; gap: 4px;
-  justify-content: center;
-}
-.nav-links a {
-  color: rgba(255,255,255,.6); text-decoration: none;
-  font-weight: 700; font-size: .88rem;
-  padding: 7px 13px; border-radius: 10px; transition: var(--tr);
-}
-.nav-links a:hover { color: #fff; background: rgba(255,255,255,.07); }
-.nav-links a.soon { opacity: .4; cursor: default; }
-.nav-links a.soon:hover { background: transparent; color: rgba(255,255,255,.4); }
-
-.nav-end { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-
-/* lang toggle */
-.lang-sw {
-  display: flex;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 999px; padding: 3px; gap: 2px;
-}
-.lang-sw button {
-  border: none; background: transparent;
-  color: rgba(255,255,255,.5);
-  border-radius: 999px; padding: 5px 12px;
-  cursor: pointer; font-weight: 800; font-size: .78rem; transition: .18s;
-}
-.lang-sw button.on {
-  background: linear-gradient(135deg, var(--acc), var(--acc2));
-  color: #fff;
-  box-shadow: 0 3px 10px rgba(124,58,237,.4);
+.chapter-card b{display:block;font-size:1.1rem;color:var(--p1);margin-bottom:4px;}
+.chapter-card .sub{color:#888;font-weight:700;font-size:.9rem;}
+.notif{
+  margin-top:12px;background:#fff;border:1px solid var(--border);
+  border-radius:12px;padding:10px;color:#888;
+  font-weight:700;font-size:.88rem;
 }
 
-/* theme */
-.theme-btn {
-  width: 36px; height: 36px; border-radius: 10px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.07);
-  color: rgba(255,255,255,.7); cursor: pointer; transition: .18s;
-  display: grid; place-items: center; font-size: 1rem;
+/* ── Section Wrapper ──────────────────────────────────── */
+.section{padding:0 clamp(16px,6vw,88px) 90px;}
+.inner{max-width:1240px;margin:auto;}
+.section-head{text-align:center;margin-bottom:52px;}
+.section-head h2{
+  font-size:clamp(1.9rem,4vw,3rem);font-weight:900;
+  color:var(--txt);letter-spacing:-.04em;margin-bottom:12px;
+  font-family:var(--font-display);
 }
-.theme-btn:hover { background: rgba(255,255,255,.13); color: #fff; }
-
-/* auth buttons */
-.btn-nav {
-  border: none; border-radius: 10px; padding: 8px 16px;
-  font-weight: 800; font-size: .83rem; cursor: pointer; transition: .18s;
-  text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
-}
-.btn-nav-ghost {
-  background: transparent; color: rgba(255,255,255,.7);
-  border: 1px solid rgba(255,255,255,.14);
-}
-.btn-nav-ghost:hover { background: rgba(255,255,255,.07); color: #fff; }
-.btn-nav-solid {
-  background: linear-gradient(135deg, var(--acc), var(--acc2));
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(124,58,237,.38);
-}
-.btn-nav-solid:hover { filter: brightness(1.1); transform: translateY(-1px); }
-
-/* ═══ HERO ═══════════════════════════════════════ */
-.hero {
-  position: relative; z-index: 1;
-  padding: calc(var(--nav-h) + 80px) clamp(16px,6vw,88px) 80px;
-  min-height: 100vh;
-  display: flex; align-items: center;
-}
-.hero-inner {
-  max-width: 1240px; margin: auto; width: 100%;
-  display: grid; grid-template-columns: 1fr 440px;
-  gap: 56px; align-items: center;
+.section-head p{color:var(--muted);font-size:1rem;font-weight:600;max-width:500px;margin:auto;}
+.section-head .line{
+  width:60px;height:4px;border-radius:2px;
+  background:linear-gradient(90deg,var(--g1),var(--pk));
+  margin:16px auto 0;
 }
 
-/* animated bg orb */
-.hero::after {
-  content: '';
-  position: absolute; top: 10%; right: -5%;
-  width: 500px; height: 500px; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(circle, rgba(124,58,237,.16) 0%, transparent 65%);
-  animation: orb 8s ease-in-out infinite;
+/* ── Features / الميزات ──────────────────────────────── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.card-glass{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--r);padding:28px 22px;
+  box-shadow:0 6px 26px rgba(15,5,37,.06);
+  transition:.22s;
 }
-@keyframes orb {
-  0%,100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-30px) scale(1.05); }
+.card-glass:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(15,5,37,.12);}
+.feat-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(0,230,136,.12),rgba(0,230,136,.04));
+  border:1px solid rgba(0,230,136,.18);
+  display:grid;place-items:center;
+  font-size:1.5rem;margin-bottom:16px;
 }
+.card-glass h3{font-size:1.08rem;font-weight:900;color:var(--txt);margin-bottom:8px;}
+.card-glass p{color:var(--muted);line-height:1.7;font-weight:600;font-size:.93rem;}
 
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 7px 16px; border-radius: 999px;
-  background: rgba(124,58,237,.15);
-  border: 1px solid rgba(124,58,237,.35);
-  color: var(--acc3); font-weight: 800; font-size: .83rem;
-  margin-bottom: 24px;
+/* ── Why Us ───────────────────────────────────────────── */
+.why-section{padding:0 clamp(16px,6vw,88px) 90px;}
+.why-grid{
+  max-width:1240px;margin:auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:56px;align-items:center;
 }
-.hero-badge .dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--grn);
-  animation: blink 1.8s ease-in-out infinite;
+.why-text h2{
+  font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;
+  color:var(--txt);letter-spacing:-.04em;margin-bottom:14px;
+  font-family:var(--font-display);line-height:1.1;
 }
-@keyframes blink {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50% { opacity: .5; transform: scale(1.6); }
+.why-text h2 .accent{color:var(--g2);}
+.why-text p{color:var(--muted);line-height:1.85;font-weight:600;font-size:1rem;margin-bottom:28px;}
+.why-list{display:flex;flex-direction:column;gap:14px;}
+.why-item{display:flex;align-items:flex-start;gap:14px;}
+.why-icon{
+  width:42px;height:42px;min-width:42px;border-radius:12px;
+  background:rgba(0,230,136,.1);border:1px solid rgba(0,230,136,.18);
+  display:grid;place-items:center;font-size:1.2rem;
 }
+.why-item-txt h4{font-size:.98rem;font-weight:800;color:var(--txt);margin-bottom:3px;}
+.why-item-txt p{font-size:.88rem;color:var(--muted);font-weight:600;line-height:1.65;}
 
-.hero h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(2.4rem,5vw,4.5rem);
-  font-weight: 900; line-height: 1.06; letter-spacing: -.04em;
-  margin-bottom: 22px;
-  animation: fadeUp .6s ease both;
+.why-cards{display:flex;flex-direction:column;gap:14px;}
+.why-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:18px;padding:22px 20px;
+  display:flex;align-items:center;gap:16px;
+  box-shadow:0 4px 20px rgba(15,5,37,.06);
+  transition:.2s;
 }
-.hero h1 .hi { color: var(--acc3); }
-.hero h1 .grn { color: var(--grn); }
+.why-card:hover{transform:translateX(-4px);box-shadow:0 10px 36px rgba(15,5,37,.1);}
+html[dir="ltr"] .why-card:hover{transform:translateX(4px);}
+.why-card-icon{
+  width:50px;height:50px;min-width:50px;border-radius:14px;
+  display:grid;place-items:center;font-size:1.4rem;
+}
+.wc1{background:linear-gradient(135deg,rgba(0,230,136,.14),rgba(0,230,136,.05));}
+.wc2{background:linear-gradient(135deg,rgba(255,62,207,.12),rgba(255,62,207,.04));}
+.wc3{background:linear-gradient(135deg,rgba(91,33,245,.12),rgba(91,33,245,.04));}
+.wc4{background:linear-gradient(135deg,rgba(255,183,0,.14),rgba(255,183,0,.05));}
+.why-card-txt h4{font-size:.98rem;font-weight:800;color:var(--txt);margin-bottom:3px;}
+.why-card-txt p{font-size:.85rem;color:var(--muted);font-weight:600;}
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: none; }
+/* ── Stats ─────────────────────────────────────────────── */
+.stats-bar{
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  padding:52px clamp(16px,6vw,88px);
+  margin-bottom:80px;
 }
+.stats-inner{
+  max-width:1240px;margin:auto;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:24px;text-align:center;
+}
+.stat-item h3{
+  font-size:2.6rem;font-weight:900;
+  color:#fff;letter-spacing:-.05em;
+  font-family:var(--font-display);
+}
+.stat-item h3 span{color:var(--g1);}
+.stat-item p{color:rgba(255,255,255,.55);font-weight:700;font-size:.9rem;margin-top:4px;}
 
-.hero-desc {
-  font-size: 1.05rem; color: var(--muted);
-  line-height: 1.9; font-weight: 600; max-width: 520px;
-  margin-bottom: 34px;
-  animation: fadeUp .6s .12s ease both;
+/* ── Contact / اتصل بنا ──────────────────────────────── */
+.contact-section{padding:0 clamp(16px,6vw,88px) 90px;}
+.contact-grid{
+  max-width:1240px;margin:auto;
+  display:grid;grid-template-columns:1fr 1.4fr;
+  gap:48px;align-items:start;
 }
-.hero-cta {
-  display: flex; gap: 12px; flex-wrap: wrap;
-  animation: fadeUp .6s .22s ease both;
+.contact-info h2{
+  font-size:clamp(1.7rem,3.2vw,2.6rem);font-weight:900;
+  color:var(--txt);letter-spacing:-.04em;margin-bottom:12px;
+  font-family:var(--font-display);line-height:1.1;
 }
+.contact-info h2 .accent{color:var(--g2);}
+.contact-info p{color:var(--muted);font-weight:600;line-height:1.8;font-size:1rem;margin-bottom:32px;}
 
-.btn {
-  border: none; border-radius: 13px;
-  padding: 13px 22px; font-weight: 800; font-size: .93rem;
-  cursor: pointer; transition: .22s; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px;
+.contact-links{display:flex;flex-direction:column;gap:12px;}
+.c-link{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 18px;border-radius:16px;
+  background:#fff;border:1px solid var(--border);
+  text-decoration:none;color:var(--txt);
+  font-weight:800;font-size:.95rem;
+  box-shadow:0 4px 18px rgba(15,5,37,.05);
+  transition:.2s;
 }
-.btn-primary {
-  background: linear-gradient(135deg, var(--acc), var(--acc2));
-  color: #fff; box-shadow: 0 10px 30px rgba(124,58,237,.35);
+body.dark .c-link{background:rgba(17,9,48,.8);border-color:#241750;color:var(--txt);}
+.c-link:hover{border-color:rgba(0,230,136,.35);transform:translateY(-2px);box-shadow:0 10px 30px rgba(15,5,37,.1);}
+.c-link-icon{
+  width:46px;height:46px;min-width:46px;border-radius:12px;
+  display:grid;place-items:center;font-size:1.35rem;
 }
-.btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
-.btn-outline {
-  background: rgba(124,58,237,.1);
-  color: var(--acc3);
-  border: 1.5px solid rgba(124,58,237,.35);
-}
-.btn-outline:hover { background: rgba(124,58,237,.2); transform: translateY(-2px); }
+.cl-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;}
+.cl-mail{background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff;}
+.cl-tg{background:linear-gradient(135deg,#2aabee,#1a7ac4);color:#fff;}
+.c-link-txt small{display:block;color:var(--muted);font-weight:600;font-size:.78rem;margin-bottom:1px;}
 
-/* ── Hero Card ── */
-.hero-card {
-  background: rgba(22,10,56,.75);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 24px;
-  box-shadow: var(--sh), 0 0 0 1px rgba(124,58,237,.08);
-  backdrop-filter: blur(16px);
-  animation: fadeUp .6s .3s ease both;
-  position: relative; overflow: hidden;
+.contact-box{
+  background:#fff;border:1px solid var(--border);
+  border-radius:24px;padding:32px;
+  box-shadow:var(--sh);
 }
-.hero-card::before {
-  content: '';
-  position: absolute; top: -40px; right: -40px;
-  width: 200px; height: 200px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(124,58,237,.18) 0%, transparent 70%);
-  pointer-events: none;
+.contact-box h3{font-size:1.3rem;font-weight:900;color:var(--txt);margin-bottom:24px;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-weight:800;font-size:.88rem;color:var(--txt);margin-bottom:7px;}
+.form-group input,.form-group textarea{
+  width:100%;padding:12px 16px;
+  border-radius:12px;border:1.5px solid var(--border);
+  background:#f7f8fd;color:var(--txt);
+  font-family:var(--font-body);font-weight:600;font-size:.95rem;
+  transition:.18s;outline:none;resize:none;
 }
-.hc-top {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 18px;
+body.dark .form-group input,body.dark .form-group textarea{
+  background:rgba(255,255,255,.05);border-color:#241750;color:var(--txt);
 }
-.hc-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--acc3); }
-.hc-dots { display: flex; gap: 5px; }
-.hc-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); }
-.hc-dot:first-child { background: var(--acc2); }
+.form-group input:focus,.form-group textarea:focus{
+  border-color:var(--g2);
+  box-shadow:0 0 0 3px rgba(0,230,136,.12);
+}
+.form-group textarea{min-height:110px;}
+.form-btn{
+  width:100%;padding:14px;border:none;border-radius:13px;
+  background:linear-gradient(135deg,var(--p2),var(--p3));
+  color:#fff;font-weight:900;font-size:1rem;cursor:pointer;
+  transition:.2s;
+}
+.form-btn:hover{transform:translateY(-2px);filter:brightness(1.08);}
 
-.hc-thumb {
-  height: 140px; border-radius: 14px;
-  background: linear-gradient(135deg, var(--pu3), var(--acc) 50%, var(--pk));
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 900; color: #fff;
-  letter-spacing: -.04em; margin-bottom: 16px;
-  box-shadow: 0 8px 24px rgba(124,58,237,.3);
+/* ── Footer ───────────────────────────────────────────── */
+.footer{
+  background:#07010f;
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:56px clamp(16px,6vw,88px) 28px;
+  color:rgba(255,255,255,.65);
 }
-.hc-title { font-weight: 900; font-size: 1.05rem; margin-bottom: 4px; }
-.hc-sub { font-size: .84rem; color: var(--muted); font-weight: 600; margin-bottom: 14px; }
-.hc-notif {
-  background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.2);
-  border-radius: 11px; padding: 10px 14px;
-  font-size: .83rem; color: var(--muted); font-weight: 700;
+.footer-grid{
+  max-width:1240px;margin:auto;
+  display:grid;grid-template-columns:1.8fr 1fr 1fr;
+  gap:48px;margin-bottom:44px;
 }
+.footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
+.footer-logo strong{font-size:1.3rem;font-weight:800;color:#fff;font-family:var(--font-display);}
+.footer-logo strong em{color:var(--g1);font-style:normal;}
+.footer-desc{font-size:.9rem;line-height:1.75;font-weight:600;max-width:280px;}
+.footer-socials{display:flex;gap:10px;margin-top:20px;}
+.social-btn{
+  width:38px;height:38px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.06);
+  display:grid;place-items:center;
+  text-decoration:none;font-size:1rem;
+  color:#fff;transition:.18s;
+}
+.social-btn:hover{background:rgba(0,230,136,.15);border-color:rgba(0,230,136,.3);}
 
-/* ═══ SECTION BASE ══════════════════════════════ */
-section { position: relative; z-index: 1; }
-.section { padding: 90px clamp(16px,6vw,88px); }
-.inner { max-width: 1240px; margin: auto; }
+.footer-col h4{font-size:.93rem;font-weight:800;color:#fff;margin-bottom:14px;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.footer-col ul li a{
+  color:rgba(255,255,255,.5);text-decoration:none;
+  font-size:.88rem;font-weight:600;transition:.15s;
+}
+.footer-col ul li a:hover{color:var(--g1);}
 
-.s-head { text-align: center; margin-bottom: 56px; }
-.s-head h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(1.9rem,4vw,2.9rem);
-  font-weight: 900; letter-spacing: -.04em; margin-bottom: 12px;
+.footer-bottom{
+  max-width:1240px;margin:auto;
+  padding-top:22px;border-top:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.84rem;flex-wrap:wrap;gap:10px;
 }
-.s-head h2 .hi { color: var(--acc3); }
-.s-head p { color: var(--muted); font-size: 1rem; font-weight: 600; max-width: 500px; margin: auto; line-height: 1.75; }
-.s-line {
-  width: 56px; height: 4px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--acc), var(--pk));
-  margin: 16px auto 0;
-}
+.footer-bottom a{color:var(--g1);text-decoration:none;font-weight:700;}
 
-/* ═══ FEATURES ══════════════════════════════════ */
-.feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-.feat-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 30px 24px;
-  transition: var(--tr);
-  position: relative; overflow: hidden;
+/* ── WhatsApp Float ───────────────────────────────────── */
+.wa-float{
+  position:fixed;bottom:28px;
+  right:28px;
+  z-index:200;
+  width:58px;height:58px;border-radius:18px;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  display:grid;place-items:center;
+  box-shadow:0 8px 28px rgba(37,211,102,.4);
+  text-decoration:none;color:#fff;font-size:1.7rem;
+  transition:.2s;
+  animation:float 3s ease-in-out infinite;
 }
-.feat-card::after {
-  content: '';
-  position: absolute; bottom: -30px; right: -30px;
-  width: 120px; height: 120px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(124,58,237,.12) 0%, transparent 70%);
-  pointer-events: none;
-}
-.feat-card:hover { transform: translateY(-5px); border-color: rgba(124,58,237,.4); box-shadow: 0 20px 50px rgba(0,0,0,.3); }
-.feat-ico {
-  width: 54px; height: 54px; border-radius: 15px;
-  background: linear-gradient(135deg, rgba(124,58,237,.2), rgba(168,85,247,.1));
-  border: 1px solid rgba(124,58,237,.25);
-  display: grid; place-items: center; font-size: 1.5rem;
-  margin-bottom: 18px;
-}
-.feat-card h3 { font-size: 1.05rem; font-weight: 900; margin-bottom: 10px; }
-.feat-card p { color: var(--muted); font-size: .9rem; font-weight: 600; line-height: 1.75; }
+html[dir="ltr"] .wa-float{right:28px;left:auto;}
+.wa-float:hover{transform:scale(1.1);box-shadow:0 12px 36px rgba(37,211,102,.5);}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 
-/* ═══ STATS ══════════════════════════════════════ */
-.stats-band {
-  background: linear-gradient(135deg, var(--pu2), var(--pu3));
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 64px clamp(16px,6vw,88px);
+/* ── Responsive ───────────────────────────────────────── */
+@media(max-width:1024px){
+  .hero-grid{grid-template-columns:1fr;}
+  .preview-wrap{max-width:500px;margin:auto;}
+  .why-grid{grid-template-columns:1fr;}
+  .why-text{order:1;}.why-cards{order:2;}
+  .contact-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .stats-inner{grid-template-columns:repeat(2,1fr);}
+  .feat-grid{grid-template-columns:1fr 1fr;}
 }
-.stats-grid {
-  max-width: 1240px; margin: auto;
-  display: grid; grid-template-columns: repeat(4,1fr);
-  gap: 24px; text-align: center;
-}
-.stat-item {}
-.stat-item h3 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(2.2rem,4vw,3rem);
-  font-weight: 900; letter-spacing: -.05em; line-height: 1;
-  background: linear-gradient(135deg, var(--acc3), var(--pk));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 6px;
-}
-.stat-item p { color: var(--muted); font-weight: 700; font-size: .88rem; }
-
-/* ═══ WHY US ════════════════════════════════════ */
-.why-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 64px; align-items: center;
-}
-.why-text h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(1.8rem,3.5vw,2.8rem);
-  font-weight: 900; letter-spacing: -.04em; line-height: 1.1;
-  margin-bottom: 16px;
-}
-.why-text h2 .hi { color: var(--acc3); }
-.why-text > p { color: var(--muted); font-size: 1rem; font-weight: 600; line-height: 1.85; margin-bottom: 32px; }
-.why-list { display: flex; flex-direction: column; gap: 16px; }
-.why-item { display: flex; align-items: flex-start; gap: 14px; }
-.why-ico {
-  width: 40px; height: 40px; min-width: 40px;
-  border-radius: 12px;
-  background: rgba(124,58,237,.15);
-  border: 1px solid rgba(124,58,237,.25);
-  display: grid; place-items: center; font-size: 1.1rem;
-}
-.why-item h4 { font-size: .97rem; font-weight: 800; margin-bottom: 3px; }
-.why-item p { font-size: .86rem; color: var(--muted); font-weight: 600; line-height: 1.65; }
-
-.why-cards { display: flex; flex-direction: column; gap: 14px; }
-.why-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px 18px;
-  display: flex; align-items: center; gap: 16px;
-  transition: var(--tr);
-}
-.why-card:hover { border-color: rgba(124,58,237,.45); transform: translateX(-4px); }
-html[dir="ltr"] .why-card:hover { transform: translateX(4px); }
-.why-card-ico {
-  width: 48px; height: 48px; min-width: 48px;
-  border-radius: 13px;
-  display: grid; place-items: center; font-size: 1.3rem;
-}
-.wci1 { background: linear-gradient(135deg, rgba(0,230,136,.15), rgba(0,230,136,.05)); border: 1px solid rgba(0,230,136,.2); }
-.wci2 { background: linear-gradient(135deg, rgba(232,121,249,.15), rgba(232,121,249,.05)); border: 1px solid rgba(232,121,249,.2); }
-.wci3 { background: linear-gradient(135deg, rgba(124,58,237,.15), rgba(124,58,237,.05)); border: 1px solid rgba(124,58,237,.2); }
-.wci4 { background: linear-gradient(135deg, rgba(251,191,36,.15), rgba(251,191,36,.05)); border: 1px solid rgba(251,191,36,.2); }
-.why-card h4 { font-size: .95rem; font-weight: 800; margin-bottom: 2px; }
-.why-card p { font-size: .83rem; color: var(--muted); font-weight: 600; }
-
-/* ═══ CONTACT ═══════════════════════════════════ */
-.contact-section { padding: 90px clamp(16px,6vw,88px); }
-.contact-grid {
-  max-width: 1240px; margin: auto;
-  display: grid; grid-template-columns: 1fr 1.3fr;
-  gap: 52px; align-items: start;
-}
-.contact-info h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(1.8rem,3.2vw,2.6rem);
-  font-weight: 900; letter-spacing: -.04em; line-height: 1.1;
-  margin-bottom: 14px;
-}
-.contact-info h2 .hi { color: var(--acc3); }
-.contact-info > p { color: var(--muted); font-weight: 600; line-height: 1.85; font-size: 1rem; margin-bottom: 32px; }
-
-.c-links { display: flex; flex-direction: column; gap: 12px; }
-.c-link {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px 18px; border-radius: 15px;
-  background: var(--card); border: 1px solid var(--border);
-  text-decoration: none; color: var(--txt);
-  font-weight: 800; font-size: .92rem;
-  transition: var(--tr);
-}
-.c-link:hover { border-color: rgba(124,58,237,.45); transform: translateY(-2px); }
-.c-link-ico {
-  width: 44px; height: 44px; min-width: 44px;
-  border-radius: 12px;
-  display: grid; place-items: center; font-size: 1.2rem;
-}
-.cl-wa { background: linear-gradient(135deg,#25d366,#128c7e); }
-.cl-em { background: linear-gradient(135deg,#ea4335,#c5221f); }
-.cl-tg { background: linear-gradient(135deg,#2aabee,#1a7ac4); }
-.c-link-ico svg { width: 20px; height: 20px; fill: #fff; }
-.c-link small { display: block; color: var(--muted); font-weight: 600; font-size: .75rem; margin-bottom: 1px; }
-
-/* Contact form */
-.contact-form {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 34px;
-}
-.contact-form h3 { font-size: 1.2rem; font-weight: 900; margin-bottom: 26px; }
-.fg { margin-bottom: 16px; }
-.fg label { display: block; font-weight: 800; font-size: .84rem; color: var(--muted); margin-bottom: 7px; text-transform: uppercase; letter-spacing: .06em; }
-.fg input, .fg textarea {
-  width: 100%; padding: 12px 16px;
-  background: rgba(124,58,237,.07);
-  border: 1.5px solid var(--border);
-  color: var(--txt); border-radius: 12px;
-  outline: none; transition: .18s; resize: none;
-  font-weight: 600; font-size: .95rem;
-}
-.fg input:focus, .fg textarea:focus {
-  border-color: var(--acc);
-  box-shadow: 0 0 0 3px rgba(124,58,237,.15);
-}
-.fg input::placeholder, .fg textarea::placeholder { color: var(--muted); }
-.fg textarea { min-height: 110px; }
-.form-btn {
-  width: 100%; padding: 14px; border: none; border-radius: 13px;
-  background: linear-gradient(135deg, var(--acc), var(--acc2));
-  color: #fff; font-weight: 900; font-size: 1rem; cursor: pointer;
-  transition: .2s; box-shadow: 0 8px 24px rgba(124,58,237,.35);
-}
-.form-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
-
-/* ═══ FOOTER ═════════════════════════════════════ */
-.footer {
-  background: #050110;
-  border-top: 1px solid rgba(124,58,237,.15);
-  padding: 60px clamp(16px,6vw,88px) 28px;
-  position: relative; z-index: 1;
-}
-.footer-grid {
-  max-width: 1240px; margin: auto;
-  display: grid; grid-template-columns: 1.8fr 1fr 1fr;
-  gap: 48px; margin-bottom: 44px;
-}
-.footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-.footer-mark {
-  width: 40px; height: 40px; border-radius: 12px;
-  background: linear-gradient(135deg, var(--acc), var(--acc2), var(--pk));
-  display: grid; place-items: center;
-  font-family: 'Syne', sans-serif;
-  font-weight: 900; font-size: .88rem; color: #fff;
-  box-shadow: 0 6px 18px rgba(124,58,237,.35);
-}
-.footer-name { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: #fff; }
-.footer-name em { color: var(--grn); font-style: normal; }
-.footer-desc { color: rgba(255,255,255,.45); font-size: .88rem; line-height: 1.8; font-weight: 600; max-width: 270px; margin-bottom: 22px; }
-.footer-soc { display: flex; gap: 9px; }
-.fsoc {
-  width: 38px; height: 38px; border-radius: 10px;
-  background: rgba(124,58,237,.12);
-  border: 1px solid rgba(124,58,237,.22);
-  display: grid; place-items: center;
-  text-decoration: none; font-size: .95rem; color: rgba(255,255,255,.6);
-  transition: .18s; cursor: pointer;
-}
-.fsoc svg { width: 17px; height: 17px; fill: currentColor; }
-.fsoc:hover { background: rgba(124,58,237,.25); color: #fff; border-color: rgba(124,58,237,.5); }
-
-.footer-col h4 { font-size: .82rem; font-weight: 800; color: rgba(255,255,255,.9); margin-bottom: 16px; text-transform: uppercase; letter-spacing: .1em; }
-.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.footer-col ul a { color: rgba(255,255,255,.45); text-decoration: none; font-size: .87rem; font-weight: 600; transition: .15s; }
-.footer-col ul a:hover { color: var(--acc3); }
-
-.footer-bottom {
-  max-width: 1240px; margin: auto;
-  padding-top: 22px;
-  border-top: 1px solid rgba(255,255,255,.06);
-  display: flex; align-items: center; justify-content: space-between;
-  font-size: .82rem; color: rgba(255,255,255,.35); font-weight: 600;
-  flex-wrap: wrap; gap: 10px;
-}
-
-/* ═══ WHATSAPP FLOAT ════════════════════════════ */
-.wa-float {
-  position: fixed; bottom: 26px; right: 26px; z-index: 9000;
-  width: 56px; height: 56px; border-radius: 17px;
-  background: linear-gradient(135deg, #25d366, #128c7e);
-  display: grid; place-items: center;
-  box-shadow: 0 8px 28px rgba(37,211,102,.4);
-  text-decoration: none; color: #fff;
-  transition: .22s;
-  animation: waFloat 3.2s ease-in-out infinite;
-}
-html[dir="ltr"] .wa-float { right: 26px; left: auto; }
-.wa-float svg { width: 28px; height: 28px; fill: #fff; }
-.wa-float:hover { transform: scale(1.1) translateY(-2px); box-shadow: 0 14px 38px rgba(37,211,102,.5); }
-@keyframes waFloat {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-/* ═══ LIGHT MODE ═══════════════════════════════ */
-body.light {
-  --pu1: #f5f0ff;
-  --pu2: #ede5ff;
-  --pu3: #dfd3ff;
-  --card: rgba(255,255,255,.9);
-  --txt: #1a0b40;
-  --muted: #6b5fa0;
-  --border: rgba(124,58,237,.18);
-  --sh: 0 24px 64px rgba(124,58,237,.12);
-  background: linear-gradient(160deg, #fff 0%, #f0e8ff 100%);
-}
-body.light::before {
-  background:
-    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(124,58,237,.08) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 60% at 10% 90%, rgba(168,85,247,.06) 0%, transparent 70%);
-}
-body.light .nav {
-  background: rgba(255,255,255,.92);
-  border-bottom-color: rgba(124,58,237,.12);
-}
-body.light .nav-brand .nav-name { color: var(--txt); }
-body.light .nav-links a { color: rgba(26,11,64,.6); }
-body.light .nav-links a:hover { color: var(--txt); background: rgba(124,58,237,.07); }
-body.light .lang-sw { background: rgba(124,58,237,.07); border-color: rgba(124,58,237,.15); }
-body.light .lang-sw button { color: rgba(26,11,64,.5); }
-body.light .theme-btn { border-color: rgba(124,58,237,.15); background: rgba(124,58,237,.07); color: rgba(26,11,64,.6); }
-body.light .btn-nav-ghost { color: rgba(26,11,64,.7); border-color: rgba(124,58,237,.2); }
-body.light .hero h1 { color: var(--txt); }
-body.light .stats-band { background: linear-gradient(135deg, #e8d9ff, #d9c5ff); border-color: rgba(124,58,237,.15); }
-body.light .footer { background: #1a0b40; }
-body.light .hc-notif { background: rgba(124,58,237,.07); border-color: rgba(124,58,237,.15); color: var(--muted); }
-
-/* ═══ RESPONSIVE ════════════════════════════════ */
-@media (max-width: 1024px) {
-  .hero-inner { grid-template-columns: 1fr; }
-  .hero-card { max-width: 440px; }
-  .feat-grid { grid-template-columns: 1fr 1fr; }
-  .why-grid { grid-template-columns: 1fr; }
-  .contact-grid { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
-  .stats-grid { grid-template-columns: repeat(2,1fr); }
-}
-@media (max-width: 700px) {
-  .nav-links { display: none; }
-  .nav { gap: 10px; }
-  .hero { padding-top: calc(var(--nav-h) + 40px); text-align: center; }
-  .hero-badge { margin: 0 auto 20px; }
-  .hero-desc { margin-inline: auto; }
-  .hero-cta { justify-content: center; }
-  .feat-grid { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
-  .footer-grid { grid-template-columns: 1fr; }
-  .footer-bottom { flex-direction: column; text-align: center; }
-  .btn-nav-ghost { display: none; }
-  .hero::after { display: none; }
-}
-@media (max-width: 420px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .lang-sw button { padding: 5px 9px; }
+@media(max-width:700px){
+  .nav{display:none;}
+  .hero{padding:58px 16px 48px;text-align:center;}
+  .hero p{margin:auto;}
+  .cta{justify-content:center;}
+  .badge{margin:0 auto 20px;}
+  .feat-grid{grid-template-columns:1fr;}
+  .stats-inner{grid-template-columns:1fr 1fr;gap:18px;}
+  .footer-grid{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;text-align:center;}
+  .why-card:hover{transform:none;}
+  .topbar{min-height:72px;height:auto;padding:10px 14px;flex-wrap:wrap;}
+  .actions{gap:6px;}
+  .lang-sw button{padding:5px 10px;font-size:.78rem;}
+  .topbar-btn{padding:7px 11px;font-size:.9rem;}
+  .cta .btn{flex:1;}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<header class="nav">
-  <a class="nav-brand" href="/home/">
-    <div class="nav-mark">KW</div>
-    <span class="nav-name">kala<em>wy</em></span>
+<!-- ── Topbar ─────────────────────────────────────────── -->
+<header class="topbar">
+  <a class="brand" href="/home/">
+    <div class="mark">KW</div>
+    <strong>kala<em>wy</em></strong>
   </a>
-
-  <nav class="nav-links">
-    <a href="/home/"       data-ar="الرئيسية"    data-en="Home">الرئيسية</a>
-    <a href="#why"         data-ar="لماذا نحن"   data-en="Why Us">لماذا نحن</a>
-    <a href="#contact"     data-ar="تواصل معنا"  data-en="Contact">تواصل معنا</a>
-    <a href="/login/"      data-ar="دخول"         data-en="Login" id="nav-login">دخول</a>
-    <a href="/signup/"     data-ar="حساب جديد"   data-en="Sign Up" id="nav-signup">حساب جديد</a>
-    <a href="/dashboard/"  data-ar="لوحة تحكم"   data-en="Dashboard" id="nav-dash" class="hidden">لوحة تحكم</a>
-    <a class="soon"        data-ar="ملازم 📝"     data-en="Notes 📝">ملازم 📝</a>
+  <nav class="nav">
+    <a href="/home/" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+    <a href="#why" data-ar="لماذا نحن" data-en="Why Us">لماذا نحن</a>
+    <a href="#contact" data-ar="اتصل بنا" data-en="Contact">اتصل بنا</a>
+    <a href="/login/" data-ar="دخول" data-en="Login">دخول</a>
+    <a href="/signup/" data-ar="حساب جديد" data-en="Sign Up">حساب جديد</a>
+    <a class="soon" href="javascript:void(0)" data-ar="ملازم قريباً" data-en="Notes soon">ملازم قريباً</a>
   </nav>
-
-  <div class="nav-end">
-    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Theme">🌙</button>
+  <div class="actions">
+    <button class="topbar-btn" onclick="toggleTheme()" type="button" id="theme-btn">🌙</button>
     <div class="lang-sw">
-      <button data-lang="ar" onclick="setLang('ar')">عربي</button>
-      <button data-lang="en" onclick="setLang('en')">EN</button>
+      <button type="button" data-lang="ar" onclick="setLang('ar')">عربي</button>
+      <button type="button" data-lang="en" onclick="setLang('en')">EN</button>
     </div>
-    <a class="btn-nav btn-nav-ghost" href="/login/" id="nb-login" data-ar="دخول" data-en="Login">دخول</a>
-    <a class="btn-nav btn-nav-solid" href="/signup/" id="nb-signup" data-ar="حساب جديد ✨" data-en="Sign Up ✨">حساب جديد ✨</a>
   </div>
 </header>
 
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-inner">
-    <!-- Text -->
+<!-- ── Hero ──────────────────────────────────────────── -->
+<main>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid">
     <div>
-      <div class="hero-badge">
-        <span class="dot"></span>
+      <div class="badge">
+        <span></span>
         <span data-ar="منصة kalawy التعليمية" data-en="kalawy Learning Platform">منصة kalawy التعليمية</span>
       </div>
-      <h1>
-        <span class="ar-only" data-ar="ذاكر بشكل <span class='hi'>منظم</span><br>ومتابع مع <span class='grn'>kalawy</span>">ذاكر بشكل <span class="hi">منظم</span><br>ومتابع مع <span class="grn">kalawy</span></span>
-        <span class="en-only hidden" data-en="Study smarter<br>with <span class='grn'>kalawy</span>">Study smarter<br>with <span class="grn">kalawy</span></span>
-      </h1>
-      <p class="hero-desc"
-         data-ar="ادخل بحسابك أو اعمل حساب جديد عشان تبدأ تشوف الشابترات والحصص بتصميم عصري وسهل."
-         data-en="Sign in or create an account to start browsing chapters and lessons with a modern, effortless design.">
-        ادخل بحسابك أو اعمل حساب جديد عشان تبدأ تشوف الشابترات والحصص بتصميم عصري وسهل.
-      </p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="/login/"   data-ar="🚀 تسجيل الدخول"  data-en="🚀 Sign In">🚀 تسجيل الدخول</a>
-        <a class="btn btn-outline"  href="/signup/"  data-ar="✨ إنشاء حساب"   data-en="✨ Create Account">✨ إنشاء حساب</a>
-        <a class="btn btn-outline"  href="/dashboard/" data-ar="لوحة التحكم"  data-en="Dashboard">لوحة التحكم</a>
+      <h1 data-ar="ذاكر حصصك بشكل <span class='accent'>منظم</span> وسهل" data-en="Study your lessons in a <span class='accent'>clean</span> way">ذاكر حصصك بشكل <span class="accent">منظم</span> وسهل</h1>
+      <p data-ar="ادخل بحسابك أو اعمل حساب جديد عشان تبدأ تشوف الشابترات والحصص بنفس الشكل الجديد." data-en="Sign in or create a new account to start viewing chapters and lessons with the new design.">ادخل بحسابك أو اعمل حساب جديد عشان تبدأ تشوف الشابترات والحصص بنفس الشكل الجديد.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="/login/" data-ar="تسجيل الدخول" data-en="Sign In">تسجيل الدخول</a>
+        <a class="btn btn-outline" href="/signup/" data-ar="إنشاء حساب" data-en="Create Account">إنشاء حساب</a>
+        <a class="btn btn-outline" href="/dashboard/" data-ar="لو داخل قبل كده" data-en="Go to Dashboard">لو داخل قبل كده</a>
       </div>
     </div>
-
-    <!-- Card preview -->
-    <div class="hero-card">
-      <div class="hc-top">
-        <span class="hc-logo">kalawy</span>
-        <div class="hc-dots"><div class="hc-dot"></div><div class="hc-dot"></div><div class="hc-dot"></div></div>
+    <div class="preview-wrap" aria-label="preview">
+      <div class="screen-top">
+        <span>kalawy</span>
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       </div>
-      <div class="hc-thumb">Physics</div>
-      <div class="hc-title" data-ar="فيزياء — الفصل السادس" data-en="Physics — Chapter 6">فيزياء — الفصل السادس</div>
-      <div class="hc-sub" data-ar="١٢ محاضرة متاحة" data-en="12 Lectures Available">١٢ محاضرة متاحة</div>
-      <div class="hc-notif" data-ar="🔔 لا توجد إشعارات جديدة" data-en="🔔 No new notifications">🔔 لا توجد إشعارات جديدة</div>
+      <div class="chapter-card">
+        <h3 data-ar="الفصل السادس" data-en="Chapter 6">الفصل السادس</h3>
+        <div class="thumb">Physics</div>
+        <b data-ar="فيزياء — الفصل ٦" data-en="Physics — Chapter 6">فيزياء — الفصل ٦</b>
+        <div class="sub" data-ar="12 محاضرات" data-en="12 Lectures">12 محاضرات</div>
+        <div class="notif" data-ar="🔔 لا توجد إشعارات جديدة" data-en="🔔 No new notifications">🔔 لا توجد إشعارات جديدة</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="section" id="features">
+<!-- ── Features ─────────────────────────────────────── -->
+<section class="section">
   <div class="inner">
-    <div class="s-head">
-      <h2 data-ar="كل اللي محتاجه <span class='hi'>في مكان واحد</span>"
-          data-en="Everything you need <span class='hi'>in one place</span>">
-        كل اللي محتاجه <span class="hi">في مكان واحد</span>
-      </h2>
-      <p data-ar="منصة بسيطة وواضحة تخلي المذاكرة أسهل وأكثر متعة"
-         data-en="A simple, clear platform that makes studying easier and more enjoyable">
-        منصة بسيطة وواضحة تخلي المذاكرة أسهل وأكثر متعة
-      </p>
-      <div class="s-line"></div>
+    <div class="section-head">
+      <h2 data-ar="كل اللي محتاجه في مكان واحد" data-en="Everything you need in one place">كل اللي محتاجه في مكان واحد</h2>
+      <p data-ar="منصة بسيطة وواضحة تخلي المذاكرة أسهل" data-en="A simple, clear platform that makes studying easier">منصة بسيطة وواضحة تخلي المذاكرة أسهل</p>
+      <div class="line"></div>
     </div>
     <div class="feat-grid">
-      <div class="feat-card">
-        <div class="feat-ico">📚</div>
+      <div class="card-glass">
+        <div class="feat-icon">📚</div>
         <h3 data-ar="شابترات منظمة" data-en="Organized Chapters">شابترات منظمة</h3>
-        <p data-ar="كل حصة وشابتر بيظهر في كارت واضح ومرتب عشان تلاقي اللي بتدور عليه بسرعة."
-           data-en="Every lesson and chapter shown in a clear card so you find what you need fast.">
-          كل حصة وشابتر بيظهر في كارت واضح ومرتب عشان تلاقي اللي بتدور عليه بسرعة.
-        </p>
+        <p data-ar="كل حصة وشابتر بيظهر في كارت واضح ومرتب عشان تلاقي اللي بتدور عليه بسرعة." data-en="Every lesson and chapter appears in a clear, organized card so you find what you need fast.">كل حصة وشابتر بيظهر في كارت واضح ومرتب عشان تلاقي اللي بتدور عليه بسرعة.</p>
       </div>
-      <div class="feat-card">
-        <div class="feat-ico">🌐</div>
+      <div class="card-glass">
+        <div class="feat-icon">🌐</div>
         <h3 data-ar="عربي وإنجليزي" data-en="Arabic & English">عربي وإنجليزي</h3>
-        <p data-ar="المنصة بتدعم اللغتين عربي وإنجليزي، تقدر تغير اللغة من زر واحد في الأعلى."
-           data-en="Switch between Arabic and English instantly — one tap in the top bar.">
-          المنصة بتدعم اللغتين عربي وإنجليزي، تقدر تغير اللغة من زر واحد في الأعلى.
-        </p>
+        <p data-ar="المنصة بتدعم اللغتين عربي وإنجليزي، تقدر تغير اللغة من زر واحد في الأعلى." data-en="The platform supports both Arabic and English — switch instantly from the top bar.">المنصة بتدعم اللغتين عربي وإنجليزي، تقدر تغير اللغة من زر واحد في الأعلى.</p>
       </div>
-      <div class="feat-card">
-        <div class="feat-ico">🔔</div>
+      <div class="card-glass">
+        <div class="feat-icon">🔔</div>
         <h3 data-ar="إشعارات فورية" data-en="Instant Notifications">إشعارات فورية</h3>
-        <p data-ar="هتعرف على طول لو في حصة جديدة أو تحديث مهم من المدرس."
-           data-en="Always know when there's a new lesson or important update from your teacher.">
-          هتعرف على طول لو في حصة جديدة أو تحديث مهم من المدرس.
-        </p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-ico">🔑</div>
-        <h3 data-ar="فتح بالكود" data-en="Code Unlock">فتح بالكود</h3>
-        <p data-ar="كل حصة بتتفتح بكود خاص بيها، سريع وآمن من غير أي تعقيد."
-           data-en="Each lesson unlocks with a unique code — fast, secure, no hassle.">
-          كل حصة بتتفتح بكود خاص بيها، سريع وآمن من غير أي تعقيد.
-        </p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-ico">📱</div>
-        <h3 data-ar="يشتغل على كل الأجهزة" data-en="All Devices">يشتغل على كل الأجهزة</h3>
-        <p data-ar="موبايل، تابلت، لاب توب — المنصة تتكيف مع شاشتك تلقائياً."
-           data-en="Mobile, tablet, laptop — the platform adapts to your screen automatically.">
-          موبايل، تابلت، لاب توب — المنصة تتكيف مع شاشتك تلقائياً.
-        </p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-ico">🌙</div>
-        <h3 data-ar="وضع مظلم" data-en="Dark Mode">وضع مظلم</h3>
-        <p data-ar="اختار بين الوضع المظلم والفاتح حسب راحتك في أي وقت."
-           data-en="Choose between dark and light mode anytime for maximum comfort.">
-          اختار بين الوضع المظلم والفاتح حسب راحتك في أي وقت.
-        </p>
+        <p data-ar="هتعرف على طول لو في حصة جديدة أو تحديث. لو مفيش إشعارات هيظهر: لا يوجد." data-en="Always know when there's a new lesson or update. No notifications? It simply says: Nothing.">هتعرف على طول لو في حصة جديدة أو تحديث. لو مفيش إشعارات هيظهر: لا يوجد.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats-band">
-  <div class="stats-grid">
+<!-- ── Stats ─────────────────────────────────────────── -->
+<div class="stats-bar">
+  <div class="stats-inner">
     <div class="stat-item">
-      <h3>+500</h3>
+      <h3>+<span>500</span></h3>
       <p data-ar="طالب نشط" data-en="Active Students">طالب نشط</p>
     </div>
     <div class="stat-item">
-      <h3>+80</h3>
+      <h3>+<span>80</span></h3>
       <p data-ar="شابتر ومحاضرة" data-en="Chapters & Lectures">شابتر ومحاضرة</p>
     </div>
     <div class="stat-item">
-      <h3>4.9★</h3>
+      <h3><span>٤.٩</span>★</h3>
       <p data-ar="تقييم الطلاب" data-en="Student Rating">تقييم الطلاب</p>
     </div>
     <div class="stat-item">
-      <h3>24/7</h3>
+      <h3><span>24</span>/7</h3>
       <p data-ar="متاح دايماً" data-en="Always Available">متاح دايماً</p>
     </div>
   </div>
 </div>
 
-<!-- WHY US -->
-<section class="section" id="why">
-  <div class="inner">
-    <div class="why-grid">
-      <!-- Text side -->
-      <div class="why-text">
-        <h2 data-ar="ليه تختار <span class='hi'>kalawy</span>؟"
-            data-en="Why choose <span class='hi'>kalawy</span>?">
-          ليه تختار <span class="hi">kalawy</span>؟
-        </h2>
-        <p data-ar="مش بس منصة — دي تجربة مذاكرة كاملة مصممة خصيصاً للطالب. كل حاجة اتفكر فيها وصممت عشانك."
-           data-en="Not just a platform — a complete study experience designed for every student. Everything built with you in mind.">
-          مش بس منصة — دي تجربة مذاكرة كاملة مصممة خصيصاً للطالب. كل حاجة اتفكر فيها وصممت عشانك.
-        </p>
-        <div class="why-list">
-          <div class="why-item">
-            <div class="why-ico">✅</div>
-            <div>
-              <h4 data-ar="تصميم سهل ومريح" data-en="Easy & Comfortable Design">تصميم سهل ومريح</h4>
-              <p data-ar="الواجهة مصممة عشان تركز في المذاكرة مش في فهم الموقع."
-                 data-en="The interface is designed for studying, not for figuring out the site.">
-                الواجهة مصممة عشان تركز في المذاكرة مش في فهم الموقع.
-              </p>
-            </div>
+<!-- ── Why Us ─────────────────────────────────────────── -->
+<section class="why-section" id="why">
+  <div class="why-grid">
+    <div class="why-text">
+      <h2 data-ar="ليه تختار <span class='accent'>kalawy</span>؟" data-en="Why choose <span class='accent'>kalawy</span>?">ليه تختار <span class="accent">kalawy</span>؟</h2>
+      <p data-ar="مش بس منصة، دي تجربة مذاكرة كاملة مصممة خصيصاً للطالب العربي. كل حاجة اتفكر فيها وصممت عشانك." data-en="Not just a platform — it's a full study experience designed for every student. Everything is built with you in mind.">مش بس منصة، دي تجربة مذاكرة كاملة مصممة خصيصاً للطالب العربي. كل حاجة اتفكر فيها وصممت عشانك.</p>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="why-icon">✅</div>
+          <div class="why-item-txt">
+            <h4 data-ar="تصميم سهل ومريح" data-en="Easy & Comfortable Design">تصميم سهل ومريح</h4>
+            <p data-ar="الواجهة مصممة عشان تركز في المذاكرة مش في فهم الموقع." data-en="The interface is designed for studying, not for figuring out the site.">الواجهة مصممة عشان تركز في المذاكرة مش في فهم الموقع.</p>
           </div>
-          <div class="why-item">
-            <div class="why-ico">🚀</div>
-            <div>
-              <h4 data-ar="سريع ومتاح دايماً" data-en="Fast & Always Available">سريع ومتاح دايماً</h4>
-              <p data-ar="المنصة شغالة ٢٤/٧ من أي جهاز وفي أي وقت."
-                 data-en="The platform runs 24/7 from any device, anytime.">
-                المنصة شغالة ٢٤/٧ من أي جهاز وفي أي وقت.
-              </p>
-            </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🚀</div>
+          <div class="why-item-txt">
+            <h4 data-ar="سريع ومتاح دايماً" data-en="Fast & Always Available">سريع ومتاح دايماً</h4>
+            <p data-ar="المنصة شغالة ٢٤/٧ من أي جهاز وفي أي وقت." data-en="The platform runs 24/7 from any device, anytime.">المنصة شغالة ٢٤/٧ من أي جهاز وفي أي وقت.</p>
           </div>
-          <div class="why-item">
-            <div class="why-ico">🎯</div>
-            <div>
-              <h4 data-ar="محتوى هادف ومنظم" data-en="Purposeful Organized Content">محتوى هادف ومنظم</h4>
-              <p data-ar="الحصص مرتبة وواضحة عشان تتابع تقدمك من غير تشتت."
-                 data-en="Lessons are organized and clear so you track progress without distraction.">
-                الحصص مرتبة وواضحة عشان تتابع تقدمك من غير تشتت.
-              </p>
-            </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🎯</div>
+          <div class="why-item-txt">
+            <h4 data-ar="محتوى هادف ومنظم" data-en="Purposeful Organized Content">محتوى هادف ومنظم</h4>
+            <p data-ar="الحصص مرتبة وواضحة عشان تتابع تقدمك من غير تشتت." data-en="Lessons are organized and clear so you track progress without distraction.">الحصص مرتبة وواضحة عشان تتابع تقدمك من غير تشتت.</p>
           </div>
         </div>
       </div>
-      <!-- Cards side -->
-      <div class="why-cards">
-        <div class="why-card">
-          <div class="why-card-ico wci1">📖</div>
-          <div>
-            <h4 data-ar="محتوى بالعربي والإنجليزي" data-en="Content in Arabic & English">محتوى بالعربي والإنجليزي</h4>
-            <p data-ar="تقدر تتعلم بلغتك المفضلة بسهولة" data-en="Learn in your preferred language easily">تقدر تتعلم بلغتك المفضلة بسهولة</p>
-          </div>
+    </div>
+    <div class="why-cards">
+      <div class="why-card">
+        <div class="why-card-icon wc1">📖</div>
+        <div class="why-card-txt">
+          <h4 data-ar="محتوى بالعربي والإنجليزي" data-en="Content in Arabic & English">محتوى بالعربي والإنجليزي</h4>
+          <p data-ar="تقدر تتعلم بلغتك المفضلة بسهولة" data-en="Learn in your preferred language easily">تقدر تتعلم بلغتك المفضلة بسهولة</p>
         </div>
-        <div class="why-card">
-          <div class="why-card-ico wci2">💡</div>
-          <div>
-            <h4 data-ar="محاضرات متعددة لكل شابتر" data-en="Multiple Lectures per Chapter">محاضرات متعددة لكل شابتر</h4>
-            <p data-ar="كل شابتر فيه محاضرات كتير تغطي كل التفاصيل" data-en="Each chapter has many lectures covering every detail">كل شابتر فيه محاضرات كتير تغطي كل التفاصيل</p>
-          </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon wc2">💡</div>
+        <div class="why-card-txt">
+          <h4 data-ar="محاضرات متعددة لكل شابتر" data-en="Multiple Lectures per Chapter">محاضرات متعددة لكل شابتر</h4>
+          <p data-ar="كل شابتر فيه محاضرات كتير تغطي كل التفاصيل" data-en="Each chapter has many lectures covering every detail">كل شابتر فيه محاضرات كتير تغطي كل التفاصيل</p>
         </div>
-        <div class="why-card">
-          <div class="why-card-ico wci3">🔒</div>
-          <div>
-            <h4 data-ar="حساب آمن ومحمي" data-en="Safe & Secure Account">حساب آمن ومحمي</h4>
-            <p data-ar="بياناتك محمية بالكامل مع نظام تسجيل دخول موثوق" data-en="Your data fully protected with a reliable login system">بياناتك محمية بالكامل مع نظام تسجيل دخول موثوق</p>
-          </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon wc3">🔒</div>
+        <div class="why-card-txt">
+          <h4 data-ar="حساب آمن ومحمي" data-en="Safe & Secure Account">حساب آمن ومحمي</h4>
+          <p data-ar="بياناتك محمية بالكامل مع نظام تسجيل دخول موثوق" data-en="Your data is fully protected with a reliable login system">بياناتك محمية بالكامل مع نظام تسجيل دخول موثوق</p>
         </div>
-        <div class="why-card">
-          <div class="why-card-ico wci4">📱</div>
-          <div>
-            <h4 data-ar="يشتغل على كل الأجهزة" data-en="Works on All Devices">يشتغل على كل الأجهزة</h4>
-            <p data-ar="موبايل، تابلت، لاب توب — المنصة تتكيف معاك" data-en="Mobile, tablet, laptop — the platform adapts to you">موبايل، تابلت، لاب توب — المنصة تتكيف معاك</p>
-          </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon wc4">📱</div>
+        <div class="why-card-txt">
+          <h4 data-ar="يشتغل على كل الأجهزة" data-en="Works on All Devices">يشتغل على كل الأجهزة</h4>
+          <p data-ar="موبايل، تابلت، لاب توب — المنصة تتكيف معاك" data-en="Mobile, tablet, laptop — the platform adapts to you">موبايل، تابلت، لاب توب — المنصة تتكيف معاك</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT -->
+<!-- ── Contact ────────────────────────────────────────── -->
 <section class="contact-section" id="contact">
   <div class="contact-grid">
     <div class="contact-info">
-      <h2 data-ar="تواصل <span class='hi'>معانا</span>"
-          data-en="Get in <span class='hi'>Touch</span>">
-        تواصل <span class="hi">معانا</span>
-      </h2>
-      <p data-ar="عندك سؤال أو مشكلة أو اقتراح؟ تواصل معانا بأي طريقة وهنرد عليك في أقرب وقت."
-         data-en="Have a question, problem, or suggestion? Reach out any way and we'll get back to you ASAP.">
-        عندك سؤال أو مشكلة أو اقتراح؟ تواصل معانا بأي طريقة وهنرد عليك في أقرب وقت.
-      </p>
-      <div class="c-links">
+      <h2 data-ar="تواصل <span class='accent'>معانا</span>" data-en="Get in <span class='accent'>Touch</span>">تواصل <span class="accent">معانا</span></h2>
+      <p data-ar="عندك سؤال أو مشكلة أو اقتراح؟ تواصل معانا بأي طريقة وهنرد عليك في أقرب وقت." data-en="Have a question, problem, or suggestion? Reach out any way and we'll get back to you ASAP.">عندك سؤال أو مشكلة أو اقتراح؟ تواصل معانا بأي طريقة وهنرد عليك في أقرب وقت.</p>
+      <div class="contact-links">
         <a class="c-link" href="https://wa.me/201000000000" target="_blank">
-          <div class="c-link-ico cl-wa">
-            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          <div class="c-link-icon cl-wa">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
           </div>
-          <div>
+          <div class="c-link-txt">
             <small data-ar="واتساب" data-en="WhatsApp">واتساب</small>
             <span>+20 100 000 0000</span>
           </div>
         </a>
         <a class="c-link" href="mailto:support@kalawy.com">
-          <div class="c-link-ico cl-em" style="font-size:1.2rem;">📧</div>
-          <div>
+          <div class="c-link-icon cl-mail">📧</div>
+          <div class="c-link-txt">
             <small data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</small>
             <span>support@kalawy.com</span>
           </div>
         </a>
         <a class="c-link" href="https://t.me/kalawy" target="_blank">
-          <div class="c-link-ico cl-tg" style="font-size:1.2rem;">✈️</div>
-          <div>
+          <div class="c-link-icon cl-tg">✈️</div>
+          <div class="c-link-txt">
             <small data-ar="تيليجرام" data-en="Telegram">تيليجرام</small>
             <span>@kalawy</span>
           </div>
         </a>
       </div>
     </div>
-
-    <div class="contact-form">
-      <h3 data-ar="ابعتلنا رسالة 💬" data-en="Send us a message 💬">ابعتلنا رسالة 💬</h3>
-      <div class="fg">
+    <div class="contact-box">
+      <h3 data-ar="ابعتلنا رسالة" data-en="Send us a message">ابعتلنا رسالة</h3>
+      <div class="form-group">
         <label data-ar="الاسم" data-en="Name">الاسم</label>
-        <input type="text" id="f-name" data-ph-ar="اكتب اسمك هنا..." data-ph-en="Your name...">
+        <input type="text" id="f-name" placeholder="" data-ph-ar="اكتب اسمك هنا..." data-ph-en="Your name...">
       </div>
-      <div class="fg">
+      <div class="form-group">
         <label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label>
-        <input type="email" id="f-email" data-ph-ar="example@email.com" data-ph-en="example@email.com">
+        <input type="email" id="f-email" placeholder="" data-ph-ar="example@email.com" data-ph-en="example@email.com">
       </div>
-      <div class="fg">
+      <div class="form-group">
         <label data-ar="الرسالة" data-en="Message">الرسالة</label>
-        <textarea id="f-msg" data-ph-ar="اكتب رسالتك هنا..." data-ph-en="Write your message here..."></textarea>
+        <textarea id="f-msg" placeholder="" data-ph-ar="اكتب رسالتك هنا..." data-ph-en="Write your message here..."></textarea>
       </div>
-      <button class="form-btn" onclick="sendMsg()"
-              data-ar="إرسال الرسالة ✉️" data-en="Send Message ✉️">إرسال الرسالة ✉️</button>
+      <button class="form-btn" type="button" onclick="sendMsg()" data-ar="إرسال الرسالة ✉️" data-en="Send Message ✉️">إرسال الرسالة ✉️</button>
     </div>
   </div>
 </section>
+</main>
 
-<!-- FOOTER -->
+<!-- ── Footer ─────────────────────────────────────────── -->
 <footer class="footer">
   <div class="footer-grid">
-    <!-- Brand -->
     <div>
-      <div class="footer-brand">
-        <div class="footer-mark">KW</div>
-        <span class="footer-name">kala<em>wy</em></span>
+      <div class="footer-brand footer-logo">
+        <div class="mark">KW</div>
+        <strong>kala<em>wy</em></strong>
       </div>
-      <p class="footer-desc"
-         data-ar="منصة تعليمية مصممة عشان تخلي تجربة المذاكرة أسهل وأكثر تنظيماً لكل طالب."
-         data-en="An educational platform designed to make studying easier and more organized for every student.">
-        منصة تعليمية مصممة عشان تخلي تجربة المذاكرة أسهل وأكثر تنظيماً لكل طالب.
-      </p>
-      <div class="footer-soc">
-        <a class="fsoc" href="https://wa.me/201000000000" target="_blank" title="WhatsApp">
-          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      <p class="footer-desc" data-ar="منصة تعليمية مصممة عشان تخلي تجربة المذاكرة أسهل وأكثر تنظيماً لكل طالب." data-en="An educational platform designed to make studying easier and more organized for every student.">منصة تعليمية مصممة عشان تخلي تجربة المذاكرة أسهل وأكثر تنظيماً لكل طالب.</p>
+      <div class="footer-socials">
+        <a class="social-btn" href="https://wa.me/201000000000" target="_blank" title="WhatsApp">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
         </a>
-        <a class="fsoc" href="https://t.me/kalawy" target="_blank" title="Telegram">✈️</a>
-        <a class="fsoc" href="mailto:support@kalawy.com" title="Email">📧</a>
+        <a class="social-btn" href="https://t.me/kalawy" target="_blank" title="Telegram">✈️</a>
+        <a class="social-btn" href="mailto:support@kalawy.com" title="Email">📧</a>
       </div>
     </div>
-
-    <!-- Quick Links -->
     <div class="footer-col">
       <h4 data-ar="روابط سريعة" data-en="Quick Links">روابط سريعة</h4>
       <ul>
-        <li><a href="/home/"      data-ar="الرئيسية"        data-en="Home">الرئيسية</a></li>
-        <li><a href="/login/"     data-ar="تسجيل الدخول"    data-en="Login">تسجيل الدخول</a></li>
-        <li><a href="/signup/"    data-ar="حساب جديد"       data-en="Sign Up">حساب جديد</a></li>
-        <li><a href="/dashboard/" data-ar="لوحة التحكم"     data-en="Dashboard">لوحة التحكم</a></li>
+        <li><a href="/home/" data-ar="الرئيسية" data-en="Home">الرئيسية</a></li>
+        <li><a href="/login/" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</a></li>
+        <li><a href="/signup/" data-ar="حساب جديد" data-en="Sign Up">حساب جديد</a></li>
+        <li><a href="/dashboard/" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</a></li>
       </ul>
     </div>
-
-    <!-- Contact -->
     <div class="footer-col">
       <h4 data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</h4>
       <ul>
@@ -943,123 +740,86 @@ body.light .hc-notif { background: rgba(124,58,237,.07); border-color: rgba(124,
       </ul>
     </div>
   </div>
-
   <div class="footer-bottom">
-    <span data-ar="© 2025 kalawy — جميع الحقوق محفوظة"
-          data-en="© 2025 kalawy — All rights reserved">© 2025 kalawy — جميع الحقوق محفوظة</span>
+    <span data-ar="© 2025 kalawy — جميع الحقوق محفوظة" data-en="© 2025 kalawy — All rights reserved">© 2025 kalawy — جميع الحقوق محفوظة</span>
     <span data-ar="صُنع بـ ❤️ للطلاب" data-en="Made with ❤️ for students">صُنع بـ ❤️ للطلاب</span>
   </div>
 </footer>
 
-<!-- FLOATING WHATSAPP -->
+<!-- ── WhatsApp Float ──────────────────────────────────── -->
 <a class="wa-float" href="https://wa.me/201000000000" target="_blank" title="WhatsApp">
-  <svg viewBox="0 0 24 24" fill="currentColor">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-  </svg>
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 </a>
 
 <script>
-/* ── Supabase ── */
+/* ── Supabase ─── */
 const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
-/* ── Language ──────────────────────────────────────── */
+/* ── Lang ─────── */
 let _lang = localStorage.getItem('kw-lang') || 'ar';
 
-function setLang(lg) {
+function setLang(lg){
   _lang = lg;
   localStorage.setItem('kw-lang', lg);
-
-  // Direction + lang attribute
   document.documentElement.lang = lg;
   document.documentElement.dir = lg === 'ar' ? 'rtl' : 'ltr';
 
-  // All [data-ar] elements
+  // Text content
   document.querySelectorAll('[data-ar]').forEach(el => {
     const val = lg === 'en' ? el.dataset.en : el.dataset.ar;
-    if (val === undefined) return;
-    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-      // handled via placeholder below
-    } else {
-      el.innerHTML = val;
-    }
+    if(val) el.innerHTML = val;
   });
 
   // Placeholders
   document.querySelectorAll('[data-ph-ar]').forEach(el => {
-    el.placeholder = lg === 'en'
-      ? (el.dataset.phEn || '')
-      : (el.dataset.phAr || '');
+    el.placeholder = lg === 'en' ? el.dataset.phEn : el.dataset.phAr;
   });
 
-  // Lang button highlight
+  // Button highlight
   document.querySelectorAll('.lang-sw button').forEach(b => {
     b.classList.toggle('on', b.dataset.lang === lg);
   });
-
-  // Hero title swap
-  document.querySelectorAll('.ar-only').forEach(el => el.classList.toggle('hidden', lg !== 'ar'));
-  document.querySelectorAll('.en-only').forEach(el => el.classList.toggle('hidden', lg !== 'en'));
-
-  // Why-card hover direction is handled by CSS html[dir="ltr"]
 }
 
-/* ── Theme ─────────────────────────────────────────── */
-let _dark = true;
-function toggleTheme() {
-  _dark = !_dark;
-  document.body.classList.toggle('light', !_dark);
-  document.getElementById('theme-btn').textContent = _dark ? '🌙' : '☀️';
-  localStorage.setItem('kw-theme', _dark ? 'dark' : 'light');
+/* ── Theme ────── */
+function toggleTheme(){
+  const dark = document.body.classList.toggle('dark');
+  localStorage.setItem('kw-theme', dark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = dark ? '☀️' : '🌙';
 }
 
-/* ── Contact form ──────────────────────────────────── */
-function sendMsg() {
-  const name  = document.getElementById('f-name').value.trim();
+/* ── Contact form ─ */
+function sendMsg(){
+  const name = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
-  const msg   = document.getElementById('f-msg').value.trim();
-  if (!name || !email || !msg) {
+  const msg = document.getElementById('f-msg').value.trim();
+  if(!name || !email || !msg){
     alert(_lang === 'ar' ? 'من فضلك اكمل كل الحقول' : 'Please fill all fields');
     return;
   }
-  const text = encodeURIComponent(
-    `الاسم: ${name}\nالإيميل: ${email}\nالرسالة: ${msg}`
-  );
-  window.open(`https://wa.me/201000000000?text=${text}`, '_blank');
+  const wa = `https://wa.me/201000000000?text=${encodeURIComponent(`الاسم: ${name}\nالإيميل: ${email}\nالرسالة: ${msg}`)}`;
+  window.open(wa, '_blank');
 }
 
-/* ── Init ──────────────────────────────────────────── */
+/* ── Init ─────── */
 window.addEventListener('DOMContentLoaded', async () => {
   // Theme
-  const savedTheme = localStorage.getItem('kw-theme');
-  if (savedTheme === 'light') {
-    _dark = false;
-    document.body.classList.add('light');
+  if(localStorage.getItem('kw-theme') === 'dark'){
+    document.body.classList.add('dark');
     document.getElementById('theme-btn').textContent = '☀️';
   }
-
-  // Language
+  // Lang
   setLang(_lang);
 
-  // Auth check
+  // Auth
   try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) {
-      // Hide login/signup, show dashboard
-      document.getElementById('nav-login')?.classList.add('hidden');
-      document.getElementById('nav-signup')?.classList.add('hidden');
-      document.getElementById('nav-dash')?.classList.remove('hidden');
-      document.getElementById('nb-login')?.classList.add('hidden');
-      const nbSU = document.getElementById('nb-signup');
-      if (nbSU) {
-        nbSU.href = '/dashboard/';
-        nbSU.dataset.ar = 'لوحة التحكم';
-        nbSU.dataset.en = 'Dashboard';
-        nbSU.innerHTML = _lang === 'en' ? 'Dashboard' : 'لوحة التحكم';
-      }
+    const {data:{session}} = await sb.auth.getSession();
+    if(session){
+      document.querySelectorAll('a[href="/login/"],a[href="/signup/"]').forEach(a => a.classList.add('hidden'));
     }
-  } catch(e) {}
+  } catch(e){}
 });
 </script>
 </body>
