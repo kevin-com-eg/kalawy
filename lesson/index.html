@@ -775,6 +775,269 @@ body::before {
   .grid-cards { padding: 16px; }
   .score-big { font-size: 1.8rem; }
 }
+
+
+/* ═══════ KALAWY NEW TOP TABS + PREMIUM PLAYER UPDATE ═══════ */
+.nav { height: 74px; padding: 0 34px; }
+.nav-brand { font-family: 'Inter','Tajawal',sans-serif; font-size: 1.35rem; }
+.nav-logo { width: 48px; height: 48px; border-radius: 18px; font-size: .95rem; }
+.lang-pill {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(167,139,250,.22);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+.lang-btn {
+  border: 0;
+  outline: 0;
+  border-radius: 999px;
+  padding: 7px 18px;
+  min-width: 76px;
+  background: transparent;
+  color: var(--t2);
+  font-family: 'Inter','Tajawal',sans-serif;
+  font-size: .82rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: .18s ease;
+}
+.lang-btn.on {
+  color: #fff;
+  background: linear-gradient(135deg, var(--p1), var(--p2));
+  box-shadow: 0 8px 18px rgba(109,40,217,.26);
+}
+.lesson-banner {
+  margin-top: 0;
+  padding: 26px 36px 30px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(167,139,250,.30), transparent 34%),
+    linear-gradient(135deg, #4c1d95 0%, #2e1065 50%, #16052f 100%);
+}
+.banner-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  justify-content: flex-start;
+}
+.banner-cover {
+  width: 134px;
+  height: 82px;
+  border-radius: 24px;
+  order: -1;
+  box-shadow: 0 20px 50px rgba(0,0,0,.22);
+}
+.banner-title { font-size: clamp(1.35rem, 2.6vw, 2.1rem); }
+.banner-chips { gap: 10px; }
+.bchip {
+  padding: 7px 15px;
+  border-radius: 999px;
+  color: rgba(255,255,255,.86);
+  background: rgba(255,255,255,.075);
+}
+.tabs-wrap {
+  top: 74px;
+  z-index: 320;
+  max-width: 1320px;
+  margin: -18px auto 0;
+  width: calc(100% - 48px);
+  padding: 0 20px;
+  border: 1px solid rgba(139,92,246,.18);
+  border-radius: 26px;
+  background: rgba(255,255,255,.88);
+  box-shadow: 0 18px 50px rgba(109,40,217,.12);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  justify-content: center;
+  overflow-x: auto;
+}
+[data-theme="dark"] .tabs-wrap {
+  background: rgba(17,8,39,.78);
+  box-shadow: 0 18px 50px rgba(0,0,0,.28);
+}
+.tab-btn {
+  flex: 1;
+  justify-content: center;
+  min-width: 132px;
+  padding: 17px 18px;
+  font-size: .94rem;
+  border-bottom-width: 0;
+  border-inline-start: 1px solid rgba(139,92,246,.12);
+}
+.tab-btn:first-child { border-inline-start: 0; }
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  height: 3px;
+  left: 16%;
+  right: 16%;
+  bottom: 0;
+  border-radius: 999px 999px 0 0;
+  background: transparent;
+  transition: .18s ease;
+}
+.tab-btn.on::after { background: linear-gradient(90deg, var(--p2), var(--p1), var(--p3)); }
+.tab-btn.on { color: var(--p1); border-bottom-color: transparent; }
+.tab-badge {
+  min-width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 7px;
+  background: linear-gradient(135deg,var(--p1),var(--p2));
+}
+#tab-content {
+  min-height: calc(100vh - 74px);
+  padding: 28px 20px 46px;
+}
+.video-layout {
+  display: block;
+  width: 100%;
+  max-width: 1120px;
+  min-height: auto;
+  margin: 0 auto;
+}
+.parts-sidebar { display: none !important; }
+.parts-topbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  overflow-x: auto;
+  padding: 4px 4px 18px;
+  margin: 0 auto;
+}
+.part-chip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 154px;
+  max-width: 230px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--t2);
+  cursor: pointer;
+  transition: .18s ease;
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+}
+.part-chip:hover { border-color: var(--p1); transform: translateY(-1px); }
+.part-chip.active {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg,var(--p1),var(--p2));
+  box-shadow: 0 14px 30px var(--glow);
+}
+.part-chip .part-num {
+  width: 28px;
+  height: 28px;
+  font-size: .72rem;
+  background: rgba(255,255,255,.12);
+}
+.part-chip-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: .82rem;
+  font-weight: 900;
+}
+.player-area {
+  align-items: center;
+  background: transparent;
+}
+.player-card {
+  width: min(100%, 980px);
+  border-radius: 30px;
+  padding: 16px;
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(139,92,246,.18);
+  box-shadow: 0 28px 70px rgba(109,40,217,.16);
+}
+[data-theme="dark"] .player-card {
+  background: rgba(17,8,39,.68);
+  box-shadow: 0 28px 70px rgba(0,0,0,.38);
+}
+.player-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 6px 14px;
+}
+.player-title-mini {
+  flex: 1;
+  min-width: 0;
+  font-size: .95rem;
+  font-weight: 900;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.player-count-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 8px 13px;
+  background: rgba(139,92,246,.12);
+  border: 1px solid rgba(139,92,246,.18);
+  color: var(--p3);
+  font-weight: 900;
+  font-size: .78rem;
+}
+.cplayer {
+  width: 100%;
+  max-height: none;
+  aspect-ratio: 16/9;
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.34);
+  background-color: #050208;
+  background-size: cover;
+  background-position: center;
+}
+.cplayer #yt-player-el { inset: -6%; width: 112%; height: 112%; }
+.pc {
+  border-radius: 24px;
+  background: linear-gradient(transparent 38%, rgba(5,2,8,.86) 100%);
+}
+.pc-btn, .pc-sel {
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+.yt-mask-br { width: 190px; height: 62px; border-bottom-right-radius: 24px; }
+.yt-mask-tl { width: 250px; height: 64px; border-top-left-radius: 24px; }
+.vp-bar { display: none !important; }
+.page-footer { display: none !important; }
+.img-section { max-width: 1020px; margin: 0 auto; }
+.grid-cards { max-width: 1100px; margin: 0 auto; }
+.empty-pg { min-height: 44vh; }
+@media (max-width: 900px) {
+  .nav { height: 74px; padding: 0 14px; }
+  .nav-brand { display: none; }
+  .lang-btn { min-width: 58px; padding: 7px 12px; }
+  .lesson-banner { padding: 20px 16px 28px; }
+  .tabs-wrap { width: calc(100% - 24px); padding: 0 8px; justify-content: flex-start; }
+  .tab-btn { min-width: 112px; padding: 15px 12px; }
+  #tab-content { padding: 20px 12px 34px; }
+  .player-card { border-radius: 22px; padding: 10px; }
+  .cplayer { border-radius: 18px; }
+  .pc { border-radius: 18px; }
+  .player-card-top { flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  .nav-logo { width: 42px; height: 42px; }
+  .theme-pill { display: none; }
+  .back-btn { padding: 8px 12px; }
+  .banner-cover { display: none; }
+  .banner-title { font-size: 1.18rem; }
+  .banner-chips { display: none; }
+  .pc-vol, #pc-quality-sel { display:none; }
+  .pc-time { min-width: 86px; font-size:.68rem; }
+}
+
 </style>
 </head>
 <body>
@@ -799,11 +1062,15 @@ body::before {
   <div class="nav-brand" onclick="goHome()">kala<em>wy</em></div>
   <div class="nav-sp"></div>
   <div class="nav-ctrls">
+    <div class="lang-pill" dir="ltr">
+      <button class="lang-btn on" id="lang-ar" onclick="setLang('ar')">عربي</button>
+      <button class="lang-btn" id="lang-en" onclick="setLang('en')">English</button>
+    </div>
     <div class="theme-pill">
       <button class="topt on" id="n-dk" onclick="setTheme('dark')">🌙</button>
       <button class="topt" id="n-lt" onclick="setTheme('light')">☀️</button>
     </div>
-    <button class="back-btn" onclick="history.back()">← رجوع</button>
+    <button class="back-btn" id="back-btn" onclick="history.back()">← رجوع</button>
   </div>
 </nav>
 
@@ -979,13 +1246,19 @@ function _refreshWatchedUI(watched){
   VIDEOS.forEach((_,i)=>{
     const item=document.getElementById(`part-item-${i}`);
     if(!item) return;
-    if(watched.includes(i)) item.classList.add('watched');
-    else item.classList.remove('watched');
+    const isDone=watched.includes(i);
+    item.classList.toggle('watched', isDone);
     const badge=item.querySelector('.part-watched-badge');
     const num=item.querySelector('.part-num');
-    if(watched.includes(i)){
-      if(!badge){ const b=document.createElement('span'); b.className='part-watched-badge'; b.textContent='✓ شاهدت'; item.querySelector('.part-meta').appendChild(b); }
+    if(isDone){
       if(num) num.textContent='✓';
+      const meta=item.querySelector('.part-meta');
+      if(meta && !badge){
+        const b=document.createElement('span');
+        b.className='part-watched-badge';
+        b.textContent=`✓ ${tr('watched')}`;
+        meta.appendChild(b);
+      }
     } else {
       if(badge) badge.remove();
       if(num) num.textContent=i+1;
@@ -997,8 +1270,10 @@ function _refreshWatchedUI(watched){
   const lbl=document.getElementById('sidebar-prog-label');
   const txt=document.getElementById('sidebar-progress-text');
   if(fill) fill.style.width=pct+'%';
-  if(lbl) lbl.textContent=`${done} من ${total} فيديو شاهدت`;
+  if(lbl) lbl.textContent=`${done} من ${total} ${tr('videosWatched')}`;
   if(txt) txt.textContent=`${done}/${total}`;
+  const pill=document.querySelector('.player-count-pill');
+  if(pill) pill.innerHTML=`✅ ${done}/${total} <span>${UI_LANG==='en'?tr('watched'):tr('videosWatched')}</span>`;
 }
 
 /* ══════════ SUPABASE ══════════ */
@@ -1028,6 +1303,34 @@ function setTheme(th){
   document.getElementById('n-dk').classList.toggle('on',th==='dark');
   document.getElementById('n-lt').classList.toggle('on',th==='light');
 }
+
+
+/* ══════════ LANGUAGE TOGGLE ══════════ */
+let UI_LANG = localStorage.getItem('kw-lang') || 'ar';
+const I18N = {
+  ar: {
+    back:'← رجوع', exam:'امتحان', video:'فيديو', homework:'واجب', pdf:'PDF', image:'صورة',
+    remaining:'متبقي للحصة', lesson:'الحصة', part:'الجزء', now:'يُشغَّل الآن', watched:'شاهدت',
+    videosWatched:'فيديو شاهدت', noVideo:'لا يوجد فيديو', noImages:'لا توجد صور', noPdfs:'لا يوجد PDF'
+  },
+  en: {
+    back:'← Back', exam:'Exam', video:'Video', homework:'Homework', pdf:'PDF', image:'Image',
+    remaining:'remaining', lesson:'Lesson', part:'Part', now:'Playing now', watched:'Watched',
+    videosWatched:'videos watched', noVideo:'No video', noImages:'No images', noPdfs:'No PDF'
+  }
+};
+function tr(k){ return (I18N[UI_LANG] && I18N[UI_LANG][k]) || I18N.ar[k] || k; }
+function setLang(lang){
+  UI_LANG = lang === 'en' ? 'en' : 'ar';
+  localStorage.setItem('kw-lang', UI_LANG);
+  document.getElementById('lang-ar')?.classList.toggle('on', UI_LANG === 'ar');
+  document.getElementById('lang-en')?.classList.toggle('on', UI_LANG === 'en');
+  const back=document.getElementById('back-btn');
+  if(back) back.textContent=tr('back');
+  if(LESSON) renderPage(window.currentTab || 'video');
+}
+function initLangButtons(){ setLang(UI_LANG); }
+
 function goHome(){ window.location.href='/dashboard/'; }
 function toast(type,msg,dur=3500){
   const icons={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
@@ -1104,7 +1407,7 @@ function startAccessTimer(){
 
 /* ══════════ INIT ══════════ */
 async function init(){
-  const th=localStorage.getItem('kw-theme')||'dark'; setTheme(th);
+  const th=localStorage.getItem('kw-theme')||'dark'; setTheme(th); initLangButtons();
   const params=new URLSearchParams(location.search);
   const lessonId=params.get('id');
   if(!lessonId){ showError('لم يتم تحديد الحصة'); return; }
@@ -1156,53 +1459,53 @@ function getHomeworkItems(){
 }
 
 /* ══════════ RENDER PAGE SHELL ══════════ */
-function renderPage(){
+function renderPage(preferredTab){
   const chapter=LESSON.chapters;
   const pdfs=getPdfItems().length, imgs=getImageItems().length, hws=getHomeworkItems().length;
+  const videosCount=VIDEOS.length;
+  const examsCount=EXAM?1:0;
+  const nextTab = preferredTab || window.currentTab || (videosCount ? 'video' : (EXAM ? 'exam' : (pdfs ? 'pdf' : (imgs ? 'image' : 'homework'))));
+
   document.getElementById('page-root').innerHTML=`
-    <!-- BANNER -->
+    <!-- PREMIUM BANNER -->
     <div class="lesson-banner">
       <div class="banner-inner">
         <div class="banner-cover">
           ${(LESSON.image_url||chapter?.image_url)?`<img src="${imgSafe(LESSON.image_url||chapter.image_url)}" alt="" onerror="imgErr(this,'🎬')" loading="lazy">`:'🎬'}
         </div>
         <div class="banner-text">
-          <div class="banner-chapter">${chapter?.subjects?.name_ar||''} ${chapter?.title?`← ${chapter.title}`:''}</div>
-          <div class="banner-title">${LESSON.title}</div>
+          <div class="banner-chapter">${chapter?.subjects?.name_ar||''} ${chapter?.title?`← ${esc(chapter.title)}`:''}</div>
+          <div class="banner-title">${esc(LESSON.title||tr('lesson'))}</div>
           <div class="banner-chips">
-            <span class="bchip">🎥 ${VIDEOS.length} فيديو</span>
-            <span class="bchip">📄 ${pdfs} PDF</span>
-            <span class="bchip">🖼️ ${imgs} صورة</span>
-            <span class="bchip">📌 ${hws} واجب</span>
+            <span class="bchip">🎥 ${videosCount} ${tr('video')}</span>
+            <span class="bchip">📄 ${pdfs} ${tr('pdf')}</span>
+            <span class="bchip">🖼️ ${imgs} ${tr('image')}</span>
+            <span class="bchip">📌 ${hws} ${tr('homework')}</span>
             ${EXAM?.duration_minutes?`<span class="bchip">⏱️ ${EXAM.duration_minutes} دقيقة</span>`:''}
-            ${EXAM?`<span class="bchip">🎯 نجاح ${passScore()}%</span>`:''}
+            ${EXAM?`<span class="bchip">🎯 ${passScore()}%</span>`:''}
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TABS -->
+    <!-- TOP TABS -->
     <div class="tabs-wrap">
-      <button class="tab-btn on" id="tab-exam" onclick="switchTab('exam')">📝 امتحان ${EXAM?'<span class="tab-badge">!</span>':''}</button>
-      <button class="tab-btn" id="tab-video" onclick="switchTab('video')">🎥 فيديو <span class="tab-badge">${VIDEOS.length}</span></button>
-      <button class="tab-btn" id="tab-homework" onclick="switchTab('homework')">📌 واجب <span class="tab-badge">${hws||0}</span></button>
-      <button class="tab-btn" id="tab-pdf" onclick="switchTab('pdf')">📄 PDF <span class="tab-badge">${pdfs+imgs}</span></button>
+      <button class="tab-btn" id="tab-exam" onclick="switchTab('exam')">📝 <span class="tab-label">${tr('exam')}</span> <span class="tab-badge">${examsCount}</span></button>
+      <button class="tab-btn" id="tab-video" onclick="switchTab('video')">🎥 <span class="tab-label">${tr('video')}</span> <span class="tab-badge">${videosCount}</span></button>
+      <button class="tab-btn" id="tab-homework" onclick="switchTab('homework')">📌 <span class="tab-label">${tr('homework')}</span> <span class="tab-badge">${hws}</span></button>
+      <button class="tab-btn" id="tab-pdf" onclick="switchTab('pdf')">📄 <span class="tab-label">${tr('pdf')}</span> <span class="tab-badge">${pdfs}</span></button>
+      <button class="tab-btn" id="tab-image" onclick="switchTab('image')">🖼️ <span class="tab-label">${tr('image')}</span> <span class="tab-badge">${imgs}</span></button>
     </div>
 
     <!-- CONTENT -->
     <div id="tab-content"></div>
-
-    <!-- FOOTER -->
-    <footer class="page-footer">
-      <div class="footer-brand">kala<em>wy</em></div>
-      <div class="footer-text">جميع الحقوق محفوظة <span class="footer-dot"></span> محتوى محمي</div>
-    </footer>
   `;
-  switchTab('exam');
+  switchTab(nextTab);
 }
 
 function switchTab(id){
-  ['exam','video','homework','pdf'].forEach(t=>{
+  window.currentTab=id;
+  ['exam','video','homework','pdf','image'].forEach(t=>{
     const btn=document.getElementById(`tab-${t}`);
     if(btn) btn.classList.toggle('on',t===id);
   });
@@ -1210,6 +1513,7 @@ function switchTab(id){
   else if(id==='video') renderVideo();
   else if(id==='homework') renderHomework();
   else if(id==='pdf') renderPDF();
+  else if(id==='image') renderImages();
 }
 
 /* ══════════ EXAM ══════════ */
@@ -1453,97 +1757,86 @@ function buildVideoPlayer(){
   const pct=total>0?Math.round(done/total*100):0;
   const p=VIDEOS[_curPart];
   const vid=ytId(p.youtube_url);
+  const poster=p.thumbnail_url||p.image_url||LESSON.image_url||LESSON.chapters?.image_url||'';
+  const bg=poster?`background-image:linear-gradient(180deg, rgba(5,2,8,.12), rgba(5,2,8,.34)), url('${imgSafe(poster)}')`:'';
   const phone=String(ME?.phone||'').trim()||'---';
   const userId=String(ME?.id||'').slice(0,8).toUpperCase();
 
   tc.innerHTML=`
-  <div class="video-layout">
-    <!-- SIDEBAR -->
-    <div class="parts-sidebar">
-      <div class="sidebar-header">
-        <span>📋 أجزاء الحصة</span>
-        <span class="sidebar-progress-text" id="sidebar-progress-text">${done}/${total}</span>
-      </div>
-      <div class="parts-list">
-        ${VIDEOS.map((v,i)=>`
-          <div class="part-item${i===_curPart?' active':''}${watched.includes(i)?' watched':''}" id="part-item-${i}" onclick="changePart(${i})">
-            <div class="part-num">${watched.includes(i)?'✓':i+1}</div>
-            <div class="part-info">
-              <div class="part-title">${v.title||('فيديو '+(i+1))}</div>
-              <div class="part-meta">
-                ${i===_curPart?'<span class="part-active-badge">▶ يُشغَّل الآن</span>':''}
+  <div class="video-layout premium-video-page">
+    ${VIDEOS.length>1?`
+    <div class="parts-topbar">
+      ${VIDEOS.map((v,i)=>`
+        <button class="part-chip${i===_curPart?' active':''}${watched.includes(i)?' watched':''}" id="part-item-${i}" onclick="changePart(${i})">
+          <span class="part-num">${watched.includes(i)?'✓':i+1}</span>
+          <span class="part-chip-title">${esc(v.title||(`${tr('video')} ${i+1}`))}</span>
+        </button>`).join('')}
+    </div>`:''}
+
+    <div class="player-area">
+      <div class="player-card glass">
+        <div class="player-card-top">
+          <div class="player-title-mini">${VIDEOS.length>1?`${tr('part')} ${_curPart+1} / ${VIDEOS.length} — `:''}${esc(p.title||tr('video'))}</div>
+          <div class="player-count-pill">✅ ${done}/${total} <span>${UI_LANG==='en'?tr('watched'):tr('videosWatched')}</span></div>
+          ${_curPart>0?`<button class="btn btn-gl" onclick="changePart(${_curPart-1})">← ${UI_LANG==='en'?'Previous':'السابق'}</button>`:''}
+          ${_curPart<VIDEOS.length-1?`<button class="btn btn-p" onclick="changePart(${_curPart+1})">${UI_LANG==='en'?'Next':'التالي'} →</button>`:''}
+        </div>
+
+        <div class="cplayer" id="player-fs-wrap" onmousemove="_showControls()" style="${bg}">
+          <div id="yt-player-el"></div>
+
+          <!-- Rotating watermark + student ID -->
+          <div class="kw-watermark-wrap" id="kw-wm" style="left:10%;top:10%;--rot:-10deg">
+            <div class="kw-celeb-avatar">
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="14" r="7" fill="rgba(255,255,255,0.9)"/>
+                <ellipse cx="20" cy="32" rx="13" ry="9" fill="rgba(255,255,255,0.9)"/>
+              </svg>
+            </div>
+            <div class="kw-student-id">${esc(phone !== '---' ? phone : userId)}</div>
+          </div>
+
+          <div class="yt-guard" onclick="_onGuardClick()" ondblclick="toggleFs()" oncontextmenu="return false"></div>
+          <div class="yt-brand-mask yt-mask-br"></div>
+          <div class="yt-brand-mask yt-mask-tl"></div>
+          <div id="pc-flash" class="pc-flash"></div>
+          <div class="pc" id="pc-controls">
+            <div class="pc-top">
+              <div class="pc-top-title">${esc(p.title||tr('video'))}</div>
+            </div>
+            <div class="pc-bottom">
+              <div class="pc-progress" id="pc-progress" onmousedown="startSeek(event)">
+                <div class="pc-track"><div class="pc-fill" id="pc-fill" style="width:0%"></div></div>
+                <div class="pc-thumb" id="pc-thumb" style="left:0%"></div>
+              </div>
+              <div class="pc-row">
+                <button class="pc-btn" id="pc-play-btn" onclick="togglePlay()">▶</button>
+                <input type="range" class="pc-vol" min="0" max="100" value="100" oninput="_setVol(this.value)">
+                <div class="pc-time" id="pc-time">0:00 / 0:00</div>
+                <div class="pc-spacer"></div>
+                <select class="pc-sel" id="pc-speed-sel" onchange="setSpeed(this.value)">
+                  <option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option>
+                </select>
+                <select class="pc-sel" id="pc-quality-sel" onchange="setQuality(this.value)"><option value="default">${UI_LANG==='en'?'Quality':'جودة'}</option></select>
+                <button class="pc-btn" onclick="toggleFs()">⛶</button>
               </div>
             </div>
-          </div>`).join('')}
-      </div>
-      <div class="sidebar-overall">
-        <div class="sidebar-prog-bar"><div class="sidebar-prog-fill" id="sidebar-prog-fill" style="width:${pct}%"></div></div>
-        <div class="sidebar-prog-label" id="sidebar-prog-label">${done} من ${total} فيديو شاهدت</div>
-      </div>
-    </div>
-
-    <!-- PLAYER -->
-    <div class="player-area">
-      <div class="cplayer" id="player-fs-wrap" onmousemove="_showControls()">
-        <div id="yt-player-el"></div>
-
-        <!-- Celebrity watermark + red ID -->
-        <div class="kw-watermark-wrap" id="kw-wm" style="left:10%;top:10%;--rot:-10deg">
-          <div class="kw-celeb-avatar">
-            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="14" r="7" fill="rgba(255,255,255,0.9)"/>
-              <ellipse cx="20" cy="32" rx="13" ry="9" fill="rgba(255,255,255,0.9)"/>
-            </svg>
           </div>
-          <div class="kw-student-id">${esc(userId)}</div>
-        </div>
-
-        <div class="yt-guard" onclick="_onGuardClick()" ondblclick="toggleFs()" oncontextmenu="return false"></div>
-        <div class="yt-brand-mask yt-mask-br"></div>
-        <div class="yt-brand-mask yt-mask-tl"></div>
-        <div id="pc-flash" class="pc-flash"></div>
-        <div class="pc" id="pc-controls">
-          <div class="pc-top">
-            <div class="pc-top-title">${p.title||'فيديو الحصة'}</div>
+          <div class="shield-overlay hidden" id="adb-overlay">
+            <div class="so-ico">🛡️</div>
+            <div class="so-title">${UI_LANG==='en'?'Ad blocker detected':'حاجب إعلانات مكتشف'}</div>
+            <div class="so-sub">${UI_LANG==='en'?'Please disable Brave Shields or AdBlock to watch the video':'يرجى إيقاف <strong>Brave Shields</strong> أو <strong>AdBlock</strong> لمشاهدة الفيديو'}</div>
+            <button class="btn btn-p" style="margin-top:4px" onclick="location.reload()">🔄 ${UI_LANG==='en'?'Retry':'إعادة المحاولة'}</button>
           </div>
-          <div class="pc-bottom">
-            <div class="pc-progress" id="pc-progress" onmousedown="startSeek(event)">
-              <div class="pc-track"><div class="pc-fill" id="pc-fill" style="width:0%"></div></div>
-              <div class="pc-thumb" id="pc-thumb" style="left:0%"></div>
-            </div>
-            <div class="pc-row">
-              <button class="pc-btn" id="pc-play-btn" onclick="togglePlay()">▶</button>
-              <input type="range" class="pc-vol" min="0" max="100" value="100" oninput="_setVol(this.value)">
-              <div class="pc-time" id="pc-time">0:00 / 0:00</div>
-              <div class="pc-spacer"></div>
-              <select class="pc-sel" id="pc-speed-sel" onchange="setSpeed(this.value)">
-                <option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option>
-              </select>
-              <select class="pc-sel" id="pc-quality-sel" onchange="setQuality(this.value)"><option value="default">جودة</option></select>
-              <button class="pc-btn" onclick="toggleFs()">⛶</button>
-            </div>
-          </div>
-        </div>
-        <div class="shield-overlay hidden" id="adb-overlay">
-          <div class="so-ico">🛡️</div>
-          <div class="so-title">حاجب إعلانات مكتشف</div>
-          <div class="so-sub">يرجى إيقاف <strong>Brave Shields</strong> أو <strong>AdBlock</strong> لمشاهدة الفيديو</div>
-          <button class="btn btn-p" style="margin-top:4px" onclick="location.reload()">🔄 إعادة المحاولة</button>
-        </div>
-      </div>
-      <div class="vp-bar">
-        <div class="vp-bar-title">${VIDEOS.length>1?`الجزء ${_curPart+1} من ${VIDEOS.length} — `:''}${p.title||'فيديو الحصة'}</div>
-        <div class="vp-nav-btns">
-          ${_curPart>0?`<button class="btn btn-gl" onclick="changePart(${_curPart-1})">← السابق</button>`:''}
-          ${_curPart<VIDEOS.length-1?`<button class="btn btn-p" onclick="changePart(${_curPart+1})">التالي →</button>`:''}
         </div>
       </div>
     </div>
   </div>`;
 
   startWmMove();
+  _refreshWatchedUI(watched);
   if(vid){ initPlayer(vid,'yt-player-el'); }
-  else { document.getElementById('yt-player-el').innerHTML=`<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--t2);flex-direction:column;gap:8px"><span style="font-size:2rem">⚠️</span><div>رابط غير صحيح</div></div>`; }
+  else { document.getElementById('yt-player-el').innerHTML=`<div style="height:100%;display:flex;align-items:center;justify-content:center;color:white;flex-direction:column;gap:8px;background:rgba(5,2,8,.55)"><span style="font-size:2rem">⚠️</span><div>${UI_LANG==='en'?'Invalid video link':'رابط غير صحيح'}</div></div>`; }
 }
 
 let _wmMoveTimer=null;
@@ -1580,6 +1873,23 @@ function renderHomework(){
   </div>`;
 }
 
+
+
+/* ══════════ IMAGES ══════════ */
+function renderImages(){
+  const tc=document.getElementById('tab-content');
+  const items=getImageItems();
+  if(!items.length){
+    tc.innerHTML=`<div class="empty-pg"><span style="font-size:2.8rem">🖼️</span><div class="ei-title">${tr('noImages')}</div></div>`;
+    return;
+  }
+  tc.innerHTML=`<div class="img-section">${items.map((ct,i)=>`
+    <div>
+      <div class="img-label">${esc(ct.title||(`${tr('image')} ${i+1}`))}</div>
+      <div class="img-wrap"><img class="content-img" src="${imgSafe(ct.url||ct.image_url)}" alt="" onerror="imgErr(this,'🖼️')" loading="lazy"></div>
+      ${ct.body?`<div class="card-body">${String(ct.body).replace(/\n/g,'<br>')}</div>`:''}
+    </div>`).join('')}</div>`;
+}
 /* ══════════ PDF ══════════ */
 function renderPDF(){
   const tc=document.getElementById('tab-content');
@@ -1615,7 +1925,7 @@ function showError(msg){
 }
 
 /* ══════════ BOOTSTRAP ══════════ */
-const th=localStorage.getItem('kw-theme')||'dark'; setTheme(th);
+const th=localStorage.getItem('kw-theme')||'dark'; setTheme(th); initLangButtons();
 init();
 </script>
 </body>
