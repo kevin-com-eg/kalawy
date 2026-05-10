@@ -353,15 +353,6 @@ body::before {
 .part-info { flex: 1; min-width: 0; }
 .part-title { font-size: .87rem; font-weight: 700; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .part-meta { font-size: .68rem; color: var(--t3); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
-.part-watched-badge {
-  font-size: .62rem;
-  font-weight: 900;
-  padding: 2px 7px;
-  border-radius: 99px;
-  background: rgba(52,211,153,.15);
-  color: #34d399;
-  border: 1px solid rgba(52,211,153,.25);
-}
 .part-active-badge {
   font-size: .62rem;
   font-weight: 900;
@@ -386,6 +377,7 @@ body::before {
 .cplayer {
   position: relative;
   width: 100%;
+  max-height: 52vh;
   aspect-ratio: 16/9;
   background: #000;
   overflow: hidden;
@@ -474,25 +466,47 @@ body::before {
 .vp-bar-title { font-weight: 800; font-size: .92rem; flex: 1; }
 .vp-nav-btns { display: flex; gap: 8px; }
 
-/* Watermark */
-.kw-phone-watermark {
+/* Celebrity watermark */
+.kw-watermark-wrap {
   position: absolute;
   z-index: 22;
-  left: 8%; top: 10%;
   pointer-events: none;
-  color: #c4b5fd;
-  font-family: 'Inter', monospace;
-  font-weight: 900;
-  font-size: clamp(12px, 1.6vw, 22px);
-  letter-spacing: .04em;
-  text-shadow: 0 2px 10px rgba(0,0,0,.9), 0 0 10px rgba(139,92,246,.5);
-  opacity: .7;
-  transform: rotate(-10deg);
-  mix-blend-mode: screen;
-  white-space: nowrap;
-  animation: wmPulse 2.5s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  animation: wmFloat 3s ease-in-out infinite;
 }
-@keyframes wmPulse { 0%,100%{opacity:.45} 50%{opacity:.85} }
+@keyframes wmFloat {
+  0%,100% { opacity: .55; transform: rotate(var(--rot,−10deg)) translateY(0); }
+  50%      { opacity: .88; transform: rotate(var(--rot,−10deg)) translateY(-4px); }
+}
+.kw-celeb-avatar {
+  width: clamp(36px,4vw,56px);
+  height: clamp(36px,4vw,56px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  box-shadow: 0 4px 18px rgba(139,92,246,.55), 0 0 0 2px rgba(196,181,253,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.kw-celeb-avatar svg { width: 70%; height: 70%; }
+.kw-student-id {
+  font-family: 'Inter', monospace;
+  font-size: clamp(9px,1.1vw,14px);
+  font-weight: 900;
+  color: #ff3b3b;
+  text-shadow: 0 1px 8px rgba(0,0,0,.95), 0 0 12px rgba(255,0,0,.4);
+  letter-spacing: .05em;
+  white-space: nowrap;
+  background: rgba(0,0,0,.55);
+  padding: 2px 7px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,50,50,.35);
+}
 
 /* AdBlock overlay */
 .shield-overlay {
@@ -1440,6 +1454,7 @@ function buildVideoPlayer(){
   const p=VIDEOS[_curPart];
   const vid=ytId(p.youtube_url);
   const phone=String(ME?.phone||'').trim()||'---';
+  const userId=String(ME?.id||'').slice(0,8).toUpperCase();
 
   tc.innerHTML=`
   <div class="video-layout">
@@ -1457,7 +1472,6 @@ function buildVideoPlayer(){
               <div class="part-title">${v.title||('فيديو '+(i+1))}</div>
               <div class="part-meta">
                 ${i===_curPart?'<span class="part-active-badge">▶ يُشغَّل الآن</span>':''}
-                ${watched.includes(i)&&i!==_curPart?'<span class="part-watched-badge">✓ شاهدت</span>':''}
               </div>
             </div>
           </div>`).join('')}
@@ -1472,7 +1486,18 @@ function buildVideoPlayer(){
     <div class="player-area">
       <div class="cplayer" id="player-fs-wrap" onmousemove="_showControls()">
         <div id="yt-player-el"></div>
-        <div class="kw-phone-watermark" id="kw-wm">${esc(phone)}</div>
+
+        <!-- Celebrity watermark + red ID -->
+        <div class="kw-watermark-wrap" id="kw-wm" style="left:10%;top:10%;--rot:-10deg">
+          <div class="kw-celeb-avatar">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="14" r="7" fill="rgba(255,255,255,0.9)"/>
+              <ellipse cx="20" cy="32" rx="13" ry="9" fill="rgba(255,255,255,0.9)"/>
+            </svg>
+          </div>
+          <div class="kw-student-id">${esc(userId)}</div>
+        </div>
+
         <div class="yt-guard" onclick="_onGuardClick()" ondblclick="toggleFs()" oncontextmenu="return false"></div>
         <div class="yt-brand-mask yt-mask-br"></div>
         <div class="yt-brand-mask yt-mask-tl"></div>
