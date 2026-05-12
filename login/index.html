@@ -358,9 +358,9 @@ a{text-decoration:none;color:inherit}
       <div class="f-col-title" id="f-links-title" data-ar="روابط سريعة" data-en="Quick links">روابط سريعة</div>
       <div class="f-links">
         <a class="f-link" href="/home/" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</a>
-        <a class="f-link" href="/dashboard/" data-ar="📚 حصصي" data-en="📚 My lessons">📚 حصصي</a>
-        <a class="f-link" href="/dashboard/" data-ar="🛒 السلة" data-en="🛒 Cart">🛒 السلة</a>
-        <a class="f-link" href="/dashboard/" data-ar="👤 حسابي" data-en="👤 Profile">👤 حسابي</a>
+        <a class="f-link" href="/dashboard" data-ar="📚 حصصي" data-en="📚 My lessons">📚 حصصي</a>
+        <a class="f-link" href="/dashboard" data-ar="🛒 السلة" data-en="🛒 Cart">🛒 السلة</a>
+        <a class="f-link" href="/dashboard" data-ar="👤 حسابي" data-en="👤 Profile">👤 حسابي</a>
         <a class="f-link" href="/signup/" data-ar="✨ إنشاء حساب" data-en="✨ Create account">✨ إنشاء حساب</a>
       </div>
     </div>
@@ -391,11 +391,20 @@ a{text-decoration:none;color:inherit}
 <script>
 const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
-const DASHBOARD_URL = "/dashboard/"; // لو ملفك اسمه dashboard.html غيّرها إلى "/dashboard.html"
+const DASHBOARD_URL = "/dashboard"; // لو ملفك اسمه dashboard.html غيّرها إلى "/dashboard.html"
 const CONTACT_WA   = "201000000000";
 const CONTACT_MAIL = "support@kalawy.com";
+const LOGIN_MARK = 'kw-login-ok';
+function rememberLogin(user){try{localStorage.setItem(LOGIN_MARK,JSON.stringify({id:user?.id||'',email:user?.email||'',at:Date.now()}));}catch{}}
 
-const sb = window.supabase.createClient(SB_URL, SB_ANON);
+const sb = window.supabase.createClient(SB_URL, SB_ANON, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: window.localStorage
+  }
+});
 let _lang = localStorage.getItem("kw-lang") || "ar";
 
 function goDashboard(){
@@ -455,7 +464,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   setLang(_lang);
 
   const { data: { session } } = await sb.auth.getSession();
-  if(session) goDashboard();
+  if(session){ rememberLogin(session.user); goDashboard(); }
 });
 
 async function doLogin(e){
@@ -479,6 +488,8 @@ async function doLogin(e){
     return msg(_lang === "ar" ? "بيانات الدخول غلط" : "Wrong credentials");
   }
 
+  rememberLogin(data.user);
+
   // مهم: لا نخلي مشكلة RLS في جدول profiles توقف التحويل للداشبورد
   try{
     const { data: profile } = await sb
@@ -488,9 +499,8 @@ async function doLogin(e){
       .maybeSingle();
 
     if(profile?.role === "admin" || profile?.role === "teacher"){
-      await sb.auth.signOut();
       stopLoading(btn);
-      return msg(_lang === "ar" ? "هذا مش حساب طالب" : "This is not a student account");
+      return msg(_lang === "ar" ? "تم الدخول، لكن هذا الحساب ليس طالبًا. افتح صفحة الحساب المناسبة أو اضغط Logout بنفسك." : "Signed in, but this is not a student account. Open the correct dashboard or sign out manually.", true);
     }
   }catch(err){
     console.warn("profiles role check skipped:", err);
