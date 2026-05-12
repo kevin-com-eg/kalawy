@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kalawy â€” Platform</title>
+<title>kalawy — Platform</title>
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop stop-color="%237c3cff"/%3E%3Cstop offset=".58" stop-color="%2300d879"/%3E%3Cstop offset="1" stop-color="%23ff4fd8"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="64" height="64" rx="18" fill="url(%23g)"/%3E%3Ctext x="32" y="40" font-family="Arial" font-size="22" font-weight="900" text-anchor="middle" fill="white"%3EKW%3C/text%3E%3C/svg%3E'>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-/* â”€â”€ TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TOKENS ──────────────────────────────────── */
 :root {
   --p1:#8b5cf6; --p2:#7c3aed; --p3:#a78bfa; --p4:#6d28d9;
   --p-glow:rgba(139,92,246,.3); --p-faint:rgba(139,92,246,.08);
@@ -17,7 +18,7 @@
   --tr:.2s cubic-bezier(.4,0,.2,1);
 }
 
-/* â”€â”€ DARK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── DARK ───────────────────────────────────── */
 [data-theme="dark"] {
   --bg:#060112; --bg2:#0b0620; --bg3:#120930;
   --card:rgba(20,10,50,.7); --card-s:rgba(30,16,70,.8);
@@ -31,7 +32,7 @@
   --orb3:rgba(56,189,248,.06);
 }
 
-/* â”€â”€ LIGHT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── LIGHT ──────────────────────────────────── */
 [data-theme="light"] {
   --bg:#f5f0ff; --bg2:#ede8fa; --bg3:#e0d8f8;
   --card:rgba(255,255,255,.85); --card-s:rgba(248,244,255,.95);
@@ -45,7 +46,7 @@
   --orb3:rgba(56,189,248,.07);
 }
 
-/* â”€â”€ RESET â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── RESET ──────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
@@ -62,7 +63,7 @@ a{text-decoration:none;color:inherit}
 img{display:block}
 .hidden{display:none!important}
 
-/* â”€â”€ BG MESH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── BG MESH ────────────────────────────────── */
 .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .orb{position:absolute;border-radius:50%;filter:blur(100px);animation:drift 18s ease-in-out infinite}
 .o1{width:700px;height:700px;background:var(--orb1);top:-200px;right:-200px}
@@ -74,7 +75,7 @@ img{display:block}
   70%{transform:translate(-25px,30px) scale(.96)}
 }
 
-/* â”€â”€ GLASS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── GLASS ──────────────────────────────────── */
 .glass{
   background:var(--glass);
   backdrop-filter:blur(22px) saturate(160%);
@@ -89,7 +90,7 @@ img{display:block}
   pointer-events:none;border-radius:inherit;
 }
 
-/* â”€â”€ NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── NAV ────────────────────────────────────── */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:500;
   height:var(--nav-h);
@@ -103,11 +104,11 @@ img{display:block}
 .nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
 .nav-mark{
   width:38px;height:38px;border-radius:11px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--p1),var(--p2));
+  background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);
   display:grid;place-items:center;
   font-weight:900;font-size:.88rem;color:#fff;
   font-family:'Outfit',sans-serif;
-  box-shadow:0 4px 16px var(--p-glow);
+  box-shadow:0 10px 28px rgba(0,216,121,.22);
 }
 .nav-name{
   font-family:'Outfit',sans-serif;font-weight:900;
@@ -214,7 +215,7 @@ img{display:block}
 .ico-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff}
 .ico-em{background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff}
 
-/* â”€â”€ BREADCRUMB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── BREADCRUMB ─────────────────────────────── */
 .bc{
   position:fixed;top:var(--nav-h);left:0;right:0;
   height:var(--bc-h);z-index:400;
@@ -233,7 +234,7 @@ img{display:block}
 .bc-item.active{color:var(--text);font-weight:800;cursor:default}
 .bc-sep{color:var(--t3);font-size:.65rem}
 
-/* â”€â”€ PAGE WRAPPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── PAGE WRAPPER ───────────────────────────── */
 .pw{
   padding-top:calc(var(--nav-h) + var(--bc-h));
   background:var(--bg);min-height:100vh;position:relative;z-index:1;
@@ -245,7 +246,7 @@ img{display:block}
 .pg.on{display:block;animation:pg-in .28s ease}
 @keyframes pg-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-/* â”€â”€ HERO BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── HERO BAR ───────────────────────────────── */
 .hero-bar{
   display:flex;align-items:center;gap:14px;
   background:var(--card);
@@ -276,7 +277,7 @@ img{display:block}
 .h-stat .n{font-size:1.2rem;font-weight:900;color:var(--p3);line-height:1;font-family:'Outfit',sans-serif}
 .h-stat .l{font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px;font-weight:700}
 
-/* â”€â”€ PAGE SECTION HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── PAGE SECTION HEADER ─────────────────────── */
 .sec-hero{text-align:center;padding:32px 20px 24px}
 .sec-title{
   font-size:clamp(1.4rem,3vw,2rem);font-weight:900;
@@ -285,11 +286,11 @@ img{display:block}
 }
 .sec-sub{font-size:.9rem;color:var(--t3);font-weight:600}
 
-/* â”€â”€ GRIDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── GRIDS ──────────────────────────────────── */
 .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
 .grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:16px}
 
-/* â”€â”€ SUBJECT CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── SUBJECT CARD ───────────────────────────── */
 .sub-card{
   background:var(--card);backdrop-filter:blur(16px);
   border:1px solid var(--border);border-radius:var(--r-lg);
@@ -315,7 +316,7 @@ img{display:block}
   border-radius:999px;font-size:.68rem;font-weight:700;
 }
 
-/* â”€â”€ TEACHER CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TEACHER CARD ───────────────────────────── */
 .tch-card{
   background:var(--card);backdrop-filter:blur(16px);
   border:1px solid var(--border);border-radius:var(--r-lg);
@@ -345,7 +346,7 @@ img{display:block}
 }
 .follow-btn:hover{transform:translateY(-1px)}
 
-/* â”€â”€ CHAPTER CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── CHAPTER CARD ───────────────────────────── */
 .ch-card{
   background:var(--card);backdrop-filter:blur(16px);
   border:1px solid var(--border);border-radius:var(--r-lg);
@@ -368,7 +369,7 @@ img{display:block}
 .ch-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:5px}
 .ch-count{font-size:.78rem;color:var(--t3)}
 
-/* â”€â”€ LESSON LIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── LESSON LIST ────────────────────────────── */
 .ls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:18px}
 .ls-card{
   background:var(--card);backdrop-filter:blur(16px);
@@ -395,7 +396,7 @@ img{display:block}
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
 .ls-action{margin-top:auto;padding-top:10px;width:100%}
 
-/* â”€â”€ MY LESSONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── MY LESSONS ─────────────────────────────── */
 .my-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:16px}
 .my-card{
   background:var(--card);backdrop-filter:blur(16px);
@@ -413,7 +414,7 @@ img{display:block}
 .my-title{font-weight:900;font-size:.88rem;margin-bottom:3px}
 .my-sub{font-size:.72rem;color:var(--t3)}
 
-/* â”€â”€ CART â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── CART ───────────────────────────────────── */
 .cart-layout{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
 .cart-items{display:flex;flex-direction:column;gap:10px}
 .c-item{
@@ -471,7 +472,7 @@ img{display:block}
 .code-go:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .code-go:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-/* â”€â”€ PROFILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── PROFILE ────────────────────────────────── */
 .prof-wrap{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}
 .prof-card{
   background:var(--card);backdrop-filter:blur(20px);
@@ -509,7 +510,7 @@ img{display:block}
 .enr-title{font-weight:800;font-size:.86rem}
 .enr-sub{font-size:.7rem;color:var(--t3);margin-top:2px}
 
-/* â”€â”€ CHIPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── CHIPS ──────────────────────────────────── */
 .chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.68rem;font-weight:700;white-space:nowrap}
 .ck-p{background:var(--p-faint);color:var(--p3);border:1px solid var(--border)}
 .ck-gold{background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22)}
@@ -519,7 +520,7 @@ img{display:block}
 .ck-muted{background:var(--glass);color:var(--t3);border:1px solid var(--border)}
 .time-chip{display:flex;align-items:center;gap:4px;font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22)}
 
-/* â”€â”€ BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── BUTTONS ────────────────────────────────── */
 .btn{border:none;border-radius:var(--r-sm);padding:9px 16px;font-weight:700;cursor:pointer;font-size:.84rem;transition:var(--tr);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .btn-primary{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 14px var(--p-glow)}
 .btn-primary:hover{opacity:.88;transform:translateY(-1px)}
@@ -532,7 +533,7 @@ img{display:block}
 .btn-gold:hover{background:rgba(251,191,36,.18)}
 .btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px}
 
-/* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TOAST ──────────────────────────────────── */
 #toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none}
 .toast{
   display:flex;gap:9px;align-items:center;
@@ -548,7 +549,7 @@ img{display:block}
 @keyframes t-out{to{opacity:0;transform:translateY(8px)}}
 .t-exit{animation:t-out .2s ease forwards}
 
-/* â”€â”€ MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── MODAL ──────────────────────────────────── */
 .mo{
   position:fixed;inset:0;z-index:9000;
   background:rgba(0,0,0,.6);backdrop-filter:blur(14px);
@@ -582,7 +583,7 @@ img{display:block}
 .notif-body{font-size:.78rem;color:var(--t2);line-height:1.6;white-space:pre-wrap}
 .notif-meta{font-size:.68rem;color:var(--t3);margin-top:5px}
 
-/* â”€â”€ LOADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── LOADER ─────────────────────────────────── */
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(139,92,246,.2);border-top-color:var(--p3);border-radius:50%;animation:spinning .6s linear infinite}
 [data-theme="light"] .spin{border:2px solid rgba(0,0,0,.1);border-top-color:var(--p1)}
 @keyframes spinning{to{transform:rotate(360deg)}}
@@ -591,7 +592,7 @@ img{display:block}
 .empty-ico{font-size:2.4rem;opacity:.75}
 .empty-txt{font-size:.84rem}
 
-/* â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── FOOTER ─────────────────────────────────── */
 .footer{
   background:linear-gradient(135deg,#060112,#120840);
   color:#c4b5e0;padding:56px clamp(16px,5vw,72px) 28px;
@@ -601,7 +602,7 @@ img{display:block}
   max-width:1200px;margin:0 auto;
   display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;align-items:start;
 }
-.f-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-family:'Outfit',sans-serif;font-weight:900;font-size:.9rem;color:#fff;box-shadow:0 4px 16px var(--p-glow)}
+.f-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);display:grid;place-items:center;font-family:'Outfit',sans-serif;font-weight:900;font-size:.9rem;color:#fff;box-shadow:0 10px 28px rgba(0,216,121,.22)}
 .f-name{font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:900;color:#fff;letter-spacing:-.02em}
 .f-name em{font-style:normal;color:var(--p3)}
 .f-logo{display:flex;align-items:center;gap:9px;margin-bottom:14px}
@@ -621,7 +622,7 @@ img{display:block}
 .footer-bottom{max-width:1200px;margin:36px auto 0;border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px}
 .f-copy,.f-made{font-size:.75rem;color:#5a4878}
 
-/* â”€â”€ WA FLOAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── WA FLOAT ───────────────────────────────── */
 .wa-float{
   position:fixed;bottom:26px;right:26px;
   width:52px;height:52px;border-radius:50%;
@@ -640,7 +641,7 @@ img{display:block}
   50%{box-shadow:0 6px 30px rgba(37,211,102,.7),0 0 0 8px rgba(37,211,102,.1)}
 }
 
-/* â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── RESPONSIVE ─────────────────────────────── */
 @media(max-width:1024px){
   .cart-layout{grid-template-columns:1fr}
   .co-panel{position:static}
@@ -671,7 +672,7 @@ img{display:block}
 <!-- EDIT MODAL -->
 <div class="mo" id="editMo">
   <div class="mc">
-    <div class="mc-title" id="edit-title">âœï¸</div>
+    <div class="mc-title" id="edit-title">✏️</div>
     <div class="field">
       <span class="field-label" id="edit-name-lbl">Name</span>
       <input class="inp" id="ed-nm" placeholder="">
@@ -682,7 +683,7 @@ img{display:block}
     </div>
     <div class="mc-footer">
       <button class="btn btn-glass" onclick="closeMo('editMo')" id="edit-cancel">Cancel</button>
-      <button class="btn btn-primary" id="ed-sv" onclick="saveProfile()">ðŸ’¾ Save</button>
+      <button class="btn btn-primary" id="ed-sv" onclick="saveProfile()">💾 Save</button>
     </div>
   </div>
 </div>
@@ -690,7 +691,7 @@ img{display:block}
 <!-- NOTIFICATIONS MODAL -->
 <div class="mo" id="notifMo">
   <div class="mc" style="max-width:500px">
-    <div class="mc-title" id="notif-title">ðŸ””</div>
+    <div class="mc-title" id="notif-title">🔔</div>
     <div style="font-size:.8rem;color:var(--t3)" id="notif-sub"></div>
     <div class="notif-list" id="notifList">
       <div class="loading-st"><div class="spin"></div></div>
@@ -701,7 +702,7 @@ img{display:block}
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• NAV â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- ══════════════ NAV ══════════════ -->
 <nav class="nav" id="mainNav" style="display:none">
   <a class="nav-logo" href="#" onclick="resetAll();return false">
     <div class="nav-mark">KW</div>
@@ -709,25 +710,25 @@ img{display:block}
   </a>
 
   <div class="nav-links">
-    <button class="nl-btn" onclick="resetAll()" id="nl-home">Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</button>
-    <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">ðŸ“š Ø­ØµØµÙŠ</button>
+    <button class="nl-btn" onclick="resetAll()" id="nl-home">الرئيسية</button>
+    <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">📚 حصصي</button>
     <button class="nl-btn cart-btn" onclick="goPage('cart')" id="nl-cart">
-      ðŸ›’ <span id="nl-cart-lbl">Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡</span>
+      🛒 <span id="nl-cart-lbl">سلة الشراء</span>
       <span class="badge hidden" id="cart-badge">0</span>
     </button>
-    <button class="nl-btn" onclick="toast('i', t('comingSoon'))" id="nl-notes">Ù…Ù„Ø§Ø²Ù…</button>
+    <button class="nl-btn" onclick="toast('i', t('comingSoon'))" id="nl-notes">ملازم</button>
     <div class="drop-wrap" id="contactDrop">
-      <button class="nl-btn" onclick="toggleContact(event)" id="nl-contact">ØªÙˆØ§ØµÙ„ â–¾</button>
+      <button class="nl-btn" onclick="toggleContact(event)" id="nl-contact">تواصل ▾</button>
       <div class="drop-menu">
         <button class="drop-item" onclick="openWhatsApp()">
           <div class="drop-ico ico-wa">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
           </div>
-          <span id="drop-wa">ÙˆØ§ØªØ³Ø§Ø¨</span>
+          <span id="drop-wa">واتساب</span>
         </button>
         <button class="drop-item" onclick="openMail()">
-          <div class="drop-ico ico-em">ðŸ“§</div>
-          <span id="drop-email">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ</span>
+          <div class="drop-ico ico-em">📧</div>
+          <span id="drop-email">البريد الإلكتروني</span>
         </button>
       </div>
     </div>
@@ -735,17 +736,17 @@ img{display:block}
 
   <div class="nav-end">
     <button class="bell-btn" onclick="openNotifications()">
-      ðŸ”” <span class="badge hidden" id="bell-ct">0</span>
+      🔔 <span class="badge hidden" id="bell-ct">0</span>
     </button>
     <div class="ctrl-pill">
-      <button class="ctrl-side on" id="n-dark" onclick="setTheme('dark')">ðŸŒ™</button>
-      <button class="ctrl-side" id="n-light" onclick="setTheme('light')">â˜€ï¸</button>
+      <button class="ctrl-side on" id="n-dark" onclick="setTheme('dark')">🌙</button>
+      <button class="ctrl-side" id="n-light" onclick="setTheme('light')">☀️</button>
     </div>
     <div class="lang-pill">
-      <button class="lang-btn on" id="n-ar" onclick="setLang('ar')">Ø¹Ø±Ø¨ÙŠ</button>
+      <button class="lang-btn on" id="n-ar" onclick="setLang('ar')">عربي</button>
       <button class="lang-btn" id="n-en" onclick="setLang('en')">EN</button>
     </div>
-    <div class="nav-av" id="navAv" onclick="goPage('profile')">Ùƒ</div>
+    <div class="nav-av" id="navAv" onclick="goPage('profile')">ك</div>
   </div>
 </nav>
 
@@ -759,29 +760,29 @@ img{display:block}
   <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 </button>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• PAGES â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- ══════════════ PAGES ══════════════ -->
 <div class="pw">
 
   <!-- BROWSE -->
   <div class="pg on" id="pg-browse">
     <!-- Hero bar -->
     <div class="hero-bar">
-      <div class="h-av" id="hAv">ØŸ</div>
+      <div class="h-av" id="hAv">؟</div>
       <div>
         <div class="h-name" id="hNm">...</div>
         <div class="h-grade" id="hGd">...</div>
       </div>
       <div class="h-stats">
-        <div class="h-stat"><div class="n" id="st-unlocked">0</div><div class="l" id="st-unlocked-lbl">Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©</div></div>
-        <div class="h-stat"><div class="n" id="st-cart">0</div><div class="l" id="st-cart-lbl">ÙÙŠ Ø§Ù„Ø³Ù„Ø©</div></div>
+        <div class="h-stat"><div class="n" id="st-unlocked">0</div><div class="l" id="st-unlocked-lbl">حصص مفتوحة</div></div>
+        <div class="h-stat"><div class="n" id="st-cart">0</div><div class="l" id="st-cart-lbl">في السلة</div></div>
       </div>
     </div>
 
     <!-- Subjects -->
     <div id="s-sub">
       <div class="sec-hero">
-        <div class="sec-title" id="sub-title">ðŸ“š Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø©</div>
-        <div class="sec-sub" id="sub-sub">Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø© Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡Ø§</div>
+        <div class="sec-title" id="sub-title">📚 اختار المادة</div>
+        <div class="sec-sub" id="sub-sub">اختار المادة اللي عايز تذاكرها</div>
       </div>
       <div class="grid-3" id="sub-grid">
         <div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>
@@ -791,8 +792,8 @@ img{display:block}
     <!-- Teachers -->
     <div id="s-tch" class="hidden">
       <div class="sec-hero">
-        <div class="sec-title" id="tch-title">ðŸ‘¨â€ðŸ«</div>
-        <div class="sec-sub" id="tch-sub">Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø¯Ø±Ø³</div>
+        <div class="sec-title" id="tch-title">👨‍🏫</div>
+        <div class="sec-sub" id="tch-sub">اختار المدرس</div>
       </div>
       <div class="grid-3" id="tch-grid"></div>
     </div>
@@ -800,8 +801,8 @@ img{display:block}
     <!-- Chapters -->
     <div id="s-ch" class="hidden">
       <div class="sec-hero">
-        <div class="sec-title" id="ch-title">ðŸ“– Ø§Ø®ØªØ§Ø± Ø§Ù„Ø´Ø§Ø¨ØªØ±</div>
-        <div class="sec-sub" id="ch-sub">Ø§Ø®ØªØ§Ø± Ø§Ù„ÙØµÙ„ Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡</div>
+        <div class="sec-title" id="ch-title">📖 اختار الشابتر</div>
+        <div class="sec-sub" id="ch-sub">اختار الفصل اللي عايز تذاكره</div>
       </div>
       <div class="grid-4" id="ch-grid"></div>
     </div>
@@ -809,7 +810,7 @@ img{display:block}
     <!-- Lessons -->
     <div id="s-ls" class="hidden">
       <div class="sec-hero">
-        <div class="sec-title" id="ls-title">ðŸŽ¬</div>
+        <div class="sec-title" id="ls-title">🎬</div>
         <div class="sec-sub" id="ls-sub"></div>
       </div>
       <div class="ls-grid" id="ls-grid"></div>
@@ -819,8 +820,8 @@ img{display:block}
   <!-- MY LESSONS -->
   <div class="pg" id="pg-mylessons">
     <div class="sec-hero">
-      <div class="sec-title" id="my-title">ðŸ“š Ø­ØµØµÙŠ Ø§Ù„Ù…ÙØªÙˆØ­Ø©</div>
-      <div class="sec-sub" id="my-sub">Ø§Ù„Ø­ØµØµ Ø§Ù„Ù„ÙŠ ÙØªØ­ØªÙ‡Ø§ Ø¨Ø§Ù„ÙƒÙˆØ¯</div>
+      <div class="sec-title" id="my-title">📚 حصصي المفتوحة</div>
+      <div class="sec-sub" id="my-sub">الحصص اللي فتحتها بالكود</div>
     </div>
     <div class="my-grid" id="my-list">
       <div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>
@@ -830,8 +831,8 @@ img{display:block}
   <!-- CART -->
   <div class="pg" id="pg-cart">
     <div class="sec-hero">
-      <div class="sec-title" id="cart-title">ðŸ›’ Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡</div>
-      <div class="sec-sub" id="cart-sub">Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ ÙƒÙ„ Ø­ØµØ© Ø¹Ø´Ø§Ù† ØªÙØªØ­Ù‡Ø§</div>
+      <div class="sec-title" id="cart-title">🛒 سلة الشراء</div>
+      <div class="sec-sub" id="cart-sub">ادخل كود كل حصة عشان تفتحها</div>
     </div>
     <div id="cart-content"></div>
   </div>
@@ -839,30 +840,30 @@ img{display:block}
   <!-- PROFILE -->
   <div class="pg" id="pg-profile">
     <div class="sec-hero">
-      <div class="sec-title" id="prof-title">ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ</div>
+      <div class="sec-title" id="prof-title">👤 حسابي</div>
     </div>
     <div class="prof-wrap">
       <div class="prof-card">
-        <div class="prof-av" id="pr-av">ØŸ</div>
+        <div class="prof-av" id="pr-av">؟</div>
         <div class="prof-name" id="pr-nm">...</div>
         <div class="prof-email" id="pr-em">...</div>
         <div class="prof-rows">
-          <div class="prof-row"><span class="pr-key" id="prow-grade">Ø§Ù„ØµÙ</span><span class="pr-val" id="pr-gd">â€”</span></div>
-          <div class="prof-row"><span class="pr-key" id="prow-phone">Ø§Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„</span><span class="pr-val" id="pr-ph" dir="ltr">â€”</span></div>
-          <div class="prof-row"><span class="pr-key" id="prow-unlocked">Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©</span><span class="pr-val" id="pr-ch">â€”</span></div>
+          <div class="prof-row"><span class="pr-key" id="prow-grade">الصف</span><span class="pr-val" id="pr-gd">—</span></div>
+          <div class="prof-row"><span class="pr-key" id="prow-phone">الموبايل</span><span class="pr-val" id="pr-ph" dir="ltr">—</span></div>
+          <div class="prof-row"><span class="pr-key" id="prow-unlocked">حصص مفتوحة</span><span class="pr-val" id="pr-ch">—</span></div>
         </div>
-        <button class="btn btn-glass" style="width:100%;justify-content:center;margin-top:12px" onclick="openEdit()">âœï¸ <span id="edit-btn-lbl">ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª</span></button>
-        <button class="btn btn-danger" style="width:100%;justify-content:center;margin-top:7px" onclick="doLogout()" id="logout-btn">ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬</button>
+        <button class="btn btn-glass" style="width:100%;justify-content:center;margin-top:12px" onclick="openEdit()">✏️ <span id="edit-btn-lbl">تعديل البيانات</span></button>
+        <button class="btn btn-danger" style="width:100%;justify-content:center;margin-top:7px" onclick="doLogout()" id="logout-btn">🚪 تسجيل الخروج</button>
       </div>
       <div class="enr-panel">
-        <div style="font-weight:900;font-size:.95rem;margin-bottom:14px" id="enr-title">ðŸ”‘ Ø§Ù„Ø­ØµØµ Ø§Ù„Ù…ÙØªÙˆØ­Ø©</div>
+        <div style="font-weight:900;font-size:.95rem;margin-bottom:14px" id="enr-title">🔑 الحصص المفتوحة</div>
         <div id="pr-enrolled"><div class="loading-st"><div class="spin"></div></div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- ══════════════ FOOTER ══════════════ -->
 <footer class="footer" id="siteFooter" style="display:none">
   <div class="footer-inner">
     <div>
@@ -870,7 +871,7 @@ img{display:block}
         <div class="f-mark">KW</div>
         <span class="f-name">kala<em>wy</em></span>
       </div>
-      <p class="f-desc" id="f-desc">Ù…Ù†ØµØ© ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ù…ØµÙ…Ù…Ø© Ù„ØªØ¬Ø¹Ù„ Ø§Ù„Ø¯Ø±Ø§Ø³Ø© Ø£Ø³Ù‡Ù„ ÙˆØ£ÙƒØ«Ø± ØªÙ†Ø¸ÙŠÙ…Ø§Ù‹.</p>
+      <p class="f-desc" id="f-desc">منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً.</p>
       <div class="f-socials">
         <button class="f-soc" onclick="openWhatsApp()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
@@ -884,17 +885,17 @@ img{display:block}
       </div>
     </div>
     <div>
-      <div class="f-col-title" id="f-links-title">Ø±ÙˆØ§Ø¨Ø· Ø³Ø±ÙŠØ¹Ø©</div>
+      <div class="f-col-title" id="f-links-title">روابط سريعة</div>
       <div class="f-links">
-        <a class="f-link" onclick="resetAll()" id="f-home">ðŸ  Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</a>
-        <a class="f-link" onclick="goPage('mylessons')" id="f-my">ðŸ“š Ø­ØµØµÙŠ</a>
-        <a class="f-link" onclick="goPage('cart')" id="f-cart">ðŸ›’ Ø§Ù„Ø³Ù„Ø©</a>
-        <a class="f-link" onclick="goPage('profile')" id="f-prof">ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ</a>
-        <a class="f-link" onclick="doLogout()" id="f-logout">ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬</a>
+        <a class="f-link" onclick="resetAll()" id="f-home">🏠 الرئيسية</a>
+        <a class="f-link" onclick="goPage('mylessons')" id="f-my">📚 حصصي</a>
+        <a class="f-link" onclick="goPage('cart')" id="f-cart">🛒 السلة</a>
+        <a class="f-link" onclick="goPage('profile')" id="f-prof">👤 حسابي</a>
+        <a class="f-link" onclick="doLogout()" id="f-logout">🚪 تسجيل الخروج</a>
       </div>
     </div>
     <div>
-      <div class="f-col-title" id="f-contact-title">ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§</div>
+      <div class="f-col-title" id="f-contact-title">تواصل معنا</div>
       <div class="f-con-item">
         <div class="f-con-ico" style="background:linear-gradient(135deg,#25d366,#128c7e)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
@@ -916,13 +917,13 @@ img{display:block}
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="f-copy" id="f-copy">Â© 2025 kalawy â€” Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©</div>
-    <div class="f-made" id="f-made">ØµÙÙ†Ø¹ Ø¨Ù€ â¤ï¸ Ù„Ù„Ø·Ù„Ø§Ø¨</div>
+    <div class="f-copy" id="f-copy">© 2025 kalawy — جميع الحقوق محفوظة</div>
+    <div class="f-made" id="f-made">صُنع بـ ❤️ للطلاب</div>
   </div>
 </footer>
 
 <script>
-// â”€â”€ CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONFIG ────────────────────────────────────
 const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
@@ -933,117 +934,117 @@ let ME = null, LANG = 'ar', THEME = 'light';
 let _unlockedLessons = new Set(), _cart = [], _followedTeachers = new Set(), _notifications = [];
 let _sel = { sub:null, tch:null, ch:null };
 
-const GRADES_AR = {1:'Ø£ÙˆÙ„Ù‰ Ø«Ø§Ù†ÙˆÙŠ', 2:'ØªØ§Ù†ÙŠØ© Ø«Ø§Ù†ÙˆÙŠ', 3:'Ø«Ø§Ù„Ø«Ø© Ø«Ø§Ù†ÙˆÙŠ'};
+const GRADES_AR = {1:'أولى ثانوي', 2:'تانية ثانوي', 3:'ثالثة ثانوي'};
 const GRADES_EN = {1:'Grade 10', 2:'Grade 11', 3:'Grade 12'};
 function gr(id){ return (LANG==='ar' ? GRADES_AR : GRADES_EN)[id] || id; }
 
-const EMOJIS = {'Ø§Ù„Ø±ÙŠØ§Ø¶ÙŠØ§Øª':'ðŸ“','Ø§Ù„ÙÙŠØ²ÙŠØ§Ø¡':'ðŸ”­','Ø§Ù„ÙƒÙŠÙ…ÙŠØ§Ø¡':'ðŸ§ª','Ø§Ù„Ø£Ø­ÙŠØ§Ø¡':'ðŸ”¬','Ø§Ù„Ù„ØºØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©':'ðŸ“–','Ø§Ù„Ù„ØºØ© Ø§Ù„Ø¥Ù†Ø¬Ù„ÙŠØ²ÙŠØ©':'ðŸŒ'};
+const EMOJIS = {'الرياضيات':'📐','الفيزياء':'🔭','الكيمياء':'🧪','الأحياء':'🔬','اللغة العربية':'📖','اللغة الإنجليزية':'🌍'};
 const PALETTES_DARK = ['linear-gradient(135deg,#1a1040,#0d0820)','linear-gradient(135deg,#1a0a35,#0d0520)','linear-gradient(135deg,#200a40,#10051f)','linear-gradient(135deg,#0a1040,#050820)','linear-gradient(135deg,#25104a,#120528)','linear-gradient(135deg,#10082a,#080414)'];
 const PALETTES_LIGHT = ['linear-gradient(135deg,#e8d8ff,#d4c0f8)','linear-gradient(135deg,#ddd0ff,#c8b4f8)','linear-gradient(135deg,#f0e4ff,#ddd0ff)','linear-gradient(135deg,#e0d0ff,#cec0f8)','linear-gradient(135deg,#ece0ff,#d8c8ff)','linear-gradient(135deg,#d8ccff,#c8bcf0)'];
 
-// â”€â”€ I18N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── I18N ──────────────────────────────────────
 const S = {
   ar:{
     // nav
-    home:'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©', myLessons:'ðŸ“š Ø­ØµØµÙŠ', cartNav:'Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡',
-    notes:'Ù…Ù„Ø§Ø²Ù…', contact:'ØªÙˆØ§ØµÙ„ â–¾', wa:'ÙˆØ§ØªØ³Ø§Ø¨', email:'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ',
-    comingSoon:'Ù‚Ø±ÙŠØ¨Ø§Ù‹ âœ¨',
+    home:'الرئيسية', myLessons:'📚 حصصي', cartNav:'سلة الشراء',
+    notes:'ملازم', contact:'تواصل ▾', wa:'واتساب', email:'البريد الإلكتروني',
+    comingSoon:'قريباً ✨',
     // browse
-    chooseSubject:'ðŸ“š Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø©', chooseSubjectSub:'Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø© Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡Ø§',
-    chooseTeacher:'Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø¯Ø±Ø³', chooseChapter:'ðŸ“– Ø§Ø®ØªØ§Ø± Ø§Ù„Ø´Ø§Ø¨ØªØ±',
-    chooseChapterSub:'Ø§Ø®ØªØ§Ø± Ø§Ù„ÙØµÙ„ Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡',
-    certifiedTeacher:'Ù…Ø¯Ø±Ø³ Ù…Ø¹ØªÙ…Ø¯', follow:'+ ØªØ§Ø¨Ø¹', following:'âœ“ Ù…ØªØ§Ø¨Ø¹',
-    noSubjects:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…ÙˆØ§Ø¯', noTeachers:'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø¯Ø±Ø³ÙŠÙ†', noChapters:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø´Ø§Ø¨ØªØ±Ø§Øª',
-    noLessons:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø­ØµØµ', lecture:'Ù…Ø­Ø§Ø¶Ø±Ø©', lectures:'Ù…Ø­Ø§Ø¶Ø±Ø§Øª',
-    lesson:'Ø§Ù„Ø­ØµØ©', unavailable:'ØºÙŠØ± Ù…ØªØ§Ø­Ø©', unlocked:'Ù…ÙØªÙˆØ­Ø© â€” Ø§Ø¯Ø®Ù„',
-    inCart:'Ø§ÙƒÙ…Ù„ Ø§Ù„Ø¯ÙØ¹', addCart:'Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©', followedMsg:'ØªÙ…Øª Ù…ØªØ§Ø¨Ø¹Ø©',
-    unfollowedMsg:'Ø¥Ù„ØºØ§Ø¡ Ù…ØªØ§Ø¨Ø¹Ø©',
+    chooseSubject:'📚 اختار المادة', chooseSubjectSub:'اختار المادة اللي عايز تذاكرها',
+    chooseTeacher:'اختار المدرس', chooseChapter:'📖 اختار الشابتر',
+    chooseChapterSub:'اختار الفصل اللي عايز تذاكره',
+    certifiedTeacher:'مدرس معتمد', follow:'+ تابع', following:'✓ متابع',
+    noSubjects:'لا توجد مواد', noTeachers:'لا يوجد مدرسين', noChapters:'لا توجد شابترات',
+    noLessons:'لا توجد حصص', lecture:'محاضرة', lectures:'محاضرات',
+    lesson:'الحصة', unavailable:'غير متاحة', unlocked:'مفتوحة — ادخل',
+    inCart:'اكمل الدفع', addCart:'أضف للسلة', followedMsg:'تمت متابعة',
+    unfollowedMsg:'إلغاء متابعة',
     // stats
-    unlockedStat:'Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©', inCartStat:'ÙÙŠ Ø§Ù„Ø³Ù„Ø©',
+    unlockedStat:'حصص مفتوحة', inCartStat:'في السلة',
     // my lessons
-    myTitle:'ðŸ“š Ø­ØµØµÙŠ Ø§Ù„Ù…ÙØªÙˆØ­Ø©', mySub:'Ø§Ù„Ø­ØµØµ Ø§Ù„Ù„ÙŠ ÙØªØ­ØªÙ‡Ø§ Ø¨Ø§Ù„ÙƒÙˆØ¯',
-    noMyLessons:'Ù„Ù… ØªÙØªØ­ Ø£ÙŠ Ø­ØµØ© Ø¨Ø¹Ø¯', unlockChip:'âœ… Ù…ÙØªÙˆØ­Ø©',
+    myTitle:'📚 حصصي المفتوحة', mySub:'الحصص اللي فتحتها بالكود',
+    noMyLessons:'لم تفتح أي حصة بعد', unlockChip:'✅ مفتوحة',
     // cart
-    cartTitle:'ðŸ›’ Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡', cartSub:'Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ ÙƒÙ„ Ø­ØµØ© Ø¹Ø´Ø§Ù† ØªÙØªØ­Ù‡Ø§',
-    cartEmpty:'Ø§Ù„Ø³Ù„Ø© ÙØ§Ø±ØºØ© â€” Ø£Ø¶Ù Ø­ØµØµ Ù…Ù† Ø§Ù„ØªØµÙØ­',
-    unlock:'ÙØªØ­ Ø§Ù„Ø­ØµØµ Ø¨Ø§Ù„ÙƒÙˆØ¯', lessonsCount:'Ø¹Ø¯Ø¯ Ø§Ù„Ø­ØµØµ', method:'Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„ÙØªØ­',
-    codePerLesson:'ÙƒÙˆØ¯ Ù„ÙƒÙ„ Ø­ØµØ©', codeHint:'ðŸ“‹ Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ Ø§Ù„Ø­ØµØ© Ø§Ù„Ù„ÙŠ Ø£Ø®Ø¯ØªÙ‡ Ù…Ù† Ø§Ù„Ù…Ø¯Ø±Ø³ Ø£Ùˆ Ø§Ù„Ø£Ø¯Ù…Ù†',
-    codePh:'ÙƒÙˆØ¯ Ø§Ù„Ø­ØµØ©...', remove:'Ø­Ø°Ù', removedCart:'ØªÙ… Ø§Ù„Ø­Ø°Ù Ù…Ù† Ø§Ù„Ø³Ù„Ø©',
-    alreadyUnlocked:'Ø§Ù„Ø­ØµØ© Ù…ÙØªÙˆØ­Ø© Ø¨Ø§Ù„ÙØ¹Ù„ âœ…', alreadyInCart:'Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ø³Ù„Ø©',
-    addedCart:'Ø£ÙØ¶ÙŠÙ Ù„Ù„Ø³Ù„Ø©', lessonUnlocked:'ðŸŽ‰ ØªÙ… ÙØªØ­ Ø§Ù„Ø­ØµØ©',
-    invalidCode:'Ø§Ù„ÙƒÙˆØ¯ ØºÙ„Ø· Ø£Ùˆ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯', wrongLesson:'Ø§Ù„ÙƒÙˆØ¯ Ù„Ø­ØµØ© ØªØ§Ù†ÙŠØ©',
-    usedCode:'Ø§Ù„ÙƒÙˆØ¯ Ø§Ø³ØªØ®Ø¯Ù… Ù‚Ø¨Ù„ ÙƒØ¯Ù‡', enterCode:'Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ Ø§Ù„Ø­ØµØ©',
-    goToCart:'ðŸ›’ Ø§ÙƒÙ…Ù„ Ø§Ù„Ø¯ÙØ¹',
+    cartTitle:'🛒 سلة الشراء', cartSub:'ادخل كود كل حصة عشان تفتحها',
+    cartEmpty:'السلة فارغة — أضف حصص من التصفح',
+    unlock:'فتح الحصص بالكود', lessonsCount:'عدد الحصص', method:'طريقة الفتح',
+    codePerLesson:'كود لكل حصة', codeHint:'📋 ادخل كود الحصة اللي أخدته من المدرس أو الأدمن',
+    codePh:'كود الحصة...', remove:'حذف', removedCart:'تم الحذف من السلة',
+    alreadyUnlocked:'الحصة مفتوحة بالفعل ✅', alreadyInCart:'موجودة في السلة',
+    addedCart:'أُضيف للسلة', lessonUnlocked:'🎉 تم فتح الحصة',
+    invalidCode:'الكود غلط أو غير موجود', wrongLesson:'الكود لحصة تانية',
+    usedCode:'الكود استخدم قبل كده', enterCode:'ادخل كود الحصة',
+    goToCart:'🛒 اكمل الدفع',
     // profile
-    profTitle:'ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ', grade:'Ø§Ù„ØµÙ', phone:'Ø§Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„',
-    unlockedLessons:'Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©', editProfile:'âœï¸ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª',
-    logout:'ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬', editTitle:'âœï¸ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª',
-    name:'Ø§Ù„Ø§Ø³Ù…', saveProfile:'ðŸ’¾ Ø­ÙØ¸', cancel:'Ø¥Ù„ØºØ§Ø¡',
-    savedOk:'ØªÙ… Ø§Ù„Ø­ÙØ¸ Ø¨Ù†Ø¬Ø§Ø­ âœ…', enterName:'Ø§Ø¯Ø®Ù„ Ø§Ø³Ù…Ùƒ',
-    myEnrolled:'ðŸ”‘ Ø§Ù„Ø­ØµØµ Ø§Ù„Ù…ÙØªÙˆØ­Ø©', noEnrolled:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©',
-    openLesson:'ÙØªØ­ â†’',
+    profTitle:'👤 حسابي', grade:'الصف', phone:'الموبايل',
+    unlockedLessons:'حصص مفتوحة', editProfile:'✏️ تعديل البيانات',
+    logout:'🚪 تسجيل الخروج', editTitle:'✏️ تعديل البيانات',
+    name:'الاسم', saveProfile:'💾 حفظ', cancel:'إلغاء',
+    savedOk:'تم الحفظ بنجاح ✅', enterName:'ادخل اسمك',
+    myEnrolled:'🔑 الحصص المفتوحة', noEnrolled:'لا توجد حصص مفتوحة',
+    openLesson:'فتح →',
     // notifications
-    notifTitle:'ðŸ”” Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§Øª', notifSub:'Ø¥Ø´Ø¹Ø§Ø±Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³ÙŠÙ† Ø§Ù„Ù„ÙŠ Ø¹Ø§Ù…Ù„ Ù„Ù‡Ù… Follow',
-    noNotif:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¥Ø´Ø¹Ø§Ø±Ø§Øª', close:'Ø¥ØºÙ„Ø§Ù‚',
-    notifTypes:{lesson:'Ø­ØµØ©',exam:'Ø§Ù…ØªØ­Ø§Ù†',post:'Ù…Ù†Ø´ÙˆØ±',homework:'ÙˆØ§Ø¬Ø¨',pdf:'PDF',video:'ÙÙŠØ¯ÙŠÙˆ'},
+    notifTitle:'🔔 الإشعارات', notifSub:'إشعارات المدرسين اللي عامل لهم Follow',
+    noNotif:'لا توجد إشعارات', close:'إغلاق',
+    notifTypes:{lesson:'حصة',exam:'امتحان',post:'منشور',homework:'واجب',pdf:'PDF',video:'فيديو'},
     // breadcrumb
-    bcHome:'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©', bcBrowse:'Ù…Ø­Ø§Ø¶Ø±Ø§Øª',
+    bcHome:'الرئيسية', bcBrowse:'محاضرات',
     // footer
-    fDesc:'Ù…Ù†ØµØ© ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ù…ØµÙ…Ù…Ø© Ù„ØªØ¬Ø¹Ù„ Ø§Ù„Ø¯Ø±Ø§Ø³Ø© Ø£Ø³Ù‡Ù„ ÙˆØ£ÙƒØ«Ø± ØªÙ†Ø¸ÙŠÙ…Ø§Ù‹.',
-    fLinks:'Ø±ÙˆØ§Ø¨Ø· Ø³Ø±ÙŠØ¹Ø©', fContact:'ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§',
-    fHome:'ðŸ  Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©', fMy:'ðŸ“š Ø­ØµØµÙŠ', fCart:'ðŸ›’ Ø§Ù„Ø³Ù„Ø©',
-    fProf:'ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ', fLogout:'ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬',
-    fCopy:'Â© 2025 kalawy â€” Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©',
-    fMade:'ØµÙÙ†Ø¹ Ø¨Ù€ â¤ï¸ Ù„Ù„Ø·Ù„Ø§Ø¨',
+    fDesc:'منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً.',
+    fLinks:'روابط سريعة', fContact:'تواصل معنا',
+    fHome:'🏠 الرئيسية', fMy:'📚 حصصي', fCart:'🛒 السلة',
+    fProf:'👤 حسابي', fLogout:'🚪 تسجيل الخروج',
+    fCopy:'© 2025 kalawy — جميع الحقوق محفوظة',
+    fMade:'صُنع بـ ❤️ للطلاب',
   },
   en:{
-    home:'Home', myLessons:'ðŸ“š My Lessons', cartNav:'Cart',
-    notes:'Notes', contact:'Contact â–¾', wa:'WhatsApp', email:'Email',
-    comingSoon:'Coming Soon âœ¨',
-    chooseSubject:'ðŸ“š Choose a Subject', chooseSubjectSub:'Select the subject you want to study',
-    chooseTeacher:'Choose your teacher', chooseChapter:'ðŸ“– Choose a Chapter',
+    home:'Home', myLessons:'📚 My Lessons', cartNav:'Cart',
+    notes:'Notes', contact:'Contact ▾', wa:'WhatsApp', email:'Email',
+    comingSoon:'Coming Soon ✨',
+    chooseSubject:'📚 Choose a Subject', chooseSubjectSub:'Select the subject you want to study',
+    chooseTeacher:'Choose your teacher', chooseChapter:'📖 Choose a Chapter',
     chooseChapterSub:'Select the chapter you want to study',
-    certifiedTeacher:'Certified Teacher', follow:'+ Follow', following:'âœ“ Following',
+    certifiedTeacher:'Certified Teacher', follow:'+ Follow', following:'✓ Following',
     noSubjects:'No subjects found', noTeachers:'No teachers found', noChapters:'No chapters found',
     noLessons:'No lessons found', lecture:'lecture', lectures:'lectures',
-    lesson:'Lesson', unavailable:'Unavailable', unlocked:'Unlocked â€” Enter',
+    lesson:'Lesson', unavailable:'Unavailable', unlocked:'Unlocked — Enter',
     inCart:'Go to Cart', addCart:'Add to Cart', followedMsg:'Following',
     unfollowedMsg:'Unfollowed',
     unlockedStat:'Unlocked', inCartStat:'In Cart',
-    myTitle:'ðŸ“š My Unlocked Lessons', mySub:'Lessons unlocked with your code',
-    noMyLessons:'No lessons unlocked yet', unlockChip:'âœ… Unlocked',
-    cartTitle:'ðŸ›’ Cart', cartSub:'Enter the code for each lesson to unlock it',
-    cartEmpty:'Cart is empty â€” browse lessons to add',
+    myTitle:'📚 My Unlocked Lessons', mySub:'Lessons unlocked with your code',
+    noMyLessons:'No lessons unlocked yet', unlockChip:'✅ Unlocked',
+    cartTitle:'🛒 Cart', cartSub:'Enter the code for each lesson to unlock it',
+    cartEmpty:'Cart is empty — browse lessons to add',
     unlock:'Unlock Lessons by Code', lessonsCount:'Lessons', method:'Method',
-    codePerLesson:'Code per lesson', codeHint:'ðŸ“‹ Enter the code from your teacher or admin',
+    codePerLesson:'Code per lesson', codeHint:'📋 Enter the code from your teacher or admin',
     codePh:'Lesson code...', remove:'Remove', removedCart:'Removed from cart',
-    alreadyUnlocked:'Already unlocked âœ…', alreadyInCart:'Already in cart',
-    addedCart:'Added to cart', lessonUnlocked:'ðŸŽ‰ Lesson unlocked',
+    alreadyUnlocked:'Already unlocked ✅', alreadyInCart:'Already in cart',
+    addedCart:'Added to cart', lessonUnlocked:'🎉 Lesson unlocked',
     invalidCode:'Invalid or not found code', wrongLesson:'Code belongs to another lesson',
     usedCode:'Code already used', enterCode:'Enter lesson code',
-    goToCart:'ðŸ›’ Go to Cart',
-    profTitle:'ðŸ‘¤ My Account', grade:'Grade', phone:'Phone',
-    unlockedLessons:'Unlocked Lessons', editProfile:'âœï¸ Edit Profile',
-    logout:'ðŸšª Sign Out', editTitle:'âœï¸ Edit Profile',
-    name:'Name', saveProfile:'ðŸ’¾ Save', cancel:'Cancel',
-    savedOk:'Saved successfully âœ…', enterName:'Enter your name',
-    myEnrolled:'ðŸ”‘ Unlocked Lessons', noEnrolled:'No lessons unlocked',
-    openLesson:'Open â†’',
-    notifTitle:'ðŸ”” Notifications', notifSub:'Notifications from teachers you follow',
+    goToCart:'🛒 Go to Cart',
+    profTitle:'👤 My Account', grade:'Grade', phone:'Phone',
+    unlockedLessons:'Unlocked Lessons', editProfile:'✏️ Edit Profile',
+    logout:'🚪 Sign Out', editTitle:'✏️ Edit Profile',
+    name:'Name', saveProfile:'💾 Save', cancel:'Cancel',
+    savedOk:'Saved successfully ✅', enterName:'Enter your name',
+    myEnrolled:'🔑 Unlocked Lessons', noEnrolled:'No lessons unlocked',
+    openLesson:'Open →',
+    notifTitle:'🔔 Notifications', notifSub:'Notifications from teachers you follow',
     noNotif:'No notifications yet', close:'Close',
     notifTypes:{lesson:'Lesson',exam:'Exam',post:'Post',homework:'Homework',pdf:'PDF',video:'Video'},
     bcHome:'Home', bcBrowse:'Lessons',
     fDesc:'An educational platform designed to make studying easier and more organized.',
     fLinks:'Quick Links', fContact:'Contact Us',
-    fHome:'ðŸ  Home', fMy:'ðŸ“š My Lessons', fCart:'ðŸ›’ Cart',
-    fProf:'ðŸ‘¤ Account', fLogout:'ðŸšª Sign Out',
-    fCopy:'Â© 2025 kalawy â€” All rights reserved',
-    fMade:'Made with â¤ï¸ for students',
+    fHome:'🏠 Home', fMy:'📚 My Lessons', fCart:'🛒 Cart',
+    fProf:'👤 Account', fLogout:'🚪 Sign Out',
+    fCopy:'© 2025 kalawy — All rights reserved',
+    fMade:'Made with ❤️ for students',
   }
 };
 function t(k){ return S[LANG]?.[k] ?? S.ar[k] ?? k; }
 
-// â”€â”€ APPLY I18N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── APPLY I18N ────────────────────────────────
 function applyI18n(){
   // Nav links
   const set = (id, k) => { const el = document.getElementById(id); if(el) el.textContent = t(k); };
@@ -1077,10 +1078,10 @@ function applyI18n(){
   set('f-copy', 'fCopy'); set('f-made', 'fMade');
   // Profile edit placeholder
   const edNm = document.getElementById('ed-nm');
-  if(edNm) edNm.placeholder = LANG==='ar' ? 'Ø§Ø³Ù…Ùƒ Ø§Ù„ÙƒØ§Ù…Ù„' : 'Full name';
+  if(edNm) edNm.placeholder = LANG==='ar' ? 'اسمك الكامل' : 'Full name';
 }
 
-// â”€â”€ THEME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── THEME ─────────────────────────────────────
 function setTheme(th){
   THEME = th;
   document.documentElement.setAttribute('data-theme', th);
@@ -1091,7 +1092,7 @@ function setTheme(th){
   });
 }
 
-// â”€â”€ LANG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── LANG ──────────────────────────────────────
 function setLang(lg){
   LANG = lg;
   document.documentElement.setAttribute('lang', lg);
@@ -1116,14 +1117,14 @@ function setLang(lg){
   else if(cur === 'profile'){ updateUI(); loadProfileEnrolled(); }
 }
 
-// â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── HELPERS ───────────────────────────────────
 function toast(type, msg, dur=4000){
-  const icons = {s:'âœ…', e:'âŒ', w:'âš ï¸', i:'â„¹ï¸'};
+  const icons = {s:'✅', e:'❌', w:'⚠️', i:'ℹ️'};
   const cls   = {s:'t-ok', e:'t-err', w:'t-warn', i:'t-info'};
   const wrap  = document.getElementById('toasts');
   const el    = document.createElement('div');
   el.className = `toast ${cls[type]||''}`;
-  el.innerHTML = `<span>${icons[type]||'â„¹ï¸'}</span><span>${msg}</span>`;
+  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
   wrap.appendChild(el);
   setTimeout(()=>{ el.classList.add('t-exit'); setTimeout(()=>el.remove(),220); }, dur);
 }
@@ -1144,9 +1145,9 @@ function esc(v){ return String(v??'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'
 function se(id, v){ const el=document.getElementById(id); if(el) el.textContent=v; }
 function pal(i){ return (THEME==='dark' ? PALETTES_DARK : PALETTES_LIGHT)[i % 6]; }
 
-// â”€â”€ AUTH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const LOGIN_URL = '/login/';
-const STUDENT_DASHBOARD_URL = '/dashboard/';
+// ── AUTH ──────────────────────────────────────
+const LOGIN_URL = '/login';
+const STUDENT_DASHBOARD_URL = '/dashboard';
 
 function goUrl(url){
   window.location.replace(new URL(url, window.location.origin).href);
@@ -1269,15 +1270,15 @@ async function initApp(user, cached = {}){
 }
 
 function updateUI(){
-  const name = ME.full_name || ME.email || 'ØŸ';
-  const av = (name[0] || 'ØŸ').toUpperCase();
+  const name = ME.full_name || ME.email || '؟';
+  const av = (name[0] || '؟').toUpperCase();
   ['hAv','navAv','pr-av'].forEach(id=>se(id, av));
   se('hNm', ME.full_name || ME.email);
   se('hGd', gr(ME.grade_id));
-  se('pr-nm', ME.full_name||'â€”');
-  se('pr-em', ME.email||'â€”');
+  se('pr-nm', ME.full_name||'—');
+  se('pr-em', ME.email||'—');
   se('pr-gd', gr(ME.grade_id));
-  se('pr-ph', ME.phone||'â€”');
+  se('pr-ph', ME.phone||'—');
   se('pr-ch', _unlockedLessons.size);
   se('st-unlocked', _unlockedLessons.size);
   se('st-cart', _cart.length);
@@ -1296,19 +1297,19 @@ async function loadEnrollments(){
   se('st-unlocked', _unlockedLessons.size); se('pr-ch', _unlockedLessons.size);
 }
 
-// â”€â”€ CONTACT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONTACT ───────────────────────────────────
 function toggleContact(e){
   e.stopPropagation();
   document.getElementById('contactDrop')?.classList.toggle('open');
 }
 document.addEventListener('click', ()=>document.getElementById('contactDrop')?.classList.remove('open'));
 function openWhatsApp(){
-  const m = encodeURIComponent(LANG==='ar' ? 'Ù…Ø±Ø­Ø¨Ø§Ù‹ØŒ Ø£Ø±ÙŠØ¯ Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹ Ù…Ù†ØµØ© kalawy' : 'Hello, I want to contact kalawy');
+  const m = encodeURIComponent(LANG==='ar' ? 'مرحباً، أريد التواصل مع منصة kalawy' : 'Hello, I want to contact kalawy');
   window.open(`https://wa.me/${CONTACT_WA}?text=${m}`, '_blank');
 }
 function openMail(){ window.location.href = `mailto:${CONTACT_MAIL}?subject=${encodeURIComponent('kalawy')}`; }
 
-// â”€â”€ PAGE ROUTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PAGE ROUTING ──────────────────────────────
 function goPage(page){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById(`pg-${page}`)?.classList.add('on');
@@ -1317,10 +1318,10 @@ function goPage(page){
   if(page==='profile'){ updateUI(); loadProfileEnrolled(); }
 }
 
-// â”€â”€ BREADCRUMB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── BREADCRUMB ────────────────────────────────
 function updateBc(){
   const bc = document.getElementById('navBc'); if(!bc) return;
-  const sep = () => `<span class="bc-sep">â€º</span>`;
+  const sep = () => `<span class="bc-sep">›</span>`;
   let html = `<span class="bc-item" onclick="resetAll()">${t('bcHome')}</span>`;
   html += sep() + `<span class="bc-item">${t('bcBrowse')}</span>`;
   if(_sel.sub) html += sep() + `<span class="bc-item" onclick="resetTo('sub')">${_sel.sub.name}</span>`;
@@ -1343,7 +1344,7 @@ function resetTo(s){
 }
 function resetAll(){ _sel={sub:null,tch:null,ch:null}; showStep('sub'); goPage('browse'); }
 
-// â”€â”€ FOLLOW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── FOLLOW ────────────────────────────────────
 async function loadFollows(){
   if(!ME?.id) return;
   const { data } = await sb.from('teacher_followers').select('teacher_id').eq('student_id', ME.id);
@@ -1362,13 +1363,13 @@ async function toggleFollow(teacherId, teacherName, ev){
     const { error } = await sb.from('teacher_followers').insert({ student_id:ME.id, teacher_id:teacherId });
     if(error) return toast('e', error.message);
     _followedTeachers.add(teacherId);
-    toast('s', t('followedMsg') + ' ' + (teacherName||'') + ' âœ…');
+    toast('s', t('followedMsg') + ' ' + (teacherName||'') + ' ✅');
   }
   await loadNotifications(false);
   if(_sel.sub) selSub(_sel.sub.id, _sel.sub.name, _sel.sub.grade_id);
 }
 
-// â”€â”€ NOTIFICATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── NOTIFICATIONS ─────────────────────────────
 async function loadNotifications(updateList=true){
   if(!ME?.id) return;
   const { data } = await sb.from('notifications')
@@ -1385,7 +1386,7 @@ async function loadNotifications(updateList=true){
 function renderNotifications(){
   const el = document.getElementById('notifList'); if(!el) return;
   if(!_notifications.length){
-    el.innerHTML = `<div class="empty-st"><div class="empty-ico">ðŸ”•</div><div class="empty-txt">${t('noNotif')}</div></div>`;
+    el.innerHTML = `<div class="empty-st"><div class="empty-ico">🔕</div><div class="empty-txt">${t('noNotif')}</div></div>`;
     return;
   }
   const typeLabels = t('notifTypes') || {};
@@ -1393,11 +1394,11 @@ function renderNotifications(){
     const dt = n.created_at ? new Date(n.created_at).toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}) : '';
     return `<div class="notif-card">
       <div class="notif-top">
-        <div class="notif-title">${esc(n.title||'Ø¥Ø´Ø¹Ø§Ø±')}</div>
+        <div class="notif-title">${esc(n.title||'إشعار')}</div>
         <span class="notif-type-badge">${typeLabels[n.type]||n.type}</span>
       </div>
       ${n.body ? `<div class="notif-body">${esc(n.body)}</div>` : ''}
-      <div class="notif-meta">${esc(n.sender?.full_name||'kalawy')} Â· ${dt}</div>
+      <div class="notif-meta">${esc(n.sender?.full_name||'kalawy')} · ${dt}</div>
     </div>`;
   }).join('');
 }
@@ -1407,18 +1408,18 @@ async function openNotifications(){
   await loadNotifications(true);
 }
 
-// â”€â”€ SUBJECTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SUBJECTS ──────────────────────────────────
 async function loadSubjects(){
   const g = document.getElementById('sub-grid');
   g.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
   const { data, error } = await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
   if(error || !data?.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸ“š</div><div class="empty-txt">${t('noSubjects')}</div></div>`;
+    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">📚</div><div class="empty-txt">${t('noSubjects')}</div></div>`;
     return;
   }
   const gradeChip = {1:'ck-ok', 2:'ck-info', 3:'ck-gold'};
   g.innerHTML = data.map((s,i)=>{
-    const ico = EMOJIS[s.name_ar] || 'ðŸ“š';
+    const ico = EMOJIS[s.name_ar] || '📚';
     const thumb = s.image_url
       ? `<img src="${imgSafe(s.image_url)}" alt="" style="width:68px;height:68px;object-fit:cover;border-radius:16px" onerror="this.parentElement.innerHTML='${ico}'" loading="lazy">`
       : `<div style="font-size:2rem;width:68px;height:68px;border-radius:16px;display:grid;place-items:center;background:${pal(i)}">${ico}</div>`;
@@ -1430,18 +1431,18 @@ async function loadSubjects(){
   }).join('');
 }
 
-// â”€â”€ TEACHERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── TEACHERS ──────────────────────────────────
 async function selSub(id, name, gradeId){
   _sel = { sub:{id,name,grade_id:gradeId}, tch:null, ch:null };
   showStep('tch');
   const el = document.getElementById('tch-title');
-  if(el) el.textContent = `ðŸ‘¨â€ðŸ« ${name}`;
+  if(el) el.textContent = `👨‍🏫 ${name}`;
   const g = document.getElementById('tch-grid');
   g.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
   const { data:chaps } = await sb.from('chapters').select('teacher_id').eq('subject_id', id);
   const tIds = [...new Set((chaps||[]).map(c=>c.teacher_id).filter(Boolean))];
   if(!tIds.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸ‘¨â€ðŸ«</div><div class="empty-txt">${t('noTeachers')}</div></div>`;
+    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div class="empty-txt">${t('noTeachers')}</div></div>`;
     return;
   }
   const [{ data:profs }, { data:teachers }] = await Promise.all([
@@ -1457,9 +1458,9 @@ async function selSub(id, name, gradeId){
     const safeName = (p.full_name||'').replace(/'/g,"\\'");
     return `<div class="tch-card" onclick="selTch('${p.id}','${esc(p.full_name||p.id)}')">
       <div class="tch-av" style="${p.image_url?'':' background:linear-gradient(135deg,var(--p1),var(--p2))'}">${av}</div>
-      <div class="tch-name">${p.full_name||'â€”'}</div>
+      <div class="tch-name">${p.full_name||'—'}</div>
       <div class="tch-bio">${bioMap[p.id] || t('certifiedTeacher')}</div>
-      <div style="margin-top:7px"><span class="chip ck-ok">âœ“ ${LANG==='ar'?'Ù…Ø¯Ø±Ø³':'Teacher'}</span></div>
+      <div style="margin-top:7px"><span class="chip ck-ok">✓ ${LANG==='ar'?'مدرس':'Teacher'}</span></div>
       <button class="follow-btn${isFollow?' on':''}" onclick="toggleFollow('${p.id}','${safeName}',event)">
         ${isFollow ? t('following') : t('follow')}
       </button>
@@ -1467,7 +1468,7 @@ async function selSub(id, name, gradeId){
   }).join('');
 }
 
-// â”€â”€ CHAPTERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CHAPTERS ──────────────────────────────────
 async function selTch(id, name){
   _sel.tch = {id, name}; _sel.ch = null;
   showStep('ch');
@@ -1478,14 +1479,14 @@ async function selTch(id, name){
     .eq('subject_id', _sel.sub.id).eq('teacher_id', id)
     .order('sort_order');
   if(!data?.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸ“–</div><div class="empty-txt">${t('noChapters')}</div></div>`;
+    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">📖</div><div class="empty-txt">${t('noChapters')}</div></div>`;
     return;
   }
   const chIds = data.map(c=>c.id);
   const { data:lc } = await sb.from('lessons').select('chapter_id').in('chapter_id', chIds).eq('is_active', true);
   const cnt = {};
   (lc||[]).forEach(l=>{ cnt[l.chapter_id] = (cnt[l.chapter_id]||0)+1; });
-  const books = ['ðŸ“˜','ðŸ“—','ðŸ“™','ðŸ“•','ðŸ““','ðŸ“”'];
+  const books = ['📘','📗','📙','📕','📓','📔'];
   g.innerHTML = data.map((ch,i)=>{
     const lcnt = cnt[ch.id]||0;
     const lcntStr = LANG==='ar' ? `${lcnt} ${lcnt===1?t('lecture'):t('lectures')}` : `${lcnt} ${lcnt===1?t('lecture'):t('lectures')}`;
@@ -1500,14 +1501,14 @@ async function selTch(id, name){
   }).join('');
 }
 
-// â”€â”€ LESSONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── LESSONS ───────────────────────────────────
 async function selChapter(id, title){
   _sel.ch = {id, title};
   showStep('ls');
   const el = document.getElementById('ls-title');
-  if(el) el.textContent = `ðŸŽ¬ ${title}`;
+  if(el) el.textContent = `🎬 ${title}`;
   const lsSub = document.getElementById('ls-sub');
-  if(lsSub) lsSub.textContent = `${_sel.sub?.name || ''} â€” ${_sel.tch?.name || ''}`;
+  if(lsSub) lsSub.textContent = `${_sel.sub?.name || ''} — ${_sel.tch?.name || ''}`;
   const g = document.getElementById('ls-grid');
   g.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
   await loadEnrollments();
@@ -1515,7 +1516,7 @@ async function selChapter(id, title){
     .select('id,title,description,is_active,scheduled_at,image_url')
     .eq('chapter_id', id).order('created_at');
   if(!data?.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸŽ¬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
+    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
     return;
   }
   const now = new Date();
@@ -1526,16 +1527,16 @@ async function selChapter(id, title){
     const inCart = _cart.some(c=>c.id===l.id);
     const canOpen = l.is_active && !future && unlocked;
     const thumb = l.image_url
-      ? `<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='ðŸŽ¬'" loading="lazy">`
-      : (future ? 'â°' : unlocked ? 'ðŸŽ¬' : 'ðŸ”‘');
+      ? `<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`
+      : (future ? '⏰' : unlocked ? '🎬' : '🔑');
     let action = '';
     const lData = JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;');
     if(!l.is_active)
       action = `<span class="chip ck-muted">${t('unavailable')}</span>`;
     else if(future)
-      action = `<span class="time-chip">â° ${sched.toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'})}</span>`;
+      action = `<span class="time-chip">⏰ ${sched.toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'})}</span>`;
     else if(unlocked)
-      action = `<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">âœ… ${t('unlocked')}</span>`;
+      action = `<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">✅ ${t('unlocked')}</span>`;
     else if(inCart)
       action = `<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goPage('cart')">${t('goToCart')}</button>`;
     else
@@ -1551,12 +1552,12 @@ async function selChapter(id, title){
 }
 function goLesson(id){ window.location.href = `/lesson/?id=${id}`; }
 
-// â”€â”€ CART ACTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CART ACTIONS ──────────────────────────────
 function addCart(lesson){
   if(_unlockedLessons.has(lesson.id)){ toast('w', t('alreadyUnlocked')); return; }
   if(_cart.some(c=>c.id===lesson.id)){ toast('i', t('alreadyInCart')); return; }
   _cart.push(lesson); saveCart(); updateCartBadge(); se('st-cart', _cart.length);
-  toast('s', `ðŸ›’ ${t('addedCart')}: "${lesson.title}"`, 4000);
+  toast('s', `🛒 ${t('addedCart')}: "${lesson.title}"`, 4000);
   if(_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
 }
 function rmCart(lessonId){
@@ -1570,32 +1571,32 @@ function rmCart(lessonId){
 function renderCart(){
   const c = document.getElementById('cart-content');
   if(!_cart.length){
-    c.innerHTML = `<div class="empty-st"><div class="empty-ico">ðŸ›’</div><div class="empty-txt">${t('cartEmpty')}</div></div>`;
+    c.innerHTML = `<div class="empty-st"><div class="empty-ico">🛒</div><div class="empty-txt">${t('cartEmpty')}</div></div>`;
     return;
   }
   const codeBlocks = _cart.map(ls=>`
     <div class="code-block">
-      <div class="code-lesson-name">ðŸ“– ${ls.title}${ls.chapter_title?` â€” <span style="color:var(--t3)">${ls.chapter_title}</span>`:''}</div>
+      <div class="code-lesson-name">📖 ${ls.title}${ls.chapter_title?` — <span style="color:var(--t3)">${ls.chapter_title}</span>`:''}</div>
       <div class="code-row">
         <input class="code-inp" id="pc-${ls.id}" placeholder="${t('codePh')}" maxlength="24" oninput="this.value=this.value.toUpperCase()">
-        <button class="code-go" onclick="checkoutLesson('${ls.id}','${esc(ls.title)}')" id="cobtn-${ls.id}">âœ“</button>
-        <button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">Ã—</button>
+        <button class="code-go" onclick="checkoutLesson('${ls.id}','${esc(ls.title)}')" id="cobtn-${ls.id}">✓</button>
+        <button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">×</button>
       </div>
     </div>`).join('');
   const items = _cart.map(ls=>{
     const th = ls.image_url
-      ? `<img src="${imgSafe(ls.image_url)}" alt="" style="width:64px;height:50px;object-fit:cover;border-radius:9px" onerror="this.outerHTML='ðŸŽ¬'" loading="lazy">`
-      : 'ðŸŽ¬';
+      ? `<img src="${imgSafe(ls.image_url)}" alt="" style="width:64px;height:50px;object-fit:cover;border-radius:9px" onerror="this.outerHTML='🎬'" loading="lazy">`
+      : '🎬';
     return `<div class="c-item">
       <div class="ci-thumb">${th}</div>
       <div class="ci-info"><div class="ci-name">${ls.title}</div><div class="ci-sub">${ls.chapter_title||''}</div></div>
-      <button class="ci-del" onclick="rmCart('${ls.id}')">ðŸ—‘ ${t('remove')}</button>
+      <button class="ci-del" onclick="rmCart('${ls.id}')">🗑 ${t('remove')}</button>
     </div>`;
   }).join('');
   c.innerHTML = `<div class="cart-layout">
     <div class="cart-items">${items}</div>
     <div class="co-panel">
-      <div class="co-title">ðŸ”‘ ${t('unlock')}</div>
+      <div class="co-title">🔑 ${t('unlock')}</div>
       <hr class="co-hr">
       <div class="co-row"><span>${t('lessonsCount')}</span><span>${_cart.length}</span></div>
       <div class="co-total"><span>${t('method')}</span><span class="v">${t('codePerLesson')}</span></div>
@@ -1613,11 +1614,11 @@ async function checkoutLesson(lessonId, lessonTitle){
   if(!code){ toast('w', t('enterCode')); return; }
   btn.innerHTML = '<div class="spin"></div>'; btn.disabled = true;
   const { data:row, error } = await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code', code).single();
-  if(error || !row){ toast('e', t('invalidCode')); btn.innerHTML='âœ“'; btn.disabled=false; return; }
-  if(row.lesson_id !== lessonId){ toast('e', t('wrongLesson')); btn.innerHTML='âœ“'; btn.disabled=false; return; }
-  if(row.used_by){ toast('e', t('usedCode')); btn.innerHTML='âœ“'; btn.disabled=false; return; }
+  if(error || !row){ toast('e', t('invalidCode')); btn.innerHTML='✓'; btn.disabled=false; return; }
+  if(row.lesson_id !== lessonId){ toast('e', t('wrongLesson')); btn.innerHTML='✓'; btn.disabled=false; return; }
+  if(row.used_by){ toast('e', t('usedCode')); btn.innerHTML='✓'; btn.disabled=false; return; }
   const { error:upErr } = await sb.from('lesson_codes').update({used_by:ME.id, used_at:new Date().toISOString()}).eq('id', row.id);
-  if(upErr){ toast('e', upErr.message); btn.innerHTML='âœ“'; btn.disabled=false; return; }
+  if(upErr){ toast('e', upErr.message); btn.innerHTML='✓'; btn.disabled=false; return; }
   _unlockedLessons.add(lessonId);
   _cart = _cart.filter(c=>c.id!==lessonId);
   saveCart();
@@ -1628,13 +1629,13 @@ async function checkoutLesson(lessonId, lessonTitle){
   if(_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
 }
 
-// â”€â”€ MY LESSONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── MY LESSONS ────────────────────────────────
 async function loadMyLessons(){
   const el = document.getElementById('my-list');
   el.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
   await loadEnrollments();
   if(!_unlockedLessons.size){
-    el.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸ”‘</div><div class="empty-txt">${t('noMyLessons')}</div></div>`;
+    el.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noMyLessons')}</div></div>`;
     return;
   }
   const { data } = await sb.from('lessons')
@@ -1642,23 +1643,23 @@ async function loadMyLessons(){
     .in('id', [..._unlockedLessons]).eq('is_active', true).order('created_at');
   el.innerHTML = (data||[]).map((ls,i)=>`<div class="my-card" onclick="goLesson('${ls.id}')">
     <div class="my-thumb" style="${ls.image_url?'':'background:'+pal(i)}">
-      ${ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='ðŸŽ¬'" loading="lazy">`:'ðŸŽ¬'}
+      ${ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`:'🎬'}
     </div>
     <div class="my-body">
       <div class="my-title">${ls.title}</div>
-      <div class="my-sub">${ls.chapters?.subjects?.name_ar||''} â€” ${ls.chapters?.title||''}</div>
+      <div class="my-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div>
       <div style="margin-top:7px"><span class="chip ck-ok">${t('unlockChip')}</span></div>
     </div>
-  </div>`).join('') || `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸŽ¬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
+  </div>`).join('') || `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
 }
 
-// â”€â”€ PROFILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PROFILE ───────────────────────────────────
 async function loadProfileEnrolled(){
   const el = document.getElementById('pr-enrolled');
   el.innerHTML = `<div class="loading-st"><div class="spin"></div></div>`;
   await loadEnrollments();
   if(!_unlockedLessons.size){
-    el.innerHTML = `<div class="empty-st"><div class="empty-ico">ðŸ”‘</div><div class="empty-txt">${t('noEnrolled')}</div></div>`;
+    el.innerHTML = `<div class="empty-st"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noEnrolled')}</div></div>`;
     return;
   }
   const { data } = await sb.from('lessons')
@@ -1667,7 +1668,7 @@ async function loadProfileEnrolled(){
   el.innerHTML = (data||[]).map(ls=>`<div class="enr-item" onclick="goLesson('${ls.id}')">
     <div>
       <div class="enr-title">${ls.title}</div>
-      <div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} â€” ${ls.chapters?.title||''}</div>
+      <div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div>
     </div>
     <span class="chip ck-ok">${t('openLesson')}</span>
   </div>`).join('');
@@ -1692,7 +1693,7 @@ async function saveProfile(){
   toast('s', t('savedOk'));
 }
 
-// â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── INIT ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', checkSession);
 </script>
 </body>
