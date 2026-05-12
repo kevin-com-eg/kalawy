@@ -524,7 +524,14 @@ async function runAdBlockCheck(){
 /* ══ SUPABASE ══ */
 const SB_URL="https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON="sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
-const sb=window.supabase.createClient(SB_URL,SB_ANON);
+const sb=window.supabase.createClient(SB_URL,SB_ANON,{
+  auth:{
+    persistSession:true,
+    autoRefreshToken:true,
+    detectSessionInUrl:true,
+    flowType:'pkce'
+  }
+});
 
 function iSrc(v){
   if(!v)return'';v=String(v).trim();if(!v)return'';
@@ -551,7 +558,7 @@ function setTheme(th){
 }
 
 /* ══ UTILS ══ */
-function goHome(){window.location.href='/dashboard/';}
+function goHome(){window.location.href='/dashboard';}
 function toast(type,msg,dur=3400){
   const ic={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
   const c=document.getElementById('toasts'),el=document.createElement('div');
@@ -609,21 +616,114 @@ function startTimer(){
   upd();_aci=setInterval(upd,1000);
 }
 
+/* ══ SESSION FIX ══ */
+const LOGIN_URL='/login';
+const DASHBOARD_URL='/dashboard';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function currentLessonPath(){
+  return location.pathname + location.search + location.hash;
+}
+
+function goLogin(){
+  try{ localStorage.setItem('kw-after-login', currentLessonPath()); }catch{}
+  window.location.href = LOGIN_URL + '?next=' + encodeURIComponent(currentLessonPath());
+}
+
+async function getStableSession(){
+  // في refresh سريع Supabase ساعات محتاج لحظة يقرأ/يجدّد session من localStorage
+  for(let i=0;i<10;i++){
+    try{
+      const {data,error}=await sb.auth.getSession();
+      if(data?.session?.user) return data.session;
+      if(error) console.warn('getSession retry',i,error.message);
+    }catch(e){
+      console.warn('getSession retry failed',i,e);
+    }
+    await sleep(250);
+  }
+
+  // محاولة أخيرة: لو getUser رجّع user يبقى التخزين موجود ولسه getSession بيتأخر
+  try{
+    const {data,error}=await sb.auth.getUser();
+    if(data?.user && !error) return {user:data.user};
+  }catch(e){
+    console.warn('getUser fallback failed',e);
+  }
+
+  // استنى auth event مرة واحدة بدل ما نرميه login فوراً
+  return await new Promise(resolve=>{
+    let done=false;
+    const timer=setTimeout(()=>{
+      if(done)return; done=true;
+      try{sub?.subscription?.unsubscribe?.();}catch{}
+      resolve(null);
+    },1800);
+    const {data:sub}=sb.auth.onAuthStateChange((_event,session)=>{
+      if(done)return;
+      if(session?.user){
+        done=true; clearTimeout(timer);
+        try{sub?.subscription?.unsubscribe?.();}catch{}
+        resolve(session);
+      }
+    });
+  });
+}
+
+async function safeMaybe(table,select,col,val){
+  try{
+    const {data,error}=await sb.from(table).select(select).eq(col,val).maybeSingle();
+    if(error){console.warn(`${table} read skipped:`,error.message);return null;}
+    return data||null;
+  }catch(e){
+    console.warn(`${table} read failed:`,e);return null;
+  }
+}
+
 /* ══ INIT ══ */
 async function init(){
   const th=localStorage.getItem('kw-t')||'light';setTheme(th);
   runAdBlockCheck(); // Check for adblock on page load
+
   const lid=new URLSearchParams(location.search).get('id');
   if(!lid){showErr('لم يتم تحديد الحصة');return;}
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='/login/';return;}
-  const{data:pr}=await sb.from('profiles').select('role,phone').eq('id',session.user.id).single();
-  ROLE=pr?.role||'student';ME={id:session.user.id,phone:pr?.phone||''};
-  if(ROLE!=='admin'&&ROLE!=='teacher'){
-    const{data:acc}=await sb.from('lesson_codes').select('id,used_at,expires_at').eq('lesson_id',lid).eq('used_by',session.user.id).maybeSingle();
-    if(!acc){showErr('لازم تضيف الحصة للسلة وتدخل كود الحصة');return;}
-    ACCESS=acc;
+
+  const session=await getStableSession();
+  if(!session?.user){
+    document.getElementById('il')?.remove();
+    document.getElementById('page').innerHTML=`
+      <div class="err-full">
+        <div class="err-card">
+          <span style="font-size:3rem;display:block;margin-bottom:12px">🔐</span>
+          <div style="font-size:1rem;font-weight:900;margin-bottom:10px;color:var(--txt)">الجلسة لم تظهر بعد</div>
+          <div style="font-size:.86rem;color:var(--t2);line-height:1.8;margin-bottom:18px">لو أنت عامل Login، اعمل Refresh مرة واحدة. لو مش عامل Login اضغط دخول.</div>
+          <button class="btn btn-p btn-lg" onclick="goLogin()">تسجيل الدخول</button>
+        </div>
+      </div>`;
+    return;
   }
+
+  const user=session.user;
+  const pr=await safeMaybe('profiles','role,phone,email','id',user.id);
+  ROLE=pr?.role||'student';
+  ME={id:user.id,email:user.email||pr?.email||'',phone:pr?.phone||''};
+
+  if(ROLE!=='admin'&&ROLE!=='teacher'){
+    let ACCESS_ROW=null;
+    try{
+      const {data,error}=await sb.from('lesson_codes')
+        .select('id,used_at,expires_at,lesson_id,used_by')
+        .eq('lesson_id',lid)
+        .eq('used_by',user.id)
+        .maybeSingle();
+      if(error) console.warn('lesson_codes read skipped:', error.message);
+      ACCESS_ROW=data||null;
+    }catch(e){console.warn('lesson_codes read failed:',e);}
+
+    if(!ACCESS_ROW){showErr('لازم تضيف الحصة للسلة وتدخل كود الحصة');return;}
+    ACCESS=ACCESS_ROW;
+  }
+
   await loadLesson(lid);
 }
 
