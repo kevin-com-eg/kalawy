@@ -1,117 +1,503 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-lang="ar" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kalawy - Sign in</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>kalawy — Sign in</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-:root{
-  --purple:#170634;--purple2:#23094f;--green:#00d879;--green2:#22b078;--pink:#ff4fd8;
-  --text:#160a36;--muted:#6f7185;--border:#e8ebf2;--bg:#f6f8fc;--card:#ffffff;
-  --shadow:0 24px 80px rgba(23,6,52,.12);--r:24px;
+:root {
+  --p1:#8b5cf6; --p2:#7c3aed; --p3:#a78bfa; --p4:#6d28d9;
+  --p-glow:rgba(139,92,246,.3); --p-faint:rgba(139,92,246,.08);
+  --gold:#fbbf24; --danger:#f43f5e; --ok:#34d399; --info:#38bdf8;
+  --r:12px; --r-sm:8px; --r-lg:18px; --r-xl:24px; --r-2xl:32px;
+  --nav-h:64px; --tr:.2s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"] {
+  --bg:#060112; --bg2:#0b0620; --bg3:#120930;
+  --card:rgba(20,10,50,.7); --card-s:rgba(30,16,70,.8);
+  --border:rgba(139,92,246,.18); --border-h:rgba(139,92,246,.38);
+  --glass:rgba(139,92,246,.07); --glass-h:rgba(139,92,246,.13);
+  --shine:rgba(255,255,255,.04);
+  --shadow:0 8px 32px rgba(0,0,0,.55);
+  --shadow-lg:0 16px 56px rgba(0,0,0,.7);
+  --text:#f0eaff; --t2:#a594c8; --t3:#5b4d7a;
+  --orb1:rgba(139,92,246,.13); --orb2:rgba(236,72,153,.08);
+  --orb3:rgba(56,189,248,.06);
+}
+[data-theme="light"] {
+  --bg:#f5f0ff; --bg2:#ede8fa; --bg3:#e0d8f8;
+  --card:rgba(255,255,255,.85); --card-s:rgba(248,244,255,.95);
+  --border:rgba(139,92,246,.2); --border-h:rgba(139,92,246,.42);
+  --glass:rgba(139,92,246,.07); --glass-h:rgba(139,92,246,.13);
+  --shine:rgba(255,255,255,.7);
+  --shadow:0 4px 18px rgba(80,40,160,.1);
+  --shadow-lg:0 10px 42px rgba(80,40,160,.18);
+  --text:#1a0533; --t2:#4c2d7a; --t3:#9880bb;
+  --orb1:rgba(139,92,246,.15); --orb2:rgba(236,72,153,.09);
+  --orb3:rgba(56,189,248,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Tajawal',sans-serif;min-height:100vh;background:radial-gradient(circle at top right,rgba(0,216,121,.12),transparent 30%),linear-gradient(180deg,#fff 0%,var(--bg) 100%);color:var(--text)}
-html[dir="ltr"] body{font-family:'Inter',sans-serif}
-button,input,select{font:inherit}.hidden{display:none!important}
-.topbar{height:90px;background:linear-gradient(180deg,var(--purple2),var(--purple));display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,54px);color:#fff;box-shadow:0 10px 35px rgba(23,6,52,.22)}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}.mark{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);display:grid;place-items:center;font-weight:900;letter-spacing:-.04em;box-shadow:0 10px 28px rgba(0,216,121,.22)}.brand strong{font-size:1.45rem;font-weight:900}.brand span{color:var(--green)}
-.actions{display:flex;align-items:center;gap:10px}.lang{display:flex;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);padding:4px;border-radius:999px}.lang button{border:none;background:transparent;color:#cfd0dc;border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:800}.lang button.on{background:#fff;color:var(--purple)}
-.theme{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:8px 13px;cursor:pointer}
-.shell{min-height:calc(100vh - 90px);display:grid;place-items:center;padding:42px 18px}.auth{width:min(1040px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}.hero{padding:18px}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(0,216,121,.1);color:#008b55;font-weight:900;font-size:.84rem;margin-bottom:20px}.hero h1{font-size:clamp(2rem,4.8vw,4rem);font-weight:900;line-height:1.05;letter-spacing:-.045em;margin-bottom:16px}.hero p{font-size:1.08rem;color:var(--muted);line-height:1.8;max-width:560px}.hero-card{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;text-align:center;box-shadow:0 8px 30px rgba(23,6,52,.05)}.mini b{display:block;font-size:1.2rem;color:var(--purple);margin-bottom:4px}.mini span{font-size:.78rem;color:var(--muted);font-weight:700}
-.card{background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid rgba(232,235,242,.9);border-radius:var(--r);padding:34px;box-shadow:var(--shadow);position:relative;overflow:hidden}.card:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--pink),var(--green),#7c3cff)}.title{font-size:1.65rem;font-weight:900;margin-bottom:8px}.sub{color:var(--muted);font-weight:600;margin-bottom:24px}.field{margin-bottom:14px}.field label{display:block;font-size:.77rem;font-weight:900;color:#8b8da0;margin-bottom:7px;text-transform:uppercase;letter-spacing:.08em}.inp{width:100%;border:1px solid var(--border);border-radius:15px;background:#f9fafc;padding:14px 16px;outline:none;color:var(--text);transition:.18s}.inp:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(0,216,121,.12);background:#fff}.btn{width:100%;border:none;border-radius:16px;padding:14px 18px;font-weight:900;cursor:pointer;transition:.18s;display:flex;justify-content:center;align-items:center;gap:8px}.btn-primary{background:linear-gradient(135deg,var(--purple2),var(--purple));color:#fff;box-shadow:0 14px 28px rgba(23,6,52,.2)}.btn-primary:hover{transform:translateY(-2px);filter:brightness(1.05)}.btn-primary:disabled{opacity:.6;transform:none;cursor:not-allowed}.btn-soft{margin-top:10px;background:rgba(0,216,121,.1);color:#008b55;border:1px solid rgba(0,216,121,.22)}.linkline{text-align:center;margin-top:18px;color:var(--muted);font-weight:700}.linkline a{color:var(--purple);font-weight:900;text-decoration:none}.err{min-height:22px;margin-top:13px;color:#ef4444;text-align:center;font-weight:800;font-size:.9rem}.ok{color:#00a666}.ld{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;display:inline-block;animation:spin .65s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:880px){.auth{grid-template-columns:1fr}.hero{text-align:center}.hero p{margin:auto}.hero-card{max-width:520px;margin:22px auto 0}.topbar{height:78px}.shell{min-height:calc(100vh - 78px)}}
-@media(max-width:540px){.topbar{padding:0 14px}.brand strong{font-size:1.15rem}.mark{width:40px;height:40px}.card{padding:26px 18px}.hero-card{grid-template-columns:1fr}.actions{gap:6px}.lang button{padding:6px 10px}.hero h1{font-size:2.1rem}}
+body{
+  font-family:'Cairo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:background var(--tr),color var(--tr);
+}
+[data-lang="en"] body{font-family:'Outfit',sans-serif}
+[data-lang="en"]{direction:ltr}
+[data-lang="ar"]{direction:rtl}
+button,input{font:inherit}
+a{text-decoration:none;color:inherit}
+.hidden{display:none!important}
 
-body.dark{--text:#f2f3ff;--muted:#b4b6c8;--border:#30294a;--bg:#080410;--card:#130a27;background:radial-gradient(circle at top right,rgba(0,216,121,.14),transparent 30%),linear-gradient(180deg,#080410 0%,#130a27 100%)}
-body.dark .card,body.dark .mini{background:rgba(19,10,39,.86);border-color:#30294a}body.dark .inp{background:#0d071b;border-color:#30294a;color:#fff}body.dark .inp:focus{background:#120924}body.dark .linkline a{color:#7df2b9}body.dark .eyebrow{background:rgba(0,216,121,.13);color:#7df2b9}
+/* background */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);animation:drift 18s ease-in-out infinite}
+.o1{width:700px;height:700px;background:var(--orb1);top:-220px;right:-180px}
+.o2{width:520px;height:520px;background:var(--orb2);bottom:-170px;left:-140px;animation-delay:-7s}
+.o3{width:430px;height:430px;background:var(--orb3);top:38%;left:34%;animation-delay:-13s}
+@keyframes drift{
+  0%,100%{transform:translate(0,0) scale(1)}
+  40%{transform:translate(30px,-45px) scale(1.05)}
+  70%{transform:translate(-25px,30px) scale(.96)}
+}
+
+/* nav like dashboard */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:var(--nav-h);
+  background:linear-gradient(135deg,#0a0120 0%,#160840 100%);
+  border-bottom:1px solid rgba(139,92,246,.2);
+  display:flex;align-items:center;
+  padding:0 clamp(12px,3vw,36px);gap:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.35);
+  direction:ltr;
+}
+.nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.nav-mark{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  display:grid;place-items:center;font-weight:900;font-size:.88rem;color:#fff;
+  font-family:'Outfit',sans-serif;box-shadow:0 4px 16px var(--p-glow);
+}
+.nav-name{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.15rem;letter-spacing:-.02em;color:#fff}
+.nav-name em{font-style:normal;color:var(--p3)}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;direction:rtl}
+.nl-btn{
+  background:transparent;border:none;color:rgba(255,255,255,.65);
+  font-weight:700;font-size:.84rem;cursor:pointer;padding:7px 12px;
+  border-radius:9px;transition:var(--tr);white-space:nowrap;
+  display:flex;align-items:center;gap:5px;
+}
+.nl-btn:hover,.nl-btn.on{background:rgba(255,255,255,.08);color:#fff}
+.nl-btn.on{background:rgba(139,92,246,.15);color:var(--p3);border:1px solid rgba(139,92,246,.25)}
+.nav-end{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ctrl-pill,.lang-pill{
+  display:flex;align-items:center;gap:1px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;padding:3px;
+}
+.ctrl-side{
+  width:28px;height:24px;border-radius:999px;
+  display:grid;place-items:center;font-size:.8rem;
+  color:rgba(255,255,255,.45);cursor:pointer;border:none;background:none;
+  transition:var(--tr);
+}
+.ctrl-side.on{background:rgba(255,255,255,.14);color:#fff}
+.lang-btn{
+  padding:4px 10px;border:none;background:transparent;
+  color:rgba(255,255,255,.5);border-radius:999px;
+  cursor:pointer;font-weight:800;font-size:.7rem;
+  transition:var(--tr);letter-spacing:.04em;
+}
+.lang-btn.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 2px 8px var(--p-glow)}
+
+/* auth page */
+.page{
+  position:relative;z-index:1;
+  min-height:calc(100vh - var(--nav-h));
+  padding-top:var(--nav-h);
+}
+.auth-wrap{
+  max-width:1180px;margin:0 auto;
+  padding:42px clamp(14px,3vw,36px) 70px;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:center;
+  min-height:calc(100vh - var(--nav-h));
+}
+.hero-card,.login-card{
+  background:var(--card);
+  backdrop-filter:blur(22px) saturate(160%);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  border-radius:var(--r-xl);
+  position:relative;overflow:hidden;
+}
+.hero-card::before,.login-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(130deg,var(--shine) 0%,transparent 55%);
+  pointer-events:none;border-radius:inherit;
+}
+.hero-card{padding:34px;min-height:430px;display:flex;flex-direction:column;justify-content:center}
+.kicker{
+  display:inline-flex;align-items:center;gap:8px;width:max-content;
+  padding:7px 13px;border-radius:999px;font-weight:900;font-size:.82rem;
+  background:var(--p-faint);color:var(--p3);border:1px solid var(--border);
+  margin-bottom:18px;
+}
+.hero-title{
+  font-family:'Outfit','Cairo',sans-serif;
+  font-size:clamp(2rem,4vw,4.1rem);
+  line-height:1.05;font-weight:900;letter-spacing:-.05em;margin-bottom:14px;
+}
+[data-lang="ar"] .hero-title{font-family:'Cairo',sans-serif;letter-spacing:-.03em}
+.hero-title em{font-style:normal;color:var(--p3)}
+.hero-sub{font-size:1rem;color:var(--t2);line-height:1.85;max-width:540px;font-weight:600}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
+.stat{
+  background:var(--p-faint);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 12px;text-align:center;
+}
+.stat b{display:block;font-size:1.2rem;color:var(--p3);font-family:'Outfit',sans-serif;margin-bottom:4px}
+.stat span{font-size:.72rem;color:var(--t3);font-weight:800}
+
+.login-card{padding:30px}
+.card-top{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.card-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  display:grid;place-items:center;color:#fff;font-weight:900;font-size:1.15rem;
+  box-shadow:0 5px 18px var(--p-glow);font-family:'Outfit',sans-serif;
+}
+.card-title{font-weight:900;font-size:1.25rem}
+.card-sub{font-size:.78rem;color:var(--t3);font-weight:700;margin-top:2px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
+.field-label{font-size:.62rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.12em}
+.inp{
+  background:var(--bg);border:1.5px solid var(--border);color:var(--text);
+  padding:12px 13px;border-radius:var(--r-sm);outline:none;transition:var(--tr);width:100%;
+  direction:ltr;
+}
+.inp:focus{border-color:var(--p1);box-shadow:0 0 0 3px var(--p-glow);background:var(--bg2)}
+.inp::placeholder{color:var(--t3)}
+.btn{
+  border:none;border-radius:var(--r-sm);padding:12px 16px;font-weight:900;
+  cursor:pointer;font-size:.9rem;transition:var(--tr);
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;
+}
+.btn-primary{width:100%;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 14px var(--p-glow)}
+.btn-primary:hover{opacity:.92;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-glass{background:var(--glass);color:var(--t2);border:1px solid var(--border)}
+.btn-glass:hover{background:var(--glass-h);color:var(--text);border-color:var(--border-h)}
+.msg{min-height:22px;margin-top:12px;text-align:center;font-weight:800;font-size:.86rem;color:var(--danger)}
+.msg.ok{color:var(--ok)}
+.linkline{text-align:center;margin-top:16px;font-size:.85rem;color:var(--t3);font-weight:700}
+.linkline a{color:var(--p3);font-weight:900}
+.auth-note{
+  margin-top:14px;padding:11px 12px;border-radius:var(--r-sm);
+  background:var(--p-faint);border:1px solid var(--border);
+  color:var(--t2);font-size:.78rem;line-height:1.65;font-weight:700;
+}
+.spin{
+  display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;border-radius:50%;animation:spinning .65s linear infinite;
+}
+@keyframes spinning{to{transform:rotate(360deg)}}
+
+/* Footer copied to match dashboard */
+.footer{
+  background:linear-gradient(135deg,#060112,#120840);
+  color:#c4b5e0;padding:56px clamp(16px,5vw,72px) 28px;
+  direction:ltr;position:relative;z-index:1;
+}
+.footer-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;align-items:start;
+}
+.f-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-family:'Outfit',sans-serif;font-weight:900;font-size:.9rem;color:#fff;box-shadow:0 4px 16px var(--p-glow)}
+.f-name{font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:900;color:#fff;letter-spacing:-.02em}
+.f-name em{font-style:normal;color:var(--p3)}
+.f-logo{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.f-desc{font-size:.84rem;line-height:1.75;color:#8a78a6;margin-bottom:20px;max-width:270px}
+.f-socials{display:flex;gap:9px}
+.f-soc{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;cursor:pointer;transition:var(--tr);border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05)}
+.f-soc:hover{transform:translateY(-3px);background:rgba(255,255,255,.1)}
+.f-col-title{font-size:.67rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#6a509c;margin-bottom:16px}
+.f-links{display:flex;flex-direction:column;gap:9px}
+.f-link{font-size:.86rem;color:#8a78a6;cursor:pointer;transition:var(--tr);display:inline-flex;align-items:center;gap:5px}
+.f-link:hover{color:var(--p3);transform:translateX(4px)}
+[data-lang="ar"] .f-link:hover{transform:translateX(-4px)}
+.f-con-item{display:flex;align-items:center;gap:9px;font-size:.84rem;color:#8a78a6;margin-bottom:11px}
+.f-con-item a{color:#8a78a6;text-decoration:none;transition:var(--tr)}
+.f-con-item a:hover{color:var(--p3)}
+.f-con-ico{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:grid;place-items:center}
+.footer-bottom{max-width:1200px;margin:36px auto 0;border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px}
+.f-copy,.f-made{font-size:.75rem;color:#5a4878}
+
+@media(max-width:940px){
+  .auth-wrap{grid-template-columns:1fr;min-height:auto}
+}
+@media(max-width:800px){
+  :root{--nav-h:62px}
+  .nav{padding:0 12px;gap:8px}
+  .nav-links{display:none}
+  .footer-inner{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .hero-card{min-height:auto}
+}
+@media(max-width:580px){
+  .auth-wrap{padding:28px 12px 50px}
+  .hero-card,.login-card{padding:22px 16px}
+  .stat-grid{grid-template-columns:1fr}
+  .lang-btn{padding:4px 8px;font-size:.68rem}
+}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="/home/"><div class="mark">KW</div><strong>kala<span>wy</span></strong></a>
-  <div class="actions">
-    <button class="theme" onclick="toggleTheme()" type="button">🌙</button>
-    <div class="lang">
-      <button type="button" data-lang="ar" onclick="setLang('ar')">Arabic</button>
-      <button type="button" data-lang="en" onclick="setLang('en')">English</button>
+
+<div class="bg-mesh" aria-hidden="true">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+</div>
+
+<nav class="nav">
+  <a class="nav-logo" href="/home/">
+    <div class="nav-mark">KW</div>
+    <span class="nav-name">kala<em>wy</em></span>
+  </a>
+  <div class="nav-links">
+    <a class="nl-btn" href="/home/" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+    <button class="nl-btn on" type="button" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</button>
+    <a class="nl-btn" href="/signup/" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</a>
+  </div>
+  <div class="nav-end">
+    <div class="ctrl-pill">
+      <button class="ctrl-side" id="n-dark" onclick="setTheme('dark')" type="button">🌙</button>
+      <button class="ctrl-side" id="n-light" onclick="setTheme('light')" type="button">☀️</button>
+    </div>
+    <div class="lang-pill">
+      <button class="lang-btn" id="n-ar" onclick="setLang('ar')" type="button">عربي</button>
+      <button class="lang-btn" id="n-en" onclick="setLang('en')" type="button">EN</button>
     </div>
   </div>
-</header>
-<main class="shell">
-  <section class="auth">
-    <div class="hero">
-      <div class="eyebrow" data-ar="منصة kalawy التعليمية" data-en="kalawy learning platform">منصة kalawy التعليمية</div>
-      <h1 data-ar="ذاكر أسرع
-وادخل حصصك بسهولة" data-en="Study faster
-and access lessons easily">ذاكر أسرع<br>وادخل حصصك بسهولة</h1>
-      <p data-ar="تصميم قريب من واجهة الشابتر: بسيط، واضح، وفيه عربي وإنجليزي." data-en="A chapter-style interface: simple, clear, with Arabic and English support.">تصميم قريب من واجهة الشابتر: بسيط، واضح، وفيه عربي وإنجليزي.</p>
-      <div class="hero-card">
-        <div class="mini"><b>Chapter</b><span data-ar="شكل موحد" data-en="Same style">شكل موحد</span></div>
-        <div class="mini"><b>AR/EN</b><span data-ar="تغيير لغة" data-en="Language switch">تغيير لغة</span></div>
-        <div class="mini"><b>kalawy</b><span data-ar="منصتك" data-en="Your platform">منصتك</span></div>
+</nav>
+
+<main class="page">
+  <section class="auth-wrap">
+    <div class="hero-card">
+      <div class="kicker" data-ar="منصة kalawy التعليمية" data-en="kalawy learning platform">منصة kalawy التعليمية</div>
+      <h1 class="hero-title" data-ar="ادخل حسابك وابدأ <em>حصصك</em>" data-en="Sign in and start your <em>lessons</em>">ادخل حسابك وابدأ <em>حصصك</em></h1>
+      <p class="hero-sub" data-ar="نفس ستايل الداشبورد: تصميم زجاجي، عربي وإنجليزي، لايت ودارك، وتحويل مباشر بعد تسجيل الدخول." data-en="Same dashboard style: glass UI, Arabic and English, light and dark mode, and direct redirect after sign in.">نفس ستايل الداشبورد: تصميم زجاجي، عربي وإنجليزي، لايت ودارك، وتحويل مباشر بعد تسجيل الدخول.</p>
+      <div class="stat-grid">
+        <div class="stat"><b>KW</b><span data-ar="منصة موحدة" data-en="Unified platform">منصة موحدة</span></div>
+        <div class="stat"><b>AR/EN</b><span data-ar="تغيير لغة" data-en="Language switch">تغيير لغة</span></div>
+        <div class="stat"><b>Light</b><span data-ar="نفس الثيم" data-en="Same theme">نفس الثيم</span></div>
       </div>
     </div>
-    <div class="card">
-      <div class="title" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</div>
-      <div class="sub" data-ar="ادخل بحساب الطالب الخاص بك" data-en="Use your student account">ادخل بحساب الطالب الخاص بك</div>
-      
-        <div class="field"><label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label><input class="inp" id="email" type="email" dir="ltr" placeholder="example@email.com"></div>
-        <div class="field"><label data-ar="كلمة السر" data-en="Password">كلمة السر</label><input class="inp" id="password" type="password" dir="ltr" placeholder="••••••••"></div>
-        <button class="btn btn-primary" id="submitBtn" onclick="doLogin()" data-ar="دخول" data-en="Sign in">دخول</button>
-        <div id="authMsg" class="err"></div>
-        <div class="linkline"><span data-ar="معندكش حساب؟" data-en="No account?">معندكش حساب؟</span> <a href="/signup/" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</a></div>
-        
-    </div>
+
+    <form class="login-card" onsubmit="doLogin(event)">
+      <div class="card-top">
+        <div class="card-icon">KW</div>
+        <div>
+          <div class="card-title" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</div>
+          <div class="card-sub" data-ar="ادخل بحساب الطالب الخاص بك" data-en="Use your student account">ادخل بحساب الطالب الخاص بك</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label" data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+        <input class="inp" id="email" type="email" autocomplete="email" placeholder="example@email.com">
+      </div>
+
+      <div class="field">
+        <span class="field-label" data-ar="كلمة السر" data-en="Password">كلمة السر</span>
+        <input class="inp" id="password" type="password" autocomplete="current-password" placeholder="••••••••">
+      </div>
+
+      <button class="btn btn-primary" id="submitBtn" type="submit" data-ar="دخول إلى الداشبورد" data-en="Go to dashboard">دخول إلى الداشبورد</button>
+      <div id="authMsg" class="msg"></div>
+
+      <div class="linkline">
+        <span data-ar="معندكش حساب؟" data-en="No account?">معندكش حساب؟</span>
+        <a href="/signup/" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</a>
+      </div>
+
+      <div class="auth-note" data-ar="مهم: لو الداشبورد عندك اسمها dashboard.html بدل فولدر /dashboard/ غيّر DASHBOARD_URL في آخر الملف." data-en="Important: If your dashboard file is dashboard.html instead of /dashboard/, change DASHBOARD_URL at the end of this file.">مهم: لو الداشبورد عندك اسمها dashboard.html بدل فولدر /dashboard/ غيّر DASHBOARD_URL في آخر الملف.</div>
+    </form>
   </section>
 </main>
+
+<footer class="footer" id="siteFooter">
+  <div class="footer-inner">
+    <div>
+      <div class="f-logo">
+        <div class="f-mark">KW</div>
+        <span class="f-name">kala<em>wy</em></span>
+      </div>
+      <p class="f-desc" id="f-desc" data-ar="منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً." data-en="A learning platform designed to make studying easier and more organized.">منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً.</p>
+      <div class="f-socials">
+        <button class="f-soc" type="button" onclick="openWhatsApp()" aria-label="WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        </button>
+        <button class="f-soc" type="button" onclick="openMail()" aria-label="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#ea4335"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </button>
+        <button class="f-soc" type="button" onclick="window.open('https://t.me/kalawy','_blank')" aria-label="Telegram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#2ca5e0"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <div class="f-col-title" id="f-links-title" data-ar="روابط سريعة" data-en="Quick links">روابط سريعة</div>
+      <div class="f-links">
+        <a class="f-link" href="/home/" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</a>
+        <a class="f-link" href="/dashboard/" data-ar="📚 حصصي" data-en="📚 My lessons">📚 حصصي</a>
+        <a class="f-link" href="/dashboard/" data-ar="🛒 السلة" data-en="🛒 Cart">🛒 السلة</a>
+        <a class="f-link" href="/dashboard/" data-ar="👤 حسابي" data-en="👤 Profile">👤 حسابي</a>
+        <a class="f-link" href="/signup/" data-ar="✨ إنشاء حساب" data-en="✨ Create account">✨ إنشاء حساب</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="f-col-title" id="f-contact-title" data-ar="تواصل معنا" data-en="Contact us">تواصل معنا</div>
+      <div class="f-con-item">
+        <div class="f-con-ico" style="background:linear-gradient(135deg,#25d366,#128c7e)">☎</div>
+        <a href="https://wa.me/201000000000" target="_blank" dir="ltr">+20 100 000 0000</a>
+      </div>
+      <div class="f-con-item">
+        <div class="f-con-ico" style="background:linear-gradient(135deg,#ea4335,#c5221f)">✉</div>
+        <a href="mailto:support@kalawy.com">support@kalawy.com</a>
+      </div>
+      <div class="f-con-item">
+        <div class="f-con-ico" style="background:linear-gradient(135deg,#2ca5e0,#1a73c5)">➤</div>
+        <a href="https://t.me/kalawy" target="_blank">@kalawy</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="f-copy" id="f-copy" data-ar="© 2025 kalawy — جميع الحقوق محفوظة" data-en="© 2025 kalawy — All rights reserved">© 2025 kalawy — جميع الحقوق محفوظة</div>
+    <div class="f-made" id="f-made" data-ar="صُنع بـ ❤️ للطلاب" data-en="Made with ❤️ for students">صُنع بـ ❤️ للطلاب</div>
+  </div>
+</footer>
+
 <script>
 const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
+const DASHBOARD_URL = "/dashboard/"; // لو ملفك اسمه dashboard.html غيّرها إلى "/dashboard.html"
+const CONTACT_WA   = "201000000000";
+const CONTACT_MAIL = "support@kalawy.com";
+
 const sb = window.supabase.createClient(SB_URL, SB_ANON);
-let _lang = localStorage.getItem('kw-lang') || 'ar';
+let _lang = localStorage.getItem("kw-lang") || "ar";
+
+function goDashboard(){
+  const url = new URL(DASHBOARD_URL, window.location.origin).href;
+  window.location.replace(url);
+  setTimeout(() => {
+    if(location.href !== url) window.location.href = url;
+  }, 250);
+}
+
 function setLang(lg){
-  _lang=lg; localStorage.setItem('kw-lang',lg);
-  document.documentElement.lang=lg; document.documentElement.dir=lg==='ar'?'rtl':'ltr';
-  document.querySelectorAll('[data-ar]').forEach(el=>{
-    const v=lg==='en'?el.dataset.en:el.dataset.ar;
-    if(el.tagName==='INPUT' || el.tagName==='SELECT') el.placeholder=v; else el.textContent=v;
+  _lang = lg;
+  localStorage.setItem("kw-lang", lg);
+  document.documentElement.lang = lg;
+  document.documentElement.dir = lg === "ar" ? "rtl" : "ltr";
+  document.documentElement.dataset.lang = lg;
+
+  document.querySelectorAll("[data-ar]").forEach(el => {
+    const v = lg === "en" ? el.dataset.en : el.dataset.ar;
+    if(el.tagName === "INPUT") el.placeholder = v;
+    else el.innerHTML = v;
   });
-  document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('on',b.dataset.lang===lg));
+
+  document.getElementById("n-ar")?.classList.toggle("on", lg === "ar");
+  document.getElementById("n-en")?.classList.toggle("on", lg === "en");
 }
-function toggleTheme(){
-  const isDark=document.body.classList.toggle('dark');
-  localStorage.setItem('kw-auth-theme',isDark?'dark':'light');
+
+function setTheme(th){
+  document.documentElement.dataset.theme = th;
+  localStorage.setItem("kw-theme", th);
+  document.getElementById("n-dark")?.classList.toggle("on", th === "dark");
+  document.getElementById("n-light")?.classList.toggle("on", th === "light");
 }
-function setLoading(btn,txt){btn.disabled=true;btn.dataset.old=btn.textContent;btn.innerHTML='<span class="ld"></span>'+txt;}
-function stopLoading(btn){btn.disabled=false;btn.textContent=btn.dataset.old||btn.textContent;}
-function err(msg,ok=false){const e=document.getElementById('authMsg');e.textContent=msg;e.classList.toggle('ok',ok);}
-window.addEventListener('DOMContentLoaded',async()=>{
+
+function setLoading(btn, txt){
+  btn.disabled = true;
+  btn.dataset.old = btn.innerHTML;
+  btn.innerHTML = `<span class="spin"></span>${txt}`;
+}
+
+function stopLoading(btn){
+  btn.disabled = false;
+  btn.innerHTML = btn.dataset.old || btn.textContent;
+}
+
+function msg(text, ok=false){
+  const el = document.getElementById("authMsg");
+  el.textContent = text;
+  el.classList.toggle("ok", ok);
+}
+
+function openWhatsApp(){ window.open(`https://wa.me/${CONTACT_WA}`, "_blank"); }
+function openMail(){ location.href = `mailto:${CONTACT_MAIL}`; }
+
+window.addEventListener("DOMContentLoaded", async () => {
+  setTheme(localStorage.getItem("kw-theme") || localStorage.getItem("kw-auth-theme") || "light");
   setLang(_lang);
-  if(localStorage.getItem('kw-auth-theme')==='dark')document.body.classList.add('dark');
-  const {data:{session}} = await sb.auth.getSession();
-  if(session) location.href='/dashboard/';
+
+  const { data: { session } } = await sb.auth.getSession();
+  if(session) goDashboard();
 });
 
+async function doLogin(e){
+  e.preventDefault();
 
-async function doLogin(){
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
-  const btn=document.getElementById('submitBtn');
-  err('');
-  if(!email||!password) return err(_lang==='ar'?'ادخل البريد وكلمة السر':'Enter email and password');
-  setLoading(btn,_lang==='ar'?' جاري الدخول':' Signing in');
-  const {data,error}=await sb.auth.signInWithPassword({email,password});
-  if(error){stopLoading(btn);return err(_lang==='ar'?'بيانات الدخول غلط':'Wrong credentials');}
-  const {data:p}=await sb.from('profiles').select('role').eq('id',data.user.id).single();
-  if(p?.role==='admin'||p?.role==='teacher'){
-    await sb.auth.signOut(); stopLoading(btn);
-    return err(_lang==='ar'?'هذا مش حساب طالب':'This is not a student account');
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const btn = document.getElementById("submitBtn");
+  msg("");
+
+  if(!email || !password){
+    return msg(_lang === "ar" ? "ادخل البريد وكلمة السر" : "Enter email and password");
   }
-  location.href='/dashboard/';
+
+  setLoading(btn, _lang === "ar" ? "جاري الدخول..." : "Signing in...");
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if(error || !data?.session){
+    stopLoading(btn);
+    return msg(_lang === "ar" ? "بيانات الدخول غلط" : "Wrong credentials");
+  }
+
+  // مهم: لا نخلي مشكلة RLS في جدول profiles توقف التحويل للداشبورد
+  try{
+    const { data: profile } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    if(profile?.role === "admin" || profile?.role === "teacher"){
+      await sb.auth.signOut();
+      stopLoading(btn);
+      return msg(_lang === "ar" ? "هذا مش حساب طالب" : "This is not a student account");
+    }
+  }catch(err){
+    console.warn("profiles role check skipped:", err);
+  }
+
+  msg(_lang === "ar" ? "تم الدخول... جاري فتح الداشبورد" : "Signed in... opening dashboard", true);
+  goDashboard();
 }
 </script>
 </body>
