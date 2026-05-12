@@ -926,7 +926,13 @@ img{display:block}
 // ── CONFIG ────────────────────────────────────
 const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
-const sb = window.supabase.createClient(SB_URL, SB_ANON);
+const sb = window.supabase.createClient(SB_URL, SB_ANON, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 const CONTACT_WA   = '201000000000';
 const CONTACT_MAIL = 'support@kalawy.com';
 
@@ -1197,16 +1203,83 @@ function pickPhone(...rows){
   return '';
 }
 
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+async function waitForAuthSession(timeoutMs = 2600){
+  return new Promise(resolve => {
+    let done = false;
+    const sub = sb.auth.onAuthStateChange((_event, session) => {
+      if(done) return;
+      if(session){
+        done = true;
+        try{ sub?.data?.subscription?.unsubscribe?.(); }catch{}
+        resolve(session);
+      }
+    });
+    setTimeout(() => {
+      if(done) return;
+      done = true;
+      try{ sub?.data?.subscription?.unsubscribe?.(); }catch{}
+      resolve(null);
+    }, timeoutMs);
+  });
+}
+
+async function getStableSession(){
+  // Supabase أحياناً بعد refresh سريع بيرجع session=null لحظياً
+  // عشان كده بنحاول كذا مرة قبل ما نطلع المستخدم login.
+  for(let i = 0; i < 10; i++){
+    try{
+      const { data:{ session }, error } = await sb.auth.getSession();
+      if(session) return session;
+      if(error) console.warn('Session read try failed:', error.message);
+    }catch(err){
+      console.warn('Session read exception:', err);
+    }
+    await sleep(220 + i * 80);
+  }
+
+  const eventSession = await waitForAuthSession(2600);
+  if(eventSession) return eventSession;
+
+  try{
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session) return session;
+  }catch{}
+
+  return null;
+}
+
+function showLoginRequired(){
+  const wrap = document.querySelector('.pw') || document.body;
+  if(wrap){
+    wrap.innerHTML = `
+      <div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="max-width:420px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)">
+          <div style="font-size:3rem;margin-bottom:12px">🔐</div>
+          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">الجلسة لسه ما اتحملتش</div>
+          <div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">
+            لو عملت Refresh بسرعة، استنى ثانية واضغط إعادة المحاولة. مش هنطلعك logout تلقائي.
+          </div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="location.reload()">🔄 إعادة المحاولة</button>
+            <button class="btn btn-glass" onclick="goUrl(LOGIN_URL)">تسجيل الدخول</button>
+          </div>
+        </div>
+      </div>`;
+  }
+}
+
 async function checkSession(){
   setTheme(localStorage.getItem('kw-theme') || 'light');
   setLang(localStorage.getItem('kw-lang') || 'ar');
 
   try{
-    const { data:{ session }, error } = await sb.auth.getSession();
+    const session = await getStableSession();
 
-    if(error || !session){
-      console.warn('No active session:', error?.message);
-      goUrl(LOGIN_URL);
+    if(!session){
+      console.warn('No active session after retries. Not signing out.');
+      showLoginRequired();
       return;
     }
 
@@ -1232,7 +1305,7 @@ async function checkSession(){
     await initApp(user, { profile, student: studentById, appUser });
   }catch(err){
     console.error('Dashboard auth boot error:', err);
-    goUrl(LOGIN_URL);
+    showLoginRequired();
   }
 }
 
