@@ -930,7 +930,8 @@ const sb = window.supabase.createClient(SB_URL, SB_ANON, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    storage: window.localStorage
   }
 });
 const CONTACT_WA   = '201000000000';
@@ -1154,12 +1155,33 @@ function pal(i){ return (THEME==='dark' ? PALETTES_DARK : PALETTES_LIGHT)[i % 6]
 // ── AUTH ──────────────────────────────────────
 const LOGIN_URL = '/login';
 const STUDENT_DASHBOARD_URL = '/dashboard';
+const LOGIN_MARK = 'kw-login-ok';
+
+function rememberLogin(user){
+  try{
+    localStorage.setItem(LOGIN_MARK, JSON.stringify({
+      id: user?.id || '',
+      email: user?.email || '',
+      at: Date.now()
+    }));
+  }catch{}
+}
+
+function forgetLogin(){
+  try{ localStorage.removeItem(LOGIN_MARK); }catch{}
+}
+
+function hadLoginBefore(){
+  try{ return !!localStorage.getItem(LOGIN_MARK); }catch{ return false; }
+}
+
 
 function goUrl(url){
   window.location.replace(new URL(url, window.location.origin).href);
 }
 
 async function doLogout(){
+  forgetLogin();
   await sb.auth.signOut();
   goUrl(LOGIN_URL);
 }
@@ -1250,6 +1272,27 @@ async function getStableSession(){
   return null;
 }
 
+
+function showAccessDenied(role){
+  const wrap = document.querySelector('.pw') || document.body;
+  if(wrap){
+    wrap.innerHTML = `
+      <div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="max-width:440px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)">
+          <div style="font-size:3rem;margin-bottom:12px">🚫</div>
+          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">الحساب ده مش طالب</div>
+          <div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">
+            أنت لسه عامل Login، ومش هنعمل Logout لوحدنا. افتح صفحة الحساب المناسبة أو اضغط تسجيل خروج بنفسك.
+          </div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="goUrl('/home')">الرئيسية</button>
+            <button class="btn btn-glass" onclick="doLogout()">تسجيل خروج</button>
+          </div>
+        </div>
+      </div>`;
+  }
+}
+
 function showLoginRequired(){
   const wrap = document.querySelector('.pw') || document.body;
   if(wrap){
@@ -1257,9 +1300,9 @@ function showLoginRequired(){
       <div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px">
         <div style="max-width:420px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)">
           <div style="font-size:3rem;margin-bottom:12px">🔐</div>
-          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">الجلسة لسه ما اتحملتش</div>
+          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">أنت لسه عامل Login</div>
           <div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">
-            لو عملت Refresh بسرعة، استنى ثانية واضغط إعادة المحاولة. مش هنطلعك logout تلقائي.
+            مش هنعمل Logout لوحدنا. لو حصل Refresh سريع، اضغط إعادة المحاولة أو استنى ثانية.
           </div>
           <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="location.reload()">🔄 إعادة المحاولة</button>
@@ -1284,6 +1327,7 @@ async function checkSession(){
     }
 
     const user = session.user;
+    rememberLogin(user);
 
     const [profile, studentById, userByAuthId, userById, userByEmail] = await Promise.all([
       safeRow('profiles', 'id', user.id),
@@ -1297,8 +1341,7 @@ async function checkSession(){
     const role = profile?.role || studentById?.role || appUser?.role || 'student';
 
     if(role === 'admin' || role === 'teacher'){
-      await sb.auth.signOut();
-      goUrl(LOGIN_URL);
+      showAccessDenied(role);
       return;
     }
 
