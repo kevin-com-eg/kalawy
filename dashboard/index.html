@@ -3,12 +3,23 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kalawy — Platform</title>
+<title>kalawy â€” Platform</title>
 <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop stop-color="%237c3cff"/%3E%3Cstop offset=".58" stop-color="%2300d879"/%3E%3Cstop offset="1" stop-color="%23ff4fd8"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="64" height="64" rx="18" fill="url(%23g)"/%3E%3Ctext x="32" y="40" font-family="Arial" font-size="22" font-weight="900" text-anchor="middle" fill="white"%3EKW%3C/text%3E%3C/svg%3E'>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+sb.auth.onAuthStateChange((event, session) => {
+  if(session?.user){
+    rememberLogin(session.user);
+    const grid = document.getElementById('sub-grid');
+    if(grid && /No subjects found|Ø§Ù„Ø¬Ù„Ø³Ø© Ù„Ø³Ù‡/.test(grid.textContent || '')){
+      setTimeout(() => loadSubjects(), 300);
+    }
+  }
+});
+
+</script>
 <style>
-/* ── TOKENS ──────────────────────────────────── */
+/* â”€â”€ TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
   --p1:#8b5cf6; --p2:#7c3aed; --p3:#a78bfa; --p4:#6d28d9;
   --p-glow:rgba(139,92,246,.3); --p-faint:rgba(139,92,246,.08);
@@ -18,7 +29,7 @@
   --tr:.2s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── DARK ───────────────────────────────────── */
+/* â”€â”€ DARK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 [data-theme="dark"] {
   --bg:#060112; --bg2:#0b0620; --bg3:#120930;
   --card:rgba(20,10,50,.7); --card-s:rgba(30,16,70,.8);
@@ -32,7 +43,7 @@
   --orb3:rgba(56,189,248,.06);
 }
 
-/* ── LIGHT ──────────────────────────────────── */
+/* â”€â”€ LIGHT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 [data-theme="light"] {
   --bg:#f5f0ff; --bg2:#ede8fa; --bg3:#e0d8f8;
   --card:rgba(255,255,255,.85); --card-s:rgba(248,244,255,.95);
@@ -46,7 +57,7 @@
   --orb3:rgba(56,189,248,.07);
 }
 
-/* ── RESET ──────────────────────────────────── */
+/* â”€â”€ RESET â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
@@ -63,7 +74,7 @@ a{text-decoration:none;color:inherit}
 img{display:block}
 .hidden{display:none!important}
 
-/* ── BG MESH ────────────────────────────────── */
+/* â”€â”€ BG MESH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .orb{position:absolute;border-radius:50%;filter:blur(100px);animation:drift 18s ease-in-out infinite}
 .o1{width:700px;height:700px;background:var(--orb1);top:-200px;right:-200px}
@@ -75,7 +86,7 @@ img{display:block}
   70%{transform:translate(-25px,30px) scale(.96)}
 }
 
-/* ── GLASS ──────────────────────────────────── */
+/* â”€â”€ GLASS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .glass{
   background:var(--glass);
   backdrop-filter:blur(22px) saturate(160%);
@@ -90,7 +101,7 @@ img{display:block}
   pointer-events:none;border-radius:inherit;
 }
 
-/* ── NAV ────────────────────────────────────── */
+/* â”€â”€ NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:500;
   height:var(--nav-h);
@@ -215,7 +226,7 @@ img{display:block}
 .ico-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff}
 .ico-em{background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff}
 
-/* ── BREADCRUMB ─────────────────────────────── */
+/* â”€â”€ BREADCRUMB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bc{
   position:fixed;top:var(--nav-h);left:0;right:0;
   height:var(--bc-h);z-index:400;
@@ -234,7 +245,7 @@ img{display:block}
 .bc-item.active{color:var(--text);font-weight:800;cursor:default}
 .bc-sep{color:var(--t3);font-size:.65rem}
 
-/* ── PAGE WRAPPER ───────────────────────────── */
+/* â”€â”€ PAGE WRAPPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pw{
   padding-top:calc(var(--nav-h) + var(--bc-h));
   background:var(--bg);min-height:100vh;position:relative;z-index:1;
@@ -246,7 +257,7 @@ img{display:block}
 .pg.on{display:block;animation:pg-in .28s ease}
 @keyframes pg-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-/* ── HERO BAR ───────────────────────────────── */
+/* â”€â”€ HERO BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hero-bar{
   display:flex;align-items:center;gap:14px;
   background:var(--card);
@@ -277,7 +288,7 @@ img{display:block}
 .h-stat .n{font-size:1.2rem;font-weight:900;color:var(--p3);line-height:1;font-family:'Outfit',sans-serif}
 .h-stat .l{font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px;font-weight:700}
 
-/* ── PAGE SECTION HEADER ─────────────────────── */
+/* â”€â”€ PAGE SECTION HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .sec-hero{text-align:center;padding:32px 20px 24px}
 .sec-title{
   font-size:clamp(1.4rem,3vw,2rem);font-weight:900;
@@ -286,11 +297,11 @@ img{display:block}
 }
 .sec-sub{font-size:.9rem;color:var(--t3);font-weight:600}
 
-/* ── GRIDS ──────────────────────────────────── */
+/* â”€â”€ GRIDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
 .grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:16px}
 
-/* ── SUBJECT CARD ───────────────────────────── */
+/* â”€â”€ SUBJECT CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .sub-card{
   background:var(--card);backdrop-filter:blur(16px);
   border:1px solid var(--border);border-radius:var(--r-lg);
@@ -316,7 +327,7 @@ img{display:block}
   border-radius:999px;font-size:.68rem;font-weight:700;
 }
 
-/* ── TEACHER CARD ───────────────────────────── */
+/* â”€â”€ TEACHER CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .tch-card{
   background:var(--card);backdrop-filter:blur(16px);
   border:1px solid var(--border);border-radius:var(--r-lg);
@@ -346,7 +357,7 @@ img{display:block}
 }
 .follow-btn:hover{transform:translateY(-1px)}
 
-/* ── CHAPTER CARD ───────────────────────────── */
+/* â”€â”€ CHAPTER CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .ch-card{
   background:var(--card);backdrop-filter:blur(16px);
   border:1px solid var(--border);border-radius:var(--r-lg);
@@ -369,7 +380,7 @@ img{display:block}
 .ch-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:5px}
 .ch-count{font-size:.78rem;color:var(--t3)}
 
-/* ── LESSON LIST ────────────────────────────── */
+/* â”€â”€ LESSON LIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .ls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:18px}
 .ls-card{
   background:var(--card);backdrop-filter:blur(16px);
@@ -396,7 +407,7 @@ img{display:block}
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
 .ls-action{margin-top:auto;padding-top:10px;width:100%}
 
-/* ── MY LESSONS ─────────────────────────────── */
+/* â”€â”€ MY LESSONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .my-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:16px}
 .my-card{
   background:var(--card);backdrop-filter:blur(16px);
@@ -414,7 +425,7 @@ img{display:block}
 .my-title{font-weight:900;font-size:.88rem;margin-bottom:3px}
 .my-sub{font-size:.72rem;color:var(--t3)}
 
-/* ── CART ───────────────────────────────────── */
+/* â”€â”€ CART â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .cart-layout{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
 .cart-items{display:flex;flex-direction:column;gap:10px}
 .c-item{
@@ -472,7 +483,7 @@ img{display:block}
 .code-go:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .code-go:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-/* ── PROFILE ────────────────────────────────── */
+/* â”€â”€ PROFILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .prof-wrap{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}
 .prof-card{
   background:var(--card);backdrop-filter:blur(20px);
@@ -510,7 +521,7 @@ img{display:block}
 .enr-title{font-weight:800;font-size:.86rem}
 .enr-sub{font-size:.7rem;color:var(--t3);margin-top:2px}
 
-/* ── CHIPS ──────────────────────────────────── */
+/* â”€â”€ CHIPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.68rem;font-weight:700;white-space:nowrap}
 .ck-p{background:var(--p-faint);color:var(--p3);border:1px solid var(--border)}
 .ck-gold{background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22)}
@@ -520,7 +531,7 @@ img{display:block}
 .ck-muted{background:var(--glass);color:var(--t3);border:1px solid var(--border)}
 .time-chip{display:flex;align-items:center;gap:4px;font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22)}
 
-/* ── BUTTONS ────────────────────────────────── */
+/* â”€â”€ BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn{border:none;border-radius:var(--r-sm);padding:9px 16px;font-weight:700;cursor:pointer;font-size:.84rem;transition:var(--tr);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .btn-primary{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 14px var(--p-glow)}
 .btn-primary:hover{opacity:.88;transform:translateY(-1px)}
@@ -533,7 +544,7 @@ img{display:block}
 .btn-gold:hover{background:rgba(251,191,36,.18)}
 .btn-sm{padding:5px 11px;font-size:.76rem;border-radius:7px}
 
-/* ── TOAST ──────────────────────────────────── */
+/* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none}
 .toast{
   display:flex;gap:9px;align-items:center;
@@ -549,7 +560,7 @@ img{display:block}
 @keyframes t-out{to{opacity:0;transform:translateY(8px)}}
 .t-exit{animation:t-out .2s ease forwards}
 
-/* ── MODAL ──────────────────────────────────── */
+/* â”€â”€ MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .mo{
   position:fixed;inset:0;z-index:9000;
   background:rgba(0,0,0,.6);backdrop-filter:blur(14px);
@@ -583,7 +594,7 @@ img{display:block}
 .notif-body{font-size:.78rem;color:var(--t2);line-height:1.6;white-space:pre-wrap}
 .notif-meta{font-size:.68rem;color:var(--t3);margin-top:5px}
 
-/* ── LOADER ─────────────────────────────────── */
+/* â”€â”€ LOADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(139,92,246,.2);border-top-color:var(--p3);border-radius:50%;animation:spinning .6s linear infinite}
 [data-theme="light"] .spin{border:2px solid rgba(0,0,0,.1);border-top-color:var(--p1)}
 @keyframes spinning{to{transform:rotate(360deg)}}
@@ -592,7 +603,7 @@ img{display:block}
 .empty-ico{font-size:2.4rem;opacity:.75}
 .empty-txt{font-size:.84rem}
 
-/* ── FOOTER ─────────────────────────────────── */
+/* â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .footer{
   background:linear-gradient(135deg,#060112,#120840);
   color:#c4b5e0;padding:56px clamp(16px,5vw,72px) 28px;
@@ -622,7 +633,7 @@ img{display:block}
 .footer-bottom{max-width:1200px;margin:36px auto 0;border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px}
 .f-copy,.f-made{font-size:.75rem;color:#5a4878}
 
-/* ── WA FLOAT ───────────────────────────────── */
+/* â”€â”€ WA FLOAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .wa-float{
   position:fixed;bottom:26px;right:26px;
   width:52px;height:52px;border-radius:50%;
@@ -641,7 +652,7 @@ img{display:block}
   50%{box-shadow:0 6px 30px rgba(37,211,102,.7),0 0 0 8px rgba(37,211,102,.1)}
 }
 
-/* ── RESPONSIVE ─────────────────────────────── */
+/* â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media(max-width:1024px){
   .cart-layout{grid-template-columns:1fr}
   .co-panel{position:static}
@@ -672,7 +683,7 @@ img{display:block}
 <!-- EDIT MODAL -->
 <div class="mo" id="editMo">
   <div class="mc">
-    <div class="mc-title" id="edit-title">✏️</div>
+    <div class="mc-title" id="edit-title">âœï¸</div>
     <div class="field">
       <span class="field-label" id="edit-name-lbl">Name</span>
       <input class="inp" id="ed-nm" placeholder="">
@@ -683,7 +694,7 @@ img{display:block}
     </div>
     <div class="mc-footer">
       <button class="btn btn-glass" onclick="closeMo('editMo')" id="edit-cancel">Cancel</button>
-      <button class="btn btn-primary" id="ed-sv" onclick="saveProfile()">💾 Save</button>
+      <button class="btn btn-primary" id="ed-sv" onclick="saveProfile()">ðŸ’¾ Save</button>
     </div>
   </div>
 </div>
@@ -691,7 +702,7 @@ img{display:block}
 <!-- NOTIFICATIONS MODAL -->
 <div class="mo" id="notifMo">
   <div class="mc" style="max-width:500px">
-    <div class="mc-title" id="notif-title">🔔</div>
+    <div class="mc-title" id="notif-title">ðŸ””</div>
     <div style="font-size:.8rem;color:var(--t3)" id="notif-sub"></div>
     <div class="notif-list" id="notifList">
       <div class="loading-st"><div class="spin"></div></div>
@@ -702,7 +713,7 @@ img{display:block}
   </div>
 </div>
 
-<!-- ══════════════ NAV ══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• NAV â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <nav class="nav" id="mainNav" style="display:none">
   <a class="nav-logo" href="#" onclick="resetAll();return false">
     <div class="nav-mark">KW</div>
@@ -710,25 +721,25 @@ img{display:block}
   </a>
 
   <div class="nav-links">
-    <button class="nl-btn" onclick="resetAll()" id="nl-home">الرئيسية</button>
-    <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">📚 حصصي</button>
+    <button class="nl-btn" onclick="resetAll()" id="nl-home">Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</button>
+    <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">ðŸ“š Ø­ØµØµÙŠ</button>
     <button class="nl-btn cart-btn" onclick="goPage('cart')" id="nl-cart">
-      🛒 <span id="nl-cart-lbl">سلة الشراء</span>
+      ðŸ›’ <span id="nl-cart-lbl">Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡</span>
       <span class="badge hidden" id="cart-badge">0</span>
     </button>
-    <button class="nl-btn" onclick="toast('i', t('comingSoon'))" id="nl-notes">ملازم</button>
+    <button class="nl-btn" onclick="toast('i', t('comingSoon'))" id="nl-notes">Ù…Ù„Ø§Ø²Ù…</button>
     <div class="drop-wrap" id="contactDrop">
-      <button class="nl-btn" onclick="toggleContact(event)" id="nl-contact">تواصل ▾</button>
+      <button class="nl-btn" onclick="toggleContact(event)" id="nl-contact">ØªÙˆØ§ØµÙ„ â–¾</button>
       <div class="drop-menu">
         <button class="drop-item" onclick="openWhatsApp()">
           <div class="drop-ico ico-wa">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
           </div>
-          <span id="drop-wa">واتساب</span>
+          <span id="drop-wa">ÙˆØ§ØªØ³Ø§Ø¨</span>
         </button>
         <button class="drop-item" onclick="openMail()">
-          <div class="drop-ico ico-em">📧</div>
-          <span id="drop-email">البريد الإلكتروني</span>
+          <div class="drop-ico ico-em">ðŸ“§</div>
+          <span id="drop-email">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ</span>
         </button>
       </div>
     </div>
@@ -736,17 +747,17 @@ img{display:block}
 
   <div class="nav-end">
     <button class="bell-btn" onclick="openNotifications()">
-      🔔 <span class="badge hidden" id="bell-ct">0</span>
+      ðŸ”” <span class="badge hidden" id="bell-ct">0</span>
     </button>
     <div class="ctrl-pill">
-      <button class="ctrl-side on" id="n-dark" onclick="setTheme('dark')">🌙</button>
-      <button class="ctrl-side" id="n-light" onclick="setTheme('light')">☀️</button>
+      <button class="ctrl-side on" id="n-dark" onclick="setTheme('dark')">ðŸŒ™</button>
+      <button class="ctrl-side" id="n-light" onclick="setTheme('light')">â˜€ï¸</button>
     </div>
     <div class="lang-pill">
-      <button class="lang-btn on" id="n-ar" onclick="setLang('ar')">عربي</button>
+      <button class="lang-btn on" id="n-ar" onclick="setLang('ar')">Ø¹Ø±Ø¨ÙŠ</button>
       <button class="lang-btn" id="n-en" onclick="setLang('en')">EN</button>
     </div>
-    <div class="nav-av" id="navAv" onclick="goPage('profile')">ك</div>
+    <div class="nav-av" id="navAv" onclick="goPage('profile')">Ùƒ</div>
   </div>
 </nav>
 
@@ -760,29 +771,29 @@ img{display:block}
   <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 </button>
 
-<!-- ══════════════ PAGES ══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• PAGES â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="pw">
 
   <!-- BROWSE -->
   <div class="pg on" id="pg-browse">
     <!-- Hero bar -->
     <div class="hero-bar">
-      <div class="h-av" id="hAv">؟</div>
+      <div class="h-av" id="hAv">ØŸ</div>
       <div>
         <div class="h-name" id="hNm">...</div>
         <div class="h-grade" id="hGd">...</div>
       </div>
       <div class="h-stats">
-        <div class="h-stat"><div class="n" id="st-unlocked">0</div><div class="l" id="st-unlocked-lbl">حصص مفتوحة</div></div>
-        <div class="h-stat"><div class="n" id="st-cart">0</div><div class="l" id="st-cart-lbl">في السلة</div></div>
+        <div class="h-stat"><div class="n" id="st-unlocked">0</div><div class="l" id="st-unlocked-lbl">Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©</div></div>
+        <div class="h-stat"><div class="n" id="st-cart">0</div><div class="l" id="st-cart-lbl">ÙÙŠ Ø§Ù„Ø³Ù„Ø©</div></div>
       </div>
     </div>
 
     <!-- Subjects -->
     <div id="s-sub">
       <div class="sec-hero">
-        <div class="sec-title" id="sub-title">📚 اختار المادة</div>
-        <div class="sec-sub" id="sub-sub">اختار المادة اللي عايز تذاكرها</div>
+        <div class="sec-title" id="sub-title">ðŸ“š Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø©</div>
+        <div class="sec-sub" id="sub-sub">Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø© Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡Ø§</div>
       </div>
       <div class="grid-3" id="sub-grid">
         <div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>
@@ -792,8 +803,8 @@ img{display:block}
     <!-- Teachers -->
     <div id="s-tch" class="hidden">
       <div class="sec-hero">
-        <div class="sec-title" id="tch-title">👨‍🏫</div>
-        <div class="sec-sub" id="tch-sub">اختار المدرس</div>
+        <div class="sec-title" id="tch-title">ðŸ‘¨â€ðŸ«</div>
+        <div class="sec-sub" id="tch-sub">Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø¯Ø±Ø³</div>
       </div>
       <div class="grid-3" id="tch-grid"></div>
     </div>
@@ -801,8 +812,8 @@ img{display:block}
     <!-- Chapters -->
     <div id="s-ch" class="hidden">
       <div class="sec-hero">
-        <div class="sec-title" id="ch-title">📖 اختار الشابتر</div>
-        <div class="sec-sub" id="ch-sub">اختار الفصل اللي عايز تذاكره</div>
+        <div class="sec-title" id="ch-title">ðŸ“– Ø§Ø®ØªØ§Ø± Ø§Ù„Ø´Ø§Ø¨ØªØ±</div>
+        <div class="sec-sub" id="ch-sub">Ø§Ø®ØªØ§Ø± Ø§Ù„ÙØµÙ„ Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡</div>
       </div>
       <div class="grid-4" id="ch-grid"></div>
     </div>
@@ -810,7 +821,7 @@ img{display:block}
     <!-- Lessons -->
     <div id="s-ls" class="hidden">
       <div class="sec-hero">
-        <div class="sec-title" id="ls-title">🎬</div>
+        <div class="sec-title" id="ls-title">ðŸŽ¬</div>
         <div class="sec-sub" id="ls-sub"></div>
       </div>
       <div class="ls-grid" id="ls-grid"></div>
@@ -820,8 +831,8 @@ img{display:block}
   <!-- MY LESSONS -->
   <div class="pg" id="pg-mylessons">
     <div class="sec-hero">
-      <div class="sec-title" id="my-title">📚 حصصي المفتوحة</div>
-      <div class="sec-sub" id="my-sub">الحصص اللي فتحتها بالكود</div>
+      <div class="sec-title" id="my-title">ðŸ“š Ø­ØµØµÙŠ Ø§Ù„Ù…ÙØªÙˆØ­Ø©</div>
+      <div class="sec-sub" id="my-sub">Ø§Ù„Ø­ØµØµ Ø§Ù„Ù„ÙŠ ÙØªØ­ØªÙ‡Ø§ Ø¨Ø§Ù„ÙƒÙˆØ¯</div>
     </div>
     <div class="my-grid" id="my-list">
       <div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>
@@ -831,8 +842,8 @@ img{display:block}
   <!-- CART -->
   <div class="pg" id="pg-cart">
     <div class="sec-hero">
-      <div class="sec-title" id="cart-title">🛒 سلة الشراء</div>
-      <div class="sec-sub" id="cart-sub">ادخل كود كل حصة عشان تفتحها</div>
+      <div class="sec-title" id="cart-title">ðŸ›’ Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡</div>
+      <div class="sec-sub" id="cart-sub">Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ ÙƒÙ„ Ø­ØµØ© Ø¹Ø´Ø§Ù† ØªÙØªØ­Ù‡Ø§</div>
     </div>
     <div id="cart-content"></div>
   </div>
@@ -840,30 +851,30 @@ img{display:block}
   <!-- PROFILE -->
   <div class="pg" id="pg-profile">
     <div class="sec-hero">
-      <div class="sec-title" id="prof-title">👤 حسابي</div>
+      <div class="sec-title" id="prof-title">ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ</div>
     </div>
     <div class="prof-wrap">
       <div class="prof-card">
-        <div class="prof-av" id="pr-av">؟</div>
+        <div class="prof-av" id="pr-av">ØŸ</div>
         <div class="prof-name" id="pr-nm">...</div>
         <div class="prof-email" id="pr-em">...</div>
         <div class="prof-rows">
-          <div class="prof-row"><span class="pr-key" id="prow-grade">الصف</span><span class="pr-val" id="pr-gd">—</span></div>
-          <div class="prof-row"><span class="pr-key" id="prow-phone">الموبايل</span><span class="pr-val" id="pr-ph" dir="ltr">—</span></div>
-          <div class="prof-row"><span class="pr-key" id="prow-unlocked">حصص مفتوحة</span><span class="pr-val" id="pr-ch">—</span></div>
+          <div class="prof-row"><span class="pr-key" id="prow-grade">Ø§Ù„ØµÙ</span><span class="pr-val" id="pr-gd">â€”</span></div>
+          <div class="prof-row"><span class="pr-key" id="prow-phone">Ø§Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„</span><span class="pr-val" id="pr-ph" dir="ltr">â€”</span></div>
+          <div class="prof-row"><span class="pr-key" id="prow-unlocked">Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©</span><span class="pr-val" id="pr-ch">â€”</span></div>
         </div>
-        <button class="btn btn-glass" style="width:100%;justify-content:center;margin-top:12px" onclick="openEdit()">✏️ <span id="edit-btn-lbl">تعديل البيانات</span></button>
-        <button class="btn btn-danger" style="width:100%;justify-content:center;margin-top:7px" onclick="doLogout()" id="logout-btn">🚪 تسجيل الخروج</button>
+        <button class="btn btn-glass" style="width:100%;justify-content:center;margin-top:12px" onclick="openEdit()">âœï¸ <span id="edit-btn-lbl">ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª</span></button>
+        <button class="btn btn-danger" style="width:100%;justify-content:center;margin-top:7px" onclick="doLogout()" id="logout-btn">ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬</button>
       </div>
       <div class="enr-panel">
-        <div style="font-weight:900;font-size:.95rem;margin-bottom:14px" id="enr-title">🔑 الحصص المفتوحة</div>
+        <div style="font-weight:900;font-size:.95rem;margin-bottom:14px" id="enr-title">ðŸ”‘ Ø§Ù„Ø­ØµØµ Ø§Ù„Ù…ÙØªÙˆØ­Ø©</div>
         <div id="pr-enrolled"><div class="loading-st"><div class="spin"></div></div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ FOOTER ══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <footer class="footer" id="siteFooter" style="display:none">
   <div class="footer-inner">
     <div>
@@ -871,7 +882,7 @@ img{display:block}
         <div class="f-mark">KW</div>
         <span class="f-name">kala<em>wy</em></span>
       </div>
-      <p class="f-desc" id="f-desc">منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً.</p>
+      <p class="f-desc" id="f-desc">Ù…Ù†ØµØ© ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ù…ØµÙ…Ù…Ø© Ù„ØªØ¬Ø¹Ù„ Ø§Ù„Ø¯Ø±Ø§Ø³Ø© Ø£Ø³Ù‡Ù„ ÙˆØ£ÙƒØ«Ø± ØªÙ†Ø¸ÙŠÙ…Ø§Ù‹.</p>
       <div class="f-socials">
         <button class="f-soc" onclick="openWhatsApp()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
@@ -885,17 +896,17 @@ img{display:block}
       </div>
     </div>
     <div>
-      <div class="f-col-title" id="f-links-title">روابط سريعة</div>
+      <div class="f-col-title" id="f-links-title">Ø±ÙˆØ§Ø¨Ø· Ø³Ø±ÙŠØ¹Ø©</div>
       <div class="f-links">
-        <a class="f-link" onclick="resetAll()" id="f-home">🏠 الرئيسية</a>
-        <a class="f-link" onclick="goPage('mylessons')" id="f-my">📚 حصصي</a>
-        <a class="f-link" onclick="goPage('cart')" id="f-cart">🛒 السلة</a>
-        <a class="f-link" onclick="goPage('profile')" id="f-prof">👤 حسابي</a>
-        <a class="f-link" onclick="doLogout()" id="f-logout">🚪 تسجيل الخروج</a>
+        <a class="f-link" onclick="resetAll()" id="f-home">ðŸ  Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</a>
+        <a class="f-link" onclick="goPage('mylessons')" id="f-my">ðŸ“š Ø­ØµØµÙŠ</a>
+        <a class="f-link" onclick="goPage('cart')" id="f-cart">ðŸ›’ Ø§Ù„Ø³Ù„Ø©</a>
+        <a class="f-link" onclick="goPage('profile')" id="f-prof">ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ</a>
+        <a class="f-link" onclick="doLogout()" id="f-logout">ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬</a>
       </div>
     </div>
     <div>
-      <div class="f-col-title" id="f-contact-title">تواصل معنا</div>
+      <div class="f-col-title" id="f-contact-title">ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§</div>
       <div class="f-con-item">
         <div class="f-con-ico" style="background:linear-gradient(135deg,#25d366,#128c7e)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
@@ -917,13 +928,13 @@ img{display:block}
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="f-copy" id="f-copy">© 2025 kalawy — جميع الحقوق محفوظة</div>
-    <div class="f-made" id="f-made">صُنع بـ ❤️ للطلاب</div>
+    <div class="f-copy" id="f-copy">Â© 2025 kalawy â€” Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©</div>
+    <div class="f-made" id="f-made">ØµÙÙ†Ø¹ Ø¨Ù€ â¤ï¸ Ù„Ù„Ø·Ù„Ø§Ø¨</div>
   </div>
 </footer>
 
 <script>
-// ── CONFIG ────────────────────────────────────
+// â”€â”€ CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SB_URL  = "https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON, {
@@ -941,117 +952,117 @@ let ME = null, LANG = 'ar', THEME = 'light';
 let _unlockedLessons = new Set(), _cart = [], _followedTeachers = new Set(), _notifications = [];
 let _sel = { sub:null, tch:null, ch:null };
 
-const GRADES_AR = {1:'أولى ثانوي', 2:'تانية ثانوي', 3:'ثالثة ثانوي'};
+const GRADES_AR = {1:'Ø£ÙˆÙ„Ù‰ Ø«Ø§Ù†ÙˆÙŠ', 2:'ØªØ§Ù†ÙŠØ© Ø«Ø§Ù†ÙˆÙŠ', 3:'Ø«Ø§Ù„Ø«Ø© Ø«Ø§Ù†ÙˆÙŠ'};
 const GRADES_EN = {1:'Grade 10', 2:'Grade 11', 3:'Grade 12'};
 function gr(id){ return (LANG==='ar' ? GRADES_AR : GRADES_EN)[id] || id; }
 
-const EMOJIS = {'الرياضيات':'📐','الفيزياء':'🔭','الكيمياء':'🧪','الأحياء':'🔬','اللغة العربية':'📖','اللغة الإنجليزية':'🌍'};
+const EMOJIS = {'Ø§Ù„Ø±ÙŠØ§Ø¶ÙŠØ§Øª':'ðŸ“','Ø§Ù„ÙÙŠØ²ÙŠØ§Ø¡':'ðŸ”­','Ø§Ù„ÙƒÙŠÙ…ÙŠØ§Ø¡':'ðŸ§ª','Ø§Ù„Ø£Ø­ÙŠØ§Ø¡':'ðŸ”¬','Ø§Ù„Ù„ØºØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©':'ðŸ“–','Ø§Ù„Ù„ØºØ© Ø§Ù„Ø¥Ù†Ø¬Ù„ÙŠØ²ÙŠØ©':'ðŸŒ'};
 const PALETTES_DARK = ['linear-gradient(135deg,#1a1040,#0d0820)','linear-gradient(135deg,#1a0a35,#0d0520)','linear-gradient(135deg,#200a40,#10051f)','linear-gradient(135deg,#0a1040,#050820)','linear-gradient(135deg,#25104a,#120528)','linear-gradient(135deg,#10082a,#080414)'];
 const PALETTES_LIGHT = ['linear-gradient(135deg,#e8d8ff,#d4c0f8)','linear-gradient(135deg,#ddd0ff,#c8b4f8)','linear-gradient(135deg,#f0e4ff,#ddd0ff)','linear-gradient(135deg,#e0d0ff,#cec0f8)','linear-gradient(135deg,#ece0ff,#d8c8ff)','linear-gradient(135deg,#d8ccff,#c8bcf0)'];
 
-// ── I18N ──────────────────────────────────────
+// â”€â”€ I18N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const S = {
   ar:{
     // nav
-    home:'الرئيسية', myLessons:'📚 حصصي', cartNav:'سلة الشراء',
-    notes:'ملازم', contact:'تواصل ▾', wa:'واتساب', email:'البريد الإلكتروني',
-    comingSoon:'قريباً ✨',
+    home:'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©', myLessons:'ðŸ“š Ø­ØµØµÙŠ', cartNav:'Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡',
+    notes:'Ù…Ù„Ø§Ø²Ù…', contact:'ØªÙˆØ§ØµÙ„ â–¾', wa:'ÙˆØ§ØªØ³Ø§Ø¨', email:'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ',
+    comingSoon:'Ù‚Ø±ÙŠØ¨Ø§Ù‹ âœ¨',
     // browse
-    chooseSubject:'📚 اختار المادة', chooseSubjectSub:'اختار المادة اللي عايز تذاكرها',
-    chooseTeacher:'اختار المدرس', chooseChapter:'📖 اختار الشابتر',
-    chooseChapterSub:'اختار الفصل اللي عايز تذاكره',
-    certifiedTeacher:'مدرس معتمد', follow:'+ تابع', following:'✓ متابع',
-    noSubjects:'لا توجد مواد', noTeachers:'لا يوجد مدرسين', noChapters:'لا توجد شابترات',
-    noLessons:'لا توجد حصص', lecture:'محاضرة', lectures:'محاضرات',
-    lesson:'الحصة', unavailable:'غير متاحة', unlocked:'مفتوحة — ادخل',
-    inCart:'اكمل الدفع', addCart:'أضف للسلة', followedMsg:'تمت متابعة',
-    unfollowedMsg:'إلغاء متابعة',
+    chooseSubject:'ðŸ“š Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø©', chooseSubjectSub:'Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø§Ø¯Ø© Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡Ø§',
+    chooseTeacher:'Ø§Ø®ØªØ§Ø± Ø§Ù„Ù…Ø¯Ø±Ø³', chooseChapter:'ðŸ“– Ø§Ø®ØªØ§Ø± Ø§Ù„Ø´Ø§Ø¨ØªØ±',
+    chooseChapterSub:'Ø§Ø®ØªØ§Ø± Ø§Ù„ÙØµÙ„ Ø§Ù„Ù„ÙŠ Ø¹Ø§ÙŠØ² ØªØ°Ø§ÙƒØ±Ù‡',
+    certifiedTeacher:'Ù…Ø¯Ø±Ø³ Ù…Ø¹ØªÙ…Ø¯', follow:'+ ØªØ§Ø¨Ø¹', following:'âœ“ Ù…ØªØ§Ø¨Ø¹',
+    noSubjects:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…ÙˆØ§Ø¯', noTeachers:'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø¯Ø±Ø³ÙŠÙ†', noChapters:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø´Ø§Ø¨ØªØ±Ø§Øª',
+    noLessons:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø­ØµØµ', lecture:'Ù…Ø­Ø§Ø¶Ø±Ø©', lectures:'Ù…Ø­Ø§Ø¶Ø±Ø§Øª',
+    lesson:'Ø§Ù„Ø­ØµØ©', unavailable:'ØºÙŠØ± Ù…ØªØ§Ø­Ø©', unlocked:'Ù…ÙØªÙˆØ­Ø© â€” Ø§Ø¯Ø®Ù„',
+    inCart:'Ø§ÙƒÙ…Ù„ Ø§Ù„Ø¯ÙØ¹', addCart:'Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©', followedMsg:'ØªÙ…Øª Ù…ØªØ§Ø¨Ø¹Ø©',
+    unfollowedMsg:'Ø¥Ù„ØºØ§Ø¡ Ù…ØªØ§Ø¨Ø¹Ø©',
     // stats
-    unlockedStat:'حصص مفتوحة', inCartStat:'في السلة',
+    unlockedStat:'Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©', inCartStat:'ÙÙŠ Ø§Ù„Ø³Ù„Ø©',
     // my lessons
-    myTitle:'📚 حصصي المفتوحة', mySub:'الحصص اللي فتحتها بالكود',
-    noMyLessons:'لم تفتح أي حصة بعد', unlockChip:'✅ مفتوحة',
+    myTitle:'ðŸ“š Ø­ØµØµÙŠ Ø§Ù„Ù…ÙØªÙˆØ­Ø©', mySub:'Ø§Ù„Ø­ØµØµ Ø§Ù„Ù„ÙŠ ÙØªØ­ØªÙ‡Ø§ Ø¨Ø§Ù„ÙƒÙˆØ¯',
+    noMyLessons:'Ù„Ù… ØªÙØªØ­ Ø£ÙŠ Ø­ØµØ© Ø¨Ø¹Ø¯', unlockChip:'âœ… Ù…ÙØªÙˆØ­Ø©',
     // cart
-    cartTitle:'🛒 سلة الشراء', cartSub:'ادخل كود كل حصة عشان تفتحها',
-    cartEmpty:'السلة فارغة — أضف حصص من التصفح',
-    unlock:'فتح الحصص بالكود', lessonsCount:'عدد الحصص', method:'طريقة الفتح',
-    codePerLesson:'كود لكل حصة', codeHint:'📋 ادخل كود الحصة اللي أخدته من المدرس أو الأدمن',
-    codePh:'كود الحصة...', remove:'حذف', removedCart:'تم الحذف من السلة',
-    alreadyUnlocked:'الحصة مفتوحة بالفعل ✅', alreadyInCart:'موجودة في السلة',
-    addedCart:'أُضيف للسلة', lessonUnlocked:'🎉 تم فتح الحصة',
-    invalidCode:'الكود غلط أو غير موجود', wrongLesson:'الكود لحصة تانية',
-    usedCode:'الكود استخدم قبل كده', enterCode:'ادخل كود الحصة',
-    goToCart:'🛒 اكمل الدفع',
+    cartTitle:'ðŸ›’ Ø³Ù„Ø© Ø§Ù„Ø´Ø±Ø§Ø¡', cartSub:'Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ ÙƒÙ„ Ø­ØµØ© Ø¹Ø´Ø§Ù† ØªÙØªØ­Ù‡Ø§',
+    cartEmpty:'Ø§Ù„Ø³Ù„Ø© ÙØ§Ø±ØºØ© â€” Ø£Ø¶Ù Ø­ØµØµ Ù…Ù† Ø§Ù„ØªØµÙØ­',
+    unlock:'ÙØªØ­ Ø§Ù„Ø­ØµØµ Ø¨Ø§Ù„ÙƒÙˆØ¯', lessonsCount:'Ø¹Ø¯Ø¯ Ø§Ù„Ø­ØµØµ', method:'Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„ÙØªØ­',
+    codePerLesson:'ÙƒÙˆØ¯ Ù„ÙƒÙ„ Ø­ØµØ©', codeHint:'ðŸ“‹ Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ Ø§Ù„Ø­ØµØ© Ø§Ù„Ù„ÙŠ Ø£Ø®Ø¯ØªÙ‡ Ù…Ù† Ø§Ù„Ù…Ø¯Ø±Ø³ Ø£Ùˆ Ø§Ù„Ø£Ø¯Ù…Ù†',
+    codePh:'ÙƒÙˆØ¯ Ø§Ù„Ø­ØµØ©...', remove:'Ø­Ø°Ù', removedCart:'ØªÙ… Ø§Ù„Ø­Ø°Ù Ù…Ù† Ø§Ù„Ø³Ù„Ø©',
+    alreadyUnlocked:'Ø§Ù„Ø­ØµØ© Ù…ÙØªÙˆØ­Ø© Ø¨Ø§Ù„ÙØ¹Ù„ âœ…', alreadyInCart:'Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ø³Ù„Ø©',
+    addedCart:'Ø£ÙØ¶ÙŠÙ Ù„Ù„Ø³Ù„Ø©', lessonUnlocked:'ðŸŽ‰ ØªÙ… ÙØªØ­ Ø§Ù„Ø­ØµØ©',
+    invalidCode:'Ø§Ù„ÙƒÙˆØ¯ ØºÙ„Ø· Ø£Ùˆ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯', wrongLesson:'Ø§Ù„ÙƒÙˆØ¯ Ù„Ø­ØµØ© ØªØ§Ù†ÙŠØ©',
+    usedCode:'Ø§Ù„ÙƒÙˆØ¯ Ø§Ø³ØªØ®Ø¯Ù… Ù‚Ø¨Ù„ ÙƒØ¯Ù‡', enterCode:'Ø§Ø¯Ø®Ù„ ÙƒÙˆØ¯ Ø§Ù„Ø­ØµØ©',
+    goToCart:'ðŸ›’ Ø§ÙƒÙ…Ù„ Ø§Ù„Ø¯ÙØ¹',
     // profile
-    profTitle:'👤 حسابي', grade:'الصف', phone:'الموبايل',
-    unlockedLessons:'حصص مفتوحة', editProfile:'✏️ تعديل البيانات',
-    logout:'🚪 تسجيل الخروج', editTitle:'✏️ تعديل البيانات',
-    name:'الاسم', saveProfile:'💾 حفظ', cancel:'إلغاء',
-    savedOk:'تم الحفظ بنجاح ✅', enterName:'ادخل اسمك',
-    myEnrolled:'🔑 الحصص المفتوحة', noEnrolled:'لا توجد حصص مفتوحة',
-    openLesson:'فتح →',
+    profTitle:'ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ', grade:'Ø§Ù„ØµÙ', phone:'Ø§Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„',
+    unlockedLessons:'Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©', editProfile:'âœï¸ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª',
+    logout:'ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬', editTitle:'âœï¸ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª',
+    name:'Ø§Ù„Ø§Ø³Ù…', saveProfile:'ðŸ’¾ Ø­ÙØ¸', cancel:'Ø¥Ù„ØºØ§Ø¡',
+    savedOk:'ØªÙ… Ø§Ù„Ø­ÙØ¸ Ø¨Ù†Ø¬Ø§Ø­ âœ…', enterName:'Ø§Ø¯Ø®Ù„ Ø§Ø³Ù…Ùƒ',
+    myEnrolled:'ðŸ”‘ Ø§Ù„Ø­ØµØµ Ø§Ù„Ù…ÙØªÙˆØ­Ø©', noEnrolled:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø­ØµØµ Ù…ÙØªÙˆØ­Ø©',
+    openLesson:'ÙØªØ­ â†’',
     // notifications
-    notifTitle:'🔔 الإشعارات', notifSub:'إشعارات المدرسين اللي عامل لهم Follow',
-    noNotif:'لا توجد إشعارات', close:'إغلاق',
-    notifTypes:{lesson:'حصة',exam:'امتحان',post:'منشور',homework:'واجب',pdf:'PDF',video:'فيديو'},
+    notifTitle:'ðŸ”” Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§Øª', notifSub:'Ø¥Ø´Ø¹Ø§Ø±Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³ÙŠÙ† Ø§Ù„Ù„ÙŠ Ø¹Ø§Ù…Ù„ Ù„Ù‡Ù… Follow',
+    noNotif:'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¥Ø´Ø¹Ø§Ø±Ø§Øª', close:'Ø¥ØºÙ„Ø§Ù‚',
+    notifTypes:{lesson:'Ø­ØµØ©',exam:'Ø§Ù…ØªØ­Ø§Ù†',post:'Ù…Ù†Ø´ÙˆØ±',homework:'ÙˆØ§Ø¬Ø¨',pdf:'PDF',video:'ÙÙŠØ¯ÙŠÙˆ'},
     // breadcrumb
-    bcHome:'الرئيسية', bcBrowse:'محاضرات',
+    bcHome:'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©', bcBrowse:'Ù…Ø­Ø§Ø¶Ø±Ø§Øª',
     // footer
-    fDesc:'منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً.',
-    fLinks:'روابط سريعة', fContact:'تواصل معنا',
-    fHome:'🏠 الرئيسية', fMy:'📚 حصصي', fCart:'🛒 السلة',
-    fProf:'👤 حسابي', fLogout:'🚪 تسجيل الخروج',
-    fCopy:'© 2025 kalawy — جميع الحقوق محفوظة',
-    fMade:'صُنع بـ ❤️ للطلاب',
+    fDesc:'Ù…Ù†ØµØ© ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ù…ØµÙ…Ù…Ø© Ù„ØªØ¬Ø¹Ù„ Ø§Ù„Ø¯Ø±Ø§Ø³Ø© Ø£Ø³Ù‡Ù„ ÙˆØ£ÙƒØ«Ø± ØªÙ†Ø¸ÙŠÙ…Ø§Ù‹.',
+    fLinks:'Ø±ÙˆØ§Ø¨Ø· Ø³Ø±ÙŠØ¹Ø©', fContact:'ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§',
+    fHome:'ðŸ  Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©', fMy:'ðŸ“š Ø­ØµØµÙŠ', fCart:'ðŸ›’ Ø§Ù„Ø³Ù„Ø©',
+    fProf:'ðŸ‘¤ Ø­Ø³Ø§Ø¨ÙŠ', fLogout:'ðŸšª ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬',
+    fCopy:'Â© 2025 kalawy â€” Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©',
+    fMade:'ØµÙÙ†Ø¹ Ø¨Ù€ â¤ï¸ Ù„Ù„Ø·Ù„Ø§Ø¨',
   },
   en:{
-    home:'Home', myLessons:'📚 My Lessons', cartNav:'Cart',
-    notes:'Notes', contact:'Contact ▾', wa:'WhatsApp', email:'Email',
-    comingSoon:'Coming Soon ✨',
-    chooseSubject:'📚 Choose a Subject', chooseSubjectSub:'Select the subject you want to study',
-    chooseTeacher:'Choose your teacher', chooseChapter:'📖 Choose a Chapter',
+    home:'Home', myLessons:'ðŸ“š My Lessons', cartNav:'Cart',
+    notes:'Notes', contact:'Contact â–¾', wa:'WhatsApp', email:'Email',
+    comingSoon:'Coming Soon âœ¨',
+    chooseSubject:'ðŸ“š Choose a Subject', chooseSubjectSub:'Select the subject you want to study',
+    chooseTeacher:'Choose your teacher', chooseChapter:'ðŸ“– Choose a Chapter',
     chooseChapterSub:'Select the chapter you want to study',
-    certifiedTeacher:'Certified Teacher', follow:'+ Follow', following:'✓ Following',
+    certifiedTeacher:'Certified Teacher', follow:'+ Follow', following:'âœ“ Following',
     noSubjects:'No subjects found', noTeachers:'No teachers found', noChapters:'No chapters found',
     noLessons:'No lessons found', lecture:'lecture', lectures:'lectures',
-    lesson:'Lesson', unavailable:'Unavailable', unlocked:'Unlocked — Enter',
+    lesson:'Lesson', unavailable:'Unavailable', unlocked:'Unlocked â€” Enter',
     inCart:'Go to Cart', addCart:'Add to Cart', followedMsg:'Following',
     unfollowedMsg:'Unfollowed',
     unlockedStat:'Unlocked', inCartStat:'In Cart',
-    myTitle:'📚 My Unlocked Lessons', mySub:'Lessons unlocked with your code',
-    noMyLessons:'No lessons unlocked yet', unlockChip:'✅ Unlocked',
-    cartTitle:'🛒 Cart', cartSub:'Enter the code for each lesson to unlock it',
-    cartEmpty:'Cart is empty — browse lessons to add',
+    myTitle:'ðŸ“š My Unlocked Lessons', mySub:'Lessons unlocked with your code',
+    noMyLessons:'No lessons unlocked yet', unlockChip:'âœ… Unlocked',
+    cartTitle:'ðŸ›’ Cart', cartSub:'Enter the code for each lesson to unlock it',
+    cartEmpty:'Cart is empty â€” browse lessons to add',
     unlock:'Unlock Lessons by Code', lessonsCount:'Lessons', method:'Method',
-    codePerLesson:'Code per lesson', codeHint:'📋 Enter the code from your teacher or admin',
+    codePerLesson:'Code per lesson', codeHint:'ðŸ“‹ Enter the code from your teacher or admin',
     codePh:'Lesson code...', remove:'Remove', removedCart:'Removed from cart',
-    alreadyUnlocked:'Already unlocked ✅', alreadyInCart:'Already in cart',
-    addedCart:'Added to cart', lessonUnlocked:'🎉 Lesson unlocked',
+    alreadyUnlocked:'Already unlocked âœ…', alreadyInCart:'Already in cart',
+    addedCart:'Added to cart', lessonUnlocked:'ðŸŽ‰ Lesson unlocked',
     invalidCode:'Invalid or not found code', wrongLesson:'Code belongs to another lesson',
     usedCode:'Code already used', enterCode:'Enter lesson code',
-    goToCart:'🛒 Go to Cart',
-    profTitle:'👤 My Account', grade:'Grade', phone:'Phone',
-    unlockedLessons:'Unlocked Lessons', editProfile:'✏️ Edit Profile',
-    logout:'🚪 Sign Out', editTitle:'✏️ Edit Profile',
-    name:'Name', saveProfile:'💾 Save', cancel:'Cancel',
-    savedOk:'Saved successfully ✅', enterName:'Enter your name',
-    myEnrolled:'🔑 Unlocked Lessons', noEnrolled:'No lessons unlocked',
-    openLesson:'Open →',
-    notifTitle:'🔔 Notifications', notifSub:'Notifications from teachers you follow',
+    goToCart:'ðŸ›’ Go to Cart',
+    profTitle:'ðŸ‘¤ My Account', grade:'Grade', phone:'Phone',
+    unlockedLessons:'Unlocked Lessons', editProfile:'âœï¸ Edit Profile',
+    logout:'ðŸšª Sign Out', editTitle:'âœï¸ Edit Profile',
+    name:'Name', saveProfile:'ðŸ’¾ Save', cancel:'Cancel',
+    savedOk:'Saved successfully âœ…', enterName:'Enter your name',
+    myEnrolled:'ðŸ”‘ Unlocked Lessons', noEnrolled:'No lessons unlocked',
+    openLesson:'Open â†’',
+    notifTitle:'ðŸ”” Notifications', notifSub:'Notifications from teachers you follow',
     noNotif:'No notifications yet', close:'Close',
     notifTypes:{lesson:'Lesson',exam:'Exam',post:'Post',homework:'Homework',pdf:'PDF',video:'Video'},
     bcHome:'Home', bcBrowse:'Lessons',
     fDesc:'An educational platform designed to make studying easier and more organized.',
     fLinks:'Quick Links', fContact:'Contact Us',
-    fHome:'🏠 Home', fMy:'📚 My Lessons', fCart:'🛒 Cart',
-    fProf:'👤 Account', fLogout:'🚪 Sign Out',
-    fCopy:'© 2025 kalawy — All rights reserved',
-    fMade:'Made with ❤️ for students',
+    fHome:'ðŸ  Home', fMy:'ðŸ“š My Lessons', fCart:'ðŸ›’ Cart',
+    fProf:'ðŸ‘¤ Account', fLogout:'ðŸšª Sign Out',
+    fCopy:'Â© 2025 kalawy â€” All rights reserved',
+    fMade:'Made with â¤ï¸ for students',
   }
 };
 function t(k){ return S[LANG]?.[k] ?? S.ar[k] ?? k; }
 
-// ── APPLY I18N ────────────────────────────────
+// â”€â”€ APPLY I18N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function applyI18n(){
   // Nav links
   const set = (id, k) => { const el = document.getElementById(id); if(el) el.textContent = t(k); };
@@ -1085,10 +1096,10 @@ function applyI18n(){
   set('f-copy', 'fCopy'); set('f-made', 'fMade');
   // Profile edit placeholder
   const edNm = document.getElementById('ed-nm');
-  if(edNm) edNm.placeholder = LANG==='ar' ? 'اسمك الكامل' : 'Full name';
+  if(edNm) edNm.placeholder = LANG==='ar' ? 'Ø§Ø³Ù…Ùƒ Ø§Ù„ÙƒØ§Ù…Ù„' : 'Full name';
 }
 
-// ── THEME ─────────────────────────────────────
+// â”€â”€ THEME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function setTheme(th){
   THEME = th;
   document.documentElement.setAttribute('data-theme', th);
@@ -1099,7 +1110,7 @@ function setTheme(th){
   });
 }
 
-// ── LANG ──────────────────────────────────────
+// â”€â”€ LANG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function setLang(lg){
   LANG = lg;
   document.documentElement.setAttribute('lang', lg);
@@ -1124,14 +1135,14 @@ function setLang(lg){
   else if(cur === 'profile'){ updateUI(); loadProfileEnrolled(); }
 }
 
-// ── HELPERS ───────────────────────────────────
+// â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function toast(type, msg, dur=4000){
-  const icons = {s:'✅', e:'❌', w:'⚠️', i:'ℹ️'};
+  const icons = {s:'âœ…', e:'âŒ', w:'âš ï¸', i:'â„¹ï¸'};
   const cls   = {s:'t-ok', e:'t-err', w:'t-warn', i:'t-info'};
   const wrap  = document.getElementById('toasts');
   const el    = document.createElement('div');
   el.className = `toast ${cls[type]||''}`;
-  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  el.innerHTML = `<span>${icons[type]||'â„¹ï¸'}</span><span>${msg}</span>`;
   wrap.appendChild(el);
   setTimeout(()=>{ el.classList.add('t-exit'); setTimeout(()=>el.remove(),220); }, dur);
 }
@@ -1152,7 +1163,7 @@ function esc(v){ return String(v??'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'
 function se(id, v){ const el=document.getElementById(id); if(el) el.textContent=v; }
 function pal(i){ return (THEME==='dark' ? PALETTES_DARK : PALETTES_LIGHT)[i % 6]; }
 
-// ── AUTH ──────────────────────────────────────
+// â”€â”€ AUTH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const LOGIN_URL = '/login';
 const STUDENT_DASHBOARD_URL = '/dashboard';
 const LOGIN_MARK = 'kw-login-ok';
@@ -1214,7 +1225,7 @@ function pickName(user, ...rows){
     const v = r?.full_name ?? r?.fullname ?? r?.name ?? r?.student_name ?? r?.display_name;
     if(v && String(v).trim()) return String(v).trim();
   }
-  return user.user_metadata?.full_name || user.user_metadata?.name || '';
+  return user.user_metadata?.full_name || user.user_metadata?.name || (user.email ? user.email.split('@')[0] : '');
 }
 
 function pickPhone(...rows){
@@ -1248,8 +1259,8 @@ async function waitForAuthSession(timeoutMs = 2600){
 }
 
 async function getStableSession(){
-  // Supabase أحياناً بعد refresh سريع بيرجع session=null لحظياً
-  // عشان كده بنحاول كذا مرة قبل ما نطلع المستخدم login.
+  // Supabase Ø£Ø­ÙŠØ§Ù†Ø§Ù‹ Ø¨Ø¹Ø¯ refresh Ø³Ø±ÙŠØ¹ Ø¨ÙŠØ±Ø¬Ø¹ session=null Ù„Ø­Ø¸ÙŠØ§Ù‹
+  // Ø¹Ø´Ø§Ù† ÙƒØ¯Ù‡ Ø¨Ù†Ø­Ø§ÙˆÙ„ ÙƒØ°Ø§ Ù…Ø±Ø© Ù‚Ø¨Ù„ Ù…Ø§ Ù†Ø·Ù„Ø¹ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… login.
   for(let i = 0; i < 10; i++){
     try{
       const { data:{ session }, error } = await sb.auth.getSession();
@@ -1279,14 +1290,14 @@ function showAccessDenied(role){
     wrap.innerHTML = `
       <div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px">
         <div style="max-width:440px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)">
-          <div style="font-size:3rem;margin-bottom:12px">🚫</div>
-          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">الحساب ده مش طالب</div>
+          <div style="font-size:3rem;margin-bottom:12px">ðŸš«</div>
+          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">Ø§Ù„Ø­Ø³Ø§Ø¨ Ø¯Ù‡ Ù…Ø´ Ø·Ø§Ù„Ø¨</div>
           <div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">
-            أنت لسه عامل Login، ومش هنعمل Logout لوحدنا. افتح صفحة الحساب المناسبة أو اضغط تسجيل خروج بنفسك.
+            Ø£Ù†Øª Ù„Ø³Ù‡ Ø¹Ø§Ù…Ù„ LoginØŒ ÙˆÙ…Ø´ Ù‡Ù†Ø¹Ù…Ù„ Logout Ù„ÙˆØ­Ø¯Ù†Ø§. Ø§ÙØªØ­ ØµÙØ­Ø© Ø§Ù„Ø­Ø³Ø§Ø¨ Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø© Ø£Ùˆ Ø§Ø¶ØºØ· ØªØ³Ø¬ÙŠÙ„ Ø®Ø±ÙˆØ¬ Ø¨Ù†ÙØ³Ùƒ.
           </div>
           <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-            <button class="btn btn-primary" onclick="goUrl('/home')">الرئيسية</button>
-            <button class="btn btn-glass" onclick="doLogout()">تسجيل خروج</button>
+            <button class="btn btn-primary" onclick="goUrl('/home')">Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</button>
+            <button class="btn btn-glass" onclick="doLogout()">ØªØ³Ø¬ÙŠÙ„ Ø®Ø±ÙˆØ¬</button>
           </div>
         </div>
       </div>`;
@@ -1299,14 +1310,14 @@ function showLoginRequired(){
     wrap.innerHTML = `
       <div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px">
         <div style="max-width:420px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)">
-          <div style="font-size:3rem;margin-bottom:12px">🔐</div>
-          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">أنت لسه عامل Login</div>
+          <div style="font-size:3rem;margin-bottom:12px">ðŸ”</div>
+          <div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">Ø£Ù†Øª Ù„Ø³Ù‡ Ø¹Ø§Ù…Ù„ Login</div>
           <div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">
-            مش هنعمل Logout لوحدنا. لو حصل Refresh سريع، اضغط إعادة المحاولة أو استنى ثانية.
+            Ù…Ø´ Ù‡Ù†Ø¹Ù…Ù„ Logout Ù„ÙˆØ­Ø¯Ù†Ø§. Ù„Ùˆ Ø­ØµÙ„ Refresh Ø³Ø±ÙŠØ¹ØŒ Ø§Ø¶ØºØ· Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ø£Ùˆ Ø§Ø³ØªÙ†Ù‰ Ø«Ø§Ù†ÙŠØ©.
           </div>
           <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-            <button class="btn btn-primary" onclick="location.reload()">🔄 إعادة المحاولة</button>
-            <button class="btn btn-glass" onclick="goUrl(LOGIN_URL)">تسجيل الدخول</button>
+            <button class="btn btn-primary" onclick="location.reload()">ðŸ”„ Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©</button>
+            <button class="btn btn-glass" onclick="goUrl(LOGIN_URL)">ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„</button>
           </div>
         </div>
       </div>`;
@@ -1386,15 +1397,15 @@ async function initApp(user, cached = {}){
 }
 
 function updateUI(){
-  const name = ME.full_name || ME.email || '؟';
-  const av = (name[0] || '؟').toUpperCase();
+  const name = ME.full_name || ME.email || 'ØŸ';
+  const av = (name[0] || 'ØŸ').toUpperCase();
   ['hAv','navAv','pr-av'].forEach(id=>se(id, av));
   se('hNm', ME.full_name || ME.email);
   se('hGd', gr(ME.grade_id));
-  se('pr-nm', ME.full_name||'—');
-  se('pr-em', ME.email||'—');
+  se('pr-nm', ME.full_name||'â€”');
+  se('pr-em', ME.email||'â€”');
   se('pr-gd', gr(ME.grade_id));
-  se('pr-ph', ME.phone||'—');
+  se('pr-ph', ME.phone||'â€”');
   se('pr-ch', _unlockedLessons.size);
   se('st-unlocked', _unlockedLessons.size);
   se('st-cart', _cart.length);
@@ -1413,19 +1424,19 @@ async function loadEnrollments(){
   se('st-unlocked', _unlockedLessons.size); se('pr-ch', _unlockedLessons.size);
 }
 
-// ── CONTACT ───────────────────────────────────
+// â”€â”€ CONTACT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function toggleContact(e){
   e.stopPropagation();
   document.getElementById('contactDrop')?.classList.toggle('open');
 }
 document.addEventListener('click', ()=>document.getElementById('contactDrop')?.classList.remove('open'));
 function openWhatsApp(){
-  const m = encodeURIComponent(LANG==='ar' ? 'مرحباً، أريد التواصل مع منصة kalawy' : 'Hello, I want to contact kalawy');
+  const m = encodeURIComponent(LANG==='ar' ? 'Ù…Ø±Ø­Ø¨Ø§Ù‹ØŒ Ø£Ø±ÙŠØ¯ Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹ Ù…Ù†ØµØ© kalawy' : 'Hello, I want to contact kalawy');
   window.open(`https://wa.me/${CONTACT_WA}?text=${m}`, '_blank');
 }
 function openMail(){ window.location.href = `mailto:${CONTACT_MAIL}?subject=${encodeURIComponent('kalawy')}`; }
 
-// ── PAGE ROUTING ──────────────────────────────
+// â”€â”€ PAGE ROUTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function goPage(page){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById(`pg-${page}`)?.classList.add('on');
@@ -1434,10 +1445,10 @@ function goPage(page){
   if(page==='profile'){ updateUI(); loadProfileEnrolled(); }
 }
 
-// ── BREADCRUMB ────────────────────────────────
+// â”€â”€ BREADCRUMB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function updateBc(){
   const bc = document.getElementById('navBc'); if(!bc) return;
-  const sep = () => `<span class="bc-sep">›</span>`;
+  const sep = () => `<span class="bc-sep">â€º</span>`;
   let html = `<span class="bc-item" onclick="resetAll()">${t('bcHome')}</span>`;
   html += sep() + `<span class="bc-item">${t('bcBrowse')}</span>`;
   if(_sel.sub) html += sep() + `<span class="bc-item" onclick="resetTo('sub')">${_sel.sub.name}</span>`;
@@ -1460,7 +1471,7 @@ function resetTo(s){
 }
 function resetAll(){ _sel={sub:null,tch:null,ch:null}; showStep('sub'); goPage('browse'); }
 
-// ── FOLLOW ────────────────────────────────────
+// â”€â”€ FOLLOW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadFollows(){
   if(!ME?.id) return;
   const { data } = await sb.from('teacher_followers').select('teacher_id').eq('student_id', ME.id);
@@ -1479,13 +1490,13 @@ async function toggleFollow(teacherId, teacherName, ev){
     const { error } = await sb.from('teacher_followers').insert({ student_id:ME.id, teacher_id:teacherId });
     if(error) return toast('e', error.message);
     _followedTeachers.add(teacherId);
-    toast('s', t('followedMsg') + ' ' + (teacherName||'') + ' ✅');
+    toast('s', t('followedMsg') + ' ' + (teacherName||'') + ' âœ…');
   }
   await loadNotifications(false);
   if(_sel.sub) selSub(_sel.sub.id, _sel.sub.name, _sel.sub.grade_id);
 }
 
-// ── NOTIFICATIONS ─────────────────────────────
+// â”€â”€ NOTIFICATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadNotifications(updateList=true){
   if(!ME?.id) return;
   const { data } = await sb.from('notifications')
@@ -1502,7 +1513,7 @@ async function loadNotifications(updateList=true){
 function renderNotifications(){
   const el = document.getElementById('notifList'); if(!el) return;
   if(!_notifications.length){
-    el.innerHTML = `<div class="empty-st"><div class="empty-ico">🔕</div><div class="empty-txt">${t('noNotif')}</div></div>`;
+    el.innerHTML = `<div class="empty-st"><div class="empty-ico">ðŸ”•</div><div class="empty-txt">${t('noNotif')}</div></div>`;
     return;
   }
   const typeLabels = t('notifTypes') || {};
@@ -1510,11 +1521,11 @@ function renderNotifications(){
     const dt = n.created_at ? new Date(n.created_at).toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}) : '';
     return `<div class="notif-card">
       <div class="notif-top">
-        <div class="notif-title">${esc(n.title||'إشعار')}</div>
+        <div class="notif-title">${esc(n.title||'Ø¥Ø´Ø¹Ø§Ø±')}</div>
         <span class="notif-type-badge">${typeLabels[n.type]||n.type}</span>
       </div>
       ${n.body ? `<div class="notif-body">${esc(n.body)}</div>` : ''}
-      <div class="notif-meta">${esc(n.sender?.full_name||'kalawy')} · ${dt}</div>
+      <div class="notif-meta">${esc(n.sender?.full_name||'kalawy')} Â· ${dt}</div>
     </div>`;
   }).join('');
 }
@@ -1524,41 +1535,140 @@ async function openNotifications(){
   await loadNotifications(true);
 }
 
-// ── SUBJECTS ──────────────────────────────────
+// â”€â”€ SUBJECTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+async function ensureAuthBeforeData(maxTries = 8){
+  for(let i = 0; i < maxTries; i++){
+    try{
+      const { data:{ session } } = await sb.auth.getSession();
+      if(session?.access_token){
+        rememberLogin(session.user);
+        return session;
+      }
+    }catch(err){
+      console.warn('ensureAuthBeforeData:', err);
+    }
+    await sleep(250 + i * 120);
+  }
+  return null;
+}
+
+async function supaSelectWithAuthRetry(label, queryBuilder, tries = 6){
+  let last = null;
+  for(let i = 0; i < tries; i++){
+    await ensureAuthBeforeData(3);
+    try{
+      const res = await queryBuilder();
+      last = res;
+      if(!res.error && Array.isArray(res.data) && res.data.length) return res;
+
+      // Ù„Ùˆ ÙØ§Ø¶ÙŠ Ø¨Ø¹Ø¯ refreshØŒ ØºØ§Ù„Ø¨Ø§Ù‹ Authorization header Ù„Ø³Ù‡ Ù…Ø§ Ø§ØªØ­Ø·Ø´Ø› Ø¬Ø±Ù‘Ø¨ ØªØ§Ù†ÙŠ
+      if(!res.error && Array.isArray(res.data) && res.data.length === 0){
+        console.warn(`${label}: empty try ${i + 1}/${tries}, retrying...`);
+      }else if(res.error){
+        console.warn(`${label}: error try ${i + 1}/${tries}:`, res.error.message);
+      }
+    }catch(err){
+      last = { data:null, error:err };
+      console.warn(`${label}: exception try ${i + 1}/${tries}:`, err);
+    }
+    await sleep(350 + i * 180);
+  }
+  return last || { data:null, error:new Error(label + ' failed') };
+}
+
+
 async function loadSubjects(){
   const g = document.getElementById('sub-grid');
-  g.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
-  const { data, error } = await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
-  if(error || !data?.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">📚</div><div class="empty-txt">${t('noSubjects')}</div></div>`;
+  g.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div><span style="margin-inline-start:8px">Loading subjects...</span></div>`;
+
+  const session = await ensureAuthBeforeData(10);
+  if(!session){
+    g.innerHTML = `
+      <div class="empty-st" style="grid-column:1/-1">
+        <div class="empty-ico">ðŸ”</div>
+        <div class="empty-txt" style="max-width:620px;line-height:1.8">
+          <b>Ø§Ù„Ø¬Ù„Ø³Ø© Ù„Ø³Ù‡ Ø¨ØªØªØ­Ù…Ù„</b><br>
+          Ù…Ø´ Ù‡Ù†Ø·Ù„Ø¹Ùƒ Logout. Ø§Ø¶ØºØ· Retry Ø£Ùˆ Ø§Ø³ØªÙ†Ù‰ Ø«Ø§Ù†ÙŠØ©.
+        </div>
+        <button class="btn btn-primary" onclick="loadSubjects()">ðŸ”„ Retry</button>
+      </div>`;
     return;
   }
+
+  const { data, error } = await supaSelectWithAuthRetry(
+    'subjects',
+    () => sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar'),
+    8
+  );
+
+  if(error){
+    console.error('subjects select error:', error);
+    g.innerHTML = `
+      <div class="empty-st" style="grid-column:1/-1">
+        <div class="empty-ico">âš ï¸</div>
+        <div class="empty-txt" style="max-width:620px;line-height:1.8">
+          <b>Ù…Ø´ÙƒÙ„Ø© ÙÙŠ Ù‚Ø±Ø§Ø¡Ø© Ø§Ù„Ù…ÙˆØ§Ø¯</b><br>
+          ${esc(error.message || String(error))}
+        </div>
+        <button class="btn btn-primary" onclick="loadSubjects()">ðŸ”„ Retry</button>
+      </div>`;
+    return;
+  }
+
+  if(!data?.length){
+    // Ø¢Ø®Ø± Ù…Ø­Ø§ÙˆÙ„Ø© Ø¨Ø¹Ø¯ Ø«Ø§Ù†ÙŠØ© ÙƒØ§Ù…Ù„Ø© Ø¹Ø´Ø§Ù† refresh Ø§Ù„Ø³Ø±ÙŠØ¹
+    await sleep(1000);
+    const again = await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
+    if(again.data?.length){
+      return renderSubjects(again.data);
+    }
+
+    console.warn('subjects empty after stable retries. This means table is empty or RLS/project mismatch.');
+    g.innerHTML = `
+      <div class="empty-st" style="grid-column:1/-1">
+        <div class="empty-ico">ðŸ“š</div>
+        <div class="empty-txt" style="max-width:620px;line-height:1.8">
+          <b>No subjects found</b><br>
+          Ù„Ùˆ Ø§Ù„Ù…ÙˆØ§Ø¯ Ø¨ØªØ¸Ù‡Ø± Ø£Ø­ÙŠØ§Ù†Ø§Ù‹ ÙˆØªØ®ØªÙÙŠ Ø¨Ø¹Ø¯ refreshØŒ Ø§Ø¶ØºØ· Retry. Ù„Ùˆ ÙØ¶Ù„Øª ÙƒØ¯Ù‡ØŒ Ø§ÙØªØ­ Console ÙˆØ´ÙˆÙ Ø±Ø³Ø§Ù„Ø© subjects.
+        </div>
+        <button class="btn btn-primary" onclick="loadSubjects()">ðŸ”„ Retry</button>
+      </div>`;
+    return;
+  }
+
+  renderSubjects(data);
+}
+
+function renderSubjects(data){
+  const g = document.getElementById('sub-grid');
   const gradeChip = {1:'ck-ok', 2:'ck-info', 3:'ck-gold'};
   g.innerHTML = data.map((s,i)=>{
-    const ico = EMOJIS[s.name_ar] || '📚';
+    const name = s.name_ar || s.name || 'Subject';
+    const ico = EMOJIS[name] || 'ðŸ“š';
     const thumb = s.image_url
       ? `<img src="${imgSafe(s.image_url)}" alt="" style="width:68px;height:68px;object-fit:cover;border-radius:16px" onerror="this.parentElement.innerHTML='${ico}'" loading="lazy">`
       : `<div style="font-size:2rem;width:68px;height:68px;border-radius:16px;display:grid;place-items:center;background:${pal(i)}">${ico}</div>`;
-    return `<div class="sub-card" onclick="selSub('${s.id}','${esc(s.name_ar)}',${s.grade_id||3})">
+    return `<div class="sub-card" onclick="selSub('${s.id}','${esc(name)}',${s.grade_id||3})">
       <div class="sub-icon">${thumb}</div>
-      <div class="sub-name">${s.name_ar}</div>
+      <div class="sub-name">${esc(name)}</div>
       <span class="chip ${gradeChip[s.grade_id]||'ck-p'}">${gr(s.grade_id)}</span>
     </div>`;
   }).join('');
 }
 
-// ── TEACHERS ──────────────────────────────────
+// â”€â”€ TEACHERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function selSub(id, name, gradeId){
   _sel = { sub:{id,name,grade_id:gradeId}, tch:null, ch:null };
   showStep('tch');
   const el = document.getElementById('tch-title');
-  if(el) el.textContent = `👨‍🏫 ${name}`;
+  if(el) el.textContent = `ðŸ‘¨â€ðŸ« ${name}`;
   const g = document.getElementById('tch-grid');
   g.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
   const { data:chaps } = await sb.from('chapters').select('teacher_id').eq('subject_id', id);
   const tIds = [...new Set((chaps||[]).map(c=>c.teacher_id).filter(Boolean))];
   if(!tIds.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">👨‍🏫</div><div class="empty-txt">${t('noTeachers')}</div></div>`;
+    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸ‘¨â€ðŸ«</div><div class="empty-txt">${t('noTeachers')}</div></div>`;
     return;
   }
   const [{ data:profs }, { data:teachers }] = await Promise.all([
@@ -1574,9 +1684,9 @@ async function selSub(id, name, gradeId){
     const safeName = (p.full_name||'').replace(/'/g,"\\'");
     return `<div class="tch-card" onclick="selTch('${p.id}','${esc(p.full_name||p.id)}')">
       <div class="tch-av" style="${p.image_url?'':' background:linear-gradient(135deg,var(--p1),var(--p2))'}">${av}</div>
-      <div class="tch-name">${p.full_name||'—'}</div>
+      <div class="tch-name">${p.full_name||'â€”'}</div>
       <div class="tch-bio">${bioMap[p.id] || t('certifiedTeacher')}</div>
-      <div style="margin-top:7px"><span class="chip ck-ok">✓ ${LANG==='ar'?'مدرس':'Teacher'}</span></div>
+      <div style="margin-top:7px"><span class="chip ck-ok">âœ“ ${LANG==='ar'?'Ù…Ø¯Ø±Ø³':'Teacher'}</span></div>
       <button class="follow-btn${isFollow?' on':''}" onclick="toggleFollow('${p.id}','${safeName}',event)">
         ${isFollow ? t('following') : t('follow')}
       </button>
@@ -1584,7 +1694,7 @@ async function selSub(id, name, gradeId){
   }).join('');
 }
 
-// ── CHAPTERS ──────────────────────────────────
+// â”€â”€ CHAPTERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function selTch(id, name){
   _sel.tch = {id, name}; _sel.ch = null;
   showStep('ch');
@@ -1595,14 +1705,14 @@ async function selTch(id, name){
     .eq('subject_id', _sel.sub.id).eq('teacher_id', id)
     .order('sort_order');
   if(!data?.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">📖</div><div class="empty-txt">${t('noChapters')}</div></div>`;
+    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸ“–</div><div class="empty-txt">${t('noChapters')}</div></div>`;
     return;
   }
   const chIds = data.map(c=>c.id);
   const { data:lc } = await sb.from('lessons').select('chapter_id').in('chapter_id', chIds).eq('is_active', true);
   const cnt = {};
   (lc||[]).forEach(l=>{ cnt[l.chapter_id] = (cnt[l.chapter_id]||0)+1; });
-  const books = ['📘','📗','📙','📕','📓','📔'];
+  const books = ['ðŸ“˜','ðŸ“—','ðŸ“™','ðŸ“•','ðŸ““','ðŸ“”'];
   g.innerHTML = data.map((ch,i)=>{
     const lcnt = cnt[ch.id]||0;
     const lcntStr = LANG==='ar' ? `${lcnt} ${lcnt===1?t('lecture'):t('lectures')}` : `${lcnt} ${lcnt===1?t('lecture'):t('lectures')}`;
@@ -1617,14 +1727,14 @@ async function selTch(id, name){
   }).join('');
 }
 
-// ── LESSONS ───────────────────────────────────
+// â”€â”€ LESSONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function selChapter(id, title){
   _sel.ch = {id, title};
   showStep('ls');
   const el = document.getElementById('ls-title');
-  if(el) el.textContent = `🎬 ${title}`;
+  if(el) el.textContent = `ðŸŽ¬ ${title}`;
   const lsSub = document.getElementById('ls-sub');
-  if(lsSub) lsSub.textContent = `${_sel.sub?.name || ''} — ${_sel.tch?.name || ''}`;
+  if(lsSub) lsSub.textContent = `${_sel.sub?.name || ''} â€” ${_sel.tch?.name || ''}`;
   const g = document.getElementById('ls-grid');
   g.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
   await loadEnrollments();
@@ -1632,7 +1742,7 @@ async function selChapter(id, title){
     .select('id,title,description,is_active,scheduled_at,image_url')
     .eq('chapter_id', id).order('created_at');
   if(!data?.length){
-    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
+    g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸŽ¬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
     return;
   }
   const now = new Date();
@@ -1643,16 +1753,16 @@ async function selChapter(id, title){
     const inCart = _cart.some(c=>c.id===l.id);
     const canOpen = l.is_active && !future && unlocked;
     const thumb = l.image_url
-      ? `<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`
-      : (future ? '⏰' : unlocked ? '🎬' : '🔑');
+      ? `<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='ðŸŽ¬'" loading="lazy">`
+      : (future ? 'â°' : unlocked ? 'ðŸŽ¬' : 'ðŸ”‘');
     let action = '';
     const lData = JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title,price:0}).replace(/"/g,'&quot;');
     if(!l.is_active)
       action = `<span class="chip ck-muted">${t('unavailable')}</span>`;
     else if(future)
-      action = `<span class="time-chip">⏰ ${sched.toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'})}</span>`;
+      action = `<span class="time-chip">â° ${sched.toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'})}</span>`;
     else if(unlocked)
-      action = `<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">✅ ${t('unlocked')}</span>`;
+      action = `<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">âœ… ${t('unlocked')}</span>`;
     else if(inCart)
       action = `<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goPage('cart')">${t('goToCart')}</button>`;
     else
@@ -1668,12 +1778,12 @@ async function selChapter(id, title){
 }
 function goLesson(id){ window.location.href = `/lesson/?id=${id}`; }
 
-// ── CART ACTIONS ──────────────────────────────
+// â”€â”€ CART ACTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function addCart(lesson){
   if(_unlockedLessons.has(lesson.id)){ toast('w', t('alreadyUnlocked')); return; }
   if(_cart.some(c=>c.id===lesson.id)){ toast('i', t('alreadyInCart')); return; }
   _cart.push(lesson); saveCart(); updateCartBadge(); se('st-cart', _cart.length);
-  toast('s', `🛒 ${t('addedCart')}: "${lesson.title}"`, 4000);
+  toast('s', `ðŸ›’ ${t('addedCart')}: "${lesson.title}"`, 4000);
   if(_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
 }
 function rmCart(lessonId){
@@ -1687,32 +1797,32 @@ function rmCart(lessonId){
 function renderCart(){
   const c = document.getElementById('cart-content');
   if(!_cart.length){
-    c.innerHTML = `<div class="empty-st"><div class="empty-ico">🛒</div><div class="empty-txt">${t('cartEmpty')}</div></div>`;
+    c.innerHTML = `<div class="empty-st"><div class="empty-ico">ðŸ›’</div><div class="empty-txt">${t('cartEmpty')}</div></div>`;
     return;
   }
   const codeBlocks = _cart.map(ls=>`
     <div class="code-block">
-      <div class="code-lesson-name">📖 ${ls.title}${ls.chapter_title?` — <span style="color:var(--t3)">${ls.chapter_title}</span>`:''}</div>
+      <div class="code-lesson-name">ðŸ“– ${ls.title}${ls.chapter_title?` â€” <span style="color:var(--t3)">${ls.chapter_title}</span>`:''}</div>
       <div class="code-row">
         <input class="code-inp" id="pc-${ls.id}" placeholder="${t('codePh')}" maxlength="24" oninput="this.value=this.value.toUpperCase()">
-        <button class="code-go" onclick="checkoutLesson('${ls.id}','${esc(ls.title)}')" id="cobtn-${ls.id}">✓</button>
-        <button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">×</button>
+        <button class="code-go" onclick="checkoutLesson('${ls.id}','${esc(ls.title)}')" id="cobtn-${ls.id}">âœ“</button>
+        <button class="btn btn-danger btn-sm" onclick="rmCart('${ls.id}')">Ã—</button>
       </div>
     </div>`).join('');
   const items = _cart.map(ls=>{
     const th = ls.image_url
-      ? `<img src="${imgSafe(ls.image_url)}" alt="" style="width:64px;height:50px;object-fit:cover;border-radius:9px" onerror="this.outerHTML='🎬'" loading="lazy">`
-      : '🎬';
+      ? `<img src="${imgSafe(ls.image_url)}" alt="" style="width:64px;height:50px;object-fit:cover;border-radius:9px" onerror="this.outerHTML='ðŸŽ¬'" loading="lazy">`
+      : 'ðŸŽ¬';
     return `<div class="c-item">
       <div class="ci-thumb">${th}</div>
       <div class="ci-info"><div class="ci-name">${ls.title}</div><div class="ci-sub">${ls.chapter_title||''}</div></div>
-      <button class="ci-del" onclick="rmCart('${ls.id}')">🗑 ${t('remove')}</button>
+      <button class="ci-del" onclick="rmCart('${ls.id}')">ðŸ—‘ ${t('remove')}</button>
     </div>`;
   }).join('');
   c.innerHTML = `<div class="cart-layout">
     <div class="cart-items">${items}</div>
     <div class="co-panel">
-      <div class="co-title">🔑 ${t('unlock')}</div>
+      <div class="co-title">ðŸ”‘ ${t('unlock')}</div>
       <hr class="co-hr">
       <div class="co-row"><span>${t('lessonsCount')}</span><span>${_cart.length}</span></div>
       <div class="co-total"><span>${t('method')}</span><span class="v">${t('codePerLesson')}</span></div>
@@ -1730,11 +1840,11 @@ async function checkoutLesson(lessonId, lessonTitle){
   if(!code){ toast('w', t('enterCode')); return; }
   btn.innerHTML = '<div class="spin"></div>'; btn.disabled = true;
   const { data:row, error } = await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code', code).single();
-  if(error || !row){ toast('e', t('invalidCode')); btn.innerHTML='✓'; btn.disabled=false; return; }
-  if(row.lesson_id !== lessonId){ toast('e', t('wrongLesson')); btn.innerHTML='✓'; btn.disabled=false; return; }
-  if(row.used_by){ toast('e', t('usedCode')); btn.innerHTML='✓'; btn.disabled=false; return; }
+  if(error || !row){ toast('e', t('invalidCode')); btn.innerHTML='âœ“'; btn.disabled=false; return; }
+  if(row.lesson_id !== lessonId){ toast('e', t('wrongLesson')); btn.innerHTML='âœ“'; btn.disabled=false; return; }
+  if(row.used_by){ toast('e', t('usedCode')); btn.innerHTML='âœ“'; btn.disabled=false; return; }
   const { error:upErr } = await sb.from('lesson_codes').update({used_by:ME.id, used_at:new Date().toISOString()}).eq('id', row.id);
-  if(upErr){ toast('e', upErr.message); btn.innerHTML='✓'; btn.disabled=false; return; }
+  if(upErr){ toast('e', upErr.message); btn.innerHTML='âœ“'; btn.disabled=false; return; }
   _unlockedLessons.add(lessonId);
   _cart = _cart.filter(c=>c.id!==lessonId);
   saveCart();
@@ -1745,13 +1855,13 @@ async function checkoutLesson(lessonId, lessonTitle){
   if(_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
 }
 
-// ── MY LESSONS ────────────────────────────────
+// â”€â”€ MY LESSONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadMyLessons(){
   const el = document.getElementById('my-list');
   el.innerHTML = `<div class="loading-st" style="grid-column:1/-1"><div class="spin"></div></div>`;
   await loadEnrollments();
   if(!_unlockedLessons.size){
-    el.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noMyLessons')}</div></div>`;
+    el.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸ”‘</div><div class="empty-txt">${t('noMyLessons')}</div></div>`;
     return;
   }
   const { data } = await sb.from('lessons')
@@ -1759,23 +1869,23 @@ async function loadMyLessons(){
     .in('id', [..._unlockedLessons]).eq('is_active', true).order('created_at');
   el.innerHTML = (data||[]).map((ls,i)=>`<div class="my-card" onclick="goLesson('${ls.id}')">
     <div class="my-thumb" style="${ls.image_url?'':'background:'+pal(i)}">
-      ${ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`:'🎬'}
+      ${ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='ðŸŽ¬'" loading="lazy">`:'ðŸŽ¬'}
     </div>
     <div class="my-body">
       <div class="my-title">${ls.title}</div>
-      <div class="my-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div>
+      <div class="my-sub">${ls.chapters?.subjects?.name_ar||''} â€” ${ls.chapters?.title||''}</div>
       <div style="margin-top:7px"><span class="chip ck-ok">${t('unlockChip')}</span></div>
     </div>
-  </div>`).join('') || `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
+  </div>`).join('') || `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">ðŸŽ¬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
 }
 
-// ── PROFILE ───────────────────────────────────
+// â”€â”€ PROFILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadProfileEnrolled(){
   const el = document.getElementById('pr-enrolled');
   el.innerHTML = `<div class="loading-st"><div class="spin"></div></div>`;
   await loadEnrollments();
   if(!_unlockedLessons.size){
-    el.innerHTML = `<div class="empty-st"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noEnrolled')}</div></div>`;
+    el.innerHTML = `<div class="empty-st"><div class="empty-ico">ðŸ”‘</div><div class="empty-txt">${t('noEnrolled')}</div></div>`;
     return;
   }
   const { data } = await sb.from('lessons')
@@ -1784,7 +1894,7 @@ async function loadProfileEnrolled(){
   el.innerHTML = (data||[]).map(ls=>`<div class="enr-item" onclick="goLesson('${ls.id}')">
     <div>
       <div class="enr-title">${ls.title}</div>
-      <div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} — ${ls.chapters?.title||''}</div>
+      <div class="enr-sub">${ls.chapters?.subjects?.name_ar||''} â€” ${ls.chapters?.title||''}</div>
     </div>
     <span class="chip ck-ok">${t('openLesson')}</span>
   </div>`).join('');
@@ -1809,8 +1919,19 @@ async function saveProfile(){
   toast('s', t('savedOk'));
 }
 
-// ── INIT ──────────────────────────────────────
+// â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 window.addEventListener('DOMContentLoaded', checkSession);
+
+sb.auth.onAuthStateChange((event, session) => {
+  if(session?.user){
+    rememberLogin(session.user);
+    const grid = document.getElementById('sub-grid');
+    if(grid && /No subjects found|Ø§Ù„Ø¬Ù„Ø³Ø© Ù„Ø³Ù‡/.test(grid.textContent || '')){
+      setTimeout(() => loadSubjects(), 300);
+    }
+  }
+});
+
 </script>
 </body>
 </html>
