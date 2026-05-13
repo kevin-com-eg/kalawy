@@ -73,28 +73,21 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 @keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes wf{0%,100%{opacity:.45;transform:rotate(var(--r,-9deg))}50%{opacity:.82;transform:rotate(var(--r,-9deg)) translateY(-5px)}}
 
-/* ══════════ NAV ══════════ */
+/* ══════════ NAV — inline, no black bar ══════════ */
 .nav{
-  position:fixed;top:0;left:0;right:0;z-index:800;
-  height:60px;
-  background:var(--nav-bg);
-  backdrop-filter:blur(22px) saturate(160%);
-  -webkit-backdrop-filter:blur(22px) saturate(160%);
-  border-bottom:1px solid var(--bd);
-  display:flex;align-items:center;padding:0 24px;gap:14px;
+  display:flex;align-items:center;padding:18px 4px 8px;gap:12px;
   animation:slideDown .4s ease;
-  box-shadow:var(--sh);
 }
 .nav-logo{
-  width:38px;height:38px;border-radius:11px;
+  width:36px;height:36px;border-radius:10px;
   background:linear-gradient(135deg,var(--p1),var(--p2));
-  display:grid;place-items:center;font-weight:900;font-size:.88rem;color:#fff;
+  display:grid;place-items:center;font-weight:900;font-size:.84rem;color:#fff;
   box-shadow:0 3px 14px var(--glow);cursor:pointer;flex-shrink:0;
   transition:.2s;animation:navGlow 3s ease-in-out infinite;
 }
-.nav-logo:hover{transform:scale(1.07) rotate(-3deg)}
+.nav-logo:hover{transform:scale(1.08) rotate(-3deg)}
 .nav-brand{
-  font-weight:900;font-size:1.25rem;letter-spacing:-.02em;cursor:pointer;
+  font-weight:900;font-size:1.2rem;letter-spacing:-.02em;cursor:pointer;
   background:linear-gradient(135deg,var(--p1),var(--p2));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
@@ -123,7 +116,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 /* ══════════ PAGE ══════════ */
 .page{
   max-width:860px;margin:0 auto;
-  padding:80px 20px 100px;
+  padding:0 20px 100px;
   animation:fadeIn .5s ease;
 }
 
@@ -226,11 +219,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
   box-shadow:0 8px 36px rgba(0,0,0,.3);position:relative;
   animation:slideUp .4s ease;
 }
-/* yt logo masks */
-.yt-mask{position:absolute;z-index:55;pointer-events:none}
-.yt-mask-tr{top:0;left:0;width:130px;height:50px;background:linear-gradient(225deg,var(--mask) 40%,transparent 100%)}
-.yt-mask-br{bottom:0;right:0;width:160px;height:50px;background:linear-gradient(45deg,var(--mask) 40%,transparent 100%)}
-
 /* Watermark */
 .wm{position:absolute;z-index:60;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;animation:wf 2.8s ease-in-out infinite}
 .wm-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);box-shadow:0 3px 12px rgba(124,58,237,.5);display:flex;align-items:center;justify-content:center}
@@ -248,8 +236,24 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 }
 .plyr__control--overlaid{background:rgba(139,92,246,.88)!important;box-shadow:0 4px 20px var(--glow)!important}
 .plyr__control--overlaid:hover{background:#6d28d9!important}
-/* Hide YouTube logo */
-.plyr__video-embed iframe{pointer-events:none}
+
+/*
+  ══ HIDE YOUTUBE BRANDING ══
+  Scale iframe 10% larger than container (parent has overflow:hidden)
+  → corners (YouTube logo, copy-link button) get clipped out of view
+*/
+.plyr__video-embed{overflow:hidden!important}
+.plyr__video-embed iframe{
+  /* push 5% on each side so logo corners are cut off */
+  top:-5%!important;
+  left:-5%!important;
+  width:110%!important;
+  height:110%!important;
+  /* block pointer events so no YT right-click / copy-link */
+  pointer-events:none!important;
+}
+/* Also hide any YT overlay that manages to render */
+.plyr__video-embed > div{pointer-events:none!important}
 .plyr__poster{background-size:cover}
 
 /* ══════════ ADBLOCK OVERLAY ══════════ */
@@ -524,14 +528,7 @@ async function runAdBlockCheck(){
 /* ══ SUPABASE ══ */
 const SB_URL="https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON="sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
-const sb=window.supabase.createClient(SB_URL,SB_ANON,{
-  auth:{
-    persistSession:true,
-    autoRefreshToken:true,
-    detectSessionInUrl:true,
-    flowType:'pkce'
-  }
-});
+const sb=window.supabase.createClient(SB_URL,SB_ANON);
 
 function iSrc(v){
   if(!v)return'';v=String(v).trim();if(!v)return'';
@@ -558,7 +555,7 @@ function setTheme(th){
 }
 
 /* ══ UTILS ══ */
-function goHome(){window.location.href='/dashboard';}
+function goHome(){window.location.href='/dashboard/';}
 function toast(type,msg,dur=3400){
   const ic={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
   const c=document.getElementById('toasts'),el=document.createElement('div');
@@ -616,114 +613,21 @@ function startTimer(){
   upd();_aci=setInterval(upd,1000);
 }
 
-/* ══ SESSION FIX ══ */
-const LOGIN_URL='/login';
-const DASHBOARD_URL='/dashboard';
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-
-function currentLessonPath(){
-  return location.pathname + location.search + location.hash;
-}
-
-function goLogin(){
-  try{ localStorage.setItem('kw-after-login', currentLessonPath()); }catch{}
-  window.location.href = LOGIN_URL + '?next=' + encodeURIComponent(currentLessonPath());
-}
-
-async function getStableSession(){
-  // في refresh سريع Supabase ساعات محتاج لحظة يقرأ/يجدّد session من localStorage
-  for(let i=0;i<10;i++){
-    try{
-      const {data,error}=await sb.auth.getSession();
-      if(data?.session?.user) return data.session;
-      if(error) console.warn('getSession retry',i,error.message);
-    }catch(e){
-      console.warn('getSession retry failed',i,e);
-    }
-    await sleep(250);
-  }
-
-  // محاولة أخيرة: لو getUser رجّع user يبقى التخزين موجود ولسه getSession بيتأخر
-  try{
-    const {data,error}=await sb.auth.getUser();
-    if(data?.user && !error) return {user:data.user};
-  }catch(e){
-    console.warn('getUser fallback failed',e);
-  }
-
-  // استنى auth event مرة واحدة بدل ما نرميه login فوراً
-  return await new Promise(resolve=>{
-    let done=false;
-    const timer=setTimeout(()=>{
-      if(done)return; done=true;
-      try{sub?.subscription?.unsubscribe?.();}catch{}
-      resolve(null);
-    },1800);
-    const {data:sub}=sb.auth.onAuthStateChange((_event,session)=>{
-      if(done)return;
-      if(session?.user){
-        done=true; clearTimeout(timer);
-        try{sub?.subscription?.unsubscribe?.();}catch{}
-        resolve(session);
-      }
-    });
-  });
-}
-
-async function safeMaybe(table,select,col,val){
-  try{
-    const {data,error}=await sb.from(table).select(select).eq(col,val).maybeSingle();
-    if(error){console.warn(`${table} read skipped:`,error.message);return null;}
-    return data||null;
-  }catch(e){
-    console.warn(`${table} read failed:`,e);return null;
-  }
-}
-
 /* ══ INIT ══ */
 async function init(){
   const th=localStorage.getItem('kw-t')||'light';setTheme(th);
   runAdBlockCheck(); // Check for adblock on page load
-
   const lid=new URLSearchParams(location.search).get('id');
   if(!lid){showErr('لم يتم تحديد الحصة');return;}
-
-  const session=await getStableSession();
-  if(!session?.user){
-    document.getElementById('il')?.remove();
-    document.getElementById('page').innerHTML=`
-      <div class="err-full">
-        <div class="err-card">
-          <span style="font-size:3rem;display:block;margin-bottom:12px">🔐</span>
-          <div style="font-size:1rem;font-weight:900;margin-bottom:10px;color:var(--txt)">الجلسة لم تظهر بعد</div>
-          <div style="font-size:.86rem;color:var(--t2);line-height:1.8;margin-bottom:18px">لو أنت عامل Login، اعمل Refresh مرة واحدة. لو مش عامل Login اضغط دخول.</div>
-          <button class="btn btn-p btn-lg" onclick="goLogin()">تسجيل الدخول</button>
-        </div>
-      </div>`;
-    return;
-  }
-
-  const user=session.user;
-  const pr=await safeMaybe('profiles','role,phone,email','id',user.id);
-  ROLE=pr?.role||'student';
-  ME={id:user.id,email:user.email||pr?.email||'',phone:pr?.phone||''};
-
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='/login/';return;}
+  const{data:pr}=await sb.from('profiles').select('role,phone').eq('id',session.user.id).single();
+  ROLE=pr?.role||'student';ME={id:session.user.id,phone:pr?.phone||''};
   if(ROLE!=='admin'&&ROLE!=='teacher'){
-    let ACCESS_ROW=null;
-    try{
-      const {data,error}=await sb.from('lesson_codes')
-        .select('id,used_at,expires_at,lesson_id,used_by')
-        .eq('lesson_id',lid)
-        .eq('used_by',user.id)
-        .maybeSingle();
-      if(error) console.warn('lesson_codes read skipped:', error.message);
-      ACCESS_ROW=data||null;
-    }catch(e){console.warn('lesson_codes read failed:',e);}
-
-    if(!ACCESS_ROW){showErr('لازم تضيف الحصة للسلة وتدخل كود الحصة');return;}
-    ACCESS=ACCESS_ROW;
+    const{data:acc}=await sb.from('lesson_codes').select('id,used_at,expires_at').eq('lesson_id',lid).eq('used_by',session.user.id).maybeSingle();
+    if(!acc){showErr('لازم تضيف الحصة للسلة وتدخل كود الحصة');return;}
+    ACCESS=acc;
   }
-
   await loadLesson(lid);
 }
 
@@ -836,8 +740,6 @@ function renderPlayer(idx){
     <div class="player-title-box">${esc(p.title||'فيديو الحصة')}</div>
     <div class="player-frame" id="player-frame">
       <div id="plyr-el" data-plyr-provider="youtube" data-plyr-embed-id=""></div>
-      <div class="yt-mask yt-mask-tr"></div>
-      <div class="yt-mask yt-mask-br"></div>
       <div class="wm" id="kwm" style="left:10%;top:12%;--r:-10deg">
         <div class="wm-av">
           <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
@@ -869,7 +771,15 @@ function buildPlyr(videoId,idx){
   const el=document.getElementById('plyr-el');if(!el)return;
   el.setAttribute('data-plyr-embed-id',videoId);
   window._pl=new Plyr(el,{
-    youtube:{noCookie:true,rel:0,showinfo:0,iv_load_policy:3,modestbranding:1,origin:location.origin},
+    youtube:{
+      noCookie:true,
+      rel:0, showinfo:0, iv_load_policy:3,
+      modestbranding:1,
+      controls:0,      /* removes YT logo + copy-link + all native UI */
+      disablekb:1,
+      fs:0, playsinline:1, cc_load_policy:0,
+      origin:location.origin,
+    },
     controls:['play-large','play','rewind','fast-forward','progress','current-time','duration','mute','volume','settings','fullscreen'],
     settings:['quality','speed'],
     speed:{selected:1,options:[0.5,0.75,1,1.25,1.5,2]},
