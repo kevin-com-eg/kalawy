@@ -55,13 +55,35 @@ img{display:block}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--p2);border-radius:99px}
 
 /* ══════════════════════════════════════════
+   ✨ LOADING SCREEN
+══════════════════════════════════════════ */
+#loadingScreen{
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#04000e 0%,#0f0530 50%,#1a0840 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  transition:opacity .6s ease,visibility .6s ease;
+}
+#loadingScreen.fade-out{opacity:0;visibility:hidden;pointer-events:none}
+.ld-logo{
+  width:80px;height:80px;border-radius:24px;
+  background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);
+  display:grid;place-items:center;font-family:'Outfit',sans-serif;
+  font-weight:900;font-size:1.6rem;color:#fff;
+  box-shadow:0 0 40px rgba(139,92,246,.6),0 0 80px rgba(139,92,246,.2);
+  animation:ld-pulse 1.8s ease-in-out infinite;
+}
+.ld-brand{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.8rem;color:#fff;letter-spacing:-.03em}
+.ld-brand em{font-style:normal;color:#a78bfa}
+.ld-bar-wrap{width:200px;height:3px;background:rgba(139,92,246,.2);border-radius:99px;overflow:hidden}
+.ld-bar{height:100%;background:linear-gradient(90deg,#7c3cff,#00d879,#ff4fd8);border-radius:99px;animation:ld-fill 2s ease-in-out forwards}
+.ld-tip{font-size:.75rem;color:rgba(167,139,250,.6);font-weight:600;animation:fadeIn .5s ease .4s both}
+@keyframes ld-pulse{0%,100%{box-shadow:0 0 30px rgba(139,92,246,.5),0 0 60px rgba(139,92,246,.15)}50%{box-shadow:0 0 50px rgba(139,92,246,.8),0 0 100px rgba(139,92,246,.3),0 0 0 12px rgba(139,92,246,.06)}}
+@keyframes ld-fill{0%{width:0%;transform:translateX(0)}60%{width:80%}90%{width:95%}100%{width:100%}}
+
+/* ══════════════════════════════════════════
    ANIMATIONS
 ══════════════════════════════════════════ */
-@keyframes drift{
-  0%,100%{transform:translate(0,0) scale(1)}
-  40%{transform:translate(30px,-45px) scale(1.06)}
-  70%{transform:translate(-25px,30px) scale(.96)}
-}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(30px,-45px) scale(1.06)}70%{transform:translate(-25px,30px) scale(.96)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
@@ -72,18 +94,15 @@ img{display:block}
 @keyframes t-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes t-out{to{opacity:0;transform:translateY(8px)}}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 var(--p-glow)}50%{box-shadow:0 0 0 8px transparent}}
-@keyframes wa-pulse{
-  0%,100%{box-shadow:0 6px 22px rgba(37,211,102,.45)}
-  50%{box-shadow:0 6px 30px rgba(37,211,102,.72),0 0 0 9px rgba(37,211,102,.1)}
-}
+@keyframes wa-pulse{0%,100%{box-shadow:0 6px 22px rgba(37,211,102,.45)}50%{box-shadow:0 6px 30px rgba(37,211,102,.72),0 0 0 9px rgba(37,211,102,.1)}}
 @keyframes welcomeGlow{0%,100%{opacity:.7}50%{opacity:1}}
 @keyframes notifBadge{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes dotPop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
 
 .a-up{animation:fadeUp .45s ease both}
 .a-fade{animation:fadeIn .35s ease both}
 .a-scale{animation:scaleIn .38s ease both}
 .a-down{animation:slideDown .3s ease both}
-/* stagger delays */
 .d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
 .d4{animation-delay:.24s}.d5{animation-delay:.3s}.d6{animation-delay:.36s}
 .d7{animation-delay:.42s}.d8{animation-delay:.48s}
@@ -98,46 +117,24 @@ img{display:block}
 .o3{width:430px;height:430px;background:rgba(56,189,248,.06);top:40%;left:35%;animation-delay:-13s}
 
 /* ══════════════════════════════════════════
-   GLASS MIXIN
+   GLASS
 ══════════════════════════════════════════ */
-.glass{
-  background:var(--glass);
-  backdrop-filter:blur(24px) saturate(160%);
-  -webkit-backdrop-filter:blur(24px) saturate(160%);
-  border:1px solid var(--border);box-shadow:var(--shadow);
-  position:relative;overflow:hidden;
-}
+.glass{background:var(--glass);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;}
 .glass::before{content:'';position:absolute;inset:0;background:linear-gradient(130deg,var(--shine) 0%,transparent 55%);pointer-events:none;border-radius:inherit}
 
 /* ══════════════════════════════════════════
    NAV
 ══════════════════════════════════════════ */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:600;height:var(--nav-h);
-  background:linear-gradient(135deg,#08011e 0%,#150840 100%);
-  border-bottom:1px solid rgba(139,92,246,.22);
-  display:flex;align-items:center;padding:0 clamp(12px,3vw,36px);gap:14px;
-  box-shadow:0 8px 40px rgba(0,0,0,.4);direction:ltr;
-  animation:slideDown .45s ease;
-}
+.nav{position:fixed;top:0;left:0;right:0;z-index:600;height:var(--nav-h);background:linear-gradient(135deg,#08011e 0%,#150840 100%);border-bottom:1px solid rgba(139,92,246,.22);display:flex;align-items:center;padding:0 clamp(12px,3vw,36px);gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.4);direction:ltr;animation:slideDown .45s ease;}
 .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0}
-.nav-mark{
-  width:40px;height:40px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);
-  display:grid;place-items:center;font-weight:900;font-size:.9rem;color:#fff;
-  font-family:'Outfit',sans-serif;box-shadow:0 8px 24px rgba(0,216,121,.25);
-  transition:var(--tr);animation:glowPulse 3s ease-in-out infinite;
-}
+.nav-mark{width:40px;height:40px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);display:grid;place-items:center;font-weight:900;font-size:.9rem;color:#fff;font-family:'Outfit',sans-serif;box-shadow:0 8px 24px rgba(0,216,121,.25);transition:var(--tr);animation:glowPulse 3s ease-in-out infinite;}
 .nav-mark:hover{transform:scale(1.08) rotate(-4deg)}
 .nav-name{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.18rem;letter-spacing:-.02em;color:#fff}
 .nav-name em{font-style:normal;color:var(--p3)}
 .nav-links{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;direction:rtl}
-.nl-btn{
-  background:transparent;border:none;color:rgba(255,255,255,.62);font-weight:700;font-size:.84rem;
-  cursor:pointer;padding:7px 13px;border-radius:10px;transition:var(--tr);white-space:nowrap;
-  display:flex;align-items:center;gap:5px;
-}
+.nl-btn{background:transparent;border:none;color:rgba(255,255,255,.62);font-weight:700;font-size:.84rem;cursor:pointer;padding:7px 13px;border-radius:10px;transition:var(--tr);white-space:nowrap;display:flex;align-items:center;gap:5px;}
 .nl-btn:hover{background:rgba(255,255,255,.09);color:#fff;transform:translateY(-1px)}
+.nl-btn.active-nav{background:rgba(139,92,246,.22);color:#fff;border:1px solid rgba(139,92,246,.3)}
 .nl-btn.cart-btn{background:rgba(139,92,246,.16);color:var(--p3);border:1px solid rgba(139,92,246,.28)}
 .nl-btn.cart-btn:hover{background:rgba(139,92,246,.26)}
 .nav-end{display:flex;align-items:center;gap:9px;flex-shrink:0}
@@ -147,27 +144,14 @@ img{display:block}
 .lang-pill{display:flex;align-items:center;gap:2px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:3px}
 .lang-btn{padding:4px 11px;border:none;background:transparent;color:rgba(255,255,255,.5);border-radius:999px;cursor:pointer;font-weight:800;font-size:.7rem;transition:var(--tr);letter-spacing:.04em}
 .lang-btn.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 2px 10px var(--p-glow)}
-.bell-btn{
-  display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:7px 14px;
-  cursor:pointer;color:rgba(255,255,255,.75);font-size:.82rem;font-weight:800;transition:var(--tr);
-}
+.bell-btn{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:7px 14px;cursor:pointer;color:rgba(255,255,255,.75);font-size:.82rem;font-weight:800;transition:var(--tr);position:relative;}
 .bell-btn:hover{background:rgba(255,255,255,.15);color:#fff}
 .bell-btn.has-notif .badge{animation:notifBadge 2s ease-in-out infinite}
 .badge{background:var(--danger);color:#fff;font-size:.62rem;font-weight:900;padding:2px 7px;border-radius:999px;line-height:1}
-.nav-av{
-  width:36px;height:36px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--p1),var(--p2));
-  display:grid;place-items:center;font-weight:800;font-size:.86rem;color:#fff;
-  cursor:pointer;box-shadow:0 3px 14px var(--p-glow);border:2px solid rgba(255,255,255,.2);transition:var(--tr);
-}
+.nav-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-weight:800;font-size:.86rem;color:#fff;cursor:pointer;box-shadow:0 3px 14px var(--p-glow);border:2px solid rgba(255,255,255,.2);transition:var(--tr);}
 .nav-av:hover{transform:scale(1.1)}
 .drop-wrap{position:relative}
-.drop-menu{
-  position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(8px);
-  width:220px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);
-  box-shadow:var(--shadow-lg);padding:8px;opacity:0;pointer-events:none;transition:var(--tr);z-index:700;direction:rtl;
-}
+.drop-menu{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(8px);width:220px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:8px;opacity:0;pointer-events:none;transition:var(--tr);z-index:700;direction:rtl;}
 .drop-wrap.open .drop-menu{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
 .drop-item{display:flex;align-items:center;gap:10px;width:100%;border:none;background:var(--bg);color:var(--text);border-radius:10px;padding:11px 13px;cursor:pointer;font-weight:700;font-size:.85rem;margin-bottom:5px;transition:var(--tr)}
 .drop-item:last-child{margin-bottom:0}
@@ -179,11 +163,7 @@ img{display:block}
 /* ══════════════════════════════════════════
    BREADCRUMB
 ══════════════════════════════════════════ */
-.bc{
-  position:fixed;top:var(--nav-h);left:0;right:0;height:var(--bc-h);z-index:500;
-  background:var(--bg);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 clamp(12px,3vw,36px);gap:6px;direction:rtl;
-}
+.bc{position:fixed;top:var(--nav-h);left:0;right:0;height:var(--bc-h);z-index:500;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 clamp(12px,3vw,36px);gap:6px;direction:rtl;}
 [data-lang="en"] .bc{direction:ltr}
 .bc-item{font-size:.8rem;color:var(--t3);cursor:pointer;padding:3px 9px;border-radius:7px;transition:var(--tr);white-space:nowrap;font-weight:600}
 .bc-item:hover{color:var(--text);background:var(--glass)}
@@ -198,10 +178,10 @@ img{display:block}
 .pg.on{display:block;animation:fadeIn .3s ease}
 
 /* ══════════════════════════════════════════
-   WELCOME BANNER
+   ✨ WELCOME CARD — NAME + TERMS
 ══════════════════════════════════════════ */
 .welcome-banner{
-  margin-top:22px;margin-bottom:20px;
+  margin-top:22px;margin-bottom:8px;
   padding:28px 30px;border-radius:var(--r-2xl);
   background:linear-gradient(135deg,rgba(124,58,237,.22) 0%,rgba(139,92,246,.14) 50%,rgba(56,189,248,.1) 100%);
   border:1px solid rgba(139,92,246,.28);
@@ -209,44 +189,55 @@ img{display:block}
   position:relative;overflow:hidden;
   animation:fadeUp .5s ease;
 }
-.welcome-banner::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(130deg,rgba(255,255,255,.06) 0%,transparent 55%);
-  pointer-events:none;
-}
-.wb-glow{
-  position:absolute;top:-80px;left:-80px;width:300px;height:300px;
-  border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.18),transparent 70%);
-  pointer-events:none;animation:welcomeGlow 3s ease-in-out infinite;
-}
-.wb-glow2{
-  position:absolute;bottom:-60px;right:-40px;width:200px;height:200px;
-  border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.12),transparent 70%);
-  pointer-events:none;
-}
+.welcome-banner::before{content:'';position:absolute;inset:0;background:linear-gradient(130deg,rgba(255,255,255,.06) 0%,transparent 55%);pointer-events:none;}
+.wb-glow{position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.18),transparent 70%);pointer-events:none;animation:welcomeGlow 3s ease-in-out infinite;}
+.wb-glow2{position:absolute;bottom:-60px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.12),transparent 70%);pointer-events:none;}
 .wb-inner{position:relative;z-index:2;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.wb-av{
-  width:60px;height:60px;border-radius:18px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--p1),var(--p2));
-  display:grid;place-items:center;font-size:1.6rem;font-weight:900;color:#fff;
-  box-shadow:0 6px 20px var(--p-glow);border:2px solid rgba(255,255,255,.22);
-}
+.wb-av{width:60px;height:60px;border-radius:18px;flex-shrink:0;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-size:1.6rem;font-weight:900;color:#fff;box-shadow:0 6px 20px var(--p-glow);border:2px solid rgba(255,255,255,.22);}
 .wb-text{flex:1}
-.wb-greeting{
-  font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:900;
-  letter-spacing:-.02em;line-height:1.2;margin-bottom:5px;
-  font-family:'Outfit',sans-serif;
-}
+.wb-greeting{font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:900;letter-spacing:-.02em;line-height:1.2;margin-bottom:5px;font-family:'Outfit',sans-serif;}
 .wb-greeting em{font-style:normal;color:var(--p3)}
 .wb-sub{font-size:.87rem;color:var(--t2);line-height:1.6}
 .wb-stats{display:flex;gap:10px;flex-wrap:wrap;margin-right:auto}
-.wb-stat{
-  text-align:center;padding:10px 18px;
-  background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);
-  border-radius:14px;backdrop-filter:blur(10px);min-width:90px;
-}
+.wb-stat{text-align:center;padding:10px 18px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:14px;backdrop-filter:blur(10px);min-width:90px;}
 .wb-stat .n{font-size:1.5rem;font-weight:900;color:var(--p3);line-height:1;font-family:'Outfit',sans-serif}
 .wb-stat .l{font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;font-weight:700}
+
+/* ══════════════════════════════════════════
+   ✨ TERMS OF USE BAR (below welcome banner)
+══════════════════════════════════════════ */
+.terms-bar{
+  margin-bottom:20px;
+  padding:12px 22px;border-radius:var(--r-lg);
+  background:var(--glass);
+  border:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  animation:fadeUp .55s ease .1s both;
+}
+.terms-name-badge{
+  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(56,189,248,.08));
+  border:1px solid rgba(139,92,246,.3);
+  border-radius:999px;padding:5px 14px;
+  font-size:.8rem;font-weight:900;color:var(--p3);
+  white-space:nowrap;
+}
+.terms-name-badge .av-mini{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-size:.65rem;font-weight:900;color:#fff;flex-shrink:0}
+.terms-divider{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.terms-text{font-size:.74rem;color:var(--t3);line-height:1.6;flex:1}
+.terms-text strong{color:var(--t2);font-weight:800}
+.terms-link{color:var(--p3);font-weight:800;cursor:pointer;border-bottom:1px dashed var(--border);transition:var(--tr)}
+.terms-link:hover{color:var(--p1);border-color:var(--p3)}
+.terms-agree-chip{display:flex;align-items:center;gap:5px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:999px;padding:4px 12px;font-size:.72rem;font-weight:800;color:var(--ok);white-space:nowrap;flex-shrink:0}
+
+/* ══════════════════════════════════════════
+   TERMS MODAL
+══════════════════════════════════════════ */
+.terms-mo-body{font-size:.83rem;color:var(--t2);line-height:1.85;max-height:60vh;overflow-y:auto;padding-right:4px}
+.terms-mo-body h3{font-size:.88rem;font-weight:900;color:var(--text);margin:16px 0 6px;display:flex;align-items:center;gap:6px}
+.terms-mo-body p{margin-bottom:10px}
+.terms-mo-body ul{padding-right:18px;[data-lang=en]:padding-left:18px;margin-bottom:10px}
+.terms-mo-body li{margin-bottom:5px}
 
 /* ══════════════════════════════════════════
    SEC HERO
@@ -266,18 +257,8 @@ img{display:block}
 /* ══════════════════════════════════════════
    SKELETON LOADER
 ══════════════════════════════════════════ */
-@keyframes shimmer{0%{background-position:-700px 0}100%{background-position:700px 0}}
-.skel{
-  background:linear-gradient(90deg,var(--skel) 25%,var(--skel-s) 50%,var(--skel) 75%);
-  background-size:700px 100%;
-  animation:shimmer 1.4s ease-in-out infinite;
-  border-radius:10px;
-}
-.skel-card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);
-  padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;
-  min-height:210px;
-}
+.skel{background:linear-gradient(90deg,var(--skel) 25%,var(--skel-s) 50%,var(--skel) 75%);background-size:700px 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:10px;}
+.skel-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:210px;}
 .skel-circle{width:70px;height:70px;border-radius:50%}
 .skel-rect{width:80%;height:14px}
 .skel-rect-sm{width:55%;height:10px}
@@ -286,23 +267,11 @@ img{display:block}
 /* ══════════════════════════════════════════
    SUBJECT CARD
 ══════════════════════════════════════════ */
-.sub-card{
-  background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  border:1px solid var(--border);border-radius:var(--r-xl);
-  padding:28px 20px;text-align:center;cursor:pointer;
-  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
-  box-shadow:var(--shadow);position:relative;overflow:hidden;
-  animation:cardPop .45s ease both;
-}
+.sub-card{background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px 20px;text-align:center;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .sub-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
 .sub-card:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
 .sub-card:hover .sub-icon{transform:scale(1.1) rotate(-2deg)}
-.sub-icon{
-  width:76px;height:76px;border-radius:20px;margin:0 auto 16px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.2rem;overflow:hidden;box-shadow:var(--shadow);
-  transition:transform .25s ease;
-}
+.sub-icon{width:76px;height:76px;border-radius:20px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;box-shadow:var(--shadow);transition:transform .25s ease;}
 .sub-icon img{width:76px;height:76px;object-fit:cover;border-radius:20px}
 .sub-name{font-weight:900;font-size:1rem;margin-bottom:9px}
 .sub-grade-chip{display:inline-flex;align-items:center;padding:3px 12px;border-radius:999px;font-size:.7rem;font-weight:700}
@@ -310,81 +279,35 @@ img{display:block}
 /* ══════════════════════════════════════════
    TEACHER CARD
 ══════════════════════════════════════════ */
-.tch-card{
-  background:var(--card);backdrop-filter:blur(18px);
-  border:1px solid var(--border);border-radius:var(--r-xl);
-  padding:26px 18px;text-align:center;cursor:pointer;
-  transition:.25s ease;box-shadow:var(--shadow);
-  position:relative;overflow:hidden;animation:cardPop .45s ease both;
-}
+.tch-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);padding:26px 18px;text-align:center;cursor:pointer;transition:.25s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .tch-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
 .tch-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
 .tch-card:hover .tch-av{transform:scale(1.08);box-shadow:0 6px 22px var(--p-glow)}
-.tch-av{
-  width:70px;height:70px;border-radius:50%;margin:0 auto 13px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.5rem;font-weight:900;color:#fff;overflow:hidden;
-  box-shadow:0 4px 16px var(--p-glow);border:2px solid rgba(139,92,246,.3);
-  transition:.25s ease;
-}
+.tch-av{width:70px;height:70px;border-radius:50%;margin:0 auto 13px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;color:#fff;overflow:hidden;box-shadow:0 4px 16px var(--p-glow);border:2px solid rgba(139,92,246,.3);transition:.25s ease;}
 .tch-av img{width:70px;height:70px;border-radius:50%;object-fit:cover}
 .tch-name{font-weight:900;font-size:.94rem;margin-bottom:5px}
 .tch-bio{font-size:.75rem;color:var(--t3);line-height:1.55}
-.follow-btn{
-  margin-top:11px;border-radius:999px;padding:6px 16px;
-  font-weight:800;cursor:pointer;font-size:.74rem;transition:.22s;
-  background:var(--p-faint);color:var(--p3);border:1px solid var(--border);
-}
+.follow-btn{margin-top:11px;border-radius:999px;padding:6px 16px;font-weight:800;cursor:pointer;font-size:.74rem;transition:.22s;background:var(--p-faint);color:var(--p3);border:1px solid var(--border);}
 .follow-btn.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-color:transparent;box-shadow:0 4px 12px var(--p-glow)}
 .follow-btn:hover{transform:translateY(-1px)}
 
 /* ══════════════════════════════════════════
-   CHAPTER CARD
+   CHAPTER / LESSON CARDS
 ══════════════════════════════════════════ */
-.ch-card{
-  background:var(--card);backdrop-filter:blur(18px);
-  border:1px solid var(--border);border-radius:var(--r-xl);
-  min-height:280px;padding:28px 20px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;transition:.25s ease;box-shadow:var(--shadow);
-  text-align:center;position:relative;overflow:hidden;animation:cardPop .45s ease both;
-}
+.ch-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);min-height:280px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.25s ease;box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .ch-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 55%);pointer-events:none}
 .ch-card:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
-.ch-img-box{
-  width:100px;height:100px;border-radius:var(--r-lg);
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.6rem;overflow:hidden;margin-bottom:18px;
-  border:1px solid var(--border);background:var(--p-faint);
-  transition:transform .25s ease;
-}
+.ch-img-box{width:100px;height:100px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:2.6rem;overflow:hidden;margin-bottom:18px;border:1px solid var(--border);background:var(--p-faint);transition:transform .25s ease;}
 .ch-card:hover .ch-img-box{transform:scale(1.08) rotate(2deg)}
 .ch-img-box img{width:100%;height:100%;object-fit:cover}
 .ch-title{font-size:1.05rem;font-weight:900;color:var(--text);margin-bottom:6px}
 .ch-count{font-size:.8rem;color:var(--t3)}
-
-/* ══════════════════════════════════════════
-   LESSON CARD
-══════════════════════════════════════════ */
-.ls-card{
-  background:var(--card);backdrop-filter:blur(18px);
-  border:1px solid var(--border);border-radius:var(--r-xl);
-  min-height:280px;padding:24px 20px;
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;transition:.25s ease;box-shadow:var(--shadow);
-  position:relative;overflow:hidden;animation:cardPop .45s ease both;
-}
+.ls-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);min-height:280px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:.25s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .ls-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 55%);pointer-events:none}
 .ls-card.clickable{cursor:pointer}
 .ls-card.clickable:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
 .ls-card.locked{opacity:.6;cursor:not-allowed}
-.ls-thumb{
-  width:96px;height:96px;border-radius:var(--r-lg);
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.2rem;overflow:hidden;margin-bottom:16px;flex-shrink:0;
-  background:var(--p-faint);border:1px solid var(--border);
-  transition:transform .25s ease;
-}
+.ls-thumb{width:96px;height:96px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;margin-bottom:16px;flex-shrink:0;background:var(--p-faint);border:1px solid var(--border);transition:transform .25s ease;}
 .ls-card.clickable:hover .ls-thumb{transform:scale(1.07)}
 .ls-thumb img{width:100%;height:100%;object-fit:cover}
 .ls-num{font-size:.72rem;color:var(--t3);font-weight:700;margin-bottom:5px;letter-spacing:.07em;text-transform:uppercase}
@@ -395,18 +318,9 @@ img{display:block}
 /* ══════════════════════════════════════════
    MY LESSONS CARD
 ══════════════════════════════════════════ */
-.my-card{
-  background:var(--card);backdrop-filter:blur(18px);
-  border:1px solid var(--border);border-radius:var(--r-xl);
-  overflow:hidden;cursor:pointer;transition:.25s ease;box-shadow:var(--shadow);
-  animation:cardPop .45s ease both;
-}
+.my-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;cursor:pointer;transition:.25s ease;box-shadow:var(--shadow);animation:cardPop .45s ease both;}
 .my-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
-.my-thumb{
-  height:130px;background:var(--p-faint);
-  display:flex;align-items:center;justify-content:center;font-size:2.4rem;
-  overflow:hidden;position:relative;transition:.25s ease;
-}
+.my-thumb{height:130px;background:var(--p-faint);display:flex;align-items:center;justify-content:center;font-size:2.4rem;overflow:hidden;position:relative;transition:.25s ease;}
 .my-card:hover .my-thumb img{transform:scale(1.08)}
 .my-thumb img{width:100%;height:100%;object-fit:cover;transition:.25s ease}
 .my-body{padding:15px}
@@ -418,11 +332,7 @@ img{display:block}
 ══════════════════════════════════════════ */
 .cart-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
 .cart-items{display:flex;flex-direction:column;gap:11px}
-.c-item{
-  background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-lg);
-  padding:15px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow);
-  animation:fadeUp .3s ease;transition:.2s;
-}
+.c-item{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow);animation:fadeUp .3s ease;transition:.2s;}
 .c-item:hover{border-color:var(--border-h)}
 .ci-thumb{width:66px;height:52px;border-radius:10px;flex-shrink:0;background:var(--p-faint);display:flex;align-items:center;justify-content:center;font-size:1.3rem;overflow:hidden;border:1px solid var(--border)}
 .ci-thumb img{width:66px;height:52px;object-fit:cover}
@@ -516,16 +426,37 @@ img{display:block}
 .inp{background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:10px 13px;border-radius:var(--r-sm);outline:none;transition:var(--tr);width:100%}
 .inp:focus{border-color:var(--p1);box-shadow:0 0 0 3px var(--p-glow)}
 .inp::placeholder{color:var(--t3)}
-/* notifications */
+
+/* ══════════════════════════════════════════
+   ✨ NOTIFICATIONS — improved read/unread
+══════════════════════════════════════════ */
 .notif-list{display:flex;flex-direction:column;gap:9px;max-height:380px;overflow-y:auto;margin-top:12px}
-.notif-card{background:var(--p-faint);border:1px solid var(--border);border-radius:13px;padding:13px 15px;text-align:start;animation:fadeUp .25s ease;transition:.2s}
+.notif-card{background:var(--p-faint);border:1px solid var(--border);border-radius:13px;padding:13px 15px;text-align:start;animation:fadeUp .25s ease;transition:.2s;position:relative;}
 .notif-card:hover{border-color:var(--border-h)}
 .notif-card.unread{border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.09)}
+/* ✨ Unread dot indicator */
+.notif-unread-dot{
+  position:absolute;top:13px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--p1);
+  box-shadow:0 0 0 3px rgba(139,92,246,.2);
+  flex-shrink:0;animation:dotPop .35s cubic-bezier(.34,1.56,.64,1) both;
+}
+[data-lang="ar"] .notif-unread-dot{left:13px}
+[data-lang="en"] .notif-unread-dot{right:13px}
 .notif-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
-.notif-title{font-weight:900;font-size:.9rem}
+.notif-title{font-weight:900;font-size:.9rem;padding-inline-end:16px}
 .notif-type-badge{font-size:.64rem;padding:2px 9px;border-radius:999px;background:var(--p-faint);color:var(--p3);border:1px solid var(--border);font-weight:800;white-space:nowrap}
 .notif-body{font-size:.79rem;color:var(--t2);line-height:1.65;white-space:pre-wrap}
-.notif-meta{font-size:.69rem;color:var(--t3);margin-top:6px}
+.notif-meta{font-size:.69rem;color:var(--t3);margin-top:6px;display:flex;align-items:center;gap:6px}
+.notif-read-tag{background:rgba(52,211,153,.1);color:var(--ok);border:1px solid rgba(52,211,153,.2);border-radius:999px;padding:1px 7px;font-size:.62rem;font-weight:800}
+.notif-unread-tag{background:rgba(139,92,246,.1);color:var(--p3);border:1px solid rgba(139,92,246,.2);border-radius:999px;padding:1px 7px;font-size:.62rem;font-weight:800}
+/* Notif header in modal */
+.notif-header-bar{display:flex;align-items:center;justify-content:space-between;margin-top:8px;margin-bottom:2px}
+.notif-header-bar .unread-count-lbl{font-size:.74rem;color:var(--t3);font-weight:700}
+.notif-mark-all-btn{background:var(--p-faint);border:1px solid var(--border);color:var(--p3);border-radius:999px;padding:4px 12px;font-size:.72rem;font-weight:800;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:5px}
+.notif-mark-all-btn:hover{background:var(--glass-h);border-color:var(--border-h)}
+.notif-mark-all-btn:disabled{opacity:.4;cursor:not-allowed}
 
 /* ══════════════════════════════════════════
    LOADER / EMPTY
@@ -564,40 +495,29 @@ img{display:block}
 /* ══════════════════════════════════════════
    WA FLOAT
 ══════════════════════════════════════════ */
-.wa-float{
-  position:fixed;bottom:28px;right:28px;width:55px;height:55px;border-radius:50%;
-  background:linear-gradient(135deg,#25d366,#128c7e);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:8000;box-shadow:0 6px 24px rgba(37,211,102,.45);
-  transition:var(--tr);border:none;animation:wa-pulse 2.8s ease infinite;
-}
+.wa-float{position:fixed;bottom:28px;right:28px;width:55px;height:55px;border-radius:50%;background:linear-gradient(135deg,#25d366,#128c7e);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:8000;box-shadow:0 6px 24px rgba(37,211,102,.45);transition:var(--tr);border:none;animation:wa-pulse 2.8s ease infinite;}
 [data-lang="ar"] .wa-float{right:auto;left:28px}
 .wa-float:hover{transform:scale(1.14);animation:none;box-shadow:0 10px 34px rgba(37,211,102,.62)}
 .wa-float svg{width:28px;height:28px;fill:#fff}
+@keyframes wa-pulse{0%,100%{box-shadow:0 6px 22px rgba(37,211,102,.45)}50%{box-shadow:0 6px 30px rgba(37,211,102,.72),0 0 0 9px rgba(37,211,102,.1)}}
 
 /* ══════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════ */
-@media(max-width:1024px){
-  .cart-layout{grid-template-columns:1fr}.co-panel{position:static}
-  .prof-wrap{grid-template-columns:1fr}
-  .footer-inner{grid-template-columns:1fr 1fr}
-}
-@media(max-width:800px){
-  :root{--nav-h:62px;--bc-h:44px}
-  .nav{padding:0 12px;gap:8px}.nav-links{display:none}
-  .wb-stats{display:none}
-  .footer-inner{grid-template-columns:1fr}
-  .footer-bottom{flex-direction:column;text-align:center}
-}
-@media(max-width:580px){
-  .grid-3,.grid-4,.ls-grid,.my-grid{grid-template-columns:1fr}
-  .lang-btn{padding:4px 8px;font-size:.68rem}
-  .welcome-banner{padding:20px 18px}
-}
+@media(max-width:1024px){.cart-layout{grid-template-columns:1fr}.co-panel{position:static}.prof-wrap{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){:root{--nav-h:62px;--bc-h:44px}.nav{padding:0 12px;gap:8px}.nav-links{display:none}.wb-stats{display:none}.footer-inner{grid-template-columns:1fr}.footer-bottom{flex-direction:column;text-align:center}}
+@media(max-width:580px){.grid-3,.grid-4,.ls-grid,.my-grid{grid-template-columns:1fr}.lang-btn{padding:4px 8px;font-size:.68rem}.welcome-banner{padding:20px 18px}.terms-bar{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
+
+<!-- ✨ LOADING SCREEN -->
+<div id="loadingScreen">
+  <div class="ld-logo">KW</div>
+  <div class="ld-brand">kala<em>wy</em></div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+  <div class="ld-tip" id="ld-tip">جاري التحميل...</div>
+</div>
 
 <div class="bg-mesh" aria-hidden="true">
   <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
@@ -621,9 +541,42 @@ img{display:block}
 <div class="mo" id="notifMo">
   <div class="mc" style="max-width:520px">
     <div class="mc-title" id="notif-title">🔔</div>
-    <div style="font-size:.8rem;color:var(--t3)" id="notif-sub"></div>
+    <div class="notif-header-bar">
+      <div class="unread-count-lbl" id="notif-sub"></div>
+      <button class="notif-mark-all-btn" id="markAllBtn" onclick="markAllNotificationsRead()">
+        ✓ <span id="mark-all-lbl">تعليم الكل كمقروء</span>
+      </button>
+    </div>
     <div class="notif-list" id="notifList"><div class="loading-st"><div class="spin"></div></div></div>
-    <div class="mc-footer"><button class="btn btn-glass" onclick="closeMo('notifMo')" id="notif-close">Close</button></div>
+    <div class="mc-footer"><button class="btn btn-glass" onclick="closeMo('notifMo')" id="notif-close">إغلاق</button></div>
+  </div>
+</div>
+
+<!-- TERMS MODAL -->
+<div class="mo" id="termsMo">
+  <div class="mc" style="max-width:500px">
+    <div class="mc-title" id="terms-title">📋 سياسة الاستخدام</div>
+    <div class="terms-mo-body" id="terms-body">
+      <h3>👤 حقوق المستخدم</h3>
+      <p>بمجرد تسجيلك في منصة kalawy، أنت توافق على الشروط والأحكام التالية التي تضمن لك تجربة تعليمية آمنة ومنظمة.</p>
+      <h3>🔑 استخدام الأكواد</h3>
+      <ul>
+        <li>كل كود يُستخدم مرة واحدة فقط ولحساب واحد.</li>
+        <li>ممنوع مشاركة الكود مع أشخاص تانيين.</li>
+        <li>الكود شخصي ومسؤوليتك إنك تحافظ عليه.</li>
+      </ul>
+      <h3>🎬 المحتوى التعليمي</h3>
+      <ul>
+        <li>الحصص والمحاضرات للاستخدام الشخصي فقط.</li>
+        <li>ممنوع تسجيل أو نشر أو توزيع المحتوى.</li>
+        <li>أي انتهاك بيؤدي لإيقاف الحساب فوراً.</li>
+      </ul>
+      <h3>🛡️ الخصوصية والأمان</h3>
+      <p>بياناتك محمية ومش بنشاركها مع أي طرف تالت. بنستخدم التشفير لحماية كل معلوماتك الشخصية.</p>
+      <h3>📞 التواصل والدعم</h3>
+      <p>في أي مشكلة تقدر تتواصل معانا عن طريق واتساب أو البريد الإلكتروني وهنرد عليك في أسرع وقت.</p>
+    </div>
+    <div class="mc-footer"><button class="btn btn-primary" onclick="closeMo('termsMo')">✅ فهمت وموافق</button></div>
   </div>
 </div>
 
@@ -634,7 +587,8 @@ img{display:block}
     <span class="nav-name">kala<em>wy</em></span>
   </a>
   <div class="nav-links">
-    <button class="nl-btn" onclick="resetAll()" id="nl-home">الرئيسية</button>
+    <!-- ✨ Home is FIRST -->
+    <button class="nl-btn active-nav" onclick="resetAll()" id="nl-home">🏠 الرئيسية</button>
     <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">📚 حصصي</button>
     <button class="nl-btn cart-btn" onclick="goPage('cart')" id="nl-cart">
       🛒 <span id="nl-cart-lbl">سلة الشراء</span>
@@ -685,7 +639,8 @@ img{display:block}
 
   <!-- BROWSE -->
   <div class="pg on" id="pg-browse">
-    <!-- Welcome Banner -->
+
+    <!-- ✨ Welcome Banner -->
     <div class="welcome-banner" id="welcomeBanner" style="display:none">
       <div class="wb-glow"></div><div class="wb-glow2"></div>
       <div class="wb-inner">
@@ -701,10 +656,25 @@ img{display:block}
       </div>
     </div>
 
+    <!-- ✨ Terms Bar with Name -->
+    <div class="terms-bar" id="termsBar" style="display:none">
+      <div class="terms-name-badge">
+        <div class="av-mini" id="termsAv">؟</div>
+        <span id="termsNameLbl">أهلاً!</span>
+      </div>
+      <div class="terms-divider"></div>
+      <div class="terms-text" id="termsTextEl">
+        بدخولك للمنصة أنت <strong>موافق</strong> على
+        <span class="terms-link" onclick="openMo('termsMo')" id="termsLinkEl">سياسة الاستخدام</span>
+        وملتزم بعدم مشاركة أو نشر المحتوى.
+      </div>
+      <div class="terms-agree-chip">✅ <span id="termsAgreeChip">موافق</span></div>
+    </div>
+
     <!-- Subjects -->
     <div id="s-sub">
       <div class="sec-hero"><div class="sec-title" id="sub-title">📚 اختار المادة</div><div class="sec-sub" id="sub-sub">اختار المادة اللي عايز تذاكرها</div></div>
-      <div class="grid-3" id="sub-grid"><!-- skeleton --></div>
+      <div class="grid-3" id="sub-grid"></div>
     </div>
 
     <div id="s-tch" class="hidden">
@@ -778,6 +748,7 @@ img{display:block}
         <a class="f-link" onclick="goPage('mylessons')" id="f-my">📚 حصصي</a>
         <a class="f-link" onclick="goPage('cart')" id="f-cart">🛒 السلة</a>
         <a class="f-link" onclick="goPage('profile')" id="f-prof">👤 حسابي</a>
+        <a class="f-link" onclick="openMo('termsMo')" id="f-terms">📋 سياسة الاستخدام</a>
         <a class="f-link" onclick="doLogout()" id="f-logout">🚪 تسجيل الخروج</a>
       </div>
     </div>
@@ -817,11 +788,36 @@ const PALETTES_DARK = ['linear-gradient(135deg,#1a1040,#0d0820)','linear-gradien
 const PALETTES_LIGHT = ['linear-gradient(135deg,#e8d8ff,#d4c0f8)','linear-gradient(135deg,#ddd0ff,#c8b4f8)','linear-gradient(135deg,#f0e4ff,#ddd0ff)','linear-gradient(135deg,#e0d0ff,#cec0f8)','linear-gradient(135deg,#ece0ff,#d8c8ff)','linear-gradient(135deg,#d8ccff,#c8bcf0)'];
 
 /* ══════════════════════════════════════
+   ✨ LOADING SCREEN CONTROL
+══════════════════════════════════════ */
+const LD_TIPS_AR = ['جاري التحميل...','جاري التحقق من حسابك...','تجهيز المحتوى...','لحظة صغيرة ✨'];
+const LD_TIPS_EN = ['Loading...','Checking your account...','Preparing content...','Almost ready ✨'];
+let _ldTipIdx = 0, _ldTipTimer = null;
+
+function startLoadingTips(){
+  const tips = LANG==='ar' ? LD_TIPS_AR : LD_TIPS_EN;
+  const el = document.getElementById('ld-tip');
+  if(!el) return;
+  el.textContent = tips[0];
+  _ldTipTimer = setInterval(()=>{
+    _ldTipIdx = (_ldTipIdx + 1) % tips.length;
+    if(el) el.textContent = tips[_ldTipIdx];
+  }, 900);
+}
+function hideLoadingScreen(){
+  clearInterval(_ldTipTimer);
+  const el = document.getElementById('loadingScreen');
+  if(!el) return;
+  el.classList.add('fade-out');
+  setTimeout(()=>{ el.style.display='none'; }, 650);
+}
+
+/* ══════════════════════════════════════
    I18N
 ══════════════════════════════════════ */
 const S = {
   ar:{
-    home:'الرئيسية',myLessons:'📚 حصصي',cartNav:'سلة الشراء',notes:'ملازم',contact:'تواصل ▾',wa:'واتساب',email:'البريد الإلكتروني',comingSoon:'قريباً ✨',
+    home:'🏠 الرئيسية',myLessons:'📚 حصصي',cartNav:'سلة الشراء',notes:'ملازم',contact:'تواصل ▾',wa:'واتساب',email:'البريد الإلكتروني',comingSoon:'قريباً ✨',
     welcomeSub:'يلا نذاكر! اختار المادة اللي عايز تبدأ بيها',welcomeHello:'أهلاً',
     chooseSubject:'📚 اختار المادة',chooseSubjectSub:'اختار المادة اللي عايز تذاكرها',chooseTeacher:'اختار المدرس',chooseChapter:'📖 اختار الشابتر',chooseChapterSub:'اختار الفصل اللي عايز تذاكره',
     certifiedTeacher:'مدرس معتمد',follow:'+ تابع',following:'✓ متابع',noSubjects:'لا توجد مواد',noTeachers:'لا يوجد مدرسين',noChapters:'لا توجد شابترات',noLessons:'لا توجد حصص',lecture:'محاضرة',lectures:'محاضرات',lesson:'الحصة',unavailable:'غير متاحة',unlocked:'مفتوحة — ادخل',inCart:'اكمل الدفع',addCart:'أضف للسلة',followedMsg:'تمت متابعة',unfollowedMsg:'إلغاء متابعة',
@@ -829,22 +825,28 @@ const S = {
     myTitle:'📚 حصصي المفتوحة',mySub:'الحصص اللي فتحتها بالكود',noMyLessons:'لم تفتح أي حصة بعد',unlockChip:'✅ مفتوحة',
     cartTitle:'🛒 سلة الشراء',cartSub:'ادخل كود كل حصة عشان تفتحها',cartEmpty:'السلة فارغة — أضف حصص من التصفح',unlock:'فتح الحصص بالكود',lessonsCount:'عدد الحصص',method:'طريقة الفتح',codePerLesson:'كود لكل حصة',codeHint:'📋 ادخل كود الحصة اللي أخدته من المدرس أو الأدمن',codePh:'كود الحصة...',remove:'حذف',removedCart:'تم الحذف من السلة',alreadyUnlocked:'الحصة مفتوحة بالفعل ✅',alreadyInCart:'موجودة في السلة',addedCart:'أُضيف للسلة',lessonUnlocked:'🎉 تم فتح الحصة',invalidCode:'الكود غلط أو غير موجود',wrongLesson:'الكود لحصة تانية',usedCode:'الكود استخدم قبل كده',enterCode:'ادخل كود الحصة',goToCart:'🛒 اكمل الدفع',
     profTitle:'👤 حسابي',grade:'الصف',phone:'الموبايل',unlockedLessons:'حصص مفتوحة',editProfile:'✏️ تعديل البيانات',logout:'🚪 تسجيل الخروج',editTitle:'✏️ تعديل البيانات',name:'الاسم',saveProfile:'💾 حفظ',cancel:'إلغاء',savedOk:'تم الحفظ بنجاح ✅',enterName:'ادخل اسمك',myEnrolled:'🔑 الحصص المفتوحة',noEnrolled:'لا توجد حصص مفتوحة',openLesson:'فتح →',
-    notifTitle:'🔔 الإشعارات',notifSub:'إشعارات المدرسين اللي عامل لهم Follow',noNotif:'لا توجد إشعارات',close:'إغلاق',notifTypes:{lesson:'حصة',exam:'امتحان',post:'منشور',homework:'واجب',pdf:'PDF',video:'فيديو'},
+    notifTitle:'🔔 الإشعارات',notifSub:'إشعار غير مقروء',notifSubPlural:'إشعارات غير مقروءة',notifSubNone:'كل الإشعارات مقروءة',markAllRead:'تعليم الكل كمقروء',noNotif:'لا توجد إشعارات',close:'إغلاق',
+    notifTypes:{lesson:'حصة',exam:'امتحان',post:'منشور',homework:'واجب',pdf:'PDF',video:'فيديو'},
+    readTag:'مقروء',unreadTag:'جديد',
     bcHome:'الرئيسية',bcBrowse:'محاضرات',
-    fDesc:'منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً.',fLinks:'روابط سريعة',fContact:'تواصل معنا',fHome:'🏠 الرئيسية',fMy:'📚 حصصي',fCart:'🛒 السلة',fProf:'👤 حسابي',fLogout:'🚪 تسجيل الخروج',fCopy:'© 2025 kalawy — جميع الحقوق محفوظة',fMade:'صُنع بـ ❤️ للطلاب',
+    termsGreet:'أهلاً،',termsText:'بدخولك للمنصة أنت موافق على سياسة الاستخدام وملتزم بعدم مشاركة أو نشر المحتوى.',termsLink:'سياسة الاستخدام',termsAgree:'موافق',
+    fDesc:'منصة تعليمية مصممة لتجعل الدراسة أسهل وأكثر تنظيماً.',fLinks:'روابط سريعة',fContact:'تواصل معنا',fHome:'🏠 الرئيسية',fMy:'📚 حصصي',fCart:'🛒 السلة',fProf:'👤 حسابي',fTerms:'📋 سياسة الاستخدام',fLogout:'🚪 تسجيل الخروج',fCopy:'© 2025 kalawy — جميع الحقوق محفوظة',fMade:'صُنع بـ ❤️ للطلاب',
   },
   en:{
-    home:'Home',myLessons:'📚 My Lessons',cartNav:'Cart',notes:'Notes',contact:'Contact ▾',wa:'WhatsApp',email:'Email',comingSoon:'Coming Soon ✨',
-    welcomeSub:"Let's study! Pick a subject to get started.",welcomeHello:'Welcome',
+    home:'🏠 Home',myLessons:'📚 My Lessons',cartNav:'Cart',notes:'Notes',contact:'Contact ▾',wa:'WhatsApp',email:'Email',comingSoon:'Coming Soon ✨',
+    welcomeSub:"Let's study! Pick a subject to get started.",welcomeHello:'Welcome back,',
     chooseSubject:'📚 Choose a Subject',chooseSubjectSub:'Select the subject you want to study',chooseTeacher:'Choose your teacher',chooseChapter:'📖 Choose a Chapter',chooseChapterSub:'Select the chapter',
     certifiedTeacher:'Certified Teacher',follow:'+ Follow',following:'✓ Following',noSubjects:'No subjects found',noTeachers:'No teachers found',noChapters:'No chapters found',noLessons:'No lessons found',lecture:'lecture',lectures:'lectures',lesson:'Lesson',unavailable:'Unavailable',unlocked:'Unlocked — Enter',inCart:'Go to Cart',addCart:'Add to Cart',followedMsg:'Following',unfollowedMsg:'Unfollowed',
     unlockedStat:'Unlocked',inCartStat:'In Cart',
     myTitle:'📚 My Unlocked Lessons',mySub:'Lessons unlocked with your code',noMyLessons:'No lessons unlocked yet',unlockChip:'✅ Unlocked',
     cartTitle:'🛒 Cart',cartSub:'Enter the code for each lesson to unlock it',cartEmpty:'Cart is empty — browse lessons to add',unlock:'Unlock Lessons by Code',lessonsCount:'Lessons',method:'Method',codePerLesson:'Code per lesson',codeHint:'📋 Enter the code from your teacher or admin',codePh:'Lesson code...',remove:'Remove',removedCart:'Removed from cart',alreadyUnlocked:'Already unlocked ✅',alreadyInCart:'Already in cart',addedCart:'Added to cart',lessonUnlocked:'🎉 Lesson unlocked',invalidCode:'Invalid or not found code',wrongLesson:'Code belongs to another lesson',usedCode:'Code already used',enterCode:'Enter lesson code',goToCart:'🛒 Go to Cart',
     profTitle:'👤 My Account',grade:'Grade',phone:'Phone',unlockedLessons:'Unlocked Lessons',editProfile:'✏️ Edit Profile',logout:'🚪 Sign Out',editTitle:'✏️ Edit Profile',name:'Name',saveProfile:'💾 Save',cancel:'Cancel',savedOk:'Saved successfully ✅',enterName:'Enter your name',myEnrolled:'🔑 Unlocked Lessons',noEnrolled:'No lessons unlocked',openLesson:'Open →',
-    notifTitle:'🔔 Notifications',notifSub:'Notifications from teachers you follow',noNotif:'No notifications yet',close:'Close',notifTypes:{lesson:'Lesson',exam:'Exam',post:'Post',homework:'Homework',pdf:'PDF',video:'Video'},
+    notifTitle:'🔔 Notifications',notifSub:'unread notification',notifSubPlural:'unread notifications',notifSubNone:'All caught up!',markAllRead:'Mark all as read',noNotif:'No notifications yet',close:'Close',
+    notifTypes:{lesson:'Lesson',exam:'Exam',post:'Post',homework:'Homework',pdf:'PDF',video:'Video'},
+    readTag:'Read',unreadTag:'New',
     bcHome:'Home',bcBrowse:'Lessons',
-    fDesc:'An educational platform designed to make studying easier.',fLinks:'Quick Links',fContact:'Contact Us',fHome:'🏠 Home',fMy:'📚 My Lessons',fCart:'🛒 Cart',fProf:'👤 Account',fLogout:'🚪 Sign Out',fCopy:'© 2025 kalawy — All rights reserved',fMade:'Made with ❤️ for students',
+    termsGreet:'Hello,',termsText:'By using kalawy you agree to our Terms of Use and commit to not sharing or distributing content.',termsLink:'Terms of Use',termsAgree:'Agreed',
+    fDesc:'An educational platform designed to make studying easier.',fLinks:'Quick Links',fContact:'Contact Us',fHome:'🏠 Home',fMy:'📚 My Lessons',fCart:'🛒 Cart',fProf:'👤 Account',fTerms:'📋 Terms of Use',fLogout:'🚪 Sign Out',fCopy:'© 2025 kalawy — All rights reserved',fMade:'Made with ❤️ for students',
   }
 };
 function t(k){ return S[LANG]?.[k]??S.ar[k]??k; }
@@ -860,11 +862,19 @@ function applyI18n(){
   set('prof-title','profTitle');set('prow-grade','grade');set('prow-phone','phone');set('prow-unlocked','unlockedLessons');set('edit-btn-lbl','editProfile');set('logout-btn','logout');set('enr-title','myEnrolled');
   set('edit-title','editTitle');set('edit-name-lbl','name');set('edit-phone-lbl','phone');set('edit-cancel','cancel');
   const edSv=document.getElementById('ed-sv');if(edSv)edSv.textContent=t('saveProfile');
-  set('notif-title','notifTitle');set('notif-sub','notifSub');set('notif-close','close');
-  set('f-desc','fDesc');set('f-links-title','fLinks');set('f-contact-title','fContact');set('f-home','fHome');set('f-my','fMy');set('f-cart','fCart');set('f-prof','fProf');set('f-logout','fLogout');set('f-copy','fCopy');set('f-made','fMade');
+  set('notif-title','notifTitle');set('notif-close','close');
+  set('mark-all-lbl','markAllRead');
+  // Terms bar
+  const tEl=document.getElementById('termsTextEl');
+  if(tEl)tEl.innerHTML=`${LANG==='ar'?'بدخولك للمنصة أنت':'By using kalawy you agree to our'} <strong>${LANG==='ar'?'موافق':'agree</strong> to'}</strong> <span class="terms-link" onclick="openMo('termsMo')">${t('termsLink')}</span> ${LANG==='ar'?'وملتزم بعدم مشاركة أو نشر المحتوى.':'and commit to not sharing content.'}`;
+  set('termsAgreeChip','termsAgree');
+  set('f-desc','fDesc');set('f-links-title','fLinks');set('f-contact-title','fContact');
+  set('f-home','fHome');set('f-my','fMy');set('f-cart','fCart');set('f-prof','fProf');set('f-terms','fTerms');set('f-logout','fLogout');
+  set('f-copy','fCopy');set('f-made','fMade');
   const edNm=document.getElementById('ed-nm');if(edNm)edNm.placeholder=LANG==='ar'?'اسمك الكامل':'Full name';
-  // Welcome banner
   const wbSub=document.getElementById('wbSub');if(wbSub)wbSub.textContent=t('welcomeSub');
+  // loading tips lang
+  const ldTip=document.getElementById('ld-tip');if(ldTip)ldTip.textContent=LANG==='ar'?'جاري التحميل...':'Loading...';
 }
 
 /* ══════════════════════════════════════
@@ -900,48 +910,32 @@ function toast(type,msg,dur=4000){
 }
 function openMo(id){document.getElementById(id).classList.add('show');}
 function closeMo(id){document.getElementById(id).classList.remove('show');}
-function imgSrc(v){
-  if(!v)return'';v=String(v).trim();if(!v)return'';
-  if(/^(https?:|data:|blob:)/.test(v))return v;
-  if(v.startsWith('/storage/v1/object/public/'))return SB_URL+v;
-  return`${SB_URL}/storage/v1/object/public/kalawy/${v.replace(/^\/+/,'').replace(/^kalawy\//,'')}`;
-}
+function imgSrc(v){if(!v)return'';v=String(v).trim();if(!v)return'';if(/^(https?:|data:|blob:)/.test(v))return v;if(v.startsWith('/storage/v1/object/public/'))return SB_URL+v;return`${SB_URL}/storage/v1/object/public/kalawy/${v.replace(/^\/+/,'').replace(/^kalawy\//,'')}`;}
 function imgSafe(v){return imgSrc(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function se(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 function pal(i){return(THEME==='dark'?PALETTES_DARK:PALETTES_LIGHT)[i%6];}
-
-/* skeleton cards */
-function skeletonCards(count=6,gridId){
-  const g=document.getElementById(gridId);if(!g)return;
-  g.innerHTML=Array.from({length:count},()=>`
-    <div class="skel-card">
-      <div class="skel skel-circle" style="margin-bottom:4px"></div>
-      <div class="skel skel-rect"></div>
-      <div class="skel skel-rect-sm"></div>
-    </div>`).join('');
-}
+function skeletonCards(count=6,gridId){const g=document.getElementById(gridId);if(!g)return;g.innerHTML=Array.from({length:count},()=>`<div class="skel-card"><div class="skel skel-circle" style="margin-bottom:4px"></div><div class="skel skel-rect"></div><div class="skel skel-rect-sm"></div></div>`).join('');}
 
 /* ══════════════════════════════════════
-   AUTH HELPERS (unchanged)
+   AUTH HELPERS
 ══════════════════════════════════════ */
 const LOGIN_URL='/login';function goUrl(url){window.location.replace(new URL(url,window.location.origin).href);}
 async function doLogout(){localStorage.removeItem('kw-login-ok');await sb.auth.signOut();goUrl(LOGIN_URL);}
-async function safeRow(table,column,value){
-  if(!value)return null;
-  try{const{data,error}=await sb.from(table).select('*').eq(column,value).maybeSingle();if(error){console.warn(`${table}.${column} read skipped:`,error.message);return null;}return data||null;}catch(err){console.warn(`${table}.${column} failed:`,err);return null;}
-}
+async function safeRow(table,column,value){if(!value)return null;try{const{data,error}=await sb.from(table).select('*').eq(column,value).maybeSingle();if(error){console.warn(`${table}.${column} read skipped:`,error.message);return null;}return data||null;}catch(err){console.warn(`${table}.${column} failed:`,err);return null;}}
 function pickGrade(...rows){for(const r of rows){const v=r?.grade_id??r?.gradeid??r?.grade??r?.class_id??r?.class;if(v!==undefined&&v!==null&&String(v).trim()!=='')return v;}return null;}
 function pickName(user,...rows){for(const r of rows){const v=r?.full_name??r?.fullname??r?.name??r?.student_name??r?.display_name;if(v&&String(v).trim())return String(v).trim();}return user.user_metadata?.full_name||user.user_metadata?.name||(user.email?user.email.split('@')[0]:'');}
 function pickPhone(...rows){for(const r of rows){const v=r?.phone??r?.mobile??r?.student_phone??r?.phone_number;if(v&&String(v).trim())return String(v).trim();}return'';}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 async function waitForAuthSession(timeoutMs=2600){return new Promise(resolve=>{let done=false;const sub=sb.auth.onAuthStateChange((_event,session)=>{if(done)return;if(session){done=true;try{sub?.data?.subscription?.unsubscribe?.();}catch{}resolve(session);}});setTimeout(()=>{if(done)return;done=true;try{sub?.data?.subscription?.unsubscribe?.();}catch{}resolve(null);},timeoutMs);});}
 async function getStableSession(){for(let i=0;i<10;i++){try{const{data:{session},error}=await sb.auth.getSession();if(session)return session;if(error)console.warn('Session read try failed:',error.message);}catch(err){console.warn('Session read exception:',err);}await sleep(220+i*80);}const eventSession=await waitForAuthSession(2600);if(eventSession)return eventSession;try{const{data:{session}}=await sb.auth.getSession();if(session)return session;}catch{}return null;}
-function showLoginRequired(){const wrap=document.querySelector('.pw')||document.body;if(wrap){wrap.innerHTML=`<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px"><div style="max-width:420px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:12px">🔐</div><div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">أنت لسه عامل Login</div><div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">مش هنعمل Logout لوحدنا. اضغط إعادة المحاولة أو استنى ثانية.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-primary" onclick="location.reload()">🔄 إعادة المحاولة</button><button class="btn btn-glass" onclick="goUrl(LOGIN_URL)">تسجيل الدخول</button></div></div></div>`;}}
-function showAccessDenied(role){const wrap=document.querySelector('.pw')||document.body;if(wrap){wrap.innerHTML=`<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px"><div style="max-width:440px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:12px">🚫</div><div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">الحساب ده مش طالب</div><div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">افتح صفحة الحساب المناسبة أو اضغط تسجيل خروج بنفسك.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-primary" onclick="goUrl('/home')">الرئيسية</button><button class="btn btn-glass" onclick="doLogout()">تسجيل خروج</button></div></div></div>`;}}
+function showLoginRequired(){hideLoadingScreen();const wrap=document.querySelector('.pw')||document.body;if(wrap){wrap.innerHTML=`<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px"><div style="max-width:420px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:12px">🔐</div><div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">أنت لسه عامل Login</div><div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">مش هنعمل Logout لوحدنا. اضغط إعادة المحاولة أو استنى ثانية.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-primary" onclick="location.reload()">🔄 إعادة المحاولة</button><button class="btn btn-glass" onclick="goUrl(LOGIN_URL)">تسجيل الدخول</button></div></div></div>`;}}
+function showAccessDenied(role){hideLoadingScreen();const wrap=document.querySelector('.pw')||document.body;if(wrap){wrap.innerHTML=`<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px"><div style="max-width:440px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:var(--shadow)"><div style="font-size:3rem;margin-bottom:12px">🚫</div><div style="font-weight:900;font-size:1.1rem;margin-bottom:8px">الحساب ده مش طالب</div><div style="color:var(--t3);font-size:.86rem;line-height:1.8;margin-bottom:18px">افتح صفحة الحساب المناسبة أو اضغط تسجيل خروج بنفسك.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-primary" onclick="goUrl('/home')">الرئيسية</button><button class="btn btn-glass" onclick="doLogout()">تسجيل خروج</button></div></div></div>`;}}
 
 async function checkSession(){
-  setTheme(localStorage.getItem('kw-theme')||'light');setLang(localStorage.getItem('kw-lang')||'ar');
+  setTheme(localStorage.getItem('kw-theme')||'light');
+  setLang(localStorage.getItem('kw-lang')||'ar');
+  startLoadingTips();
   try{const session=await getStableSession();if(!session){showLoginRequired();return;}const user=session.user;localStorage.setItem('kw-login-ok',JSON.stringify({id:user?.id||'',email:user?.email||'',at:Date.now()}));const[profile,studentById,userByAuthId,userById,userByEmail]=await Promise.all([safeRow('profiles','id',user.id),safeRow('students','id',user.id),safeRow('users','auth_user_id',user.id),safeRow('users','id',user.id),safeRow('users','email',user.email)]);const appUser=userByAuthId||userById||userByEmail;const role=profile?.role||studentById?.role||appUser?.role||'student';if(role==='admin'||role==='teacher'){showAccessDenied(role);return;}await initApp(user,{profile,student:studentById,appUser});}catch(err){console.error('Dashboard auth boot error:',err);showLoginRequired();}
 }
 
@@ -951,7 +945,6 @@ async function initApp(user,cached={}){
   const u=cached.appUser||await safeRow('users','auth_user_id',user.id)||await safeRow('users','id',user.id)||await safeRow('users','email',user.email);
   ME={id:user.id,email:user.email||p?.email||st?.email||u?.email||'',full_name:pickName(user,p,st,u),phone:pickPhone(p,st,u),grade_id:pickGrade(st,p,u)};
   try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
-  // load read notif ids from localStorage
   try{_readNotifIds=new Set(JSON.parse(localStorage.getItem(`kw-read-notif-${ME.id}`)||'[]'));}catch{_readNotifIds=new Set();}
 
   document.getElementById('mainNav').style.display='flex';
@@ -959,16 +952,17 @@ async function initApp(user,cached={}){
   document.getElementById('siteFooter').style.display='block';
   document.getElementById('waFloat').style.display='flex';
   updateUI();applyI18n();showWelcome();
-  // Show skeleton immediately
   skeletonCards(6,'sub-grid');
   try{await loadFollows();}catch(err){console.warn('loadFollows skipped:',err);}
   try{await loadEnrollments();}catch(err){console.warn('loadEnrollments skipped:',err);}
   try{await loadNotifications(false);}catch(err){console.warn('loadNotifications skipped:',err);}
+  // ✨ Hide loading screen once we have all data
+  hideLoadingScreen();
   try{await loadSubjects();}catch(err){console.warn('loadSubjects skipped:',err);}
 }
 
 /* ══════════════════════════════════════
-   WELCOME BANNER
+   ✨ WELCOME BANNER + TERMS BAR
 ══════════════════════════════════════ */
 function showWelcome(){
   const banner=document.getElementById('welcomeBanner');if(!banner)return;
@@ -980,17 +974,28 @@ function showWelcome(){
     const hello=LANG==='ar'?`${t('welcomeHello')}`:'Welcome back,';
     greeting.innerHTML=`${hello} <em>${esc(name)}</em> 👋`;
   }
-  se('wb-unlocked',_unlockedLessons.size);
-  se('wb-cart',_cart.length);
+  se('wb-unlocked',_unlockedLessons.size);se('wb-cart',_cart.length);
   banner.style.display='block';
+
+  // ✨ Terms bar with name
+  const termsBar=document.getElementById('termsBar');
+  if(termsBar){
+    const termsAv=document.getElementById('termsAv');
+    if(termsAv)termsAv.textContent=av;
+    const termsNameLbl=document.getElementById('termsNameLbl');
+    if(termsNameLbl){
+      const greet=LANG==='ar'?`أهلاً، ${name}!`:`Hello, ${name}!`;
+      termsNameLbl.textContent=greet;
+    }
+    termsBar.style.display='flex';
+  }
 }
 
 /* ══════════════════════════════════════
    UI UPDATE
 ══════════════════════════════════════ */
 function updateUI(){
-  const name=ME.full_name||ME.email||'؟';
-  const av=(name[0]||'؟').toUpperCase();
+  const name=ME.full_name||ME.email||'؟';const av=(name[0]||'؟').toUpperCase();
   ['navAv','pr-av'].forEach(id=>se(id,av));
   se('pr-nm',ME.full_name||'—');se('pr-em',ME.email||'—');se('pr-gd',gr(ME.grade_id));se('pr-ph',ME.phone||'—');se('pr-ch',_unlockedLessons.size);
   se('wb-unlocked',_unlockedLessons.size);se('wb-cart',_cart.length);
@@ -1012,11 +1017,17 @@ function openWhatsApp(){const m=encodeURIComponent(LANG==='ar'?'مرحباً، �
 function openMail(){window.location.href=`mailto:${CONTACT_MAIL}?subject=${encodeURIComponent('kalawy')}`;}
 
 /* ══════════════════════════════════════
-   ROUTING
+   ROUTING + NAV ACTIVE STATE
 ══════════════════════════════════════ */
 function goPage(page){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById(`pg-${page}`)?.classList.add('on');
+  // ✨ Update active nav button
+  ['nl-home','nl-my','nl-cart','nl-notes'].forEach(id=>{
+    document.getElementById(id)?.classList.remove('active-nav');
+  });
+  const navMap={mylessons:'nl-my',cart:'nl-cart',browse:'nl-home'};
+  if(navMap[page])document.getElementById(navMap[page])?.classList.add('active-nav');
   if(page==='mylessons')loadMyLessons();
   if(page==='cart')renderCart();
   if(page==='profile'){updateUI();loadProfileEnrolled();}
@@ -1037,7 +1048,12 @@ function updateBc(){
 }
 function showStep(s){['sub','tch','ch','ls'].forEach(x=>{const el=document.getElementById(`s-${x}`);if(el)el.classList.toggle('hidden',x!==s);});updateBc();}
 function resetTo(s){if(s==='sub'){_sel={sub:null,tch:null,ch:null};showStep('sub');}else if(s==='tch'){_sel.tch=null;_sel.ch=null;showStep('tch');}else if(s==='ch'){_sel.ch=null;showStep('ch');}}
-function resetAll(){_sel={sub:null,tch:null,ch:null};showStep('sub');goPage('browse');}
+function resetAll(){
+  _sel={sub:null,tch:null,ch:null};showStep('sub');goPage('browse');
+  // Restore home active state
+  ['nl-home','nl-my','nl-cart'].forEach(id=>document.getElementById(id)?.classList.remove('active-nav'));
+  document.getElementById('nl-home')?.classList.add('active-nav');
+}
 
 /* ══════════════════════════════════════
    FOLLOW
@@ -1053,44 +1069,66 @@ async function toggleFollow(teacherId,teacherName,ev){
 }
 
 /* ══════════════════════════════════════
-   NOTIFICATIONS — mark as read
+   ✨ NOTIFICATIONS — improved read/unread marks
 ══════════════════════════════════════ */
 async function loadNotifications(updateList=true){
   if(!ME?.id)return;
   const{data}=await sb.from('notifications').select('id,title,body,type,created_at,sender:sender_id(full_name)').order('created_at',{ascending:false}).limit(50);
   _notifications=data||[];
   const unreadCount=_notifications.filter(n=>!_readNotifIds.has(n.id)).length;
-  const ct=document.getElementById('bell-ct');
-  const bellBtn=document.getElementById('bellBtn');
+  const ct=document.getElementById('bell-ct');const bellBtn=document.getElementById('bellBtn');
   if(ct){if(unreadCount>0){ct.textContent=unreadCount;ct.classList.remove('hidden');bellBtn?.classList.add('has-notif');}else{ct.classList.add('hidden');bellBtn?.classList.remove('has-notif');}}
   if(updateList)renderNotifications();
 }
 
 function markAllNotificationsRead(){
+  const btn=document.getElementById('markAllBtn');if(btn)btn.disabled=true;
   const ids=_notifications.map(n=>n.id);
   ids.forEach(id=>_readNotifIds.add(id));
   try{localStorage.setItem(`kw-read-notif-${ME.id}`,JSON.stringify([..._readNotifIds]));}catch{}
-  // Update bell badge
   const ct=document.getElementById('bell-ct');const bellBtn=document.getElementById('bellBtn');
   if(ct){ct.classList.add('hidden');bellBtn?.classList.remove('has-notif');}
-  // Update notif cards visual
+  // Update notif sub label
+  const sub=document.getElementById('notif-sub');if(sub)sub.textContent=t('notifSubNone');
+  // Remove unread visuals
   document.querySelectorAll('.notif-card.unread').forEach(el=>el.classList.remove('unread'));
+  document.querySelectorAll('.notif-unread-dot').forEach(el=>el.remove());
+  document.querySelectorAll('.notif-unread-tag').forEach(el=>{el.className='notif-read-tag';el.textContent=t('readTag');});
+  if(btn){btn.textContent='✓ '+t('markAllRead');btn.disabled=false;}
 }
 
 function renderNotifications(){
   const el=document.getElementById('notifList');if(!el)return;
+  const unreadCount=_notifications.filter(n=>!_readNotifIds.has(n.id)).length;
+  // Update sub label
+  const sub=document.getElementById('notif-sub');
+  if(sub){
+    if(unreadCount===0)sub.textContent=t('notifSubNone');
+    else sub.textContent=`${unreadCount} ${unreadCount===1?t('notifSub'):t('notifSubPlural')}`;
+  }
+  // Mark all btn state
+  const markBtn=document.getElementById('markAllBtn');if(markBtn)markBtn.disabled=unreadCount===0;
   if(!_notifications.length){el.innerHTML=`<div class="empty-st"><div class="empty-ico">🔕</div><div class="empty-txt">${t('noNotif')}</div></div>`;return;}
   const typeLabels=t('notifTypes')||{};
   el.innerHTML=_notifications.map((n,i)=>{
     const dt=n.created_at?new Date(n.created_at).toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'}):'';
     const isUnread=!_readNotifIds.has(n.id);
+    // ✨ Unread dot + tag
+    const dot=isUnread?`<div class="notif-unread-dot" style="animation-delay:${i*0.05}s"></div>`:'';
+    const tag=isUnread
+      ?`<span class="notif-unread-tag">${t('unreadTag')}</span>`
+      :`<span class="notif-read-tag">${t('readTag')}</span>`;
     return`<div class="notif-card${isUnread?' unread':''}" style="animation-delay:${i*0.04}s">
+      ${dot}
       <div class="notif-top">
         <div class="notif-title">${esc(n.title||'إشعار')}</div>
         <span class="notif-type-badge">${typeLabels[n.type]||n.type||'—'}</span>
       </div>
       ${n.body?`<div class="notif-body">${esc(n.body)}</div>`:''}
-      <div class="notif-meta">${esc(n.sender?.full_name||'kalawy')} · ${dt}</div>
+      <div class="notif-meta">
+        ${tag}
+        <span>${esc(n.sender?.full_name||'kalawy')} · ${dt}</span>
+      </div>
     </div>`;
   }).join('');
 }
@@ -1099,8 +1137,7 @@ async function openNotifications(){
   openMo('notifMo');
   document.getElementById('notifList').innerHTML=`<div class="loading-st"><div class="spin"></div></div>`;
   await loadNotifications(true);
-  // Mark all as read after a short delay so user sees the unread state
-  setTimeout(markAllNotificationsRead, 900);
+  setTimeout(markAllNotificationsRead,1200);
 }
 
 /* ══════════════════════════════════════
