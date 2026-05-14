@@ -73,7 +73,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 @keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes wf{0%,100%{opacity:.45;transform:rotate(var(--r,-9deg))}50%{opacity:.82;transform:rotate(var(--r,-9deg)) translateY(-5px)}}
 
-/* ══════════ NAV — inline, no black bar ══════════ */
+/* ══════════ NAV ══════════ */
 .nav{
   display:flex;align-items:center;padding:18px 4px 8px;gap:12px;
   animation:slideDown .4s ease;
@@ -236,23 +236,12 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 }
 .plyr__control--overlaid{background:rgba(139,92,246,.88)!important;box-shadow:0 4px 20px var(--glow)!important}
 .plyr__control--overlaid:hover{background:#6d28d9!important}
-
-/*
-  ══ HIDE YOUTUBE BRANDING ══
-  Scale iframe 10% larger than container (parent has overflow:hidden)
-  → corners (YouTube logo, copy-link button) get clipped out of view
-*/
 .plyr__video-embed{overflow:hidden!important}
 .plyr__video-embed iframe{
-  /* push 5% on each side so logo corners are cut off */
-  top:-5%!important;
-  left:-5%!important;
-  width:110%!important;
-  height:110%!important;
-  /* block pointer events so no YT right-click / copy-link */
+  top:-5%!important;left:-5%!important;
+  width:110%!important;height:110%!important;
   pointer-events:none!important;
 }
-/* Also hide any YT overlay that manages to render */
 .plyr__video-embed > div{pointer-events:none!important}
 .plyr__poster{background-size:cover}
 
@@ -380,9 +369,18 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 .wa-btn:hover{transform:scale(1.12);box-shadow:0 6px 28px rgba(37,211,102,.6);animation-play-state:paused}
 .wa-btn svg{width:30px;height:30px;fill:#fff}
 
-/* ══════════ ERROR PAGE ══════════ */
+/* ══════════ ERROR / EXPIRED PAGE ══════════ */
 .err-full{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;animation:fadeIn .4s ease}
 .err-card{background:var(--card);border-radius:20px;padding:40px 28px;text-align:center;max-width:380px;width:100%;box-shadow:var(--sh);border:1px solid var(--bd)}
+
+/* ══════════ CODE INPUT (expired screen) ══════════ */
+.code-inp-expired{
+  flex:1;background:var(--input-bg);border:1.5px solid var(--bd);
+  color:var(--txt);padding:10px 13px;border-radius:10px;outline:none;
+  font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;font-family:'Tajawal',sans-serif;transition:.18s;
+}
+.code-inp-expired:focus{border-color:var(--p1);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
 
 /* ══════════ RESPONSIVE ══════════ */
 @media(max-width:580px){
@@ -489,7 +487,6 @@ function showAdBlockOverlay(){
 }
 
 async function runAdBlockCheck(){
-  // Method 1 — bait element
   const bait=document.createElement('div');
   bait.id='pub_300x250';
   bait.className='ad-banner advertisement adsbox doubleclick pub_300x250m';
@@ -500,13 +497,10 @@ async function runAdBlockCheck(){
   const baitBlocked=!bait.offsetParent||bait.offsetHeight===0||cs.display==='none'||cs.visibility==='hidden';
   bait.remove();
   if(baitBlocked){showAdBlockOverlay();return;}
-
-  // Method 2 — Brave navigator.brave API
   try{
     if(window.navigator.brave){
       const isBrave=await window.navigator.brave.isBrave();
       if(isBrave){
-        // Brave detected — check if shields block a network request
         try{
           await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',{mode:'no-cors',cache:'no-store'});
         }catch(e){
@@ -515,8 +509,6 @@ async function runAdBlockCheck(){
       }
     }
   }catch(e){}
-
-  // Method 3 — fetch known ad URL
   try{
     const r=await fetch('https://securepubads.g.doubleclick.net/tag/js/gpt.js',{mode:'no-cors',cache:'no-store'});
     if(!r){showAdBlockOverlay();return;}
@@ -600,23 +592,112 @@ function fmtTimer(ms){
 }
 function startTimer(){
   if(ROLE==='admin'||ROLE==='teacher'||!ACCESS?.used_at)return;
-  const tot=ah()*3600000;
   function upd(){
     const left=ml();
     const el=document.getElementById('pill-timer');
     if(el)el.textContent=`صلاحية الفيديو ${fmtTimer(left)}`;
     if(left!==null&&left<=0){
-      clearInterval(_aci);try{window._pl?.pause();}catch{}
-      showErr('انتهى وقت الحصة. ادخل كود جديد.');
+      clearInterval(_aci);
+      try{window._pl?.pause();}catch{}
+      /* ══ بدل showErr — بنعرض شاشة إدخال كود جديد ══ */
+      showExpired();
     }
   }
   upd();_aci=setInterval(upd,1000);
 }
 
+/* ══ EXPIRED SCREEN ══ */
+function showExpired(){
+  document.getElementById('il')?.remove();
+  try{window._pl?.pause();}catch{}
+  if(_wmt){clearInterval(_wmt);_wmt=null;}
+
+  document.getElementById('page').innerHTML=`
+  <div class="err-full">
+    <div class="err-card">
+      <span style="font-size:3.2rem;display:block;margin-bottom:14px">⏰</span>
+      <div style="font-size:1.05rem;font-weight:900;margin-bottom:6px;color:var(--txt)">
+        انتهى وقت الحصة
+      </div>
+      <div style="font-size:.84rem;color:var(--t2);margin-bottom:22px;line-height:1.75">
+        ادخل كود جديد عشان تكمل المشاهدة
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input
+          id="new-code-inp"
+          class="code-inp-expired"
+          placeholder="كود الحصة..."
+          maxlength="24"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter')redeemNewCode()"
+        >
+        <button class="btn btn-p" onclick="redeemNewCode()" id="redeem-btn"
+          style="border-radius:10px;padding:10px 20px;font-size:.9rem;flex-shrink:0">
+          ✓ تفعيل
+        </button>
+      </div>
+
+      <button class="btn btn-out" onclick="goHome()"
+        style="width:100%;justify-content:center;margin-top:4px">
+        ← العودة للرئيسية
+      </button>
+    </div>
+  </div>`;
+
+  /* focus على input تلقائياً */
+  setTimeout(()=>document.getElementById('new-code-inp')?.focus(),200);
+}
+
+/* ══ REDEEM NEW CODE ══ */
+async function redeemNewCode(){
+  const lid=new URLSearchParams(location.search).get('id');
+  const inp=document.getElementById('new-code-inp');
+  const code=(inp?.value||'').trim().toUpperCase();
+  const btn=document.getElementById('redeem-btn');
+  if(!code)return toast('w','ادخل الكود الجديد أولاً');
+
+  btn.innerHTML='<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>';
+  btn.disabled=true;
+
+  /* تحقق من الكود */
+  const{data:row,error}=await sb.from('lesson_codes')
+    .select('id,lesson_id,used_by')
+    .eq('code',code)
+    .single();
+
+  if(error||!row){
+    toast('e','الكود غلط أو غير موجود');
+    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
+  }
+  if(row.lesson_id!==lid){
+    toast('e','الكود ده لحصة تانية');
+    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
+  }
+  /* لو الكود اتستخدم من حساب تاني */
+  if(row.used_by&&row.used_by!==ME.id){
+    toast('e','الكود اتستخدم قبل كده من حساب تاني');
+    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
+  }
+
+  /* تفعيل الكود — نحدّث used_by و used_at */
+  const{error:upErr}=await sb.from('lesson_codes')
+    .update({used_by:ME.id,used_at:new Date().toISOString()})
+    .eq('id',row.id);
+
+  if(upErr){
+    toast('e','فشل التفعيل: '+upErr.message);
+    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
+  }
+
+  toast('s','🎉 تم تفعيل الكود! جاري إعادة تحميل الحصة...',2500);
+  setTimeout(()=>location.reload(),1400);
+}
+
 /* ══ INIT ══ */
 async function init(){
   const th=localStorage.getItem('kw-t')||'light';setTheme(th);
-  runAdBlockCheck(); // Check for adblock on page load
+  runAdBlockCheck();
   const lid=new URLSearchParams(location.search).get('id');
   if(!lid){showErr('لم يتم تحديد الحصة');return;}
   const{data:{session}}=await sb.auth.getSession();
@@ -646,7 +727,9 @@ async function loadLesson(lid){
   }
   if(ROLE!=='admin'&&ROLE!=='teacher'){
     if(!ls.is_active){showErr('الحصة مغلقة حالياً');return;}
-    const exp=ae();if(exp&&exp.getTime()<=Date.now()){showErr('انتهى وقت الحصة. ادخل كود جديد.');return;}
+    /* ══ لو الوقت خلص — عرض شاشة إدخال كود جديد بدل رسالة خطأ ══ */
+    const exp=ae();
+    if(exp&&exp.getTime()<=Date.now()){showExpired();return;}
   }
   buildPage();startTimer();
 }
@@ -681,7 +764,7 @@ function sw(id){
   ['video','exam','homework','pdf'].forEach(t=>document.getElementById(`tab-${t}`)?.classList.toggle('on',t===id));
   killPlyr();
   const c=document.getElementById('cnt');
-  if(c) c.style.animation='none'; // reset
+  if(c)c.style.animation='none';
   requestAnimationFrame(()=>{if(c)c.style.animation='';});
   if(id==='video')renderVideoList();
   else if(id==='exam')renderExam();
@@ -773,11 +856,11 @@ function buildPlyr(videoId,idx){
   window._pl=new Plyr(el,{
     youtube:{
       noCookie:true,
-      rel:0, showinfo:0, iv_load_policy:3,
+      rel:0,showinfo:0,iv_load_policy:3,
       modestbranding:1,
-      controls:0,      /* removes YT logo + copy-link + all native UI */
+      controls:0,
       disablekb:1,
-      fs:0, playsinline:1, cc_load_policy:0,
+      fs:0,playsinline:1,cc_load_policy:0,
       origin:location.origin,
     },
     controls:['play-large','play','rewind','fast-forward','progress','current-time','duration','mute','volume','settings','fullscreen'],
@@ -791,10 +874,6 @@ function buildPlyr(videoId,idx){
   });
   window._pl.on('ended',()=>markW(idx));
   window._pl.on('timeupdate',()=>{try{const p=window._pl;if(p.duration>0&&p.currentTime/p.duration>=0.85)markW(idx);}catch{}});
-  // Also check adblock after player loads
-  window._pl.on('ready',()=>{
-    // If player errors, possibly adblock
-  });
   window._pl.on('error',()=>showAdBlockOverlay());
 }
 function startWm(){
