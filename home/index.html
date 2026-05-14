@@ -1027,7 +1027,7 @@ async function submitForm(){
   try{
     const{error}=await sb.from('contact_messages').insert({name,phone,subject,message:msg,created_at:new Date().toISOString()});
     if(error)throw error;
-    msgBox.textContent=_lang==='ar'?'✅ تم إرسال رسالتك بنجاح! سنرد عليك قريباً':'✅ Message sent successfully! We'll get back to you soon';
+    msgBox.textContent=_lang==='ar'?'✅ تم إرسال رسالتك بنجاح! سنرد عليك قريباً':"✅ Message sent successfully! We'll get back to you soon";
     msgBox.className='form-msg ok';
     document.getElementById('cf-name').value='';document.getElementById('cf-phone').value='';document.getElementById('cf-msg').value='';
   }catch(e){
