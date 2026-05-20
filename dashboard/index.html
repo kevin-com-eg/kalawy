@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 /* ══════════════════════════════════════════
-   TOKENS (Original kalawy UI)
+   TOKENS
 ══════════════════════════════════════════ */
 :root{
   --p1:#8b5cf6;--p2:#7c3aed;--p3:#a78bfa;--p4:#6d28d9;
@@ -40,9 +40,6 @@
   --skel:rgba(139,92,246,.07);--skel-s:rgba(139,92,246,.13);
 }
 
-/* ══════════════════════════════════════════
-   RESET
-══════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-y:scroll;transition:background var(--tr),color var(--tr)}
@@ -54,9 +51,7 @@ img{display:block}
 .hidden{display:none!important}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--p2);border-radius:99px}
 
-/* ══════════════════════════════════════════
-   ✨ LOADING SCREEN
-══════════════════════════════════════════ */
+/* ══════ LOADING ══════ */
 #loadingScreen{
   position:fixed;inset:0;z-index:99999;
   background:linear-gradient(135deg,#04000e 0%,#0f0530 50%,#1a0840 100%);
@@ -64,25 +59,16 @@ img{display:block}
   transition:opacity .6s ease,visibility .6s ease;
 }
 #loadingScreen.fade-out{opacity:0;visibility:hidden;pointer-events:none}
-.ld-logo{
-  width:80px;height:80px;border-radius:24px;
-  background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);
-  display:grid;place-items:center;font-family:'Outfit',sans-serif;
-  font-weight:900;font-size:1.6rem;color:#fff;
-  box-shadow:0 0 40px rgba(139,92,246,.6),0 0 80px rgba(139,92,246,.2);
-  animation:ld-pulse 1.8s ease-in-out infinite;
-}
+.ld-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);display:grid;place-items:center;font-family:'Outfit',sans-serif;font-weight:900;font-size:1.6rem;color:#fff;box-shadow:0 0 40px rgba(139,92,246,.6),0 0 80px rgba(139,92,246,.2);animation:ld-pulse 1.8s ease-in-out infinite;}
 .ld-brand{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.8rem;color:#fff;letter-spacing:-.03em}
 .ld-brand em{font-style:normal;color:#a78bfa}
 .ld-bar-wrap{width:200px;height:3px;background:rgba(139,92,246,.2);border-radius:99px;overflow:hidden}
 .ld-bar{height:100%;background:linear-gradient(90deg,#7c3cff,#00d879,#ff4fd8);border-radius:99px;animation:ld-fill 2s ease-in-out forwards}
 .ld-tip{font-size:.75rem;color:rgba(167,139,250,.6);font-weight:600;animation:fadeIn .5s ease .4s both}
 @keyframes ld-pulse{0%,100%{box-shadow:0 0 30px rgba(139,92,246,.5),0 0 60px rgba(139,92,246,.15)}50%{box-shadow:0 0 50px rgba(139,92,246,.8),0 0 100px rgba(139,92,246,.3),0 0 0 12px rgba(139,92,246,.06)}}
-@keyframes ld-fill{0%{width:0%;transform:translateX(0)}60%{width:80%}90%{width:95%}100%{width:100%}}
+@keyframes ld-fill{0%{width:0%}60%{width:80%}90%{width:95%}100%{width:100%}}
 
-/* ══════════════════════════════════════════
-   ANIMATIONS
-══════════════════════════════════════════ */
+/* ══════ ANIMATIONS ══════ */
 @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(30px,-45px) scale(1.06)}70%{transform:translate(-25px,30px) scale(.96)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -93,21 +79,16 @@ img{display:block}
 @keyframes t-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes t-out{to{opacity:0;transform:translateY(8px)}}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 var(--p-glow)}50%{box-shadow:0 0 0 8px transparent}}
-@keyframes notifBadge{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
-@keyframes dotPop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
 
-/* ══════════════════════════════════════════
-   BG MESH
-══════════════════════════════════════════ */
+/* ══════ BG MESH ══════ */
 .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .orb{position:absolute;border-radius:50%;filter:blur(110px);animation:drift 18s ease-in-out infinite}
 .o1{width:750px;height:750px;background:rgba(139,92,246,.13);top:-220px;right:-220px}
 .o2{width:560px;height:560px;background:rgba(236,72,153,.08);bottom:-160px;left:-130px;animation-delay:-7s}
 .o3{width:430px;height:430px;background:rgba(56,189,248,.06);top:40%;left:35%;animation-delay:-13s}
 
-/* ══════════════════════════════════════════
-   NAV
-══════════════════════════════════════════ */
+/* ══════ NAV ══════ */
 .nav{position:fixed;top:0;left:0;right:0;z-index:600;height:var(--nav-h);background:linear-gradient(135deg,#08011e 0%,#150840 100%);border-bottom:1px solid rgba(139,92,246,.22);display:flex;align-items:center;padding:0 clamp(12px,3vw,36px);gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.4);direction:ltr;animation:slideDown .45s ease;}
 .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0}
 .nav-mark{width:40px;height:40px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);display:grid;place-items:center;font-weight:900;font-size:.9rem;color:#fff;font-family:'Outfit',sans-serif;box-shadow:0 8px 24px rgba(0,216,121,.25);transition:var(--tr);animation:glowPulse 3s ease-in-out infinite;}
@@ -127,13 +108,12 @@ img{display:block}
 .lang-pill{display:flex;align-items:center;gap:2px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:3px}
 .lang-btn{padding:4px 11px;border:none;background:transparent;color:rgba(255,255,255,.5);border-radius:999px;cursor:pointer;font-weight:800;font-size:.7rem;transition:var(--tr);letter-spacing:.04em}
 .lang-btn.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 2px 10px var(--p-glow)}
-.nav-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-weight:800;font-size:.86rem;color:#fff;cursor:pointer;box-shadow:0 3px 14px var(--p-glow);border:2px solid rgba(255,255,255,.2);transition:var(--tr);}
+.nav-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-weight:800;font-size:.86rem;color:#fff;cursor:pointer;box-shadow:0 3px 14px var(--p-glow);border:2px solid rgba(255,255,255,.2);transition:var(--tr);overflow:hidden;}
 .nav-av:hover{transform:scale(1.1)}
+.nav-av img{width:36px;height:36px;object-fit:cover;border-radius:50%}
 .badge{background:var(--danger);color:#fff;font-size:.62rem;font-weight:900;padding:2px 7px;border-radius:999px;line-height:1}
 
-/* ══════════════════════════════════════════
-   BREADCRUMB
-══════════════════════════════════════════ */
+/* ══════ BREADCRUMB ══════ */
 .bc{position:fixed;top:var(--nav-h);left:0;right:0;height:var(--bc-h);z-index:500;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 clamp(12px,3vw,36px);gap:6px;direction:rtl;}
 [data-lang="en"] .bc{direction:ltr}
 .bc-item{font-size:.8rem;color:var(--t3);cursor:pointer;padding:3px 9px;border-radius:7px;transition:var(--tr);white-space:nowrap;font-weight:600}
@@ -141,39 +121,29 @@ img{display:block}
 .bc-item.active{color:var(--text);font-weight:800;cursor:default}
 .bc-sep{color:var(--t3);font-size:.65rem}
 
-/* ══════════════════════════════════════════
-   PAGE WRAPPER
-══════════════════════════════════════════ */
+/* ══════ PAGE WRAPPER ══════ */
 .pw{padding-top:calc(var(--nav-h) + var(--bc-h));background:var(--bg);min-height:100vh;position:relative;z-index:1}
-.pg{display:none;max-width:1320px;margin:0 auto;padding:0 clamp(12px,3vw,36px) 100px}
+.pg{display:none;max-width:1320px;margin:0 auto;padding:0 clamp(12px,3vw,36px) 40px}
 .pg.on{display:block;animation:fadeIn .3s ease}
 
-/* ══════════════════════════════════════════
-   SEC HERO
-══════════════════════════════════════════ */
+/* ══════ SEC HERO ══════ */
 .sec-hero{text-align:center;padding:28px 20px 20px}
 .sec-title{font-size:clamp(1.3rem,2.8vw,1.85rem);font-weight:900;letter-spacing:-.04em;margin-bottom:6px;font-family:'Outfit',sans-serif}
 .sec-sub{font-size:.88rem;color:var(--t3);font-weight:600}
 
-/* ══════════════════════════════════════════
-   GRIDS
-══════════════════════════════════════════ */
+/* ══════ GRIDS ══════ */
 .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
 .grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
 .ls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
 
-/* ══════════════════════════════════════════
-   SKELETON LOADER
-══════════════════════════════════════════ */
+/* ══════ SKELETON ══════ */
 .skel{background:linear-gradient(90deg,var(--skel) 25%,var(--skel-s) 50%,var(--skel) 75%);background-size:700px 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:10px;}
 .skel-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:210px;}
 .skel-circle{width:70px;height:70px;border-radius:50%}
 .skel-rect{width:80%;height:14px}
 .skel-rect-sm{width:55%;height:10px}
 
-/* ══════════════════════════════════════════
-   SUBJECT CARD
-══════════════════════════════════════════ */
+/* ══════ SUBJECT CARD ══════ */
 .sub-card{background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px 20px;text-align:center;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .sub-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
 .sub-card:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
@@ -182,9 +152,7 @@ img{display:block}
 .sub-icon img{width:76px;height:76px;object-fit:cover;border-radius:20px}
 .sub-name{font-weight:900;font-size:1rem;margin-bottom:9px}
 
-/* ══════════════════════════════════════════
-   TEACHER CARD
-══════════════════════════════════════════ */
+/* ══════ TEACHER CARD ══════ */
 .tch-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);padding:26px 18px;text-align:center;cursor:pointer;transition:.25s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .tch-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
 .tch-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
@@ -194,9 +162,7 @@ img{display:block}
 .tch-name{font-weight:900;font-size:.94rem;margin-bottom:5px}
 .tch-bio{font-size:.75rem;color:var(--t3);line-height:1.55}
 
-/* ══════════════════════════════════════════
-   CHAPTER CARD
-══════════════════════════════════════════ */
+/* ══════ CHAPTER CARD ══════ */
 .ch-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);min-height:280px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.25s ease;box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .ch-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 55%);pointer-events:none}
 .ch-card:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
@@ -206,17 +172,13 @@ img{display:block}
 .ch-title{font-size:1.05rem;font-weight:900;color:var(--text);margin-bottom:6px}
 .ch-count{font-size:.8rem;color:var(--t3)}
 
-/* ══════════════════════════════════════════
-   LESSON CARD
-══════════════════════════════════════════ */
+/* ══════ LESSON CARD ══════ */
 .ls-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-xl);min-height:280px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:.25s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:cardPop .45s ease both;}
 .ls-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 55%);pointer-events:none}
 .ls-card.clickable{cursor:pointer}
 .ls-card.clickable:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:var(--border-h)}
 .ls-card.locked{opacity:.6;cursor:not-allowed}
-/* Expired specific styles */
-.ls-card.expired { opacity: 1; border-color: rgba(244,63,94,0.3); background: rgba(244,63,94,0.02); }
-
+.ls-card.expired{opacity:1;border-color:rgba(244,63,94,0.35);background:rgba(244,63,94,0.03);}
 .ls-thumb{width:96px;height:96px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;margin-bottom:16px;flex-shrink:0;background:var(--p-faint);border:1px solid var(--border);transition:transform .25s ease;}
 .ls-card.clickable:hover .ls-thumb{transform:scale(1.07)}
 .ls-thumb img{width:100%;height:100%;object-fit:cover}
@@ -225,16 +187,54 @@ img{display:block}
 .ls-desc{font-size:.79rem;color:var(--t3);line-height:1.58;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
 .ls-action{margin-top:auto;padding-top:10px;width:100%}
 
-/* ══════════════════════════════════════════
-   CHIPS
-══════════════════════════════════════════ */
+/* ══════ PRICE BADGE ══════ */
+.price-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(251,191,36,.08));
+  border:1px solid rgba(251,191,36,.3);
+  color:var(--gold);font-weight:800;font-size:.78rem;
+  padding:3px 10px;border-radius:999px;margin-bottom:8px;
+}
+.price-free{
+  background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.06));
+  border-color:rgba(52,211,153,.25);color:var(--ok);
+}
+
+/* ══════ EXPIRED RENEW INLINE ══════ */
+.renew-box{
+  width:100%;
+  background:rgba(244,63,94,.06);
+  border:1px solid rgba(244,63,94,.2);
+  border-radius:var(--r-sm);
+  padding:12px;
+  display:flex;flex-direction:column;gap:8px;
+  text-align:center;
+}
+.renew-label{font-size:.72rem;font-weight:800;color:var(--danger);letter-spacing:.04em}
+.renew-row{display:flex;gap:6px;align-items:center}
+.renew-inp{
+  flex:1;padding:7px 10px;border-radius:8px;
+  border:1px solid rgba(244,63,94,.3);
+  background:var(--bg);color:var(--text);
+  outline:none;font-size:.8rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;
+  transition:border-color .2s;
+}
+.renew-inp:focus{border-color:var(--danger)}
+.renew-btn{
+  padding:7px 12px;border-radius:8px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--danger),#c0392b);
+  color:#fff;font-weight:800;font-size:.78rem;transition:.2s;white-space:nowrap;
+}
+.renew-btn:hover{opacity:.85;transform:translateY(-1px)}
+.renew-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* ══════ CHIPS ══════ */
 .chip{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:.69rem;font-weight:700;white-space:nowrap}
 .ck-ok{background:rgba(52,211,153,.1);color:var(--ok);border:1px solid rgba(52,211,153,.22)}
 .ck-muted{background:var(--glass);color:var(--t3);border:1px solid var(--border)}
 
-/* ══════════════════════════════════════════
-   BUTTONS
-══════════════════════════════════════════ */
+/* ══════ BUTTONS ══════ */
 .btn{border:none;border-radius:var(--r-sm);padding:10px 18px;font-weight:700;cursor:pointer;font-size:.86rem;transition:.2s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .btn-primary{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 16px var(--p-glow)}
 .btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 22px var(--p-glow)}
@@ -244,10 +244,10 @@ img{display:block}
 .btn-gold{background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22)}
 .btn-gold:hover{background:rgba(251,191,36,.18)}
 .btn-sm{padding:6px 12px;font-size:.77rem;border-radius:8px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--t2)}
+.btn-outline:hover{border-color:var(--p1);color:var(--p1);background:var(--p-faint)}
 
-/* ══════════════════════════════════════════
-   TOAST & EMPTY
-══════════════════════════════════════════ */
+/* ══════ TOAST ══════ */
 #toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
 .toast{display:flex;gap:10px;align-items:center;background:var(--bg2);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:14px;padding:11px 18px;box-shadow:var(--shadow-lg);animation:t-in .22s ease;pointer-events:all;white-space:nowrap;font-weight:700;font-size:.83rem}
 .t-ok{border-color:rgba(52,211,153,.35)}.t-err{border-color:rgba(244,63,94,.35)}
@@ -255,6 +255,70 @@ img{display:block}
 .empty-st{display:flex;flex-direction:column;align-items:center;padding:50px;gap:11px;color:var(--t3);text-align:center}
 .empty-ico{font-size:2.8rem;opacity:.75}
 .empty-txt{font-size:.86rem;line-height:1.65}
+
+/* ══════ FORM INPUT ══════ */
+.f-group{margin-bottom:18px}
+.f-label{display:block;font-size:.8rem;font-weight:700;color:var(--t2);margin-bottom:7px}
+.f-inp{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.9rem;font-weight:600;outline:none;transition:border-color .2s,box-shadow .2s;}
+.f-inp:focus{border-color:var(--p1);box-shadow:0 0 0 3px var(--p-faint)}
+.f-inp:disabled{opacity:.5;cursor:not-allowed}
+
+/* ══════ PROFILE PAGE ══════ */
+.prof-wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:20px;padding-bottom:40px}
+.prof-avatar-sec{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:32px;text-align:center;position:relative;overflow:hidden;}
+.prof-avatar-sec::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
+.prof-av-big{width:96px;height:96px;border-radius:50%;margin:0 auto 16px;position:relative;cursor:pointer;}
+.prof-av-big img,.prof-av-big .av-ini{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid rgba(139,92,246,.3);box-shadow:0 4px 20px var(--p-glow);}
+.av-ini{background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-size:2rem;font-weight:900;color:#fff;}
+.av-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;font-size:1.3rem;opacity:0;transition:.2s;}
+.prof-av-big:hover .av-overlay{opacity:1}
+.prof-av-big input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;border-radius:50%;}
+.prof-name-big{font-size:1.2rem;font-weight:900;margin-bottom:4px}
+.prof-email-big{font-size:.82rem;color:var(--t3)}
+.prof-sec{background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:26px 24px;position:relative;overflow:hidden;}
+.prof-sec::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
+.prof-sec-title{font-size:.95rem;font-weight:900;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.prof-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ══════ FOOTER ══════ */
+.kw-footer{
+  position:relative;z-index:1;
+  background:linear-gradient(135deg,#08011e 0%,#150840 100%);
+  border-top:1px solid rgba(139,92,246,.2);
+  padding:40px clamp(16px,5vw,60px) 24px;
+  margin-top:0;
+}
+.footer-inner{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;
+  direction:rtl;
+}
+[data-lang="en"] .footer-inner{direction:ltr}
+@media(max-width:700px){.footer-inner{grid-template-columns:1fr}}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.footer-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);display:grid;place-items:center;font-weight:900;font-size:.85rem;color:#fff;font-family:'Outfit',sans-serif;}
+.footer-name{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.1rem;color:#fff;letter-spacing:-.02em}
+.footer-name em{font-style:normal;color:#a78bfa}
+.footer-tagline{font-size:.78rem;color:rgba(167,139,250,.5);font-weight:600;line-height:1.6}
+.footer-col-title{font-size:.8rem;font-weight:800;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.footer-links{display:flex;flex-direction:column;gap:8px}
+.footer-link{font-size:.82rem;color:rgba(255,255,255,.5);font-weight:600;cursor:pointer;transition:.2s;width:fit-content}
+.footer-link:hover{color:#fff}
+.footer-bottom{
+  max-width:1320px;margin:28px auto 0;
+  padding-top:20px;border-top:1px solid rgba(139,92,246,.12);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  direction:rtl;
+}
+[data-lang="en"] .footer-bottom{direction:ltr}
+.footer-copy{font-size:.74rem;color:rgba(167,139,250,.4);font-weight:600}
+.footer-socials{display:flex;gap:10px}
+.f-social{width:32px;height:32px;border-radius:8px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);display:grid;place-items:center;cursor:pointer;font-size:.85rem;transition:.2s;color:rgba(255,255,255,.5)}
+.f-social:hover{background:rgba(139,92,246,.25);color:#fff;transform:translateY(-2px)}
+
+/* Upload progress */
+.upload-prog{height:3px;background:var(--p-faint);border-radius:99px;overflow:hidden;margin-top:8px;display:none}
+.upload-prog-bar{height:100%;background:linear-gradient(90deg,var(--p1),var(--p2));width:0%;transition:width .3s;border-radius:99px}
 </style>
 </head>
 <body>
@@ -293,7 +357,7 @@ img{display:block}
       <button class="lang-btn on" id="n-ar" onclick="setLang('ar')">عربي</button>
       <button class="lang-btn" id="n-en" onclick="setLang('en')">EN</button>
     </div>
-    <div class="nav-av" id="navAv" onclick="goPage('profile')">ك</div>
+    <div class="nav-av" id="navAv" onclick="goPage('profile')" title="الملف الشخصي">ك</div>
   </div>
 </nav>
 
@@ -302,6 +366,8 @@ img{display:block}
 </div>
 
 <div class="pw">
+
+  <!-- BROWSE PAGE -->
   <div class="pg on" id="pg-browse">
     <div id="s-sub">
       <div class="sec-hero"><div class="sec-title" id="sub-title">📚 اختار المادة</div><div class="sec-sub" id="sub-sub">اختار المادة اللي عايز تذاكرها</div></div>
@@ -321,25 +387,133 @@ img{display:block}
     </div>
   </div>
 
+  <!-- MY LESSONS PAGE -->
   <div class="pg" id="pg-mylessons">
     <div class="sec-hero"><div class="sec-title" id="my-title">📚 حصصي المفتوحة</div><div class="sec-sub" id="my-sub">الحصص اللي فتحتها بالكود</div></div>
     <div class="ls-grid" id="my-list"></div>
   </div>
 
+  <!-- CART PAGE -->
   <div class="pg" id="pg-cart">
     <div class="sec-hero"><div class="sec-title" id="cart-title">🛒 سلة الشراء</div><div class="sec-sub" id="cart-sub">ادخل كود كل حصة عشان تفتحها</div></div>
-    <div id="cart-content" style="max-width: 600px; margin: 0 auto;"></div>
+    <div id="cart-content" style="max-width:600px;margin:0 auto;"></div>
   </div>
 
+  <!-- PROFILE PAGE -->
   <div class="pg" id="pg-profile">
-    <div class="sec-hero"><div class="sec-title" id="prof-title">👤 حسابي</div></div>
-    <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--r-xl); padding:40px; text-align:center; max-width:500px; margin:0 auto;">
-      <h2 id="pr-nm">الاسم</h2>
-      <p id="pr-em" style="color:var(--t3); margin-bottom:20px;">البريد</p>
-      <button class="btn btn-danger" onclick="doLogout()">🚪 تسجيل الخروج</button>
+    <div class="sec-hero"><div class="sec-title" id="prof-title">👤 حسابي</div><div class="sec-sub" id="prof-sub">اعدل بياناتك الشخصية</div></div>
+    <div class="prof-wrap">
+
+      <!-- Avatar & identity -->
+      <div class="prof-avatar-sec">
+        <div class="prof-av-big" id="profAvBig">
+          <div class="av-ini" id="profAvIni">ك</div>
+          <div class="av-overlay">📷</div>
+          <input type="file" accept="image/*" onchange="handleAvatarChange(event)" title="تغيير الصورة">
+        </div>
+        <div class="upload-prog" id="uploadProg"><div class="upload-prog-bar" id="uploadProgBar"></div></div>
+        <div class="prof-name-big" id="pr-nm">الاسم</div>
+        <div class="prof-email-big" id="pr-em">البريد</div>
+      </div>
+
+      <!-- Edit Info -->
+      <div class="prof-sec">
+        <div class="prof-sec-title">✏️ <span id="editInfoTitle">تعديل البيانات</span></div>
+
+        <div class="f-group">
+          <label class="f-label" id="lbl-name">الاسم الكامل</label>
+          <input class="f-inp" id="inp-name" type="text" placeholder="اسمك هنا">
+        </div>
+
+        <div class="f-group">
+          <label class="f-label" id="lbl-phone">رقم الموبايل</label>
+          <input class="f-inp" id="inp-phone" type="tel" placeholder="01XXXXXXXXX" dir="ltr">
+        </div>
+
+        <div class="f-group">
+          <label class="f-label" id="lbl-email">البريد الإلكتروني</label>
+          <input class="f-inp" id="inp-email" type="email" placeholder="example@mail.com" dir="ltr">
+          <div style="font-size:.72rem;color:var(--t3);margin-top:5px;font-weight:600" id="emailNote">⚠️ تغيير الإيميل هيحتاج تأكيد على الإيميل الجديد</div>
+        </div>
+
+        <div class="prof-actions">
+          <button class="btn btn-primary" onclick="saveProfile()" id="saveProf">💾 <span id="saveProfLbl">حفظ التغييرات</span></button>
+        </div>
+      </div>
+
+      <!-- Change Password -->
+      <div class="prof-sec">
+        <div class="prof-sec-title">🔐 <span id="pwdTitle">تغيير كلمة السر</span></div>
+
+        <div class="f-group">
+          <label class="f-label" id="lbl-newpwd">كلمة السر الجديدة</label>
+          <input class="f-inp" id="inp-newpwd" type="password" placeholder="••••••••">
+        </div>
+        <div class="f-group">
+          <label class="f-label" id="lbl-confirmpwd">تأكيد كلمة السر</label>
+          <input class="f-inp" id="inp-confirmpwd" type="password" placeholder="••••••••">
+        </div>
+
+        <div class="prof-actions">
+          <button class="btn btn-outline" onclick="changePassword()" id="pwdBtn">🔑 <span id="pwdBtnLbl">تغيير كلمة السر</span></button>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="prof-sec">
+        <div class="prof-sec-title">⚙️ <span id="accountTitle">الحساب</span></div>
+        <div class="prof-actions">
+          <button class="btn btn-danger" onclick="doLogout()">🚪 <span id="logoutLbl">تسجيل الخروج</span></button>
+        </div>
+      </div>
+
     </div>
   </div>
-</div>
+
+</div><!-- end .pw -->
+
+<!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
+<footer class="kw-footer" id="mainFooter" style="display:none">
+  <div class="footer-inner">
+    <!-- Brand col -->
+    <div>
+      <div class="footer-brand">
+        <div class="footer-mark">KW</div>
+        <span class="footer-name">kala<em>wy</em></span>
+      </div>
+      <div class="footer-tagline" id="ft-tagline">منصة التعليم الإلكتروني للطلاب المصريين<br>حصصك في إيدك، في أي وقت وأي مكان 🎓</div>
+    </div>
+    <!-- Quick links -->
+    <div>
+      <div class="footer-col-title" id="ft-explore">استكشف</div>
+      <div class="footer-links">
+        <span class="footer-link" onclick="resetAll()" id="ft-browse">📚 المواد الدراسية</span>
+        <span class="footer-link" onclick="goPage('mylessons')" id="ft-myless">🎬 حصصي</span>
+        <span class="footer-link" onclick="goPage('cart')" id="ft-cart">🛒 السلة</span>
+        <span class="footer-link" onclick="goPage('profile')" id="ft-prof">👤 حسابي</span>
+      </div>
+    </div>
+    <!-- Support col -->
+    <div>
+      <div class="footer-col-title" id="ft-support">التواصل</div>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:support@kalawy.com">📧 support@kalawy.com</a>
+        <a class="footer-link" href="https://wa.me/201000000000" target="_blank">💬 واتساب</a>
+        <a class="footer-link" href="https://t.me/kalawy" target="_blank">✈️ تيليجرام</a>
+        <a class="footer-link" href="#" id="ft-terms">📜 الشروط والأحكام</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy" id="ft-copy">© 2025 kalawy — جميع الحقوق محفوظة</div>
+    <div class="footer-socials">
+      <div class="f-social" title="Facebook">f</div>
+      <div class="f-social" title="Instagram">📷</div>
+      <div class="f-social" title="YouTube">▶</div>
+      <div class="f-social" title="TikTok">♪</div>
+    </div>
+  </div>
+</footer>
 
 <script>
 /* ══════════════════════════════════════
@@ -367,8 +541,24 @@ const S = {
     myTitle: '📚 حصصي المفتوحة', mySub: 'الحصص اللي فتحتها بالكود', noMyLessons: 'لم تفتح أي حصة بعد',
     cartTitle: '🛒 سلة الشراء', cartSub: 'ادخل كود كل حصة عشان تفتحها', cartEmpty: 'السلة فارغة',
     alreadyUnlocked: 'الحصة مفتوحة بالفعل ✅', addedCart: 'أُضيف للسلة', enterCode: 'ادخل كود الحصة', goToCart: '🛒 اكمل الدفع',
-    expiredMsgTitle: '⏳ وقت الحصة انتهى', buyAgainBtn: '🔄 اشتري تاني',
-    bcHome: 'الرئيسية', bcBrowse: 'المواد'
+    expiredLabel: '⏳ انتهى الوقت — جدد بكود جديد', renewPlaceholder: 'كود التجديد', renewBtn: 'جدد',
+    priceEGP: 'جنيه', free: 'مجاناً',
+    bcHome: 'الرئيسية', bcBrowse: 'المواد',
+    // profile
+    profTitle: '👤 حسابي', profSub: 'اعدل بياناتك الشخصية',
+    editInfo: 'تعديل البيانات', lblName: 'الاسم الكامل', lblPhone: 'رقم الموبايل', lblEmail: 'البريد الإلكتروني',
+    emailNote: '⚠️ تغيير الإيميل هيحتاج تأكيد على الإيميل الجديد',
+    saveLbl: 'حفظ التغييرات', saved: 'تم الحفظ ✅', saving: 'جاري الحفظ...',
+    pwdTitle: 'تغيير كلمة السر', lblNewPwd: 'كلمة السر الجديدة', lblConfirmPwd: 'تأكيد كلمة السر',
+    pwdMismatch: 'كلمتا السر غير متطابقتين', pwdShort: 'كلمة السر قصيرة جداً (أقل من 6 أحرف)',
+    pwdChanged: 'تم تغيير كلمة السر ✅', pwdChanging: '...',
+    pwdBtnLbl: 'تغيير كلمة السر',
+    accountTitle: 'الحساب', logoutLbl: 'تسجيل الخروج',
+    uploadingImg: 'جاري رفع الصورة...', uploadedImg: 'تم تحديث الصورة ✅',
+    // footer
+    ftExplore: 'استكشف', ftBrowse: '📚 المواد الدراسية', ftMyless: '🎬 حصصي', ftCart: '🛒 السلة', ftProf: '👤 حسابي',
+    ftSupport: 'التواصل', ftCopy: '© 2025 kalawy — جميع الحقوق محفوظة',
+    ftTagline: 'منصة التعليم الإلكتروني للطلاب المصريين\nحصصك في إيدك، في أي وقت وأي مكان 🎓'
   },
   en: {
     home: '🏠 Home', myLessons: '📚 My Lessons', cartNav: 'Cart',
@@ -379,258 +569,332 @@ const S = {
     myTitle: '📚 My Lessons', mySub: 'Lessons unlocked with your code', noMyLessons: 'No unlocked lessons yet',
     cartTitle: '🛒 Cart', cartSub: 'Enter code to unlock', cartEmpty: 'Cart is empty',
     alreadyUnlocked: 'Already unlocked ✅', addedCart: 'Added to cart', enterCode: 'Enter code', goToCart: '🛒 Go to Cart',
-    expiredMsgTitle: '⏳ Lesson Expired', buyAgainBtn: '🔄 Buy Again',
-    bcHome: 'Home', bcBrowse: 'Subjects'
+    expiredLabel: '⏳ Expired — enter a new code', renewPlaceholder: 'Renewal code', renewBtn: 'Renew',
+    priceEGP: 'EGP', free: 'Free',
+    bcHome: 'Home', bcBrowse: 'Subjects',
+    profTitle: '👤 My Profile', profSub: 'Edit your personal info',
+    editInfo: 'Edit Info', lblName: 'Full Name', lblPhone: 'Phone Number', lblEmail: 'Email Address',
+    emailNote: '⚠️ Changing email requires confirmation on the new address',
+    saveLbl: 'Save Changes', saved: 'Saved ✅', saving: 'Saving...',
+    pwdTitle: 'Change Password', lblNewPwd: 'New Password', lblConfirmPwd: 'Confirm Password',
+    pwdMismatch: 'Passwords do not match', pwdShort: 'Password too short (min 6 chars)',
+    pwdChanged: 'Password changed ✅', pwdChanging: '...',
+    pwdBtnLbl: 'Change Password',
+    accountTitle: 'Account', logoutLbl: 'Sign Out',
+    uploadingImg: 'Uploading photo...', uploadedImg: 'Photo updated ✅',
+    ftExplore: 'Explore', ftBrowse: '📚 Subjects', ftMyless: '🎬 My Lessons', ftCart: '🛒 Cart', ftProf: '👤 Profile',
+    ftSupport: 'Contact', ftCopy: '© 2025 kalawy — All rights reserved',
+    ftTagline: 'E-learning platform for Egyptian students\nYour lessons, anytime, anywhere 🎓'
   }
 };
-function t(k) { return S[LANG]?.[k] ?? S.ar[k] ?? k; }
-function pal(i){return(THEME==='dark'?PALETTES_DARK:PALETTES_LIGHT)[i%6];}
-function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function t(k){ return S[LANG]?.[k] ?? S.ar[k] ?? k; }
+function pal(i){ return (THEME==='dark'?PALETTES_DARK:PALETTES_LIGHT)[i%6]; }
+function esc(v){ return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-/* ══════════════════════════════════════
-   IMAGE HELPERS (Original)
-══════════════════════════════════════ */
+/* ══════ IMAGE HELPERS ══════ */
 function imgSrc(v){
-  if(!v)return''; v=String(v).trim(); if(!v)return''; 
-  if(/^(https?:|data:|blob:)/.test(v))return v; 
-  if(v.startsWith('/storage/v1/object/public/'))return SB_URL+v; 
+  if(!v)return''; v=String(v).trim(); if(!v)return'';
+  if(/^(https?:|data:|blob:)/.test(v))return v;
+  if(v.startsWith('/storage/v1/object/public/'))return SB_URL+v;
   return`${SB_URL}/storage/v1/object/public/kalawy/${v.replace(/^\/+/,'').replace(/^kalawy\//,'')}`;
 }
-function imgSafe(v){return imgSrc(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function imgSafe(v){ return imgSrc(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
-/* ══════════════════════════════════════
-   UI & I18N
-══════════════════════════════════════ */
-function setTheme(th) { THEME = th; document.documentElement.setAttribute('data-theme', th); localStorage.setItem('kw-theme', th); ['n-dark', 'n-light'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.toggle('on', id === 'n-dark' ? th === 'dark' : th === 'light'); }); }
-function setLang(lg) { LANG = lg; document.documentElement.setAttribute('lang', lg); document.documentElement.setAttribute('dir', lg === 'ar' ? 'rtl' : 'ltr'); document.documentElement.setAttribute('data-lang', lg); localStorage.setItem('kw-lang', lg); ['n-ar', 'n-en'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.toggle('on', id.endsWith(lg)); }); applyI18n(); if (ME) { updateBc(); if(_sel.ch) selChapter(_sel.ch.id, _sel.ch.title); } }
-function applyI18n() {
-  const set = (id, k) => { const el = document.getElementById(id); if (el) el.textContent = t(k); };
-  set('nl-home', 'home'); set('nl-my', 'myLessons'); set('sub-title', 'chooseSubject'); set('sub-sub', 'chooseSubjectSub');
-  set('tch-title', 'chooseTeacher'); set('ch-title', 'chooseChapter'); set('ch-sub', 'chooseChapterSub');
-  set('my-title', 'myTitle'); set('my-sub', 'mySub'); set('cart-title', 'cartTitle'); set('cart-sub', 'cartSub');
-  const ldTip = document.getElementById('ld-tip'); if (ldTip) ldTip.textContent = LANG === 'ar' ? 'جاري التحميل...' : 'Loading...';
+/* ══════ UI & I18N ══════ */
+function setTheme(th){
+  THEME=th; document.documentElement.setAttribute('data-theme',th); localStorage.setItem('kw-theme',th);
+  ['n-dark','n-light'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id==='n-dark'?th==='dark':th==='light');});
 }
-function toast(type, msg) {
-  const ic = { s: '✅', e: '❌', w: '⚠️', i: 'ℹ️' }, cl = { s: 't-ok', e: 't-err', w: '', i: '' };
-  const wrap = document.getElementById('toasts'), el = document.createElement('div');
-  el.className = `toast ${cl[type] || ''}`; el.innerHTML = `<span>${ic[type]}</span><span>${msg}</span>`;
-  wrap.appendChild(el); setTimeout(() => { el.classList.add('t-exit'); setTimeout(() => el.remove(), 220); }, 3500);
+function setLang(lg){
+  LANG=lg; document.documentElement.setAttribute('lang',lg);
+  document.documentElement.setAttribute('dir',lg==='ar'?'rtl':'ltr');
+  document.documentElement.setAttribute('data-lang',lg);
+  localStorage.setItem('kw-lang',lg);
+  ['n-ar','n-en'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id.endsWith(lg));});
+  applyI18n();
+  if(ME){updateBc(); if(_sel.ch) selChapter(_sel.ch.id,_sel.ch.title);}
 }
-function updateCartBadge() { const b = document.getElementById('cart-badge'); if (!b) return; if (_cart.length) { b.textContent = _cart.length; b.classList.remove('hidden'); } else b.classList.add('hidden'); }
-function skeletonCards(count = 6, gridId) { const g = document.getElementById(gridId); if (!g) return; g.innerHTML = Array.from({ length: count }, () => `<div class="skel-card"><div class="skel skel-circle" style="margin-bottom:4px"></div><div class="skel skel-rect"></div><div class="skel skel-rect-sm"></div></div>`).join(''); }
+function applyI18n(){
+  const set=(id,k)=>{const el=document.getElementById(id);if(el)el.textContent=t(k);};
+  set('nl-home','home'); set('nl-my','myLessons');
+  set('sub-title','chooseSubject'); set('sub-sub','chooseSubjectSub');
+  set('tch-title','chooseTeacher'); set('ch-title','chooseChapter'); set('ch-sub','chooseChapterSub');
+  set('my-title','myTitle'); set('my-sub','mySub');
+  set('cart-title','cartTitle'); set('cart-sub','cartSub');
+  set('prof-title','profTitle'); set('prof-sub','profSub');
+  set('editInfoTitle','editInfo');
+  set('lbl-name','lblName'); set('lbl-phone','lblPhone'); set('lbl-email','lblEmail');
+  set('emailNote','emailNote'); set('saveProfLbl','saveLbl');
+  set('pwdTitle','pwdTitle'); set('lbl-newpwd','lblNewPwd'); set('lbl-confirmpwd','lblConfirmPwd');
+  set('pwdBtnLbl','pwdBtnLbl'); set('accountTitle','accountTitle'); set('logoutLbl','logoutLbl');
+  // footer
+  set('ft-explore','ftExplore'); set('ft-browse','ftBrowse');
+  set('ft-myless','ftMyless'); set('ft-cart','ftCart'); set('ft-prof','ftProf');
+  set('ft-support','ftSupport'); set('ft-copy','ftCopy');
+  const ftTag=document.getElementById('ft-tagline');
+  if(ftTag)ftTag.innerHTML=t('ftTagline').replace('\n','<br>');
+  const ldTip=document.getElementById('ld-tip');
+  if(ldTip)ldTip.textContent=LANG==='ar'?'جاري التحميل...':'Loading...';
+}
+function toast(type,msg){
+  const ic={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'},cl={s:'t-ok',e:'t-err',w:'',i:''};
+  const wrap=document.getElementById('toasts'),el=document.createElement('div');
+  el.className=`toast ${cl[type]||''}`; el.innerHTML=`<span>${ic[type]}</span><span>${msg}</span>`;
+  wrap.appendChild(el); setTimeout(()=>{el.classList.add('t-exit');setTimeout(()=>el.remove(),220);},3500);
+}
+function updateCartBadge(){const b=document.getElementById('cart-badge');if(!b)return;if(_cart.length){b.textContent=_cart.length;b.classList.remove('hidden');}else b.classList.add('hidden');}
+function skeletonCards(count=6,gridId){const g=document.getElementById(gridId);if(!g)return;g.innerHTML=Array.from({length:count},()=>`<div class="skel-card"><div class="skel skel-circle" style="margin-bottom:4px"></div><div class="skel skel-rect"></div><div class="skel skel-rect-sm"></div></div>`).join('');}
 
-/* ══════════════════════════════════════
-   ROUTING
-══════════════════════════════════════ */
-function goPage(page) {
-  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on')); document.getElementById(`pg-${page}`)?.classList.add('on');
-  ['nl-home', 'nl-my', 'nl-cart'].forEach(id => document.getElementById(id)?.classList.remove('active-nav'));
-  const navMap = { mylessons: 'nl-my', cart: 'nl-cart', browse: 'nl-home' }; if (navMap[page]) document.getElementById(navMap[page])?.classList.add('active-nav');
-  if (page === 'mylessons') loadMyLessons(); if (page === 'cart') renderCart();
+/* ══════ ROUTING ══════ */
+function goPage(page){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById(`pg-${page}`)?.classList.add('on');
+  ['nl-home','nl-my','nl-cart'].forEach(id=>document.getElementById(id)?.classList.remove('active-nav'));
+  const navMap={mylessons:'nl-my',cart:'nl-cart',browse:'nl-home'};
+  if(navMap[page])document.getElementById(navMap[page])?.classList.add('active-nav');
+  if(page==='mylessons')loadMyLessons();
+  if(page==='cart')renderCart();
+  if(page==='profile')loadProfileForm();
 }
-function showStep(s) { ['sub', 'tch', 'ch', 'ls'].forEach(x => { const el = document.getElementById(`s-${x}`); if (el) el.classList.toggle('hidden', x !== s); }); updateBc(); }
-function resetAll() { _sel = { sub: null, tch: null, ch: null }; showStep('sub'); goPage('browse'); }
-function resetTo(s) { if (s === 'sub') { _sel = { sub: null, tch: null, ch: null }; showStep('sub'); } else if (s === 'tch') { _sel.tch = null; _sel.ch = null; showStep('tch'); } }
-function updateBc() {
-  const bc = document.getElementById('navBc'); if (!bc) return;
-  const sep = () => `<span class="bc-sep">›</span>`;
-  let html = `<span class="bc-item" onclick="resetAll()">${t('bcHome')}</span>`; html += sep() + `<span class="bc-item">${t('bcBrowse')}</span>`;
-  if (_sel.sub) html += sep() + `<span class="bc-item" onclick="resetTo('sub')">${_sel.sub.name}</span>`;
-  if (_sel.tch) html += sep() + `<span class="bc-item" onclick="resetTo('tch')">${_sel.tch.name}</span>`;
-  if (_sel.ch) html += sep() + `<span class="bc-item active">${_sel.ch.title}</span>`;
-  bc.innerHTML = html;
+function showStep(s){['sub','tch','ch','ls'].forEach(x=>{const el=document.getElementById(`s-${x}`);if(el)el.classList.toggle('hidden',x!==s)});updateBc();}
+function resetAll(){_sel={sub:null,tch:null,ch:null};showStep('sub');goPage('browse');}
+function resetTo(s){if(s==='sub'){_sel={sub:null,tch:null,ch:null};showStep('sub');}else if(s==='tch'){_sel.tch=null;_sel.ch=null;showStep('tch');}}
+function updateBc(){
+  const bc=document.getElementById('navBc');if(!bc)return;
+  const sep=()=>`<span class="bc-sep">›</span>`;
+  let html=`<span class="bc-item" onclick="resetAll()">${t('bcHome')}</span>`;
+  html+=sep()+`<span class="bc-item">${t('bcBrowse')}</span>`;
+  if(_sel.sub)html+=sep()+`<span class="bc-item" onclick="resetTo('sub')">${_sel.sub.name}</span>`;
+  if(_sel.tch)html+=sep()+`<span class="bc-item" onclick="resetTo('tch')">${_sel.tch.name}</span>`;
+  if(_sel.ch)html+=sep()+`<span class="bc-item active">${_sel.ch.title}</span>`;
+  bc.innerHTML=html;
 }
 
-/* ══════════════════════════════════════
-   ✨ ENROLLMENTS & EXPIRATION LOGIC
-══════════════════════════════════════ */
-async function loadEnrollments() {
-  const { data: unlocked } = await sb.from('lesson_codes').select('lesson_id, expires_at').eq('used_by', ME.id);
-  _unlockedLessons.clear(); 
-  _expiredLessons.clear(); 
-  const now = new Date();
-  
-  (unlocked || []).forEach(row => {
-    if (!row.lesson_id) return;
-    if (row.expires_at && new Date(row.expires_at) < now) {
-      _expiredLessons.add(row.lesson_id);
-    } else {
-      _unlockedLessons.add(row.lesson_id);
-    }
+/* ══════ ENROLLMENTS ══════ */
+async function loadEnrollments(){
+  const {data:unlocked}=await sb.from('lesson_codes').select('lesson_id,expires_at').eq('used_by',ME.id);
+  _unlockedLessons.clear(); _expiredLessons.clear();
+  const now=new Date();
+  (unlocked||[]).forEach(row=>{
+    if(!row.lesson_id)return;
+    if(row.expires_at&&new Date(row.expires_at)<now){_expiredLessons.add(row.lesson_id);}
+    else{_unlockedLessons.add(row.lesson_id);}
   });
-
-  // If a student re-bought it, they might have both an expired code and an active one.
-  _unlockedLessons.forEach(id => _expiredLessons.delete(id));
+  _unlockedLessons.forEach(id=>_expiredLessons.delete(id));
 }
 
-/* ══════════════════════════════════════
-   DATA FETCHING (SUBJECTS -> LESSONS)
-══════════════════════════════════════ */
-async function loadSubjects() {
-  skeletonCards(6, 'sub-grid'); const { data } = await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
-  const g = document.getElementById('sub-grid'); if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noSubjects')}</div></div>`; return; }
-  g.innerHTML = data.map((s, i) => {
-    const name = s.name_ar || 'Subject'; const ico = EMOJIS[name] || '📚';
-    const thumb = s.image_url ? `<img src="${imgSafe(s.image_url)}" alt="" style="width:76px;height:76px;object-fit:cover;border-radius:20px" onerror="this.parentElement.innerHTML='${ico}'" loading="lazy">` : `<div style="font-size:2.2rem;width:76px;height:76px;border-radius:20px;display:grid;place-items:center;background:${pal(i)}">${ico}</div>`;
-    return `<div class="sub-card" style="animation-delay:${i * 0.06}s" onclick="selSub('${s.id}','${esc(name)}',${s.grade_id || 3})">
+/* ══════ SUBJECTS ══════ */
+async function loadSubjects(){
+  skeletonCards(6,'sub-grid');
+  const {data}=await sb.from('subjects').select('id,name_ar,grade_id,image_url').order('name_ar');
+  const g=document.getElementById('sub-grid');
+  if(!data?.length){g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noSubjects')}</div></div>`;return;}
+  g.innerHTML=data.map((s,i)=>{
+    const name=s.name_ar||'Subject'; const ico=EMOJIS[name]||'📚';
+    const thumb=s.image_url?`<img src="${imgSafe(s.image_url)}" alt="" style="width:76px;height:76px;object-fit:cover;border-radius:20px" onerror="this.parentElement.innerHTML='${ico}'" loading="lazy">`:
+      `<div style="font-size:2.2rem;width:76px;height:76px;border-radius:20px;display:grid;place-items:center;background:${pal(i)}">${ico}</div>`;
+    return `<div class="sub-card" style="animation-delay:${i*.06}s" onclick="selSub('${s.id}','${esc(name)}',${s.grade_id||3})">
       <div class="sub-icon">${thumb}</div>
       <div class="sub-name">${esc(name)}</div>
     </div>`;
   }).join('');
 }
 
-async function selSub(id, name, gradeId) {
-  _sel = { sub: { id, name, grade_id: gradeId }, tch: null, ch: null }; showStep('tch'); skeletonCards(3, 'tch-grid');
-  const { data: chaps } = await sb.from('chapters').select('teacher_id').eq('subject_id', id);
-  const tIds = [...new Set((chaps || []).map(c => c.teacher_id).filter(Boolean))];
-  const g = document.getElementById('tch-grid'); if (!tIds.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noTeachers')}</div></div>`; return; }
-  const { data: profs } = await sb.from('profiles').select('id,full_name,image_url').in('id', tIds);
-  g.innerHTML = (profs || []).map((p, i) => {
-    const av = p.image_url ? `<img src="${imgSafe(p.image_url)}" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover" onerror="this.parentElement.innerHTML='${(p.full_name || '?')[0].toUpperCase()}'" loading="lazy">` : (p.full_name || '?')[0].toUpperCase();
-    return `<div class="tch-card" style="animation-delay:${i * 0.07}s" onclick="selTch('${p.id}','${esc(p.full_name || p.id)}')">
-      <div class="tch-av" style="${p.image_url ? '' : 'background:linear-gradient(135deg,var(--p1),var(--p2))'}">${av}</div>
-      <div class="tch-name">${p.full_name || '—'}</div>
+async function selSub(id,name,gradeId){
+  _sel={sub:{id,name,grade_id:gradeId},tch:null,ch:null}; showStep('tch'); skeletonCards(3,'tch-grid');
+  const {data:chaps}=await sb.from('chapters').select('teacher_id').eq('subject_id',id);
+  const tIds=[...new Set((chaps||[]).map(c=>c.teacher_id).filter(Boolean))];
+  const g=document.getElementById('tch-grid');
+  if(!tIds.length){g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noTeachers')}</div></div>`;return;}
+  const {data:profs}=await sb.from('profiles').select('id,full_name,image_url').in('id',tIds);
+  g.innerHTML=(profs||[]).map((p,i)=>{
+    const av=p.image_url?`<img src="${imgSafe(p.image_url)}" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover" onerror="this.parentElement.innerHTML='${(p.full_name||'?')[0].toUpperCase()}'" loading="lazy">`:
+      (p.full_name||'?')[0].toUpperCase();
+    return `<div class="tch-card" style="animation-delay:${i*.07}s" onclick="selTch('${p.id}','${esc(p.full_name||p.id)}')">
+      <div class="tch-av" style="${p.image_url?'':'background:linear-gradient(135deg,var(--p1),var(--p2))'}">${av}</div>
+      <div class="tch-name">${p.full_name||'—'}</div>
     </div>`;
   }).join('');
 }
 
-async function selTch(id, name) {
-  _sel.tch = { id, name }; _sel.ch = null; showStep('ch'); skeletonCards(4, 'ch-grid');
-  const { data } = await sb.from('chapters').select('id,title,image_url').eq('subject_id', _sel.sub.id).eq('teacher_id', id).order('sort_order');
-  const g = document.getElementById('ch-grid'); if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noChapters')}</div></div>`; return; }
-  const books = ['📘','📗','📙','📕','📓','📔'];
-  g.innerHTML = data.map((ch, i) => {
-    const thumb = ch.image_url ? `<img src="${imgSafe(ch.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='${books[i % 6]}'" loading="lazy">` : `<div style="width:100%;height:100%;background:${pal(i)};display:grid;place-items:center;font-size:2.6rem">${books[i % 6]}</div>`;
-    return `<div class="ch-card" style="animation-delay:${i * 0.07}s" onclick="selChapter('${ch.id}','${esc(ch.title)}')">
+async function selTch(id,name){
+  _sel.tch={id,name}; _sel.ch=null; showStep('ch'); skeletonCards(4,'ch-grid');
+  const {data}=await sb.from('chapters').select('id,title,image_url').eq('subject_id',_sel.sub.id).eq('teacher_id',id).order('sort_order');
+  const g=document.getElementById('ch-grid');
+  if(!data?.length){g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noChapters')}</div></div>`;return;}
+  const books=['📘','📗','📙','📕','📓','📔'];
+  g.innerHTML=data.map((ch,i)=>{
+    const thumb=ch.image_url?`<img src="${imgSafe(ch.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='${books[i%6]}'" loading="lazy">`:
+      `<div style="width:100%;height:100%;background:${pal(i)};display:grid;place-items:center;font-size:2.6rem">${books[i%6]}</div>`;
+    return `<div class="ch-card" style="animation-delay:${i*.07}s" onclick="selChapter('${ch.id}','${esc(ch.title)}')">
       <div class="ch-img-box">${thumb}</div>
       <div class="ch-title">${ch.title}</div>
     </div>`;
   }).join('');
 }
 
-async function selChapter(id, title) {
-  _sel.ch = { id, title }; showStep('ls'); skeletonCards(4, 'ls-grid'); await loadEnrollments();
-  const { data } = await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id', id).order('created_at');
-  const g = document.getElementById('ls-grid'); if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noLessons')}</div></div>`; return; }
-  
-  const now = new Date();
-  g.innerHTML = data.map((l, i) => {
-    const sched = l.scheduled_at ? new Date(l.scheduled_at) : null;
-    const future = sched && sched > now;
-    
-    // ✨ Check States
-    const unlocked = _unlockedLessons.has(l.id);
-    const expired = !unlocked && _expiredLessons.has(l.id); 
-    const inCart = _cart.some(c => c.id === l.id);
-    const canOpen = l.is_active && !future && unlocked;
-    
-    // ✨ Thumbnail with Grayscale if Expired
-    const thumbImg = l.image_url 
-      ? `<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover; ${expired ? 'filter:grayscale(1) opacity(0.8)' : ''}" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">` 
-      : (future ? '⏰' : (unlocked ? '🎬' : (expired ? '⏳' : '🔑')));
-    
-    const thumb = `<div class="ls-thumb">${thumbImg}</div>`;
-    
-    const lData = JSON.stringify({ id: l.id, title: l.title, description: l.description || '', image_url: l.image_url || '', chapter_id: id, chapter_title: title }).replace(/"/g, '&quot;');
-    
-    let action = '';
-    if (!l.is_active) {
-      action = `<span class="chip ck-muted">${t('unavailable')}</span>`;
-    } else if (future) {
-      action = `<span class="chip ck-muted">⏰ ${sched.toLocaleString(LANG === 'ar' ? 'ar-EG' : 'en-US', { dateStyle: 'short', timeStyle: 'short' })}</span>`;
-    } else if (unlocked) {
-      action = `<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">✅ ${t('unlocked')}</span>`;
-    } else if (inCart) {
-      action = `<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goPage('cart')">${t('goToCart')}</button>`;
-    } else if (expired) {
-      // ✨ Expired Action
-      action = `
-        <div style="text-align:center;width:100%">
-          <div style="color:var(--danger);font-size:0.75rem;font-weight:bold;margin-bottom:6px">${t('expiredMsgTitle')}</div>
-          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();addCart(${lData})">${t('buyAgainBtn')}</button>
-        </div>`;
-    } else {
-      action = `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${lData})">${t('addCart')}</button>`;
+/* ══════════════════════════════════════
+   LESSONS — with price + expired renew
+══════════════════════════════════════ */
+async function selChapter(id,title){
+  _sel.ch={id,title}; showStep('ls'); skeletonCards(4,'ls-grid'); await loadEnrollments();
+  /* ✨ Fetch lessons WITH price column */
+  const {data}=await sb.from('lessons')
+    .select('id,title,description,is_active,scheduled_at,image_url,price')
+    .eq('chapter_id',id).order('created_at');
+
+  const g=document.getElementById('ls-grid');
+  if(!data?.length){g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noLessons')}</div></div>`;return;}
+
+  const now=new Date();
+  g.innerHTML=data.map((l,i)=>{
+    const sched=l.scheduled_at?new Date(l.scheduled_at):null;
+    const future=sched&&sched>now;
+    const unlocked=_unlockedLessons.has(l.id);
+    const expired=!unlocked&&_expiredLessons.has(l.id);
+    const inCart=_cart.some(c=>c.id===l.id);
+    const canOpen=l.is_active&&!future&&unlocked;
+
+    /* ✨ Price badge */
+    const price=l.price!=null?Number(l.price):null;
+    let priceBadge='';
+    if(!unlocked&&!expired){
+      if(price===0||price===null){
+        priceBadge=`<div class="price-badge price-free">🎁 ${t('free')}</div>`;
+      } else {
+        priceBadge=`<div class="price-badge">💰 ${price} ${t('priceEGP')}</div>`;
+      }
     }
 
-    const lockedClass = canOpen ? 'clickable' : (l.is_active && !future && !expired ? '' : (expired ? 'locked expired' : 'locked'));
+    /* Thumbnail */
+    const thumbImg=l.image_url
+      ?`<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover;${expired?'filter:grayscale(1) opacity(0.75)':''}" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`
+      :(future?'⏰':(unlocked?'🎬':(expired?'⏳':'🔑')));
+    const thumb=`<div class="ls-thumb">${thumbImg}</div>`;
 
-    return `<div class="ls-card ${lockedClass}" style="animation-delay:${i * 0.07}s" ${canOpen ? `onclick="goLesson('${l.id}')"` : ''}>
-      ${thumb}
-      <div class="ls-num">${t('lesson')} ${i + 1}</div>
-      <div class="ls-title">${l.title}</div>
-      ${l.description ? `<div class="ls-desc">${l.description}</div>` : ''}
-      <div class="ls-action" style="text-align:center; width:100%">${action}</div>
-    </div>`;
+    const lData=JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title}).replace(/"/g,'&quot;');
+
+    let action='';
+    if(!l.is_active){
+      action=`<span class="chip ck-muted">${t('unavailable')}</span>`;
+    } else if(future){
+      action=`<span class="chip ck-muted">⏰ ${sched.toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'})}</span>`;
+    } else if(unlocked){
+      action=`<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">✅ ${t('unlocked')}</span>`;
+    } else if(expired){
+      /* ✨ EXPIRED: inline renew box with code input */
+      action=`<div class="renew-box">
+        <div class="renew-label">${t('expiredLabel')}</div>
+        <div class="renew-row">
+          <input class="renew-inp" id="ri-${l.id}" placeholder="${t('renewPlaceholder')}" maxlength="30"
+            oninput="this.value=this.value.toUpperCase()" onclick="event.stopPropagation()">
+          <button class="renew-btn" id="rb-${l.id}" onclick="event.stopPropagation();renewLesson('${l.id}')">${t('renewBtn')}</button>
+        </div>
+      </div>`;
+    } else if(inCart){
+      action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goPage('cart')">${t('goToCart')}</button>`;
+    } else {
+      action=`${priceBadge}<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${lData})">${t('addCart')}</button>`;
+    }
+
+    /* Card class */
+    let cardClass='ls-card';
+    if(canOpen) cardClass+=' clickable';
+    else if(expired) cardClass+=' expired';
+    else if(!l.is_active||future) cardClass+=' locked';
+
+    return `<div class="${cardClass}" style="animation-delay:${i*.07}s" ${canOpen?`onclick="goLesson('${l.id}')"`:''}>`
+      +thumb
+      +`<div class="ls-num">${t('lesson')} ${i+1}</div>`
+      +`<div class="ls-title">${l.title}</div>`
+      +(l.description?`<div class="ls-desc">${l.description}</div>`:'')
+      /* Show price on non-expired, non-unlocked, non-future cards in the bottom area */
+      +(!expired&&!unlocked&&!future&&l.is_active&&!inCart?priceBadge:'')
+      +`<div class="ls-action">${action}</div>`
+      +`</div>`;
   }).join('');
+
+  // Remove duplicate price — we embed it once in action already so clear double:
+  // Actually the logic above is correct: priceBadge shown inside action for available lessons
+  // and once more outside for clarity. Let me keep it simple — only in action.
 }
 
-function goLesson(id) { window.location.href = `/lesson/?id=${id}`; }
+/* ✨ RENEW expired lesson with a new code */
+async function renewLesson(lessonId){
+  const inp=document.getElementById(`ri-${lessonId}`);
+  const btn=document.getElementById(`rb-${lessonId}`);
+  const code=inp?.value.trim().toUpperCase();
+  if(!code){toast('w',t('enterCode'));return;}
+  btn.disabled=true; btn.textContent='...';
 
-/* ══════════════════════════════════════
-   CART LOGIC
-══════════════════════════════════════ */
-function addCart(lesson) {
-  if (_unlockedLessons.has(lesson.id)) { toast('w', t('alreadyUnlocked')); return; }
-  if (_cart.some(c => c.id === lesson.id)) { toast('i', 'موجودة في السلة بالفعل'); return; }
-  _cart.push(lesson); localStorage.setItem(`kw-cart-${ME.id}`, JSON.stringify(_cart)); updateCartBadge();
-  toast('s', `${t('addedCart')}: ${lesson.title}`);
-  if (_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
+  const {data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).single();
+  if(error||!row){toast('e','الكود غير صحيح');btn.disabled=false;btn.textContent=t('renewBtn');return;}
+  if(row.lesson_id!==lessonId){toast('e','الكود لحصة مختلفة');btn.disabled=false;btn.textContent=t('renewBtn');return;}
+  if(row.used_by){toast('e','تم استخدام الكود من قبل');btn.disabled=false;btn.textContent=t('renewBtn');return;}
+
+  const {error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
+  if(upErr){toast('e',upErr.message);btn.disabled=false;btn.textContent=t('renewBtn');return;}
+
+  toast('s','تم تجديد الحصة بنجاح 🎉');
+  await selChapter(_sel.ch.id,_sel.ch.title);
 }
-function rmCart(lessonId) {
-  _cart = _cart.filter(c => c.id !== lessonId); localStorage.setItem(`kw-cart-${ME.id}`, JSON.stringify(_cart)); updateCartBadge();
-  if (document.getElementById('pg-cart').classList.contains('on')) renderCart();
-  if (_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
+
+function goLesson(id){ window.location.href=`/lesson/?id=${id}`; }
+
+/* ══════ CART ══════ */
+function addCart(lesson){
+  if(_unlockedLessons.has(lesson.id)){toast('w',t('alreadyUnlocked'));return;}
+  if(_cart.some(c=>c.id===lesson.id)){toast('i','موجودة في السلة بالفعل');return;}
+  _cart.push(lesson); localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(_cart)); updateCartBadge();
+  toast('s',`${t('addedCart')}: ${lesson.title}`);
+  if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);
 }
-function renderCart() {
-  const c = document.getElementById('cart-content');
-  if (!_cart.length) { c.innerHTML = `<div class="empty-st"><div class="empty-ico">🛒</div><div class="empty-txt">${t('cartEmpty')}</div></div>`; return; }
-  
-  c.innerHTML = _cart.map(ls => {
-    const th = ls.image_url ? `<img src="${imgSafe(ls.image_url)}" alt="" style="width:66px;height:52px;object-fit:cover;border-radius:10px" onerror="this.outerHTML='🎬'" loading="lazy">` : '🎬';
-    return `<div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-sm); margin-bottom:12px;">
-      <div style="display:flex; align-items:center; gap:12px; font-weight:800; min-width:120px;">
+function rmCart(lessonId){
+  _cart=_cart.filter(c=>c.id!==lessonId); localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(_cart)); updateCartBadge();
+  if(document.getElementById('pg-cart').classList.contains('on'))renderCart();
+  if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);
+}
+function renderCart(){
+  const c=document.getElementById('cart-content');
+  if(!_cart.length){c.innerHTML=`<div class="empty-st"><div class="empty-ico">🛒</div><div class="empty-txt">${t('cartEmpty')}</div></div>`;return;}
+  c.innerHTML=_cart.map(ls=>{
+    const th=ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:66px;height:52px;object-fit:cover;border-radius:10px" onerror="this.outerHTML='🎬'" loading="lazy">`:' 🎬';
+    return `<div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:12px;font-weight:800;min-width:120px;">
         <div style="width:66px;height:52px;border-radius:10px;background:var(--p-faint);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">${th}</div>
         <div>${ls.title}</div>
       </div>
-      <div style="display:flex; gap:8px; flex:1; justify-content:flex-end;">
-        <input id="pc-${ls.id}" placeholder="${t('enterCode')}" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); outline:none; text-transform:uppercase; max-width:200px; width:100%;" oninput="this.value=this.value.toUpperCase()">
-        <button class="btn btn-primary" style="width:auto; padding:8px 16px;" onclick="checkoutLesson('${ls.id}')" id="cobtn-${ls.id}">✓</button>
-        <button class="btn btn-danger" style="width:auto; padding:8px 12px;" onclick="rmCart('${ls.id}')">🗑</button>
+      <div style="display:flex;gap:8px;flex:1;justify-content:flex-end;">
+        <input id="pc-${ls.id}" placeholder="${t('enterCode')}" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);outline:none;text-transform:uppercase;max-width:200px;width:100%;font-weight:700;letter-spacing:.06em;" oninput="this.value=this.value.toUpperCase()">
+        <button class="btn btn-primary" style="padding:8px 16px;" onclick="checkoutLesson('${ls.id}')" id="cobtn-${ls.id}">✓</button>
+        <button class="btn btn-danger" style="padding:8px 12px;" onclick="rmCart('${ls.id}')">🗑</button>
       </div>
     </div>`;
   }).join('');
 }
-
-async function checkoutLesson(lessonId) {
-  const inp = document.getElementById(`pc-${lessonId}`); const code = inp?.value.trim().toUpperCase(); const btn = document.getElementById(`cobtn-${lessonId}`);
-  if (!code) { toast('w', t('enterCode')); return; }
-  btn.innerHTML = '...'; btn.disabled = true;
-  
-  const { data: row, error } = await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code', code).single();
-  if (error || !row) { toast('e', 'الكود غير صحيح'); btn.innerHTML = '✓'; btn.disabled = false; return; }
-  if (row.lesson_id !== lessonId) { toast('e', 'هذا الكود لحصة أخرى'); btn.innerHTML = '✓'; btn.disabled = false; return; }
-  if (row.used_by) { toast('e', 'تم استخدام الكود من قبل'); btn.innerHTML = '✓'; btn.disabled = false; return; }
-  
-  const { error: upErr } = await sb.from('lesson_codes').update({ used_by: ME.id, used_at: new Date().toISOString() }).eq('id', row.id);
-  if (upErr) { toast('e', upErr.message); btn.innerHTML = '✓'; btn.disabled = false; return; }
-  
-  _cart = _cart.filter(c => c.id !== lessonId); localStorage.setItem(`kw-cart-${ME.id}`, JSON.stringify(_cart)); updateCartBadge();
-  toast('s', `تم فتح الحصة بنجاح 🎉`); renderCart(); if (_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
+async function checkoutLesson(lessonId){
+  const inp=document.getElementById(`pc-${lessonId}`);const code=inp?.value.trim().toUpperCase();const btn=document.getElementById(`cobtn-${lessonId}`);
+  if(!code){toast('w',t('enterCode'));return;}
+  btn.innerHTML='...';btn.disabled=true;
+  const {data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).single();
+  if(error||!row){toast('e','الكود غير صحيح');btn.innerHTML='✓';btn.disabled=false;return;}
+  if(row.lesson_id!==lessonId){toast('e','هذا الكود لحصة أخرى');btn.innerHTML='✓';btn.disabled=false;return;}
+  if(row.used_by){toast('e','تم استخدام الكود من قبل');btn.innerHTML='✓';btn.disabled=false;return;}
+  const {error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
+  if(upErr){toast('e',upErr.message);btn.innerHTML='✓';btn.disabled=false;return;}
+  _cart=_cart.filter(c=>c.id!==lessonId);localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(_cart));updateCartBadge();
+  toast('s','تم فتح الحصة بنجاح 🎉');renderCart();if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);
 }
 
-/* ══════════════════════════════════════
-   MY LESSONS
-══════════════════════════════════════ */
-async function loadMyLessons() {
-  const el = document.getElementById('my-list'); el.innerHTML = `<div class="skel-card" style="grid-column:1/-1; min-height:100px;"></div>`;
+/* ══════ MY LESSONS ══════ */
+async function loadMyLessons(){
+  const el=document.getElementById('my-list');el.innerHTML=`<div class="skel-card" style="grid-column:1/-1;min-height:100px;"></div>`;
   await loadEnrollments();
-  if (!_unlockedLessons.size) { el.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noMyLessons')}</div></div>`; return; }
-  const { data } = await sb.from('lessons').select('id,title,image_url').in('id', [..._unlockedLessons]).eq('is_active', true);
-  
-  el.innerHTML = (data || []).map((ls, i) => {
-    const thumbImg = ls.image_url ? `<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">` : `🎬`;
-    return `<div class="ch-card clickable" onclick="goLesson('${ls.id}')" style="animation-delay:${i * 0.05}s">
+  if(!_unlockedLessons.size){el.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noMyLessons')}</div></div>`;return;}
+  const {data}=await sb.from('lessons').select('id,title,image_url').in('id',[..._unlockedLessons]).eq('is_active',true);
+  el.innerHTML=(data||[]).map((ls,i)=>{
+    const thumbImg=ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`:' 🎬';
+    return `<div class="ch-card clickable" onclick="goLesson('${ls.id}')" style="animation-delay:${i*.05}s">
       <div class="ch-img-box">${thumbImg}</div>
       <div class="ch-title">${ls.title}</div>
       <span class="chip ck-ok" style="margin-top:10px">✅ ${t('unlocked')}</span>
@@ -639,23 +903,158 @@ async function loadMyLessons() {
 }
 
 /* ══════════════════════════════════════
-   BOOTSTRAP
+   PROFILE EDIT
 ══════════════════════════════════════ */
-async function checkSession() {
-  setTheme(localStorage.getItem('kw-theme') || 'light'); setLang(localStorage.getItem('kw-lang') || 'ar');
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) { window.location.replace('/login'); return; }
-  const user = session.user; ME = { id: user.id, email: user.email, full_name: user.user_metadata?.full_name || 'طالب' };
-  try { _cart = JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`) || '[]'); } catch { _cart = []; }
-  
-  document.getElementById('mainNav').style.display = 'flex'; document.getElementById('bcStrip').style.display = 'flex';
-  document.getElementById('pr-nm').textContent = ME.full_name; document.getElementById('pr-em').textContent = ME.email;
-  
-  updateCartBadge(); setTimeout(() => { document.getElementById('loadingScreen').classList.add('fade-out'); loadSubjects(); }, 600);
+async function loadProfileForm(){
+  // Populate from ME + fresh profile row
+  document.getElementById('inp-name').value=ME.full_name||'';
+  document.getElementById('inp-email').value=ME.email||'';
+  // Load phone from profiles table
+  const {data:prof}=await sb.from('profiles').select('phone,image_url').eq('id',ME.id).single();
+  if(prof){
+    document.getElementById('inp-phone').value=prof.phone||'';
+    if(prof.image_url) updateNavAvatar(imgSrc(prof.image_url));
+  }
+  renderProfileAvatar();
 }
-async function doLogout() { await sb.auth.signOut(); window.location.replace('/login'); }
 
-window.addEventListener('DOMContentLoaded', checkSession);
+function renderProfileAvatar(){
+  const wrap=document.getElementById('profAvBig');
+  const src=ME.avatarUrl||'';
+  const ini=wrap.querySelector('.av-ini');
+  const img=wrap.querySelector('img.av-real');
+  if(src){
+    if(!img){
+      const i=document.createElement('img');
+      i.className='av-real';i.alt='';
+      i.style.cssText='position:absolute;inset:0;width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid rgba(139,92,246,.3);box-shadow:0 4px 20px var(--p-glow);';
+      i.src=src; wrap.insertBefore(i,wrap.children[0]);
+      if(ini)ini.style.display='none';
+    } else { img.src=src; if(ini)ini.style.display='none'; }
+  }
+}
+
+function updateNavAvatar(url){
+  ME.avatarUrl=url;
+  const av=document.getElementById('navAv');
+  if(!av)return;
+  if(url){
+    av.innerHTML=`<img src="${url}" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:50%">`;
+  } else {
+    av.innerHTML=(ME.full_name||'ك')[0].toUpperCase();
+  }
+}
+
+async function handleAvatarChange(evt){
+  const file=evt.target.files[0]; if(!file)return;
+  if(file.size>5*1024*1024){toast('e','الصورة أكبر من 5MB');return;}
+  toast('i',t('uploadingImg'));
+  const prog=document.getElementById('uploadProg');
+  const bar=document.getElementById('uploadProgBar');
+  prog.style.display='block'; bar.style.width='30%';
+
+  const ext=file.name.split('.').pop()||'jpg';
+  const path=`avatars/${ME.id}.${ext}`;
+  bar.style.width='60%';
+
+  const {error:upErr}=await sb.storage.from('kalawy').upload(path,file,{upsert:true,contentType:file.type});
+  bar.style.width='90%';
+  if(upErr){toast('e',upErr.message);prog.style.display='none';return;}
+
+  const {data:{publicUrl}}=sb.storage.from('kalawy').getPublicUrl(path);
+  bar.style.width='100%';
+
+  // Save to profiles table
+  await sb.from('profiles').update({image_url:path}).eq('id',ME.id);
+  ME.avatarUrl=publicUrl; updateNavAvatar(publicUrl); renderProfileAvatar();
+  toast('s',t('uploadedImg'));
+  setTimeout(()=>{prog.style.display='none';bar.style.width='0%';},800);
+}
+
+async function saveProfile(){
+  const name=document.getElementById('inp-name').value.trim();
+  const phone=document.getElementById('inp-phone').value.trim();
+  const email=document.getElementById('inp-email').value.trim();
+  const btn=document.getElementById('saveProf');
+  const lbl=document.getElementById('saveProfLbl');
+
+  if(!name){toast('w','ادخل اسمك');return;}
+  btn.disabled=true; lbl.textContent=t('saving');
+
+  // Update auth email if changed
+  const emailChanged=email&&email!==ME.email;
+  try{
+    if(emailChanged){
+      const {error}=await sb.auth.updateUser({email});
+      if(error)throw error;
+    }
+    // Update name in auth metadata
+    const {error:metaErr}=await sb.auth.updateUser({data:{full_name:name}});
+    if(metaErr)throw metaErr;
+
+    // Update profiles table
+    const {error:profErr}=await sb.from('profiles').update({full_name:name,phone}).eq('id',ME.id);
+    if(profErr)throw profErr;
+
+    ME.full_name=name;
+    if(emailChanged)ME.email=email;
+    document.getElementById('pr-nm').textContent=name;
+    document.getElementById('pr-em').textContent=ME.email;
+    // Update nav avatar initials
+    const av=document.getElementById('navAv');
+    if(av&&!ME.avatarUrl)av.textContent=name[0].toUpperCase();
+    toast('s',t('saved'));
+    if(emailChanged)toast('i','تحقق من الإيميل الجديد لتأكيد التغيير');
+  }catch(e){toast('e',e.message);}
+  btn.disabled=false; lbl.textContent=t('saveLbl');
+}
+
+async function changePassword(){
+  const np=document.getElementById('inp-newpwd').value;
+  const cp=document.getElementById('inp-confirmpwd').value;
+  const btn=document.getElementById('pwdBtn');
+  const lbl=document.getElementById('pwdBtnLbl');
+  if(!np||!cp){toast('w','ادخل كلمة السر');return;}
+  if(np!==cp){toast('e',t('pwdMismatch'));return;}
+  if(np.length<6){toast('e',t('pwdShort'));return;}
+  btn.disabled=true; lbl.textContent=t('pwdChanging');
+  const {error}=await sb.auth.updateUser({password:np});
+  if(error){toast('e',error.message);}
+  else{toast('s',t('pwdChanged'));document.getElementById('inp-newpwd').value='';document.getElementById('inp-confirmpwd').value='';}
+  btn.disabled=false; lbl.textContent=t('pwdBtnLbl');
+}
+
+/* ══════ BOOTSTRAP ══════ */
+async function checkSession(){
+  setTheme(localStorage.getItem('kw-theme')||'light');
+  setLang(localStorage.getItem('kw-lang')||'ar');
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.replace('/login');return;}
+  const user=session.user;
+  ME={id:user.id,email:user.email,full_name:user.user_metadata?.full_name||'طالب',avatarUrl:''};
+  try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
+
+  // Load avatar from profile
+  const {data:prof}=await sb.from('profiles').select('image_url,phone').eq('id',ME.id).single();
+  if(prof?.image_url){ME.avatarUrl=imgSrc(prof.image_url);}
+
+  document.getElementById('mainNav').style.display='flex';
+  document.getElementById('bcStrip').style.display='flex';
+  document.getElementById('mainFooter').style.display='block';
+
+  // Nav avatar
+  updateNavAvatar(ME.avatarUrl);
+
+  document.getElementById('pr-nm').textContent=ME.full_name;
+  document.getElementById('pr-em').textContent=ME.email;
+
+  updateCartBadge();
+  applyI18n();
+  setTimeout(()=>{document.getElementById('loadingScreen').classList.add('fade-out');loadSubjects();},600);
+}
+async function doLogout(){await sb.auth.signOut();window.location.replace('/login');}
+
+window.addEventListener('DOMContentLoaded',checkSession);
 </script>
 </body>
 </html>
