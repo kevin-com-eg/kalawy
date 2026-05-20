@@ -9,17 +9,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 /* ══════════════════════════════════════════
-   TOKENS & THEMES (IMPROVED UI)
+   TOKENS & THEMES
 ══════════════════════════════════════════ */
 :root {
   --p1: #6366f1; /* Indigo */
   --p2: #4f46e5;
   --p3: #818cf8;
-  --p4: #4338ca;
   --p-glow: rgba(99, 102, 241, 0.25);
   --p-faint: rgba(99, 102, 241, 0.08);
   --gold: #f59e0b; --danger: #ef4444; --ok: #10b981; --info: #0ea5e9;
-  --r: 16px; --r-sm: 10px; --r-lg: 24px; --r-xl: 32px; --r-2xl: 40px;
+  --r: 16px; --r-sm: 10px; --r-lg: 24px; --r-xl: 32px;
   --nav-h: 72px; --bc-h: 54px;
   --tr: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -27,8 +26,6 @@
   --bg: #0f111a; --bg2: #151822; --bg3: #1a1e2b;
   --card: rgba(25, 28, 40, 0.7); --card-s: rgba(30, 35, 50, 0.85);
   --border: rgba(255, 255, 255, 0.08); --border-h: rgba(99, 102, 241, 0.4);
-  --glass: rgba(255, 255, 255, 0.03); --glass-h: rgba(255, 255, 255, 0.06);
-  --shine: rgba(255, 255, 255, 0.03);
   --shadow: 0 10px 40px rgba(0, 0, 0, 0.4); --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.6);
   --text: #f8fafc; --t2: #cbd5e1; --t3: #64748b;
   --skel: rgba(255, 255, 255, 0.04); --skel-s: rgba(255, 255, 255, 0.08);
@@ -37,8 +34,6 @@
   --bg: #f8fafc; --bg2: #f1f5f9; --bg3: #e2e8f0;
   --card: rgba(255, 255, 255, 0.9); --card-s: rgba(255, 255, 255, 1);
   --border: rgba(148, 163, 184, 0.2); --border-h: rgba(99, 102, 241, 0.3);
-  --glass: rgba(255, 255, 255, 0.4); --glass-h: rgba(255, 255, 255, 0.7);
-  --shine: rgba(255, 255, 255, 0.6);
   --shadow: 0 10px 40px rgba(148, 163, 184, 0.1); --shadow-lg: 0 20px 60px rgba(99, 102, 241, 0.15);
   --text: #0f172a; --t2: #334155; --t3: #64748b;
   --skel: rgba(148, 163, 184, 0.1); --skel-s: rgba(148, 163, 184, 0.18);
@@ -49,46 +44,13 @@
 ══════════════════════════════════════════ */
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body {
-  font-family: 'Cairo', sans-serif;
-  background: var(--bg); color: var(--text);
-  min-height: 100vh; overflow-y: scroll;
-  transition: background var(--tr), color var(--tr);
-}
+body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-y: scroll; transition: background var(--tr), color var(--tr); }
 [data-lang="en"] body { font-family: 'Outfit', sans-serif; }
 [data-lang="en"] { direction: ltr; } [data-lang="ar"] { direction: rtl; }
-button, input, select, textarea { font: inherit; }
+button, input { font: inherit; }
 a { text-decoration: none; color: inherit; }
 img { display: block; max-width: 100%; }
 .hidden { display: none !important; }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-thumb { background: var(--p3); border-radius: 99px; }
-
-/* ══════════════════════════════════════════
-   ✨ LOADING SCREEN
-══════════════════════════════════════════ */
-#loadingScreen {
-  position: fixed; inset: 0; z-index: 99999;
-  background: var(--bg);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
-}
-#loadingScreen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
-.ld-logo {
-  width: 80px; height: 80px; border-radius: 24px;
-  background: linear-gradient(135deg, var(--p1), var(--p2));
-  display: grid; place-items: center; font-family: 'Outfit', sans-serif;
-  font-weight: 900; font-size: 1.6rem; color: #fff;
-  box-shadow: 0 10px 30px var(--p-glow);
-  animation: ld-pulse 1.8s ease-in-out infinite;
-}
-.ld-brand { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.8rem; letter-spacing: -0.03em; }
-.ld-brand em { font-style: normal; color: var(--p1); }
-.ld-bar-wrap { width: 220px; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
-.ld-bar { height: 100%; background: linear-gradient(90deg, var(--p1), var(--p2)); border-radius: 99px; animation: ld-fill 2s ease-in-out forwards; }
-.ld-tip { font-size: 0.85rem; color: var(--t3); font-weight: 600; animation: fadeIn 0.5s ease 0.4s both; }
-@keyframes ld-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-@keyframes ld-fill { 0% { width: 0%; } 60% { width: 80%; } 100% { width: 100%; } }
 
 /* ══════════════════════════════════════════
    ANIMATIONS
@@ -98,82 +60,58 @@ img { display: block; max-width: 100%; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: none; } }
 @keyframes cardPop { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: none; } }
 @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
-@keyframes spinning { to { transform: rotate(360deg); } }
 
 /* ══════════════════════════════════════════
-   NAV
+   NAV & BREADCRUMB
 ══════════════════════════════════════════ */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 600; height: var(--nav-h);
-  background: var(--card-s); backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 clamp(16px, 4vw, 40px); gap: 16px;
-  box-shadow: var(--shadow); direction: ltr; animation: slideDown 0.45s ease;
+  background: var(--card-s); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 clamp(16px, 4vw, 40px); gap: 16px; box-shadow: var(--shadow); direction: ltr;
 }
 .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; flex-shrink: 0; }
-.nav-mark {
-  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
-  background: linear-gradient(135deg, var(--p1), var(--p2));
-  display: grid; place-items: center; font-weight: 900; font-size: 1rem; color: #fff;
-  font-family: 'Outfit', sans-serif; box-shadow: 0 8px 20px var(--p-glow); transition: var(--tr);
-}
-.nav-mark:hover { transform: scale(1.05) rotate(-3deg); }
+.nav-mark { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--p1), var(--p2)); display: grid; place-items: center; font-weight: 900; font-size: 1rem; color: #fff; font-family: 'Outfit', sans-serif; box-shadow: 0 8px 20px var(--p-glow); }
 .nav-name { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -0.02em; color: var(--text); }
 .nav-name em { font-style: normal; color: var(--p1); }
 .nav-links { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; direction: rtl; }
-.nl-btn {
-  background: transparent; border: none; color: var(--t2); font-weight: 700; font-size: 0.9rem;
-  cursor: pointer; padding: 8px 16px; border-radius: 12px; transition: var(--tr);
-  white-space: nowrap; display: flex; align-items: center; gap: 6px;
-}
-.nl-btn:hover { background: var(--p-faint); color: var(--p1); transform: translateY(-1px); }
+.nl-btn { background: transparent; border: none; color: var(--t2); font-weight: 700; font-size: 0.9rem; cursor: pointer; padding: 8px 16px; border-radius: 12px; transition: var(--tr); display: flex; align-items: center; gap: 6px; }
+.nl-btn:hover { background: var(--p-faint); color: var(--p1); }
 .nl-btn.active-nav { background: var(--p-faint); color: var(--p1); font-weight: 800; }
-.nav-end { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.nav-end { display: flex; align-items: center; gap: 12px; }
 .ctrl-pill, .lang-pill { display: flex; align-items: center; gap: 2px; background: var(--bg2); border: 1px solid var(--border); border-radius: 999px; padding: 4px; }
-.ctrl-side { width: 32px; height: 28px; border-radius: 999px; display: grid; place-items: center; font-size: 0.9rem; color: var(--t3); cursor: pointer; border: none; background: transparent; transition: var(--tr); }
+.ctrl-side { width: 32px; height: 28px; border-radius: 999px; display: grid; place-items: center; font-size: 0.9rem; color: var(--t3); cursor: pointer; border: none; background: transparent; }
 .ctrl-side.on { background: var(--card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-.lang-btn { padding: 4px 12px; border: none; background: transparent; color: var(--t3); border-radius: 999px; cursor: pointer; font-weight: 800; font-size: 0.75rem; transition: var(--tr); }
+.lang-btn { padding: 4px 12px; border: none; background: transparent; color: var(--t3); border-radius: 999px; cursor: pointer; font-weight: 800; font-size: 0.75rem; }
 .lang-btn.on { background: linear-gradient(135deg, var(--p1), var(--p2)); color: #fff; box-shadow: 0 4px 12px var(--p-glow); }
-.nav-av { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--p1), var(--p2)); display: grid; place-items: center; font-weight: 800; font-size: 0.95rem; color: #fff; cursor: pointer; box-shadow: 0 4px 16px var(--p-glow); transition: var(--tr); }
-.nav-av:hover { transform: scale(1.08); }
+.nav-av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--p1), var(--p2)); display: grid; place-items: center; font-weight: 800; color: #fff; cursor: pointer; box-shadow: 0 4px 16px var(--p-glow); }
 .badge { background: var(--danger); color: #fff; font-size: 0.65rem; font-weight: 900; padding: 2px 8px; border-radius: 999px; }
 
-/* ══════════════════════════════════════════
-   BREADCRUMB & PAGES
-══════════════════════════════════════════ */
 .bc { position: fixed; top: var(--nav-h); left: 0; right: 0; height: var(--bc-h); z-index: 500; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 clamp(16px, 4vw, 40px); gap: 8px; direction: rtl; }
 [data-lang="en"] .bc { direction: ltr; }
-.bc-item { font-size: 0.85rem; color: var(--t3); cursor: pointer; padding: 4px 12px; border-radius: 8px; transition: var(--tr); font-weight: 600; }
+.bc-item { font-size: 0.85rem; color: var(--t3); cursor: pointer; padding: 4px 12px; border-radius: 8px; font-weight: 600; }
 .bc-item:hover { color: var(--p1); background: var(--p-faint); }
 .bc-item.active { color: var(--text); font-weight: 800; cursor: default; background: transparent; }
-.bc-sep { color: var(--t3); font-size: 0.7rem; }
-.pw { padding-top: calc(var(--nav-h) + var(--bc-h)); min-height: 100vh; position: relative; z-index: 1; }
+
+.pw { padding-top: calc(var(--nav-h) + var(--bc-h)); min-height: 100vh; }
 .pg { display: none; max-width: 1280px; margin: 0 auto; padding: 20px clamp(16px, 4vw, 40px) 100px; }
 .pg.on { display: block; animation: fadeIn 0.4s ease; }
 
 /* ══════════════════════════════════════════
    CARDS & GRIDS
 ══════════════════════════════════════════ */
-.sec-hero { margin-bottom: 24px; padding: 20px 0; text-align: right; }
-[data-lang="en"] .sec-hero { text-align: left; }
-.sec-title { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 8px; font-family: 'Outfit', sans-serif; color: var(--text); }
+.sec-hero { margin-bottom: 24px; padding: 20px 0; }
+.sec-title { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text); }
 .sec-sub { font-size: 0.95rem; color: var(--t3); font-weight: 500; }
 
 .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
 .grid-4 { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
 .ls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
 
-/* General Card Style */
 .kw-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: var(--r-xl);
-  padding: 24px; text-align: center; cursor: pointer; position: relative; overflow: hidden;
-  box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  animation: cardPop 0.5s ease both; backdrop-filter: blur(16px);
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 24px; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: 0.3s ease; animation: cardPop 0.5s ease both; backdrop-filter: blur(16px);
 }
 .kw-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--border-h); }
-
-/* Subject */
-.sub-icon { width: 80px; height: 80px; border-radius: 24px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; transition: transform 0.3s ease; }
+.sub-icon { width: 80px; height: 80px; border-radius: 24px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; transition: 0.3s ease; }
 .kw-card:hover .sub-icon { transform: scale(1.1) rotate(-3deg); }
 .sub-name { font-weight: 900; font-size: 1.1rem; margin-bottom: 12px; }
 
@@ -184,64 +122,62 @@ img { display: block; max-width: 100%; }
   box-shadow: var(--shadow); position: relative; overflow: hidden; animation: cardPop 0.5s ease both;
 }
 .ls-card.clickable:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--border-h); }
-.ls-card.locked { opacity: 0.7; }
-.ls-card.expired-card { border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.02); }
-.ls-thumb { width: 100%; height: 160px; border-radius: var(--r-lg); display: flex; align-items: center; justify-content: center; font-size: 3rem; overflow: hidden; margin-bottom: 20px; background: var(--bg2); border: 1px solid var(--border); transition: 0.3s ease; }
-.ls-card.clickable:hover .ls-thumb { transform: scale(1.03); }
-.ls-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.ls-card.locked { opacity: 0.8; }
+.ls-card.expired-card { border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.03); }
+
+/* ✨ صورة الحصة - Thumbnail */
+.ls-thumb {
+  width: 100%; height: 160px; border-radius: var(--r-lg); display: flex; align-items: center; justify-content: center; font-size: 3rem; overflow: hidden; margin-bottom: 20px; background: var(--bg2); border: 1px solid var(--border); transition: 0.3s ease;
+}
+.ls-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.ls-card.clickable:hover .ls-thumb img { transform: scale(1.05); }
+.ls-card.expired-card .ls-thumb img { filter: grayscale(0.8) opacity(0.8); }
+
 .ls-num { font-size: 0.75rem; color: var(--p1); font-weight: 800; margin-bottom: 8px; text-transform: uppercase; }
 .ls-title { font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
 .ls-desc { font-size: 0.85rem; color: var(--t3); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; }
 .ls-action { margin-top: auto; display: flex; gap: 10px; flex-direction: column; align-items: center; }
+
+/* ✨ رسالة انتهاء الوقت */
+.expired-msg-box {
+  background: rgba(239, 68, 68, 0.08); border-radius: 12px; padding: 12px; text-align: center; width: 100%; margin-bottom: 6px; border: 1px dashed rgba(239, 68, 68, 0.3);
+}
+.expired-msg-title { color: var(--danger); font-size: 0.9rem; font-weight: 800; margin-bottom: 4px; }
+.expired-msg-sub { color: var(--t3); font-size: 0.75rem; font-weight: 600; }
 
 /* ══════════════════════════════════════════
    CHIPS & BUTTONS
 ══════════════════════════════════════════ */
 .chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 800; white-space: nowrap; }
 .ck-ok { background: rgba(16, 185, 129, 0.1); color: var(--ok); border: 1px solid rgba(16, 185, 129, 0.2); }
-.ck-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
 .ck-muted { background: var(--bg3); color: var(--t3); border: 1px solid var(--border); }
-.ck-p { background: var(--p-faint); color: var(--p1); border: 1px solid rgba(99, 102, 241, 0.2); }
 
 .btn { border: none; border-radius: 12px; padding: 12px 24px; font-weight: 800; cursor: pointer; font-size: 0.95rem; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
 .btn-primary { background: linear-gradient(135deg, var(--p1), var(--p2)); color: #fff; box-shadow: 0 4px 16px var(--p-glow); width: 100%; }
-.btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 24px var(--p-glow); }
+.btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
 .btn-danger-soft { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); width: 100%; }
 .btn-danger-soft:hover { background: rgba(239, 68, 68, 0.2); }
 .btn-gold { background: rgba(245, 158, 11, 0.1); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.2); width: 100%; }
 .btn-gold:hover { background: rgba(245, 158, 11, 0.2); }
 
 /* ══════════════════════════════════════════
-   SKELETONS
+   SKELETONS & TOASTS
 ══════════════════════════════════════════ */
 .skel { background: linear-gradient(90deg, var(--skel) 25%, var(--skel-s) 50%, var(--skel) 75%); background-size: 400% 100%; animation: shimmer 1.5s ease-in-out infinite; border-radius: 8px; }
 .skel-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; min-height: 240px; }
 .skel-circle { width: 80px; height: 80px; border-radius: 24px; }
 .skel-rect { width: 70%; height: 16px; }
-.skel-rect-sm { width: 50%; height: 12px; }
 
-/* ══════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════ */
 #toasts { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; }
-.toast { display: flex; gap: 12px; align-items: center; background: var(--card-s); backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 16px; padding: 14px 24px; box-shadow: var(--shadow-lg); animation: fadeUp 0.3s ease; pointer-events: all; font-weight: 800; font-size: 0.9rem; color: var(--text); }
+.toast { display: flex; gap: 12px; align-items: center; background: var(--card-s); backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 16px; padding: 14px 24px; box-shadow: var(--shadow-lg); animation: fadeUp 0.3s ease; pointer-events: all; font-weight: 800; font-size: 0.9rem; }
 .t-ok { border-bottom: 3px solid var(--ok); } .t-err { border-bottom: 3px solid var(--danger); }
 .t-exit { opacity: 0; transform: translateY(10px); transition: 0.3s; }
 
-/* Empty state */
 .empty-st { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; gap: 16px; color: var(--t3); text-align: center; }
-.empty-ico { font-size: 3.5rem; opacity: 0.8; }
-.empty-txt { font-size: 1rem; line-height: 1.6; font-weight: 600; }
+.empty-txt { font-size: 1rem; font-weight: 600; }
 </style>
 </head>
 <body>
-
-<div id="loadingScreen">
-  <div class="ld-logo">KW</div>
-  <div class="ld-brand">kala<em>wy</em></div>
-  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
-  <div class="ld-tip" id="ld-tip">جاري التحميل...</div>
-</div>
 
 <div id="toasts"></div>
 
@@ -274,26 +210,10 @@ img { display: block; max-width: 100%; }
 
 <div class="pw">
   <div class="pg on" id="pg-browse">
-    
-    <div id="s-sub">
-      <div class="sec-hero"><div class="sec-title" id="sub-title">📚 اختار المادة</div><div class="sec-sub" id="sub-sub">اختار المادة اللي عايز تذاكرها</div></div>
-      <div class="grid-3" id="sub-grid"></div>
-    </div>
-
-    <div id="s-tch" class="hidden">
-      <div class="sec-hero"><div class="sec-title" id="tch-title">👨‍🏫</div><div class="sec-sub" id="tch-sub">اختار المدرس</div></div>
-      <div class="grid-3" id="tch-grid"></div>
-    </div>
-
-    <div id="s-ch" class="hidden">
-      <div class="sec-hero"><div class="sec-title" id="ch-title">📖 اختار الشابتر</div><div class="sec-sub" id="ch-sub">اختار الفصل</div></div>
-      <div class="grid-4" id="ch-grid"></div>
-    </div>
-
-    <div id="s-ls" class="hidden">
-      <div class="sec-hero"><div class="sec-title" id="ls-title">🎬</div><div class="sec-sub" id="ls-sub"></div></div>
-      <div class="ls-grid" id="ls-grid"></div>
-    </div>
+    <div id="s-sub"><div class="sec-hero"><div class="sec-title" id="sub-title">📚 اختار المادة</div><div class="sec-sub" id="sub-sub">اختار المادة اللي عايز تذاكرها</div></div><div class="grid-3" id="sub-grid"></div></div>
+    <div id="s-tch" class="hidden"><div class="sec-hero"><div class="sec-title" id="tch-title">👨‍🏫</div><div class="sec-sub" id="tch-sub">اختار المدرس</div></div><div class="grid-3" id="tch-grid"></div></div>
+    <div id="s-ch" class="hidden"><div class="sec-hero"><div class="sec-title" id="ch-title">📖 اختار الشابتر</div><div class="sec-sub" id="ch-sub">اختار الفصل</div></div><div class="grid-4" id="ch-grid"></div></div>
+    <div id="s-ls" class="hidden"><div class="sec-hero"><div class="sec-title" id="ls-title">🎬</div><div class="sec-sub" id="ls-sub"></div></div><div class="ls-grid" id="ls-grid"></div></div>
   </div>
 
   <div class="pg" id="pg-mylessons">
@@ -325,9 +245,7 @@ const SB_ANON = "sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb = window.supabase.createClient(SB_URL, SB_ANON, {auth:{persistSession:true,autoRefreshToken:true}});
 
 let ME = null, LANG = 'ar', THEME = 'light';
-let _unlockedLessons = new Set();
-let _expiredLessons = new Set(); // ✨ Track expired lessons
-let _cart = [];
+let _unlockedLessons = new Set(), _expiredLessons = new Set(), _cart = [];
 let _sel = { sub:null, tch:null, ch:null };
 
 const S = {
@@ -339,9 +257,8 @@ const S = {
     lesson: 'الحصة', unavailable: 'غير متاحة', unlocked: 'مفتوحة — ادخل', inCart: 'اكمل الدفع', addCart: 'أضف للسلة',
     myTitle: '📚 حصصي المفتوحة', mySub: 'الحصص اللي فتحتها بالكود', noMyLessons: 'لم تفتح أي حصة بعد',
     cartTitle: '🛒 سلة الشراء', cartSub: 'ادخل كود كل حصة عشان تفتحها', cartEmpty: 'السلة فارغة',
-    unlock: 'فتح الحصص بالكود', remove: 'حذف', alreadyUnlocked: 'الحصة مفتوحة بالفعل ✅', addedCart: 'أُضيف للسلة',
-    enterCode: 'ادخل كود الحصة', goToCart: '🛒 اكمل الدفع',
-    expired: 'انتهى الوقت ⏳', buyAgain: 'اشتري تاني (كود جديد)', expiredBadge: 'وقت الحصة انتهى',
+    alreadyUnlocked: 'الحصة مفتوحة بالفعل ✅', addedCart: 'أُضيف للسلة', enterCode: 'ادخل كود الحصة', goToCart: '🛒 اكمل الدفع',
+    expiredMsgTitle: '⏳ وقت الحصة انتهى', expiredMsgSub: 'هل تريد شراءها مرة أخرى؟', buyAgainBtn: '🔄 شراء كود جديد', expiredBadge: 'منتهية',
     bcHome: 'الرئيسية', bcBrowse: 'المواد'
   },
   en: {
@@ -352,9 +269,8 @@ const S = {
     lesson: 'Lesson', unavailable: 'Unavailable', unlocked: 'Unlocked — Enter', inCart: 'Go to Cart', addCart: 'Add to Cart',
     myTitle: '📚 My Lessons', mySub: 'Lessons unlocked with your code', noMyLessons: 'No unlocked lessons yet',
     cartTitle: '🛒 Cart', cartSub: 'Enter code to unlock', cartEmpty: 'Cart is empty',
-    unlock: 'Unlock by Code', remove: 'Remove', alreadyUnlocked: 'Already unlocked ✅', addedCart: 'Added to cart',
-    enterCode: 'Enter code', goToCart: '🛒 Go to Cart',
-    expired: 'Expired ⏳', buyAgain: 'Buy Again (New Code)', expiredBadge: 'Lesson Expired',
+    alreadyUnlocked: 'Already unlocked ✅', addedCart: 'Added to cart', enterCode: 'Enter code', goToCart: '🛒 Go to Cart',
+    expiredMsgTitle: '⏳ Lesson Expired', expiredMsgSub: 'Do you want to buy it again?', buyAgainBtn: '🔄 Buy New Code', expiredBadge: 'Expired',
     bcHome: 'Home', bcBrowse: 'Subjects'
   }
 };
@@ -363,51 +279,31 @@ function t(k) { return S[LANG]?.[k] ?? S.ar[k] ?? k; }
 /* ══════════════════════════════════════
    UI & I18N
 ══════════════════════════════════════ */
-function setTheme(th) {
-  THEME = th; document.documentElement.setAttribute('data-theme', th); localStorage.setItem('kw-theme', th);
-  ['n-dark', 'n-light'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.toggle('on', id === 'n-dark' ? th === 'dark' : th === 'light'); });
-}
-function setLang(lg) {
-  LANG = lg; document.documentElement.setAttribute('lang', lg); document.documentElement.setAttribute('dir', lg === 'ar' ? 'rtl' : 'ltr'); document.documentElement.setAttribute('data-lang', lg); localStorage.setItem('kw-lang', lg);
-  ['n-ar', 'n-en'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.toggle('on', id.endsWith(lg)); });
-  applyI18n(); if (ME) { updateBc(); if(_sel.ch) selChapter(_sel.ch.id, _sel.ch.title); }
-}
+function setTheme(th) { THEME = th; document.documentElement.setAttribute('data-theme', th); localStorage.setItem('kw-theme', th); ['n-dark', 'n-light'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.toggle('on', id === 'n-dark' ? th === 'dark' : th === 'light'); }); }
+function setLang(lg) { LANG = lg; document.documentElement.setAttribute('lang', lg); document.documentElement.setAttribute('dir', lg === 'ar' ? 'rtl' : 'ltr'); document.documentElement.setAttribute('data-lang', lg); localStorage.setItem('kw-lang', lg); ['n-ar', 'n-en'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.toggle('on', id.endsWith(lg)); }); applyI18n(); if (ME) { updateBc(); if(_sel.ch) selChapter(_sel.ch.id, _sel.ch.title); } }
 function applyI18n() {
   const set = (id, k) => { const el = document.getElementById(id); if (el) el.textContent = t(k); };
   set('nl-home', 'home'); set('nl-my', 'myLessons'); set('sub-title', 'chooseSubject'); set('sub-sub', 'chooseSubjectSub');
   set('tch-title', 'chooseTeacher'); set('ch-title', 'chooseChapter'); set('ch-sub', 'chooseChapterSub');
   set('my-title', 'myTitle'); set('my-sub', 'mySub'); set('cart-title', 'cartTitle'); set('cart-sub', 'cartSub');
-  const ldTip = document.getElementById('ld-tip'); if (ldTip) ldTip.textContent = LANG === 'ar' ? 'جاري التحميل...' : 'Loading...';
 }
-
 function toast(type, msg) {
   const ic = { s: '✅', e: '❌', w: '⚠️', i: 'ℹ️' }, cl = { s: 't-ok', e: 't-err', w: '', i: '' };
   const wrap = document.getElementById('toasts'), el = document.createElement('div');
   el.className = `toast ${cl[type] || ''}`; el.innerHTML = `<span>${ic[type]}</span><span>${msg}</span>`;
   wrap.appendChild(el); setTimeout(() => { el.classList.add('t-exit'); setTimeout(() => el.remove(), 300); }, 3500);
 }
-
-function updateCartBadge() {
-  const b = document.getElementById('cart-badge'); if (!b) return;
-  if (_cart.length) { b.textContent = _cart.length; b.classList.remove('hidden'); } else b.classList.add('hidden');
-}
-
-function skeletonCards(count = 6, gridId) {
-  const g = document.getElementById(gridId); if (!g) return;
-  g.innerHTML = Array.from({ length: count }, () => `<div class="skel-card"><div class="skel skel-circle"></div><div class="skel skel-rect"></div><div class="skel skel-rect-sm"></div></div>`).join('');
-}
+function updateCartBadge() { const b = document.getElementById('cart-badge'); if (!b) return; if (_cart.length) { b.textContent = _cart.length; b.classList.remove('hidden'); } else b.classList.add('hidden'); }
+function skeletonCards(count = 6, gridId) { const g = document.getElementById(gridId); if (!g) return; g.innerHTML = Array.from({ length: count }, () => `<div class="skel-card"><div class="skel skel-circle"></div><div class="skel skel-rect"></div></div>`).join(''); }
 
 /* ══════════════════════════════════════
    ROUTING
 ══════════════════════════════════════ */
 function goPage(page) {
-  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
-  document.getElementById(`pg-${page}`)?.classList.add('on');
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on')); document.getElementById(`pg-${page}`)?.classList.add('on');
   ['nl-home', 'nl-my', 'nl-cart'].forEach(id => document.getElementById(id)?.classList.remove('active-nav'));
-  const navMap = { mylessons: 'nl-my', cart: 'nl-cart', browse: 'nl-home' };
-  if (navMap[page]) document.getElementById(navMap[page])?.classList.add('active-nav');
-  if (page === 'mylessons') loadMyLessons();
-  if (page === 'cart') renderCart();
+  const navMap = { mylessons: 'nl-my', cart: 'nl-cart', browse: 'nl-home' }; if (navMap[page]) document.getElementById(navMap[page])?.classList.add('active-nav');
+  if (page === 'mylessons') loadMyLessons(); if (page === 'cart') renderCart();
 }
 function showStep(s) { ['sub', 'tch', 'ch', 'ls'].forEach(x => { const el = document.getElementById(`s-${x}`); if (el) el.classList.toggle('hidden', x !== s); }); updateBc(); }
 function resetAll() { _sel = { sub: null, tch: null, ch: null }; showStep('sub'); goPage('browse'); }
@@ -416,8 +312,7 @@ function resetTo(s) { if (s === 'sub') { _sel = { sub: null, tch: null, ch: null
 function updateBc() {
   const bc = document.getElementById('navBc'); if (!bc) return;
   const sep = () => `<span class="bc-sep">/</span>`;
-  let html = `<span class="bc-item" onclick="resetAll()">${t('bcHome')}</span>`;
-  html += sep() + `<span class="bc-item">${t('bcBrowse')}</span>`;
+  let html = `<span class="bc-item" onclick="resetAll()">${t('bcHome')}</span>`; html += sep() + `<span class="bc-item">${t('bcBrowse')}</span>`;
   if (_sel.sub) html += sep() + `<span class="bc-item" onclick="resetTo('sub')">${_sel.sub.name}</span>`;
   if (_sel.tch) html += sep() + `<span class="bc-item" onclick="resetTo('tch')">${_sel.tch.name}</span>`;
   if (_sel.ch) html += sep() + `<span class="bc-item active">${_sel.ch.title}</span>`;
@@ -428,25 +323,13 @@ function updateBc() {
    ✨ CORE LOGIC (EXPIRATION & ENROLLMENTS)
 ══════════════════════════════════════ */
 async function loadEnrollments() {
-  // Fetch lesson_codes including expires_at (if your schema supports it)
   const { data: unlocked } = await sb.from('lesson_codes').select('lesson_id, expires_at').eq('used_by', ME.id);
-  
-  _unlockedLessons.clear();
-  _expiredLessons.clear();
-  const now = new Date();
-
+  _unlockedLessons.clear(); _expiredLessons.clear(); const now = new Date();
   (unlocked || []).forEach(row => {
     if (!row.lesson_id) return;
-    
-    // ✨ Expiration check logic
-    if (row.expires_at && new Date(row.expires_at) < now) {
-      _expiredLessons.add(row.lesson_id);
-    } else {
-      _unlockedLessons.add(row.lesson_id);
-    }
+    if (row.expires_at && new Date(row.expires_at) < now) { _expiredLessons.add(row.lesson_id); } 
+    else { _unlockedLessons.add(row.lesson_id); }
   });
-
-  // If the user has a valid active code, it should override any expired codes for the same lesson
   _unlockedLessons.forEach(id => _expiredLessons.delete(id));
 }
 
@@ -454,45 +337,35 @@ async function loadEnrollments() {
    DATA FETCHING (SUBJECTS -> LESSONS)
 ══════════════════════════════════════ */
 async function loadSubjects() {
-  skeletonCards(6, 'sub-grid');
-  const { data } = await sb.from('subjects').select('id,name_ar,grade_id').order('name_ar');
-  const g = document.getElementById('sub-grid');
-  if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noSubjects')}</div></div>`; return; }
+  skeletonCards(6, 'sub-grid'); const { data } = await sb.from('subjects').select('id,name_ar,grade_id').order('name_ar');
+  const g = document.getElementById('sub-grid'); if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noSubjects')}</div></div>`; return; }
   g.innerHTML = data.map((s, i) => `<div class="kw-card" onclick="selSub('${s.id}','${s.name_ar}',${s.grade_id})" style="animation-delay:${i * 0.05}s"><div class="sub-icon" style="background:var(--bg2)">📚</div><div class="sub-name">${s.name_ar}</div></div>`).join('');
 }
 
 async function selSub(id, name, gradeId) {
-  _sel = { sub: { id, name, grade_id: gradeId }, tch: null, ch: null }; showStep('tch');
-  skeletonCards(3, 'tch-grid');
+  _sel = { sub: { id, name, grade_id: gradeId }, tch: null, ch: null }; showStep('tch'); skeletonCards(3, 'tch-grid');
   const { data: chaps } = await sb.from('chapters').select('teacher_id').eq('subject_id', id);
   const tIds = [...new Set((chaps || []).map(c => c.teacher_id).filter(Boolean))];
-  const g = document.getElementById('tch-grid');
-  if (!tIds.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noTeachers')}</div></div>`; return; }
+  const g = document.getElementById('tch-grid'); if (!tIds.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noTeachers')}</div></div>`; return; }
   const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', tIds);
   g.innerHTML = (profs || []).map((p, i) => `<div class="kw-card" onclick="selTch('${p.id}','${p.full_name}')" style="animation-delay:${i * 0.05}s"><div class="sub-icon" style="border-radius:50%; background:var(--p-faint); color:var(--p1)">👨‍🏫</div><div class="sub-name">${p.full_name || '—'}</div></div>`).join('');
 }
 
 async function selTch(id, name) {
-  _sel.tch = { id, name }; _sel.ch = null; showStep('ch');
-  skeletonCards(4, 'ch-grid');
+  _sel.tch = { id, name }; _sel.ch = null; showStep('ch'); skeletonCards(4, 'ch-grid');
   const { data } = await sb.from('chapters').select('id,title').eq('subject_id', _sel.sub.id).eq('teacher_id', id).order('sort_order');
-  const g = document.getElementById('ch-grid');
-  if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noChapters')}</div></div>`; return; }
+  const g = document.getElementById('ch-grid'); if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noChapters')}</div></div>`; return; }
   g.innerHTML = data.map((ch, i) => `<div class="kw-card" onclick="selChapter('${ch.id}','${ch.title.replace(/'/g, "\\'")}')" style="animation-delay:${i * 0.05}s"><div class="sub-icon" style="background:var(--bg2)">📖</div><div class="sub-name">${ch.title}</div></div>`).join('');
 }
 
 async function selChapter(id, title) {
-  _sel.ch = { id, title }; showStep('ls');
-  skeletonCards(4, 'ls-grid');
-  await loadEnrollments(); // Refresh unlocked & expired state
+  _sel.ch = { id, title }; showStep('ls'); skeletonCards(4, 'ls-grid'); await loadEnrollments();
   const { data } = await sb.from('lessons').select('id,title,description,is_active,scheduled_at,image_url').eq('chapter_id', id).order('created_at');
-  const g = document.getElementById('ls-grid');
-  if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noLessons')}</div></div>`; return; }
+  const g = document.getElementById('ls-grid'); if (!data?.length) { g.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noLessons')}</div></div>`; return; }
   
   const now = new Date();
   g.innerHTML = data.map((l, i) => {
-    const sched = l.scheduled_at ? new Date(l.scheduled_at) : null;
-    const future = sched && sched > now;
+    const sched = l.scheduled_at ? new Date(l.scheduled_at) : null; const future = sched && sched > now;
     
     // ✨ Check states
     const unlocked = _unlockedLessons.has(l.id);
@@ -503,7 +376,7 @@ async function selChapter(id, title) {
     const lData = JSON.stringify({ id: l.id, title: l.title }).replace(/"/g, '&quot;');
     let action = '';
     
-    // ✨ Handle buttons based on expiration
+    // ✨ Handle buttons & messages
     if (!l.is_active) {
        action = `<span class="chip ck-muted">${t('unavailable')}</span>`;
     } else if (future) {
@@ -513,23 +386,31 @@ async function selChapter(id, title) {
     } else if (inCart) {
        action = `<button class="btn btn-gold" onclick="event.stopPropagation();goPage('cart')">${t('goToCart')}</button>`;
     } else if (expired) {
-       // Expired State
-       action = `<button class="btn btn-danger-soft" onclick="event.stopPropagation();addCart(${lData})">🔄 ${t('buyAgain')}</button>`;
+       // ✨ Expired state with clear message
+       action = `
+         <div class="expired-msg-box">
+           <div class="expired-msg-title">${t('expiredMsgTitle')}</div>
+           <div class="expired-msg-sub">${t('expiredMsgSub')}</div>
+         </div>
+         <button class="btn btn-danger-soft" onclick="event.stopPropagation();addCart(${lData})">${t('buyAgainBtn')}</button>
+       `;
     } else {
-       // Normal Locked State
        action = `<button class="btn btn-primary" onclick="event.stopPropagation();addCart(${lData})">${t('addCart')}</button>`;
     }
 
     const cardClass = canOpen ? 'clickable' : (l.is_active && !future && !expired ? '' : (expired ? 'expired-card' : 'locked'));
-    const expiredBadge = expired ? `<div style="position:absolute; top:12px; right:12px; background:var(--danger); color:#fff; font-size:0.7rem; font-weight:800; padding:4px 10px; border-radius:99px; z-index:10;">${t('expiredBadge')}</div>` : '';
+    const expiredBadge = expired ? `<div style="position:absolute; top:12px; right:12px; background:var(--danger); color:#fff; font-size:0.7rem; font-weight:800; padding:4px 10px; border-radius:99px; z-index:10; box-shadow: 0 4px 12px rgba(239,68,68,0.4);">${t('expiredBadge')}</div>` : '';
+    
+    // ✨ Render Image or Default Icon
+    const imgHtml = l.image_url ? `<img src="${l.image_url}" loading="lazy" alt="${l.title}">` : `🎬`;
 
     return `<div class="ls-card ${cardClass}" style="animation-delay:${i * 0.05}s" ${canOpen ? `onclick="goLesson('${l.id}')"` : ''}>
       ${expiredBadge}
-      <div class="ls-thumb">🎬</div>
+      <div class="ls-thumb">${imgHtml}</div>
       <div class="ls-num">${t('lesson')} ${i + 1}</div>
       <div class="ls-title">${l.title}</div>
       ${l.description ? `<div class="ls-desc">${l.description}</div>` : ''}
-      <div class="ls-action">${action}</div>
+      <div class="ls-action" style="width:100%">${action}</div>
     </div>`;
   }).join('');
 }
@@ -541,7 +422,7 @@ function goLesson(id) { window.location.href = `/lesson/?id=${id}`; }
 ══════════════════════════════════════ */
 function addCart(lesson) {
   if (_unlockedLessons.has(lesson.id)) { toast('w', t('alreadyUnlocked')); return; }
-  if (_cart.some(c => c.id === lesson.id)) { toast('i', t('alreadyInCart')); return; }
+  if (_cart.some(c => c.id === lesson.id)) { toast('i', t('alreadyInCart') || 'موجودة في السلة'); return; }
   _cart.push(lesson); localStorage.setItem(`kw-cart-${ME.id}`, JSON.stringify(_cart)); updateCartBadge();
   toast('s', `${t('addedCart')}: ${lesson.title}`);
   if (_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
@@ -553,17 +434,15 @@ function rmCart(lessonId) {
 }
 function renderCart() {
   const c = document.getElementById('cart-content');
-  if (!_cart.length) { c.innerHTML = `<div class="empty-st"><div class="empty-ico">🛒</div><div class="empty-txt">${t('cartEmpty')}</div></div>`; return; }
-  
-  const items = _cart.map(ls => `<div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-sm); margin-bottom:12px;">
-    <div style="font-weight:800">${ls.title}</div>
-    <div style="display:flex; gap:8px;">
-      <input id="pc-${ls.id}" placeholder="${t('enterCode')}" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); outline:none; text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+  if (!_cart.length) { c.innerHTML = `<div class="empty-st"><div style="font-size:3rem">🛒</div><div class="empty-txt">${t('cartEmpty')}</div></div>`; return; }
+  c.innerHTML = _cart.map(ls => `<div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-sm); margin-bottom:12px;">
+    <div style="font-weight:800; min-width:120px;">${ls.title}</div>
+    <div style="display:flex; gap:8px; flex:1; justify-content:flex-end;">
+      <input id="pc-${ls.id}" placeholder="${t('enterCode')}" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); outline:none; text-transform:uppercase; max-width:200px; width:100%;" oninput="this.value=this.value.toUpperCase()">
       <button class="btn btn-primary" style="width:auto; padding:8px 16px;" onclick="checkoutLesson('${ls.id}')" id="cobtn-${ls.id}">✓</button>
       <button class="btn btn-danger-soft" style="width:auto; padding:8px 12px;" onclick="rmCart('${ls.id}')">🗑</button>
     </div>
   </div>`).join('');
-  c.innerHTML = items;
 }
 
 async function checkoutLesson(lessonId) {
@@ -571,20 +450,16 @@ async function checkoutLesson(lessonId) {
   if (!code) { toast('w', t('enterCode')); return; }
   btn.innerHTML = '...'; btn.disabled = true;
   
-  // Verify code logic
   const { data: row, error } = await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code', code).single();
   if (error || !row) { toast('e', 'الكود غير صحيح'); btn.innerHTML = '✓'; btn.disabled = false; return; }
   if (row.lesson_id !== lessonId) { toast('e', 'هذا الكود لحصة أخرى'); btn.innerHTML = '✓'; btn.disabled = false; return; }
   if (row.used_by) { toast('e', 'تم استخدام الكود من قبل'); btn.innerHTML = '✓'; btn.disabled = false; return; }
   
-  // Assign code to user (This gives them a fresh code with a new expires_at if backend triggers it, overriding the old expired one)
   const { error: upErr } = await sb.from('lesson_codes').update({ used_by: ME.id, used_at: new Date().toISOString() }).eq('id', row.id);
   if (upErr) { toast('e', upErr.message); btn.innerHTML = '✓'; btn.disabled = false; return; }
   
   _cart = _cart.filter(c => c.id !== lessonId); localStorage.setItem(`kw-cart-${ME.id}`, JSON.stringify(_cart)); updateCartBadge();
-  toast('s', `تم فتح الحصة بنجاح 🎉`);
-  renderCart();
-  if (_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
+  toast('s', `تم فتح الحصة بنجاح 🎉`); renderCart(); if (_sel.ch) selChapter(_sel.ch.id, _sel.ch.title);
 }
 
 /* ══════════════════════════════════════
@@ -594,8 +469,16 @@ async function loadMyLessons() {
   const el = document.getElementById('my-list'); el.innerHTML = `<div class="skel-card" style="grid-column:1/-1; min-height:100px;"></div>`;
   await loadEnrollments();
   if (!_unlockedLessons.size) { el.innerHTML = `<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noMyLessons')}</div></div>`; return; }
-  const { data } = await sb.from('lessons').select('id,title').in('id', [..._unlockedLessons]).eq('is_active', true);
-  el.innerHTML = (data || []).map((ls, i) => `<div class="kw-card" onclick="goLesson('${ls.id}')" style="animation-delay:${i * 0.05}s"><div class="sub-icon" style="background:var(--bg2)">🎬</div><div class="sub-name">${ls.title}</div><span class="chip ck-ok">✅ ${t('unlocked')}</span></div>`).join('');
+  const { data } = await sb.from('lessons').select('id,title,image_url').in('id', [..._unlockedLessons]).eq('is_active', true);
+  
+  el.innerHTML = (data || []).map((ls, i) => {
+    const imgHtml = ls.image_url ? `<img src="${ls.image_url}" loading="lazy" alt="${ls.title}">` : `🎬`;
+    return `<div class="kw-card" onclick="goLesson('${ls.id}')" style="animation-delay:${i * 0.05}s; padding:16px;">
+      <div class="ls-thumb" style="height:120px; margin-bottom:12px; font-size:2rem;">${imgHtml}</div>
+      <div class="sub-name" style="margin-bottom:8px;">${ls.title}</div>
+      <span class="chip ck-ok">✅ ${t('unlocked')}</span>
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════════════════
@@ -605,20 +488,13 @@ async function checkSession() {
   setTheme(localStorage.getItem('kw-theme') || 'light'); setLang(localStorage.getItem('kw-lang') || 'ar');
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.replace('/login'); return; }
-  const user = session.user;
-  ME = { id: user.id, email: user.email, full_name: user.user_metadata?.full_name || 'طالب' };
+  const user = session.user; ME = { id: user.id, email: user.email, full_name: user.user_metadata?.full_name || 'طالب' };
   try { _cart = JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`) || '[]'); } catch { _cart = []; }
   
-  document.getElementById('mainNav').style.display = 'flex';
-  document.getElementById('bcStrip').style.display = 'flex';
-  document.getElementById('pr-nm').textContent = ME.full_name;
-  document.getElementById('pr-em').textContent = ME.email;
+  document.getElementById('mainNav').style.display = 'flex'; document.getElementById('bcStrip').style.display = 'flex';
+  document.getElementById('pr-nm').textContent = ME.full_name; document.getElementById('pr-em').textContent = ME.email;
   
-  updateCartBadge();
-  setTimeout(() => {
-    document.getElementById('loadingScreen').classList.add('fade-out');
-    loadSubjects();
-  }, 600);
+  updateCartBadge(); setTimeout(() => { loadSubjects(); }, 100);
 }
 async function doLogout() { await sb.auth.signOut(); window.location.replace('/login'); }
 
