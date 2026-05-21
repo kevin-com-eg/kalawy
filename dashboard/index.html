@@ -672,14 +672,39 @@ function updateBc(){
 
 /* ══════ ENROLLMENTS ══════ */
 async function loadEnrollments(){
-  const {data:unlocked}=await sb.from('lesson_codes').select('lesson_id,expires_at').eq('used_by',ME.id);
+  /* جيب الكودات مع used_at وexpires_at */
+  const {data:codes}=await sb.from('lesson_codes')
+    .select('lesson_id,used_at,expires_at')
+    .eq('used_by',ME.id);
+
   _unlockedLessons.clear(); _expiredLessons.clear();
+  if(!codes?.length) return;
+
+  /* جيب access_hours لكل حصة — نفس منطق ملف lesson.html */
+  const lessonIds=[...new Set(codes.map(c=>c.lesson_id).filter(Boolean))];
+  const {data:lsRows}=await sb.from('lessons').select('id,access_hours').in('id',lessonIds);
+  const ahMap={};
+  (lsRows||[]).forEach(l=>{ ahMap[l.id]=Math.max(1,Number(l.access_hours??24)); });
+
   const now=new Date();
-  (unlocked||[]).forEach(row=>{
-    if(!row.lesson_id)return;
-    if(row.expires_at&&new Date(row.expires_at)<now){_expiredLessons.add(row.lesson_id);}
-    else{_unlockedLessons.add(row.lesson_id);}
+  codes.forEach(row=>{
+    if(!row.lesson_id) return;
+
+    /* احسب انتهاء الوقت بنفس طريقة lesson.html: used_at + access_hours */
+    let expired=false;
+    if(row.used_at){
+      const ah=ahMap[row.lesson_id]||24;
+      const expiry=new Date(new Date(row.used_at).getTime()+ah*3600000);
+      if(expiry<=now) expired=true;
+    }
+    /* fallback: لو في expires_at صريح في قاعدة البيانات */
+    if(!expired && row.expires_at && new Date(row.expires_at)<=now) expired=true;
+
+    if(expired) _expiredLessons.add(row.lesson_id);
+    else        _unlockedLessons.add(row.lesson_id);
   });
+
+  /* لو حصة فيها كودين: واحد شغال وواحد منتهي → تعتبر شغالة */
   _unlockedLessons.forEach(id=>_expiredLessons.delete(id));
 }
 
