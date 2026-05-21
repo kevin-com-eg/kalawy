@@ -538,7 +538,7 @@ const S = {
     chooseTeacher: '👨‍🏫 اختار المدرس', chooseChapter: '📖 اختار الشابتر', chooseChapterSub: 'اختار الفصل',
     noSubjects: 'لا توجد مواد', noTeachers: 'لا يوجد مدرسين', noChapters: 'لا توجد شابترات', noLessons: 'لا توجد حصص',
     lesson: 'الحصة', unavailable: 'غير متاحة', unlocked: 'مفتوحة — ادخل', inCart: 'اكمل الدفع', addCart: 'أضف للسلة',
-    myTitle: '📚 حصصي المفتوحة', mySub: 'الحصص اللي فتحتها بالكود', noMyLessons: 'لم تفتح أي حصة بعد',
+    myTitle: '📚 حصصي', mySub: 'الحصص اللي فتحتها بالكود', noMyLessons: 'لم تفتح أي حصة بعد',
     cartTitle: '🛒 سلة الشراء', cartSub: 'ادخل كود كل حصة عشان تفتحها', cartEmpty: 'السلة فارغة',
     alreadyUnlocked: 'الحصة مفتوحة بالفعل ✅', addedCart: 'أُضيف للسلة', enterCode: 'ادخل كود الحصة', goToCart: '🛒 اكمل الدفع',
     expiredLabel: '⏳ انتهى الوقت — جدد بكود جديد', renewPlaceholder: 'كود التجديد', renewBtn: 'جدد',
@@ -738,7 +738,6 @@ async function selTch(id,name){
 ══════════════════════════════════════ */
 async function selChapter(id,title){
   _sel.ch={id,title}; showStep('ls'); skeletonCards(4,'ls-grid'); await loadEnrollments();
-  /* ✨ Fetch lessons WITH price column */
   const {data}=await sb.from('lessons')
     .select('id,title,description,is_active,scheduled_at,image_url,price')
     .eq('chapter_id',id).order('created_at');
@@ -755,7 +754,6 @@ async function selChapter(id,title){
     const inCart=_cart.some(c=>c.id===l.id);
     const canOpen=l.is_active&&!future&&unlocked;
 
-    /* ✨ Price badge */
     const price=l.price!=null?Number(l.price):null;
     let priceBadge='';
     if(!unlocked&&!expired){
@@ -766,7 +764,6 @@ async function selChapter(id,title){
       }
     }
 
-    /* Thumbnail */
     const thumbImg=l.image_url
       ?`<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover;${expired?'filter:grayscale(1) opacity(0.75)':''}" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`
       :(future?'⏰':(unlocked?'🎬':(expired?'⏳':'🔑')));
@@ -782,7 +779,6 @@ async function selChapter(id,title){
     } else if(unlocked){
       action=`<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">✅ ${t('unlocked')}</span>`;
     } else if(expired){
-      /* ✨ EXPIRED: inline renew box with code input */
       action=`<div class="renew-box">
         <div class="renew-label">${t('expiredLabel')}</div>
         <div class="renew-row">
@@ -797,7 +793,6 @@ async function selChapter(id,title){
       action=`${priceBadge}<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${lData})">${t('addCart')}</button>`;
     }
 
-    /* Card class */
     let cardClass='ls-card';
     if(canOpen) cardClass+=' clickable';
     else if(expired) cardClass+=' expired';
@@ -808,18 +803,12 @@ async function selChapter(id,title){
       +`<div class="ls-num">${t('lesson')} ${i+1}</div>`
       +`<div class="ls-title">${l.title}</div>`
       +(l.description?`<div class="ls-desc">${l.description}</div>`:'')
-      /* Show price on non-expired, non-unlocked, non-future cards in the bottom area */
-      +(!expired&&!unlocked&&!future&&l.is_active&&!inCart?priceBadge:'')
       +`<div class="ls-action">${action}</div>`
       +`</div>`;
   }).join('');
-
-  // Remove duplicate price — we embed it once in action already so clear double:
-  // Actually the logic above is correct: priceBadge shown inside action for available lessons
-  // and once more outside for clarity. Let me keep it simple — only in action.
 }
 
-/* ✨ RENEW expired lesson with a new code */
+/* ══════ RENEW — from chapter view ══════ */
 async function renewLesson(lessonId){
   const inp=document.getElementById(`ri-${lessonId}`);
   const btn=document.getElementById(`rb-${lessonId}`);
@@ -837,6 +826,26 @@ async function renewLesson(lessonId){
 
   toast('s','تم تجديد الحصة بنجاح 🎉');
   await selChapter(_sel.ch.id,_sel.ch.title);
+}
+
+/* ══════ RENEW — from My Lessons page ══════ */
+async function renewLessonFromMy(lessonId){
+  const inp=document.getElementById(`ri-${lessonId}`);
+  const btn=document.getElementById(`rb-${lessonId}`);
+  const code=inp?.value.trim().toUpperCase();
+  if(!code){toast('w',t('enterCode'));return;}
+  btn.disabled=true; btn.textContent='...';
+
+  const {data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).single();
+  if(error||!row){toast('e','الكود غير صحيح');btn.disabled=false;btn.textContent=t('renewBtn');return;}
+  if(row.lesson_id!==lessonId){toast('e','الكود لحصة مختلفة');btn.disabled=false;btn.textContent=t('renewBtn');return;}
+  if(row.used_by){toast('e','تم استخدام الكود من قبل');btn.disabled=false;btn.textContent=t('renewBtn');return;}
+
+  const {error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
+  if(upErr){toast('e',upErr.message);btn.disabled=false;btn.textContent=t('renewBtn');return;}
+
+  toast('s','تم تجديد الحصة بنجاح 🎉');
+  await loadMyLessons();
 }
 
 function goLesson(id){ window.location.href=`/lesson/?id=${id}`; }
@@ -886,14 +895,48 @@ async function checkoutLesson(lessonId){
   toast('s','تم فتح الحصة بنجاح 🎉');renderCart();if(_sel.ch)selChapter(_sel.ch.id,_sel.ch.title);
 }
 
-/* ══════ MY LESSONS ══════ */
+/* ══════════════════════════════════════
+   MY LESSONS — shows unlocked + expired
+══════════════════════════════════════ */
 async function loadMyLessons(){
-  const el=document.getElementById('my-list');el.innerHTML=`<div class="skel-card" style="grid-column:1/-1;min-height:100px;"></div>`;
+  const el=document.getElementById('my-list');
+  el.innerHTML=`<div class="skel-card" style="grid-column:1/-1;min-height:100px;"></div>`;
   await loadEnrollments();
-  if(!_unlockedLessons.size){el.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noMyLessons')}</div></div>`;return;}
-  const {data}=await sb.from('lessons').select('id,title,image_url').in('id',[..._unlockedLessons]).eq('is_active',true);
+
+  const hasAny=_unlockedLessons.size||_expiredLessons.size;
+  if(!hasAny){
+    el.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🔑</div><div class="empty-txt">${t('noMyLessons')}</div></div>`;
+    return;
+  }
+
+  // Fetch both unlocked + expired lessons together
+  const allIds=[..._unlockedLessons,..._expiredLessons];
+  const {data}=await sb.from('lessons').select('id,title,image_url').in('id',allIds);
+
   el.innerHTML=(data||[]).map((ls,i)=>{
-    const thumbImg=ls.image_url?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`:' 🎬';
+    const isExpired=_expiredLessons.has(ls.id);
+
+    const thumbImg=ls.image_url
+      ?`<img src="${imgSafe(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover;${isExpired?'filter:grayscale(1) opacity(.7)':''}" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`
+      :(isExpired?'⏳':'🎬');
+
+    if(isExpired){
+      return `<div class="ls-card expired" style="animation-delay:${i*.05}s">
+        <div class="ls-thumb">${thumbImg}</div>
+        <div class="ls-title">${ls.title}</div>
+        <div class="ls-action" style="width:100%;margin-top:auto">
+          <div class="renew-box">
+            <div class="renew-label">${t('expiredLabel')}</div>
+            <div class="renew-row">
+              <input class="renew-inp" id="ri-${ls.id}" placeholder="${t('renewPlaceholder')}" maxlength="30"
+                oninput="this.value=this.value.toUpperCase()">
+              <button class="renew-btn" id="rb-${ls.id}" onclick="renewLessonFromMy('${ls.id}')">${t('renewBtn')}</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+
     return `<div class="ch-card clickable" onclick="goLesson('${ls.id}')" style="animation-delay:${i*.05}s">
       <div class="ch-img-box">${thumbImg}</div>
       <div class="ch-title">${ls.title}</div>
@@ -906,10 +949,8 @@ async function loadMyLessons(){
    PROFILE EDIT
 ══════════════════════════════════════ */
 async function loadProfileForm(){
-  // Populate from ME + fresh profile row
   document.getElementById('inp-name').value=ME.full_name||'';
   document.getElementById('inp-email').value=ME.email||'';
-  // Load phone from profiles table
   const {data:prof}=await sb.from('profiles').select('phone,image_url').eq('id',ME.id).single();
   if(prof){
     document.getElementById('inp-phone').value=prof.phone||'';
@@ -964,7 +1005,6 @@ async function handleAvatarChange(evt){
   const {data:{publicUrl}}=sb.storage.from('kalawy').getPublicUrl(path);
   bar.style.width='100%';
 
-  // Save to profiles table
   await sb.from('profiles').update({image_url:path}).eq('id',ME.id);
   ME.avatarUrl=publicUrl; updateNavAvatar(publicUrl); renderProfileAvatar();
   toast('s',t('uploadedImg'));
@@ -981,18 +1021,15 @@ async function saveProfile(){
   if(!name){toast('w','ادخل اسمك');return;}
   btn.disabled=true; lbl.textContent=t('saving');
 
-  // Update auth email if changed
   const emailChanged=email&&email!==ME.email;
   try{
     if(emailChanged){
       const {error}=await sb.auth.updateUser({email});
       if(error)throw error;
     }
-    // Update name in auth metadata
     const {error:metaErr}=await sb.auth.updateUser({data:{full_name:name}});
     if(metaErr)throw metaErr;
 
-    // Update profiles table
     const {error:profErr}=await sb.from('profiles').update({full_name:name,phone}).eq('id',ME.id);
     if(profErr)throw profErr;
 
@@ -1000,7 +1037,6 @@ async function saveProfile(){
     if(emailChanged)ME.email=email;
     document.getElementById('pr-nm').textContent=name;
     document.getElementById('pr-em').textContent=ME.email;
-    // Update nav avatar initials
     const av=document.getElementById('navAv');
     if(av&&!ME.avatarUrl)av.textContent=name[0].toUpperCase();
     toast('s',t('saved'));
@@ -1034,7 +1070,6 @@ async function checkSession(){
   ME={id:user.id,email:user.email,full_name:user.user_metadata?.full_name||'طالب',avatarUrl:''};
   try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
 
-  // Load avatar from profile
   const {data:prof}=await sb.from('profiles').select('image_url,phone').eq('id',ME.id).single();
   if(prof?.image_url){ME.avatarUrl=imgSrc(prof.image_url);}
 
@@ -1042,7 +1077,6 @@ async function checkSession(){
   document.getElementById('bcStrip').style.display='flex';
   document.getElementById('mainFooter').style.display='block';
 
-  // Nav avatar
   updateNavAvatar(ME.avatarUrl);
 
   document.getElementById('pr-nm').textContent=ME.full_name;
