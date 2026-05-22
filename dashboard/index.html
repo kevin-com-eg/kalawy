@@ -125,7 +125,6 @@ img{display:block}
 .pw{padding-top:calc(var(--nav-h) + var(--bc-h));background:var(--bg);min-height:100vh;position:relative;z-index:1}
 .pg{display:none;max-width:1320px;margin:0 auto;padding:0 clamp(12px,3vw,36px) 40px}
 .pg.on{display:block;animation:fadeIn .3s ease}
-.pg:not(.on){display:none!important}
 
 /* ══════ SEC HERO ══════ */
 .sec-hero{text-align:center;padding:28px 20px 20px}
@@ -320,17 +319,6 @@ img{display:block}
 /* Upload progress */
 .upload-prog{height:3px;background:var(--p-faint);border-radius:99px;overflow:hidden;margin-top:8px;display:none}
 .upload-prog-bar{height:100%;background:linear-gradient(90deg,var(--p1),var(--p2));width:0%;transition:width .3s;border-radius:99px}
-
-/* student ID / notifications */
-.id-card{background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(52,211,153,.07));border:1px solid var(--border);border-radius:var(--r-xl);padding:22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
-.id-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
-.id-code{font-family:'Outfit',monospace;font-size:1.45rem;font-weight:900;color:var(--p2);letter-spacing:.08em;direction:ltr}
-.id-qr{width:120px;height:120px;border-radius:18px;background:#fff;padding:8px;border:1px solid var(--border);position:relative;z-index:1}
-.notif-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.notif-type{display:inline-flex;padding:3px 10px;border-radius:999px;background:var(--p-faint);color:var(--p2);font-size:.7rem;font-weight:800;margin-bottom:6px}
-.blocked-full{min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center}.blocked-card{max-width:460px;background:var(--card);border:1px solid rgba(244,63,94,.25);border-radius:var(--r-xl);padding:36px 28px;box-shadow:var(--shadow-lg)}
-@media(max-width:640px){.id-card{grid-template-columns:1fr;text-align:center}.id-qr{margin:auto}}
-
 </style>
 </head>
 <body>
@@ -355,7 +343,6 @@ img{display:block}
   <div class="nav-links">
     <button class="nl-btn active-nav" onclick="resetAll()" id="nl-home">🏠 الرئيسية</button>
     <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">📚 حصصي</button>
-    <button class="nl-btn" onclick="goPage('notifications')" id="nl-notif">🔔 <span id="nl-notif-lbl">الإشعارات</span> <span class="badge hidden" id="notif-badge">0</span></button>
     <button class="nl-btn cart-btn" onclick="window.location.href='/checkout/'" id="nl-cart">
       🛒 <span id="nl-cart-lbl">سلة الشراء</span>
       <span class="badge hidden" id="cart-badge">0</span>
@@ -406,12 +393,6 @@ img{display:block}
     <div class="ls-grid" id="my-list"></div>
   </div>
 
-  <!-- NOTIFICATIONS PAGE -->
-  <div class="pg" id="pg-notifications">
-    <div class="sec-hero"><div class="sec-title" id="notif-title">🔔 الإشعارات</div><div class="sec-sub" id="notif-sub">آخر تنبيهات المدرسين والمنصة</div></div>
-    <div id="notif-list" style="max-width:760px;margin:0 auto"></div>
-  </div>
-
   <!-- CART PAGE -->
   <div class="pg" id="pg-cart">
     <div class="sec-hero"><div class="sec-title" id="cart-title">🛒 سلة الشراء</div><div class="sec-sub" id="cart-sub">ادخل كود كل حصة عشان تفتحها</div></div>
@@ -433,16 +414,6 @@ img{display:block}
         <div class="upload-prog" id="uploadProg"><div class="upload-prog-bar" id="uploadProgBar"></div></div>
         <div class="prof-name-big" id="pr-nm">الاسم</div>
         <div class="prof-email-big" id="pr-em">البريد</div>
-      </div>
-
-      <!-- Student ID / QR -->
-      <div class="id-card">
-        <div style="position:relative;z-index:1">
-          <div class="prof-sec-title" style="margin-bottom:8px">🪪 <span id="sid-title">ID الطالب</span></div>
-          <div class="id-code" id="studentPublicId">KW-000000</div>
-          <div class="sec-sub" style="text-align:inherit;margin-top:5px" id="sid-sub">استخدمه للتأكيد والمتابعة</div>
-        </div>
-        <img class="id-qr" id="studentQr" alt="Student QR">
       </div>
 
       <!-- Edit Info -->
@@ -545,6 +516,7 @@ img{display:block}
 </footer>
 
 <script>
+
 /* ══════════════════════════════════════
    CONFIG & STATE
 ══════════════════════════════════════ */
@@ -1275,6 +1247,42 @@ async function checkSession(){
   setTimeout(()=>{document.getElementById('loadingScreen').classList.add('fade-out');loadSubjects();},600);
 }
 async function doLogout(){await sb.auth.signOut();window.location.replace('/login');}
+
+
+
+/* EXTRA PATCH: follow teacher buttons */
+async function selSub(id,name,gradeId){
+  _sel={sub:{id,name,grade_id:gradeId},tch:null,ch:null}; showStep('tch'); skeletonCards(3,'tch-grid');
+  const {data:chaps}=await sb.from('chapters').select('teacher_id').eq('subject_id',id);
+  const tIds=[...new Set((chaps||[]).map(c=>c.teacher_id).filter(Boolean))];
+  const g=document.getElementById('tch-grid');
+  if(!tIds.length){g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noTeachers')}</div></div>`;return;}
+  const [{data:profs},{data:follows}]=await Promise.all([
+    sb.from('profiles').select('id,full_name,image_url').in('id',tIds),
+    sb.from('teacher_followers').select('teacher_id').eq('student_id',ME.id)
+  ]);
+  const followed=new Set((follows||[]).map(x=>x.teacher_id));
+  g.innerHTML=(profs||[]).map((p,i)=>{
+    const av=p.image_url?`<img src="${imgSafe(p.image_url)}" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover" onerror="this.parentElement.innerHTML='${(p.full_name||'?')[0].toUpperCase()}'" loading="lazy">`:(p.full_name||'?')[0].toUpperCase();
+    const on=followed.has(p.id);
+    return `<div class="tch-card" style="animation-delay:${i*.07}s" onclick="selTch('${p.id}','${esc(p.full_name||p.id)}')">
+      <div class="tch-av" style="${p.image_url?'':'background:linear-gradient(135deg,var(--p1),var(--p2))'}">${av}</div>
+      <div class="tch-name">${p.full_name||'—'}</div>
+      <button style="margin-top:12px;padding:7px 14px;border-radius:999px;border:1px solid var(--border);background:${on?'rgba(52,211,153,.12)':'var(--glass)'};color:${on?'var(--ok)':'var(--t2)'};font-weight:900;cursor:pointer" onclick="event.stopPropagation();toggleFollowTeacher('${p.id}',this)">${on?'✅ متابع':'🔔 تابع المدرس'}</button>
+    </div>`;
+  }).join('');
+}
+async function toggleFollowTeacher(teacherId,btn){
+  const on=(btn.textContent||'').includes('متابع')||(btn.textContent||'').includes('Following'); btn.disabled=true;
+  if(on){
+    const {error}=await sb.from('teacher_followers').delete().eq('teacher_id',teacherId).eq('student_id',ME.id);
+    if(error){btn.disabled=false;return toast('e',error.message);} btn.textContent='🔔 تابع المدرس'; btn.style.background='var(--glass)'; btn.style.color='var(--t2)'; toast('s','تم إلغاء المتابعة');
+  }else{
+    const {error}=await sb.from('teacher_followers').upsert({teacher_id:teacherId,student_id:ME.id},{onConflict:'teacher_id,student_id'});
+    if(error){btn.disabled=false;return toast('e',error.message.includes('does not exist')?'شغّل SQL الجديد الأول':error.message);} btn.textContent='✅ متابع'; btn.style.background='rgba(52,211,153,.12)'; btn.style.color='var(--ok)'; toast('s','تمت المتابعة وستصلك إشعارات المدرس');
+  }
+  btn.disabled=false; if(typeof updateNotifBadge==='function')updateNotifBadge();
+}
 
 window.addEventListener('DOMContentLoaded',checkSession);
 </script>
