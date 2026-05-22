@@ -320,6 +320,17 @@ img{display:block}
 /* Upload progress */
 .upload-prog{height:3px;background:var(--p-faint);border-radius:99px;overflow:hidden;margin-top:8px;display:none}
 .upload-prog-bar{height:100%;background:linear-gradient(90deg,var(--p1),var(--p2));width:0%;transition:width .3s;border-radius:99px}
+
+/* student ID / notifications */
+.id-card{background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(52,211,153,.07));border:1px solid var(--border);border-radius:var(--r-xl);padding:22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.id-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--shine),transparent 60%);pointer-events:none}
+.id-code{font-family:'Outfit',monospace;font-size:1.45rem;font-weight:900;color:var(--p2);letter-spacing:.08em;direction:ltr}
+.id-qr{width:120px;height:120px;border-radius:18px;background:#fff;padding:8px;border:1px solid var(--border);position:relative;z-index:1}
+.notif-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.notif-type{display:inline-flex;padding:3px 10px;border-radius:999px;background:var(--p-faint);color:var(--p2);font-size:.7rem;font-weight:800;margin-bottom:6px}
+.blocked-full{min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center}.blocked-card{max-width:460px;background:var(--card);border:1px solid rgba(244,63,94,.25);border-radius:var(--r-xl);padding:36px 28px;box-shadow:var(--shadow-lg)}
+@media(max-width:640px){.id-card{grid-template-columns:1fr;text-align:center}.id-qr{margin:auto}}
+
 </style>
 </head>
 <body>
@@ -344,6 +355,7 @@ img{display:block}
   <div class="nav-links">
     <button class="nl-btn active-nav" onclick="resetAll()" id="nl-home">🏠 الرئيسية</button>
     <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">📚 حصصي</button>
+    <button class="nl-btn" onclick="goPage('notifications')" id="nl-notif">🔔 <span id="nl-notif-lbl">الإشعارات</span> <span class="badge hidden" id="notif-badge">0</span></button>
     <button class="nl-btn cart-btn" onclick="window.location.href='/checkout/'" id="nl-cart">
       🛒 <span id="nl-cart-lbl">سلة الشراء</span>
       <span class="badge hidden" id="cart-badge">0</span>
@@ -394,6 +406,12 @@ img{display:block}
     <div class="ls-grid" id="my-list"></div>
   </div>
 
+  <!-- NOTIFICATIONS PAGE -->
+  <div class="pg" id="pg-notifications">
+    <div class="sec-hero"><div class="sec-title" id="notif-title">🔔 الإشعارات</div><div class="sec-sub" id="notif-sub">آخر تنبيهات المدرسين والمنصة</div></div>
+    <div id="notif-list" style="max-width:760px;margin:0 auto"></div>
+  </div>
+
   <!-- CART PAGE -->
   <div class="pg" id="pg-cart">
     <div class="sec-hero"><div class="sec-title" id="cart-title">🛒 سلة الشراء</div><div class="sec-sub" id="cart-sub">ادخل كود كل حصة عشان تفتحها</div></div>
@@ -415,6 +433,16 @@ img{display:block}
         <div class="upload-prog" id="uploadProg"><div class="upload-prog-bar" id="uploadProgBar"></div></div>
         <div class="prof-name-big" id="pr-nm">الاسم</div>
         <div class="prof-email-big" id="pr-em">البريد</div>
+      </div>
+
+      <!-- Student ID / QR -->
+      <div class="id-card">
+        <div style="position:relative;z-index:1">
+          <div class="prof-sec-title" style="margin-bottom:8px">🪪 <span id="sid-title">ID الطالب</span></div>
+          <div class="id-code" id="studentPublicId">KW-000000</div>
+          <div class="sec-sub" style="text-align:inherit;margin-top:5px" id="sid-sub">استخدمه للتأكيد والمتابعة</div>
+        </div>
+        <img class="id-qr" id="studentQr" alt="Student QR">
       </div>
 
       <!-- Edit Info -->
@@ -539,7 +567,7 @@ const S = {
     chooseTeacher: '👨‍🏫 اختار المدرس', chooseChapter: '📖 اختار الشابتر', chooseChapterSub: 'اختار الفصل',
     noSubjects: 'لا توجد مواد', noTeachers: 'لا يوجد مدرسين', noChapters: 'لا توجد شابترات', noLessons: 'لا توجد حصص',
     lesson: 'الحصة', unavailable: 'غير متاحة', unlocked: 'مفتوحة — ادخل', inCart: 'اكمل الدفع', addCart: 'أضف للسلة',
-    myTitle: '📚 حصصي', mySub: 'الحصص اللي فتحتها بالكود', noMyLessons: 'لم تفتح أي حصة بعد',
+    myTitle: '📚 حصصي', mySub: 'الحصص اللي فتحتها بالكود', noMyLessons: 'لم تفتح أي حصة بعد', notifTitle:'🔔 الإشعارات', notifSub:'آخر تنبيهات المدرسين والمنصة', noNotifs:'لا توجد إشعارات الآن', studentId:'ID الطالب', studentIdSub:'استخدمه للتأكيد والمتابعة', blockedMsg:'حسابك محظور مؤقتاً. تواصل مع المدرس أو الدعم.',
     cartTitle: '🛒 سلة الشراء', cartSub: 'ادخل كود كل حصة عشان تفتحها', cartEmpty: 'السلة فارغة',
     alreadyUnlocked: 'الحصة مفتوحة بالفعل ✅', addedCart: 'أُضيف للسلة', enterCode: 'ادخل كود الحصة', goToCart: '🛒 اكمل الدفع',
     expiredLabel: '⏳ انتهى الوقت — جدد بكود جديد', renewPlaceholder: 'كود التجديد', renewBtn: 'جدد',
@@ -562,12 +590,12 @@ const S = {
     ftTagline: 'منصة التعليم الإلكتروني للطلاب المصريين\nحصصك في إيدك، في أي وقت وأي مكان 🎓'
   },
   en: {
-    home: '🏠 Home', myLessons: '📚 My Lessons', cartNav: 'Cart',
+    home: '🏠 Home', myLessons: '📚 My Lessons', notifications:'🔔 Notifications', cartNav: 'Cart',
     chooseSubject: '📚 Choose Subject', chooseSubjectSub: 'Select a subject to study',
     chooseTeacher: '👨‍🏫 Choose Teacher', chooseChapter: '📖 Choose Chapter', chooseChapterSub: 'Select the chapter',
     noSubjects: 'No subjects', noTeachers: 'No teachers', noChapters: 'No chapters', noLessons: 'No lessons',
     lesson: 'Lesson', unavailable: 'Unavailable', unlocked: 'Unlocked — Enter', inCart: 'Go to Cart', addCart: 'Add to Cart',
-    myTitle: '📚 My Lessons', mySub: 'Lessons unlocked with your code', noMyLessons: 'No unlocked lessons yet',
+    myTitle: '📚 My Lessons', mySub: 'Lessons unlocked with your code', noMyLessons: 'No unlocked lessons yet', notifTitle:'🔔 Notifications', notifSub:'Latest teacher and platform alerts', noNotifs:'No notifications yet', studentId:'Student ID', studentIdSub:'Use it for verification and tracking', blockedMsg:'Your account is temporarily blocked. Contact your teacher or support.',
     cartTitle: '🛒 Cart', cartSub: 'Enter code to unlock', cartEmpty: 'Cart is empty',
     alreadyUnlocked: 'Already unlocked ✅', addedCart: 'Added to cart', enterCode: 'Enter code', goToCart: '🛒 Go to Cart',
     expiredLabel: '⏳ Expired — enter a new code', renewPlaceholder: 'Renewal code', renewBtn: 'Renew',
@@ -624,13 +652,13 @@ function applyI18n(){
   set('nl-home','home'); set('nl-my','myLessons');
   set('sub-title','chooseSubject'); set('sub-sub','chooseSubjectSub');
   set('tch-title','chooseTeacher'); set('ch-title','chooseChapter'); set('ch-sub','chooseChapterSub');
-  set('my-title','myTitle'); set('my-sub','mySub');
+  set('my-title','myTitle'); set('my-sub','mySub'); set('notif-title','notifTitle'); set('notif-sub','notifSub');
   set('cart-title','cartTitle'); set('cart-sub','cartSub');
   set('prof-title','profTitle'); set('prof-sub','profSub');
   set('editInfoTitle','editInfo');
   set('lbl-name','lblName'); set('lbl-phone','lblPhone'); set('lbl-email','lblEmail');
   set('emailNote','emailNote'); set('saveProfLbl','saveLbl');
-  set('pwdTitle','pwdTitle'); set('lbl-newpwd','lblNewPwd'); set('lbl-confirmpwd','lblConfirmPwd');
+  set('sid-title','studentId'); set('sid-sub','studentIdSub'); set('pwdTitle','pwdTitle'); set('lbl-newpwd','lblNewPwd'); set('lbl-confirmpwd','lblConfirmPwd');
   set('pwdBtnLbl','pwdBtnLbl'); set('accountTitle','accountTitle'); set('logoutLbl','logoutLbl');
   // footer
   set('ft-explore','ftExplore'); set('ft-browse','ftBrowse');
@@ -663,9 +691,10 @@ function goPage(page){
   }
 
   ['nl-home','nl-my','nl-cart'].forEach(id=>document.getElementById(id)?.classList.remove('active-nav'));
-  const navMap={mylessons:'nl-my',cart:'nl-cart',browse:'nl-home'};
+  const navMap={mylessons:'nl-my',notifications:'nl-notif',cart:'nl-cart',browse:'nl-home'};
   if(navMap[page])document.getElementById(navMap[page])?.classList.add('active-nav');
   if(page==='mylessons')loadMyLessons();
+  if(page==='notifications')loadNotifications();
   if(page==='cart'){window.location.href='/checkout/';return;}
   if(page==='profile')loadProfileForm();
 }
@@ -1052,6 +1081,49 @@ async function loadMyLessons(){
   }).join('');
 }
 
+
+function getStudentPublicId(){
+  if(ME?.student_public_id) return ME.student_public_id;
+  if(ME?.student_no) return `KW-${String(ME.student_no).padStart(6,'0')}`;
+  return `KW-${String(ME?.id||'').slice(0,8).toUpperCase()}`;
+}
+function updateStudentIdCard(){
+  const sid=getStudentPublicId();
+  const el=document.getElementById('studentPublicId'); if(el)el.textContent=sid;
+  const qr=document.getElementById('studentQr'); if(qr)qr.src=`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(sid)}`;
+}
+async function getFollowedTeacherIds(){
+  const {data}=await sb.from('teacher_followers').select('teacher_id').eq('student_id',ME.id);
+  return (data||[]).map(x=>x.teacher_id).filter(Boolean);
+}
+async function updateNotifBadge(){
+  const b=document.getElementById('notif-badge'); if(!b||!ME)return;
+  const list=await fetchNotifications();
+  if(list.length){b.textContent=list.length;b.classList.remove('hidden');}else b.classList.add('hidden');
+}
+async function fetchNotifications(){
+  const followed=await getFollowedTeacherIds();
+  const {data,error}=await sb.from('notifications').select('id,title,body,type,created_at,teacher_id,teacher:teacher_id(full_name)').order('created_at',{ascending:false}).limit(80);
+  if(error){console.warn('notifications error',error);return [];}
+  return (data||[]).filter(n=>!n.teacher_id||followed.includes(n.teacher_id)).slice(0,40);
+}
+async function loadNotifications(){
+  const el=document.getElementById('notif-list'); if(!el)return;
+  el.innerHTML=`<div class="skel-card" style="min-height:100px"></div>`;
+  const list=await fetchNotifications();
+  if(!list.length){el.innerHTML=`<div class="empty-st"><div class="empty-ico">🔔</div><div class="empty-txt">${t('noNotifs')}</div></div>`;return;}
+  el.innerHTML=list.map(n=>`<div class="notif-card">
+    <span class="notif-type">${esc(n.type||'post')}</span>
+    <div style="font-weight:900;font-size:1rem;margin-bottom:4px">${esc(n.title)}</div>
+    ${n.body?`<div style="color:var(--t2);line-height:1.8;font-size:.86rem">${esc(n.body)}</div>`:''}
+    <div class="td-muted" style="margin-top:8px;color:var(--t3);font-size:.75rem">${n.teacher?.full_name||'kalawy'} • ${new Date(n.created_at).toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'})}</div>
+  </div>`).join('');
+}
+function showBlocked(){
+  document.getElementById('loadingScreen')?.classList.add('fade-out');
+  document.querySelector('.pw').innerHTML=`<div class="blocked-full"><div class="blocked-card"><div style="font-size:4rem;margin-bottom:12px">🚫</div><h2 style="font-size:1.35rem;margin-bottom:10px">Blocked</h2><p style="color:var(--t2);line-height:1.9">${t('blockedMsg')}</p><button class="btn btn-danger" style="margin-top:16px" onclick="doLogout()">${t('logoutLbl')}</button></div></div>`;
+}
+
 /* ══════════════════════════════════════
    PROFILE EDIT
 ══════════════════════════════════════ */
@@ -1061,8 +1133,11 @@ async function loadProfileForm(){
   const {data:prof}=await sb.from('profiles').select('phone,image_url').eq('id',ME.id).single();
   if(prof){
     document.getElementById('inp-phone').value=prof.phone||'';
+    if(prof.student_no) ME.student_no=prof.student_no;
+    if(prof.student_public_id) ME.student_public_id=prof.student_public_id;
     if(prof.image_url) updateNavAvatar(imgSrc(prof.image_url));
   }
+  updateStudentIdCard();
   renderProfileAvatar();
 }
 
@@ -1177,7 +1252,11 @@ async function checkSession(){
   ME={id:user.id,email:user.email,full_name:user.user_metadata?.full_name||'طالب',avatarUrl:''};
   try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
 
-  const {data:prof}=await sb.from('profiles').select('image_url,phone').eq('id',ME.id).single();
+  const {data:prof}=await sb.from('profiles').select('image_url,phone,full_name,is_blocked,student_no,student_public_id').eq('id',ME.id).single();
+  if(prof?.is_blocked){showBlocked();return;}
+  if(prof?.full_name)ME.full_name=prof.full_name;
+  if(prof?.student_no)ME.student_no=prof.student_no;
+  if(prof?.student_public_id)ME.student_public_id=prof.student_public_id;
   if(prof?.image_url){ME.avatarUrl=imgSrc(prof.image_url);}
 
   document.getElementById('mainNav').style.display='flex';
@@ -1188,8 +1267,10 @@ async function checkSession(){
 
   document.getElementById('pr-nm').textContent=ME.full_name;
   document.getElementById('pr-em').textContent=ME.email;
+  updateStudentIdCard();
 
   updateCartBadge();
+  updateNotifBadge();
   applyI18n();
   setTimeout(()=>{document.getElementById('loadingScreen').classList.add('fade-out');loadSubjects();},600);
 }
