@@ -311,6 +311,57 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
   .sa{align-items:flex-start;width:100%}
   .code-row-exp{flex-direction:column}
 }
+
+
+/* ══════════ KALAWY LESSON REDESIGN + HOMEWORK GATE ══════════ */
+body{
+  background:
+    radial-gradient(circle at 12% 6%,rgba(139,92,246,.18),transparent 34%),
+    radial-gradient(circle at 88% 0%,rgba(16,185,129,.10),transparent 30%),
+    linear-gradient(135deg,var(--bg),var(--bg2));
+}
+.page{max-width:1040px;padding-top:8px}
+.lesson-hero{
+  position:relative;overflow:hidden;display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center;
+  background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(255,255,255,.42));
+  border:1px solid rgba(139,92,246,.18);border-radius:28px;padding:22px;margin:16px 0 16px;
+  box-shadow:0 18px 55px rgba(80,40,160,.12);animation:slideUp .42s ease both;
+}
+[data-theme="dark"] .lesson-hero{background:linear-gradient(135deg,rgba(26,22,48,.88),rgba(18,15,30,.72));box-shadow:0 18px 60px rgba(0,0,0,.45)}
+.lesson-hero::before{content:'';position:absolute;inset:-80px;background:radial-gradient(circle at 20% 20%,rgba(139,92,246,.22),transparent 38%),radial-gradient(circle at 85% 30%,rgba(52,211,153,.12),transparent 34%);pointer-events:none}
+.lesson-cover{position:relative;width:120px;height:120px;border-radius:24px;display:grid;place-items:center;font-size:3rem;overflow:hidden;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 16px 38px var(--glow)}
+.lesson-cover img{width:100%;height:100%;object-fit:cover}
+.lesson-main{position:relative;z-index:1;min-width:0}
+.lesson-kicker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.lesson-kicker .mini{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--bd);background:var(--input-bg);color:var(--t2);border-radius:999px;padding:6px 10px;font-size:.78rem;font-weight:800}
+.lesson-title{text-align:inherit;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);letter-spacing:-.035em}
+.lesson-desc{margin-top:8px;color:var(--t2);font-size:.92rem;line-height:1.8;max-width:720px;user-select:text}
+.pills{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.pill{border-radius:18px;padding:14px 16px;background:var(--card)!important;border:1px solid var(--bd)!important;box-shadow:var(--sh);font-family:'Tajawal',sans-serif;color:var(--txt)!important;text-align:start;animation:none}
+.pill small{display:block;color:var(--t3);font-size:.72rem;font-weight:800;margin-bottom:4px}
+.tabs{background:var(--card);border-radius:22px;padding:7px;gap:6px;box-shadow:var(--sh);border:1px solid var(--bd);overflow:visible}
+.tab{border-radius:16px;border-left:none!important;color:var(--t3);padding:13px 10px;background:transparent}
+.tab.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 8px 22px var(--glow)}
+.tab.on::before{display:none}
+.vid-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.vid-card{display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;min-height:170px;border-radius:24px;padding:18px;background:var(--card);border:1px solid var(--bd);box-shadow:var(--sh);position:relative;overflow:hidden}
+.vid-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,.10),transparent 56%);pointer-events:none}
+.vc-right{position:relative;z-index:1;align-items:flex-start;justify-content:space-between;width:100%}
+.vc-title{font-size:1.05rem;font-weight:900;line-height:1.5}
+.vc-watch{position:relative;z-index:1;width:100%;justify-content:center;margin-top:18px;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 8px 20px var(--glow)}
+.vc-play{background:rgba(139,92,246,.13);color:var(--p1)}
+.player-frame{border-radius:24px;border:1px solid rgba(139,92,246,.24);box-shadow:0 22px 70px rgba(0,0,0,.35)}
+.player-title-box{border-radius:18px;background:var(--card);box-shadow:var(--sh);border-color:var(--bd)}
+.lock-card,.exam-intro,.mat-card,.qc,.sw{border-radius:24px;border:1px solid var(--bd);box-shadow:var(--sh2)}
+.hw-submit-box{margin-top:16px;background:linear-gradient(135deg,rgba(16,185,129,.10),rgba(139,92,246,.08));border:1px solid rgba(16,185,129,.22);border-radius:22px;padding:18px;box-shadow:var(--sh)}
+.hw-submit-title{font-weight:900;margin-bottom:8px;color:var(--txt)}
+.hw-note{width:100%;min-height:72px;margin:8px 0 12px;background:var(--input-bg);border:1px solid var(--bd);border-radius:14px;color:var(--txt);padding:11px 13px;outline:none;user-select:text;-webkit-user-select:text}
+.gate-card-modern{max-width:520px;margin:7vh auto;background:var(--card);border:1px solid var(--bd);box-shadow:var(--sh2);border-radius:30px;padding:34px 28px;text-align:center;animation:slideUp .35s ease both}
+.gate-card-modern .big-lock{font-size:4rem;margin-bottom:14px;display:block}
+.gate-card-modern h2{font-size:1.35rem;font-weight:900;margin-bottom:10px;color:var(--txt)}
+.gate-card-modern p{color:var(--t2);font-size:.92rem;line-height:1.9;margin-bottom:20px}
+@media(max-width:700px){.lesson-hero{grid-template-columns:1fr;text-align:center}.lesson-cover{margin:auto}.lesson-kicker{justify-content:center}.pills{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}.vid-list{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -423,7 +474,8 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function iE(el,ic='🖼️'){const p=el.parentElement;if(p)p.innerHTML=`<div style="display:grid;place-items:center;height:100%;font-size:1.5rem">${ic}</div>`;else el.remove();}
 
 /* ══ STATE ══ */
-let ME=null,ROLE='',LESSON=null,EXAM=null,VIDEOS=[],CONTENT=[],ACCESS=null,ACCESS_ROWS=[];
+let ME=null,ROLE='',LESSON=null,EXAM=null,VIDEOS=[],CONTENT=[],HOMEWORK=[],ACCESS=null,ACCESS_ROWS=[];
+let HOMEWORK_DONE=false,PREV_GATE={required:false,done:true,prevId:null,prevTitle:''};
 let _ans={},_sub=false,_eqs=[],_cp=0;
 let _eti=null,_aci=null;
 window._pl=null;let _wmt=null;
@@ -453,6 +505,56 @@ function norOpts(q){
   return o;
 }
 function norQs(qs){return(qs||[]).map(q=>({...q,options:norOpts(q)}));}
+
+function isStaff(){return ROLE==='admin'||ROLE==='teacher';}
+function hwTypeMatch(c){const t=String(c?.type||'').toLowerCase(),tx=`${c?.title||''} ${c?.body||''}`.toLowerCase();return ['homework','assignment','hw','واجب'].includes(t)||tx.includes('واجب')||tx.includes('homework');}
+async function getHomeworkDone(lessonId){
+  if(isStaff()||!ME?.id)return true;
+  const {data,error}=await sb.from('homework_submissions')
+    .select('id,status,submitted_at')
+    .eq('lesson_id',lessonId).eq('student_id',ME.id)
+    .order('submitted_at',{ascending:false}).limit(1).maybeSingle();
+  if(error){console.warn('homework_submissions error',error);return false;}
+  return !!data;
+}
+async function checkPrevHomeworkGate(ls){
+  PREV_GATE={required:false,done:true,prevId:null,prevTitle:''};
+  if(isStaff()||!ls?.chapter_id)return true;
+  const {data:all,error:lsErr}=await sb.from('lessons')
+    .select('id,title,created_at,scheduled_at')
+    .eq('chapter_id',ls.chapter_id)
+    .order('created_at',{ascending:true});
+  if(lsErr){console.warn('previous lesson query error',lsErr);return true;}
+  const idx=(all||[]).findIndex(x=>x.id===ls.id);
+  if(idx<=0)return true;
+  const prev=all[idx-1];
+  const [{data:hws,error:hwErr},{data:cnt,error:cntErr}]=await Promise.all([
+    sb.from('homework').select('id').eq('lesson_id',prev.id).limit(1),
+    sb.from('lesson_content').select('id,type,title,body').eq('lesson_id',prev.id)
+  ]);
+  if(hwErr&&String(hwErr.message||'').includes('does not exist')){showErr('لازم تشغّل SQL الخاص بالواجب الأول');return false;}
+  const hasHomework=!!((hws||[]).length||(cnt||[]).some(hwTypeMatch));
+  if(!hasHomework)return true;
+  const done=await getHomeworkDone(prev.id);
+  PREV_GATE={required:true,done,prevId:prev.id,prevTitle:prev.title||'الحصة السابقة'};
+  if(!done){showPrevHomeworkGate();return false;}
+  return true;
+}
+function showPrevHomeworkGate(){
+  document.getElementById('il')?.remove();
+  try{window._pl?.pause();}catch{}
+  document.getElementById('page').innerHTML=`
+    <div class="gate-card-modern">
+      <span class="big-lock">🔒</span>
+      <h2>الحصة مقفولة مؤقتاً</h2>
+      <p>لازم تسلّم واجب <b>${esc(PREV_GATE.prevTitle||'الحصة السابقة')}</b> الأول، وبعدها الحصة دي هتفتح تلقائياً.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-p btn-lg" onclick="window.location.href='/lesson/?id=${PREV_GATE.prevId}'">📌 افتح الواجب السابق</button>
+        <button class="btn btn-out" onclick="goHome()">← لوحة التحكم</button>
+      </div>
+    </div>`;
+}
+
 
 /* ══ WATCHED ══ */
 function wk(){return`kw-w-${LESSON?.id}`;}
@@ -498,7 +600,7 @@ function startTimer(){
   function upd(){
     const left=ml();
     const el=document.getElementById('pill-timer');
-    if(el)el.textContent=`صلاحية الفيديو ${fmtTimer(left)}`;
+    if(el)el.innerHTML=`<small>الصلاحية</small>${fmtTimer(left)}`;
     if(left!==null&&left<=0){clearInterval(_aci);try{window._pl?.pause();}catch{}showExpired();}
   }
   upd();_aci=setInterval(upd,1000);
@@ -650,14 +752,15 @@ async function init(){
 }
 
 async function loadLesson(lid){
-  const[{data:ls},{data:vids},{data:exs},{data:cnt}]=await Promise.all([
-    sb.from('lessons').select('id,title,description,is_active,scheduled_at,access_hours,image_url,chapters(title,image_url,subjects(name_ar))').eq('id',lid).single(),
+  const[{data:ls},{data:vids},{data:exs},{data:cnt},{data:hws}]=await Promise.all([
+    sb.from('lessons').select('id,chapter_id,title,description,price,is_active,scheduled_at,created_at,access_hours,image_url,chapters(title,image_url,subjects(name_ar))').eq('id',lid).single(),
     sb.from('lesson_videos').select('*').eq('lesson_id',lid).order('sort_order'),
     sb.from('exams').select('id,title,duration_minutes,pass_score').eq('lesson_id',lid).limit(1),
     sb.from('lesson_content').select('*').eq('lesson_id',lid).order('sort_order'),
+    sb.from('homework').select('*').eq('lesson_id',lid).order('created_at',{ascending:false}),
   ]);
   if(!ls){showErr('الحصة غير موجودة');return;}
-  LESSON=ls;VIDEOS=vids||[];CONTENT=cnt||[];EXAM=exs?.[0]||null;
+  LESSON=ls;VIDEOS=vids||[];CONTENT=cnt||[];HOMEWORK=hws||[];EXAM=exs?.[0]||null;
   if(ROLE!=='admin'&&ROLE!=='teacher'&&ACCESS_ROWS.length){
     ACCESS=pickAccessRow(ACCESS_ROWS);
   }
@@ -669,30 +772,53 @@ async function loadLesson(lid){
     if(!ls.is_active){showErr('الحصة مغلقة حالياً');return;}
     const exp=ae();
     if(exp&&exp.getTime()<=Date.now()){showExpired();return;}
+    HOMEWORK_DONE=await getHomeworkDone(ls.id);
+    const canEnter=await checkPrevHomeworkGate(ls);
+    if(!canEnter)return;
   }
   buildPage();startTimer();
 }
 
 function getPDF(){return CONTENT.filter(c=>String(c.type||'').toLowerCase()==='pdf');}
 function getIMG(){return CONTENT.filter(c=>String(c.type||'').toLowerCase()==='image');}
-function getHW(){return CONTENT.filter(c=>{const t=String(c.type||'').toLowerCase(),tx=`${c.title||''} ${c.body||''}`.toLowerCase();return['homework','assignment','hw','واجب'].includes(t)||tx.includes('واجب')||tx.includes('homework');});}
+function getHW(){
+  const fromTable=(HOMEWORK||[]).map(h=>({source:'homework',id:h.id,title:h.title,body:h.description,url:h.pdf_url,due_date:h.due_date}));
+  const fromContent=CONTENT.filter(hwTypeMatch).map(c=>({source:'content',id:c.id,title:c.title,body:c.body,url:c.url,due_date:null}));
+  return [...fromTable,...fromContent];
+}
 
 /* ══ BUILD PAGE ══ */
 function buildPage(){
   document.getElementById('il')?.remove();
   const hasTimer=ROLE!=='admin'&&ROLE!=='teacher'&&!!ACCESS?.used_at;
   const left=ml();
+  const img=LESSON.image_url?`<img src="${iS(LESSON.image_url)}" onerror="iE(this,'🎬')" loading="lazy">`:'🎬';
+  const subject=LESSON.chapters?.subjects?.name_ar||'kalawy';
+  const chapter=LESSON.chapters?.title||'الحصة';
+  const price=Number(LESSON.price||0);
   document.getElementById('page').innerHTML=`
-    <h1 class="lesson-title">${esc(LESSON.title)}</h1>
+    <section class="lesson-hero">
+      <div class="lesson-cover">${img}</div>
+      <div class="lesson-main">
+        <div class="lesson-kicker">
+          <span class="mini">📚 ${esc(subject)}</span>
+          <span class="mini">📖 ${esc(chapter)}</span>
+          <span class="mini">💰 ${price?price+' جنيه':'مجانية'}</span>
+        </div>
+        <h1 class="lesson-title">${esc(LESSON.title)}</h1>
+        ${LESSON.description?`<div class="lesson-desc">${esc(LESSON.description)}</div>`:''}
+      </div>
+    </section>
     <div class="pills">
-      <div class="pill pill-blue" id="pill-views">مرات المشاهدة المتبقية (—)</div>
-      <div class="pill pill-red" id="pill-timer">${hasTimer?`صلاحية الفيديو ${fmtTimer(left)}`:'صلاحية الفيديو —'}</div>
+      <div class="pill"><small>الحالة</small>${PREV_GATE.required?'✅ واجب السابق متسلّم':'✅ جاهزة للمشاهدة'}</div>
+      <div class="pill"><small>المشاهدة</small><span id="pill-views">مرات المشاهدة المتبقية (—)</span></div>
+      <div class="pill" id="pill-timer"><small>الصلاحية</small>${hasTimer?fmtTimer(left):'—'}</div>
     </div>
     <div class="tabs" id="tabs">
-      <button class="tab on" id="tab-video"    onclick="sw('video')">فيديو</button>
-      <button class="tab"    id="tab-exam"     onclick="sw('exam')">إمتحان</button>
-      <button class="tab"    id="tab-homework" onclick="sw('homework')">واجب</button>
-      <button class="tab"    id="tab-pdf"      onclick="sw('pdf')">ملفات</button>
+      <button class="tab on" id="tab-video"    onclick="sw('video')">🎥 فيديو</button>
+      <button class="tab"    id="tab-exam"     onclick="sw('exam')">📝 امتحان</button>
+      <button class="tab"    id="tab-homework" onclick="sw('homework')">📌 واجب</button>
+      <button class="tab"    id="tab-pdf"      onclick="sw('pdf')">📄 ملفات</button>
     </div>
     <div id="cnt"></div>`;
   sw(EXAM?'exam':'video');
@@ -713,6 +839,7 @@ function sw(id){
 
 /* ══ VIDEO LIST ══ */
 function renderVideoList(){
+  if(PREV_GATE.required&&!PREV_GATE.done){showPrevHomeworkGate();return;}
   const watched=getW(),c=document.getElementById('cnt');
   if(!VIDEOS.length){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📭</span><div class="et">لا يوجد فيديو</div></div>';return;}
   c.innerHTML=`<div class="vid-list">
@@ -731,6 +858,7 @@ function renderVideoList(){
 
 /* ══ OPEN PLAYER ══ */
 async function openPlayer(idx){
+  if(PREV_GATE.required&&!PREV_GATE.done){showPrevHomeworkGate();return;}
   if(EXAM){
     const{data:sub}=await sb.from('exam_submissions').select('id,passed').eq('exam_id',EXAM.id).eq('student_id',ME.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();
     if(!sub||!sub.passed){
@@ -941,13 +1069,38 @@ function renderResult(score,saved,passed,attempts,eqs,log){
 function renderHW(){
   const items=getHW(),c=document.getElementById('cnt');
   if(!items.length){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📌</span><div class="et">لا يوجد واجب</div><div class="es">المدرس لسه ما أضافش واجب</div></div>';return;}
+  const submitBox=isStaff()?'' : `
+    <div class="hw-submit-box">
+      <div class="hw-submit-title">${HOMEWORK_DONE?'✅ تم تسليم الواجب':'📤 تسليم الواجب'}</div>
+      <div style="color:var(--t2);font-size:.86rem;line-height:1.8">لازم تدوس تسليم بعد ما تخلص الواجب عشان الحصة اللي بعدها تتفتح.</div>
+      ${!HOMEWORK_DONE?`
+        <textarea class="hw-note" id="hw-note" placeholder="اكتب ملاحظة للمدرس (اختياري)"></textarea>
+        <button class="btn btn-p btn-lg" id="hw-submit-btn" onclick="submitHomeworkDone()">✅ خلصت الواجب</button>
+      `:`<button class="btn btn-out" disabled>تم التسليم بالفعل</button>`}
+    </div>`;
   c.innerHTML=`<div class="mat-grid">${items.map((ct,i)=>`
     <div class="mat-card">
       <span class="mat-ico">📌</span>
       <div class="mat-title">${esc(ct.title||('واجب '+(i+1)))}</div>
+      ${ct.due_date?`<div class="mat-sub">📅 آخر موعد: ${new Date(ct.due_date).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'})}</div>`:''}
       ${ct.url?`<a href="${iS(ct.url)}" target="_blank" class="btn btn-g" style="margin-top:10px;font-size:.8rem;padding:7px 14px">فتح المرفق ←</a>`:''}
       ${ct.body?`<div class="mat-body">${String(ct.body).replace(/\n/g,'<br>')}</div>`:(!ct.url?`<div class="mat-sub">لا توجد تفاصيل</div>`:'')}
-    </div>`).join('')}</div>`;
+    </div>`).join('')}</div>${submitBox}`;
+}
+async function submitHomeworkDone(){
+  if(isStaff())return;
+  const btn=document.getElementById('hw-submit-btn');
+  const notes=(document.getElementById('hw-note')?.value||'').trim();
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin" style="width:14px;height:14px;border-width:2px;border-color:rgba(255,255,255,.25);border-top-color:#fff"></span> جاري الحفظ...';}
+  const payload={lesson_id:LESSON.id,student_id:ME.id,status:'submitted',notes:notes||null,submitted_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+  const {error}=await sb.from('homework_submissions').upsert(payload,{onConflict:'lesson_id,student_id'});
+  if(error){
+    if(btn){btn.disabled=false;btn.textContent='✅ خلصت الواجب';}
+    return toast('e', error.message.includes('does not exist')?'شغّل ملف SQL الخاص بتسليم الواجب الأول':error.message,5000);
+  }
+  HOMEWORK_DONE=true;
+  toast('s','تم تسليم الواجب ✅ الحصة التالية هتفتح');
+  renderHW();
 }
 
 /* ══ PDF ══ */
