@@ -362,6 +362,9 @@ body{
 .gate-card-modern p{color:var(--t2);font-size:.92rem;line-height:1.9;margin-bottom:20px}
 @media(max-width:700px){.lesson-hero{grid-template-columns:1fr;text-align:center}.lesson-cover{margin:auto}.lesson-kicker{justify-content:center}.pills{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}.vid-list{grid-template-columns:1fr}}
 
+
+.notif-drawer{position:fixed;top:72px;left:18px;z-index:8500;width:min(360px,calc(100vw - 36px));max-height:70vh;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:22px;box-shadow:var(--sh2);padding:14px;display:none;animation:slideDown .2s ease}.notif-drawer.show{display:block}.ln-card{border:1px solid var(--bd);border-radius:16px;padding:12px;margin-bottom:10px;background:var(--input-bg)}.ln-type{display:inline-flex;padding:2px 9px;border-radius:999px;background:rgba(139,92,246,.12);color:var(--p1);font-size:.72rem;font-weight:800;margin-bottom:5px}.floating-id{position:absolute;z-index:5;pointer-events:none;font-family:'Inter',monospace;font-size:12px;font-weight:900;color:#ff3333;text-shadow:0 1px 6px rgba(0,0,0,.95);background:rgba(0,0,0,.55);border:1px solid rgba(255,40,40,.35);border-radius:999px;padding:4px 10px;animation:wf 2.8s ease-in-out infinite}.hw-wrap{position:relative;min-height:180px}
+
 </style>
 </head>
 <body>
@@ -388,6 +391,7 @@ body{
 </div>
 
 <div id="toasts"></div>
+<div class="notif-drawer" id="lesson-notif-drawer"><div style="font-weight:900;margin-bottom:10px">🔔 الإشعارات</div><div id="lesson-notif-list"><div class="ld" style="min-height:80px"><div class="spin"></div></div></div></div>
 
 <!-- ══ NAV ══ -->
 <nav class="nav">
@@ -399,6 +403,7 @@ body{
       <button class="topt on" id="n-lt" onclick="setTheme('light')">☀️</button>
       <button class="topt"    id="n-dk" onclick="setTheme('dark')">🌙</button>
     </div>
+    <button class="nav-btn" onclick="toggleLessonNotifications()">🔔 الإشعارات</button>
     <button class="nav-btn" onclick="goHome()">← لوحة التحكم</button>
   </div>
 </nav>
@@ -495,6 +500,10 @@ function toast(type,msg,dur=3400){
   el.className=`toast t${type}`;el.innerHTML=`<span>${ic[type]||'ℹ️'}</span><span>${msg}</span>`;
   c.appendChild(el);setTimeout(()=>{el.classList.add('tx');setTimeout(()=>el.remove(),200);},dur);
 }
+function studentDisplayId(){return ME?.student_public_id || (ME?.student_no?`KW-${String(ME.student_no).padStart(6,'0')}`:`KW-${String(ME?.id||'').slice(0,8).toUpperCase()}`);}
+async function followedTeachers(){const {data}=await sb.from('teacher_followers').select('teacher_id').eq('student_id',ME.id);return (data||[]).map(x=>x.teacher_id).filter(Boolean);}
+async function toggleLessonNotifications(){const box=document.getElementById('lesson-notif-drawer');box.classList.toggle('show');if(box.classList.contains('show'))loadLessonNotifications();}
+async function loadLessonNotifications(){const el=document.getElementById('lesson-notif-list');el.innerHTML='<div class="ld" style="min-height:80px"><div class="spin"></div></div>';const f=await followedTeachers();const {data,error}=await sb.from('notifications').select('id,title,body,type,created_at,teacher_id,teacher:teacher_id(full_name)').order('created_at',{ascending:false}).limit(80);if(error){el.innerHTML=`<div class="emp"><div class="es">${esc(error.message)}</div></div>`;return;}const list=(data||[]).filter(n=>!n.teacher_id||f.includes(n.teacher_id)).slice(0,30);if(!list.length){el.innerHTML='<div class="emp"><span style="font-size:2rem">🔔</span><div class="et">لا توجد إشعارات</div></div>';return;}el.innerHTML=list.map(n=>`<div class="ln-card"><span class="ln-type">${esc(n.type||'post')}</span><div style="font-weight:900">${esc(n.title)}</div>${n.body?`<div style="font-size:.84rem;color:var(--t2);line-height:1.7">${esc(n.body)}</div>`:''}<div style="font-size:.72rem;color:var(--t3);margin-top:6px">${n.teacher?.full_name||'kalawy'} • ${new Date(n.created_at).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'})}</div></div>`).join('');}
 function ytId(u){const m=(u||'').match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);return m?m[1]:null;}
 function ps(){return Math.max(0,Math.min(100,Number(EXAM?.pass_score??50)));}
 function norOpts(q){
@@ -547,7 +556,7 @@ function showPrevHomeworkGate(){
     <div class="gate-card-modern">
       <span class="big-lock">🔒</span>
       <h2>الحصة مقفولة مؤقتاً</h2>
-      <p>لازم تسلّم واجب <b>${esc(PREV_GATE.prevTitle||'الحصة السابقة')}</b> الأول، وبعدها الحصة دي هتفتح تلقائياً.</p>
+      <p>لازم تسلّم واجب <b>${esc(PREV_GATE.prevTitle||'الحصة السابقة')}</b> الأول، وبعدها فيديو الحصة دي والحصة نفسها هيفتحوا تلقائياً.</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="btn btn-p btn-lg" onclick="window.location.href='/lesson/?id=${PREV_GATE.prevId}'">📌 افتح الواجب السابق</button>
         <button class="btn btn-out" onclick="goHome()">← لوحة التحكم</button>
@@ -734,8 +743,9 @@ async function init(){
   if(!lid){showErr('لم يتم تحديد الحصة');return;}
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='/login/';return;}
-  const{data:pr}=await sb.from('profiles').select('role,phone').eq('id',session.user.id).single();
-  ROLE=pr?.role||'student';ME={id:session.user.id,phone:pr?.phone||''};
+  const{data:pr}=await sb.from('profiles').select('role,phone,is_blocked,student_no,student_public_id').eq('id',session.user.id).single();
+  ROLE=pr?.role||'student';ME={id:session.user.id,phone:pr?.phone||'',student_no:pr?.student_no||null,student_public_id:pr?.student_public_id||''};
+  if(ROLE!=='admin'&&ROLE!=='teacher'&&pr?.is_blocked){showErr('حسابك محظور مؤقتاً. تواصل مع المدرس.');return;}
   if(ROLE!=='admin'&&ROLE!=='teacher'){
     const{data:accRows,error:accErr}=await sb.from('lesson_codes')
       .select('id,used_at,expires_at,created_at')
@@ -878,7 +888,7 @@ async function openPlayer(idx){
 
 function renderPlayer(idx){
   const p=VIDEOS[idx];
-  const uid=String(ME?.id||'').slice(0,8).toUpperCase();
+  const uid=studentDisplayId();
   document.getElementById('cnt').innerHTML=`
   <div class="player-view">
     <button class="back-btn" onclick="renderVideoList()">←</button>
@@ -921,11 +931,13 @@ function buildPlyr(videoId,idx){
   window._pl.on('timeupdate',()=>{try{const p=window._pl;if(p.duration>0&&p.currentTime/p.duration>=0.85)markW(idx);}catch{}});
   window._pl.on('error',()=>showAdBlockOverlay());
 }
-function startWm(){
-  const wm=document.getElementById('kwm');if(!wm)return;
+function startFloatingId(id){
+  const wm=document.getElementById(id);if(!wm)return;
+  if(_wmt){clearInterval(_wmt);_wmt=null;}
   function mv(){const x=6+Math.random()*72,y=6+Math.random()*72,r=-14+Math.random()*28;wm.style.left=x+'%';wm.style.top=y+'%';wm.style.setProperty('--r',r+'deg');}
   mv();_wmt=setInterval(mv,2600);
 }
+function startWm(){startFloatingId('kwm');}
 
 /* ══ EXAM ══ */
 async function renderExam(startNow=false){
@@ -1078,14 +1090,15 @@ function renderHW(){
         <button class="btn btn-p btn-lg" id="hw-submit-btn" onclick="submitHomeworkDone()">✅ خلصت الواجب</button>
       `:`<button class="btn btn-out" disabled>تم التسليم بالفعل</button>`}
     </div>`;
-  c.innerHTML=`<div class="mat-grid">${items.map((ct,i)=>`
+  c.innerHTML=`<div class="hw-wrap"><div class="floating-id" id="hw-wm" style="left:10%;top:10%;--r:-8deg">${esc(studentDisplayId())}</div><div class="mat-grid">${items.map((ct,i)=>`
     <div class="mat-card">
       <span class="mat-ico">📌</span>
       <div class="mat-title">${esc(ct.title||('واجب '+(i+1)))}</div>
       ${ct.due_date?`<div class="mat-sub">📅 آخر موعد: ${new Date(ct.due_date).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'})}</div>`:''}
       ${ct.url?`<a href="${iS(ct.url)}" target="_blank" class="btn btn-g" style="margin-top:10px;font-size:.8rem;padding:7px 14px">فتح المرفق ←</a>`:''}
       ${ct.body?`<div class="mat-body">${String(ct.body).replace(/\n/g,'<br>')}</div>`:(!ct.url?`<div class="mat-sub">لا توجد تفاصيل</div>`:'')}
-    </div>`).join('')}</div>${submitBox}`;
+    </div>`).join('')}</div>${submitBox}</div>`;
+  startFloatingId('hw-wm');
 }
 async function submitHomeworkDone(){
   if(isStaff())return;
