@@ -311,60 +311,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
   .sa{align-items:flex-start;width:100%}
   .code-row-exp{flex-direction:column}
 }
-
-
-/* ══════════ KALAWY LESSON REDESIGN + HOMEWORK GATE ══════════ */
-body{
-  background:
-    radial-gradient(circle at 12% 6%,rgba(139,92,246,.18),transparent 34%),
-    radial-gradient(circle at 88% 0%,rgba(16,185,129,.10),transparent 30%),
-    linear-gradient(135deg,var(--bg),var(--bg2));
-}
-.page{max-width:1040px;padding-top:8px}
-.lesson-hero{
-  position:relative;overflow:hidden;display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center;
-  background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(255,255,255,.42));
-  border:1px solid rgba(139,92,246,.18);border-radius:28px;padding:22px;margin:16px 0 16px;
-  box-shadow:0 18px 55px rgba(80,40,160,.12);animation:slideUp .42s ease both;
-}
-[data-theme="dark"] .lesson-hero{background:linear-gradient(135deg,rgba(26,22,48,.88),rgba(18,15,30,.72));box-shadow:0 18px 60px rgba(0,0,0,.45)}
-.lesson-hero::before{content:'';position:absolute;inset:-80px;background:radial-gradient(circle at 20% 20%,rgba(139,92,246,.22),transparent 38%),radial-gradient(circle at 85% 30%,rgba(52,211,153,.12),transparent 34%);pointer-events:none}
-.lesson-cover{position:relative;width:120px;height:120px;border-radius:24px;display:grid;place-items:center;font-size:3rem;overflow:hidden;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 16px 38px var(--glow)}
-.lesson-cover img{width:100%;height:100%;object-fit:cover}
-.lesson-main{position:relative;z-index:1;min-width:0}
-.lesson-kicker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
-.lesson-kicker .mini{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--bd);background:var(--input-bg);color:var(--t2);border-radius:999px;padding:6px 10px;font-size:.78rem;font-weight:800}
-.lesson-title{text-align:inherit;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);letter-spacing:-.035em}
-.lesson-desc{margin-top:8px;color:var(--t2);font-size:.92rem;line-height:1.8;max-width:720px;user-select:text}
-.pills{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
-.pill{border-radius:18px;padding:14px 16px;background:var(--card)!important;border:1px solid var(--bd)!important;box-shadow:var(--sh);font-family:'Tajawal',sans-serif;color:var(--txt)!important;text-align:start;animation:none}
-.pill small{display:block;color:var(--t3);font-size:.72rem;font-weight:800;margin-bottom:4px}
-.tabs{background:var(--card);border-radius:22px;padding:7px;gap:6px;box-shadow:var(--sh);border:1px solid var(--bd);overflow:visible}
-.tab{border-radius:16px;border-left:none!important;color:var(--t3);padding:13px 10px;background:transparent}
-.tab.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 8px 22px var(--glow)}
-.tab.on::before{display:none}
-.vid-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
-.vid-card{display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;min-height:170px;border-radius:24px;padding:18px;background:var(--card);border:1px solid var(--bd);box-shadow:var(--sh);position:relative;overflow:hidden}
-.vid-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,.10),transparent 56%);pointer-events:none}
-.vc-right{position:relative;z-index:1;align-items:flex-start;justify-content:space-between;width:100%}
-.vc-title{font-size:1.05rem;font-weight:900;line-height:1.5}
-.vc-watch{position:relative;z-index:1;width:100%;justify-content:center;margin-top:18px;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 8px 20px var(--glow)}
-.vc-play{background:rgba(139,92,246,.13);color:var(--p1)}
-.player-frame{border-radius:24px;border:1px solid rgba(139,92,246,.24);box-shadow:0 22px 70px rgba(0,0,0,.35)}
-.player-title-box{border-radius:18px;background:var(--card);box-shadow:var(--sh);border-color:var(--bd)}
-.lock-card,.exam-intro,.mat-card,.qc,.sw{border-radius:24px;border:1px solid var(--bd);box-shadow:var(--sh2)}
-.hw-submit-box{margin-top:16px;background:linear-gradient(135deg,rgba(16,185,129,.10),rgba(139,92,246,.08));border:1px solid rgba(16,185,129,.22);border-radius:22px;padding:18px;box-shadow:var(--sh)}
-.hw-submit-title{font-weight:900;margin-bottom:8px;color:var(--txt)}
-.hw-note{width:100%;min-height:72px;margin:8px 0 12px;background:var(--input-bg);border:1px solid var(--bd);border-radius:14px;color:var(--txt);padding:11px 13px;outline:none;user-select:text;-webkit-user-select:text}
-.gate-card-modern{max-width:520px;margin:7vh auto;background:var(--card);border:1px solid var(--bd);box-shadow:var(--sh2);border-radius:30px;padding:34px 28px;text-align:center;animation:slideUp .35s ease both}
-.gate-card-modern .big-lock{font-size:4rem;margin-bottom:14px;display:block}
-.gate-card-modern h2{font-size:1.35rem;font-weight:900;margin-bottom:10px;color:var(--txt)}
-.gate-card-modern p{color:var(--t2);font-size:.92rem;line-height:1.9;margin-bottom:20px}
-@media(max-width:700px){.lesson-hero{grid-template-columns:1fr;text-align:center}.lesson-cover{margin:auto}.lesson-kicker{justify-content:center}.pills{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}.vid-list{grid-template-columns:1fr}}
-
-
-.notif-drawer{position:fixed;top:72px;left:18px;z-index:8500;width:min(360px,calc(100vw - 36px));max-height:70vh;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:22px;box-shadow:var(--sh2);padding:14px;display:none;animation:slideDown .2s ease}.notif-drawer.show{display:block}.ln-card{border:1px solid var(--bd);border-radius:16px;padding:12px;margin-bottom:10px;background:var(--input-bg)}.ln-type{display:inline-flex;padding:2px 9px;border-radius:999px;background:rgba(139,92,246,.12);color:var(--p1);font-size:.72rem;font-weight:800;margin-bottom:5px}.floating-id{position:absolute;z-index:5;pointer-events:none;font-family:'Inter',monospace;font-size:12px;font-weight:900;color:#ff3333;text-shadow:0 1px 6px rgba(0,0,0,.95);background:rgba(0,0,0,.55);border:1px solid rgba(255,40,40,.35);border-radius:999px;padding:4px 10px;animation:wf 2.8s ease-in-out infinite}.hw-wrap{position:relative;min-height:180px}
-
 </style>
 </head>
 <body>
@@ -391,7 +337,6 @@ body{
 </div>
 
 <div id="toasts"></div>
-<div class="notif-drawer" id="lesson-notif-drawer"><div style="font-weight:900;margin-bottom:10px">🔔 الإشعارات</div><div id="lesson-notif-list"><div class="ld" style="min-height:80px"><div class="spin"></div></div></div></div>
 
 <!-- ══ NAV ══ -->
 <nav class="nav">
@@ -403,7 +348,6 @@ body{
       <button class="topt on" id="n-lt" onclick="setTheme('light')">☀️</button>
       <button class="topt"    id="n-dk" onclick="setTheme('dark')">🌙</button>
     </div>
-    <button class="nav-btn" onclick="toggleLessonNotifications()">🔔 الإشعارات</button>
     <button class="nav-btn" onclick="goHome()">← لوحة التحكم</button>
   </div>
 </nav>
@@ -424,6 +368,7 @@ body{
 </a>
 
 <script>
+
 /* ══ SECURITY ══ */
 (function(){
   let lk=false;
@@ -1136,6 +1081,44 @@ function showErr(msg){
   </div></div>`;
 }
 
+
+
+/* EXTRA PATCH: resume exam/homework when net cuts + homework questions */
+let _hwQs=[],_hwAns={},_hwMain=null,_hwSub=false;
+function draftKey(kind,id){return `kw-${kind}-draft-${id}-${ME?.id||'me'}`;}
+function getDraft(kind,id){try{return JSON.parse(localStorage.getItem(draftKey(kind,id))||'null')}catch{return null}}
+function setDraft(kind,id,d){try{localStorage.setItem(draftKey(kind,id),JSON.stringify(d))}catch{}}
+function clearDraft(kind,id){try{localStorage.removeItem(draftKey(kind,id))}catch{}}
+function dLeft(d){return d?.endsAt?new Date(d.endsAt).getTime()-Date.now():null}
+function netOK(kind){if(navigator.onLine)return true;toast('w',`مفيش نت — إجابات ${kind} محفوظة مؤقتاً. لما النت يرجع دوس كمل وسلم.`,6500);return false}
+window.addEventListener('offline',()=>toast('w','النت قطع. متقلقش، الإجابات محفوظة والوقت مكمل.',6000));
+window.addEventListener('online',()=>toast('s','النت رجع ✅ كمل وسلم دلوقتي',4000));
+function startET(tot,endsAt,kind='exam'){
+  if(_eti)clearInterval(_eti);function u(){let sec=Math.max(0,Math.ceil((new Date(endsAt).getTime()-Date.now())/1000));let m=Math.floor(sec/60),s=sec%60;let v=document.getElementById('etv'),f=document.getElementById('etf');if(v){v.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;v.classList.toggle('warn',sec<=60)}if(f)f.style.width=Math.max(0,Math.min(100,sec/tot*100))+'%';if(sec<=0){clearInterval(_eti);kind==='homework'?submitHomeworkExam(true):submitExam(true)}}u();_eti=setInterval(u,1000)
+}
+renderExam=async function(startNow=false){
+  const c=document.getElementById('cnt'); if(!EXAM){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📝</span><div class="et">لا يوجد امتحان</div></div>';return}
+  c.innerHTML='<div class="ld" style="min-height:36vh"><div class="spin"></div></div>'; const {data:qs}=await sb.from('exam_questions').select('*').eq('exam_id',EXAM.id).order('sort_order'); if(!qs?.length){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📝</span><div class="et">لا توجد أسئلة</div></div>';return} _eqs=norQs(qs);
+  const {data:sub}=await sb.from('exam_submissions').select('id,score,passed,attempt_count,answers,status,ends_at').eq('exam_id',EXAM.id).eq('student_id',ME.id).order('updated_at',{ascending:false}).limit(1).maybeSingle(); const dr=getDraft('exam',EXAM.id);
+  if(sub&&sub.status!=='in_progress'&&!startNow){renderResult(sub.score,true,!!sub.passed,sub.attempt_count||1,_eqs,sub.answers||[]);return}
+  if(!startNow){let left=dLeft(dr)||(sub?.ends_at?new Date(sub.ends_at).getTime()-Date.now():0);let resume=left>0;c.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:40vh"><div class="exam-intro"><span class="ei-ico">📝</span><div class="ei-title">${esc(EXAM.title||'امتحان الحصة')}</div><div class="ei-sub">لو النت قطع تقدر تكمل، والوقت بيعد من لحظة البداية.</div>${resume?`<div class="resume-box" style="border:1px solid rgba(251,191,36,.28);background:rgba(251,191,36,.09);border-radius:16px;padding:14px;margin-bottom:14px">⚠️ عندك امتحان مفتوح — المتبقي ${fmtTimer(left)}</div>`:''}<div class="ei-meta"><div class="ei-m">📋 ${_eqs.length} سؤال</div>${EXAM.duration_minutes?`<div class="ei-m">⏱️ ${EXAM.duration_minutes} دقيقة</div>`:''}<div class="ei-m">🎯 نجاح ${ps()}%</div></div><button class="btn btn-p btn-lg" onclick="renderExam(true)">${resume?'▶️ كمل الامتحان':'▶️ ابدأ الامتحان'}</button></div></div>`;return}
+  let hasDur=!!EXAM.duration_minutes,now=new Date(),dr2=getDraft('exam',EXAM.id); if(!dr2||dLeft(dr2)<=0){dr2={startedAt:now.toISOString(),endsAt:hasDur?new Date(now.getTime()+EXAM.duration_minutes*60000).toISOString():new Date(now.getTime()+365*86400000).toISOString(),answers:{}};setDraft('exam',EXAM.id,dr2);sb.from('exam_submissions').insert({exam_id:EXAM.id,student_id:ME.id,status:'in_progress',started_at:dr2.startedAt,ends_at:dr2.endsAt,answers:[],updated_at:new Date().toISOString()}).then(()=>{})}
+  _ans=dr2.answers||{};_sub=false;c.innerHTML=`${!navigator.onLine?'<div style="border:1px solid rgba(239,68,68,.25);background:rgba(239,68,68,.08);border-radius:16px;padding:12px;margin-bottom:12px;color:var(--danger);font-weight:800">⚠️ مفيش نت. جاوب ولما النت يرجع سلم.</div>':''}<div class="exam-wrap">${hasDur?`<div class="etrow"><span style="font-size:.8rem;font-weight:700;color:var(--t2)">⏱️ الوقت المتبقي</span><div class="etbar"><div class="etf" id="etf" style="width:100%"></div></div><div class="etv" id="etv">--:--</div></div>`:''}${_eqs.map((q,i)=>`<div class="qc ${_ans[q.id]!==undefined?'ans':''}" id="qc-${q.id}"><div class="qn"><div class="qdot"></div>سؤال ${i+1} من ${_eqs.length}</div>${q.image_url?`<img class="qi" src="${iS(q.image_url)}" onerror="iE(this,'🖼️')" loading="lazy">`:''}<div class="qt">${esc(q.question_text)}</div><div class="opts">${(q.options||[]).map((o,oi)=>`<div class="opt ${_ans[q.id]===oi?'sel':''}" id="opt-${q.id}-${oi}" onclick="pick('${q.id}',${oi})"><div class="ol">${String.fromCharCode(65+oi)}</div><div class="ot">${esc(o.text)}</div></div>`).join('')}</div></div>`).join('')}</div><div class="ef"><div class="ep"><span id="an-c">${Object.keys(_ans).length}</span>/${_eqs.length} أجبت<div class="epb"><div class="epf" id="an-f" style="width:${Math.round(Object.keys(_ans).length/_eqs.length*100)}%"></div></div></div><button class="btn btn-p btn-lg" id="sub-btn" onclick="submitExam(false)" style="margin-right:auto">📤 تسليم الامتحان</button></div>`; if(hasDur)startET(EXAM.duration_minutes*60,dr2.endsAt,'exam')
+};
+pick=function(qId,idx){if(_sub)return;document.querySelectorAll(`[id^="opt-${qId}-"]`).forEach(el=>el.classList.remove('sel'));document.getElementById(`opt-${qId}-${idx}`)?.classList.add('sel');_ans[qId]=idx;let d=getDraft('exam',EXAM.id)||{};d.answers=_ans;setDraft('exam',EXAM.id,d);let done=Object.keys(_ans).length,tot=_eqs.length;document.getElementById('an-c').textContent=done;document.getElementById('an-f').style.width=Math.round(done/tot*100)+'%';document.getElementById(`qc-${qId}`)?.classList.add('ans')};
+submitExam=async function(auto=false){let qs=_eqs;if(!qs.length)return;if(_sub)return;if(!auto&&Object.keys(_ans).length<qs.length)return toast('w','جاوب على كل الأسئلة');if(!netOK('الامتحان'))return;_sub=true;if(_eti)clearInterval(_eti);let cor=0,log=[];qs.forEach(q=>{let si=_ans[q.id],opts=q.options||[];if(opts[si]?.is_correct)cor++;log.push({qId:q.id,idx:si})});let score=Math.round(cor/qs.length*100),passed=score>=ps();let {data:old}=await sb.from('exam_submissions').select('id,attempt_count').eq('exam_id',EXAM.id).eq('student_id',ME.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();let na=(old?.attempt_count||0)+1,dr=getDraft('exam',EXAM.id)||{};let pl={exam_id:EXAM.id,student_id:ME.id,score,passed,status:'submitted',attempt_count:na,updated_at:new Date().toISOString(),answers:log,started_at:dr.startedAt||null,ends_at:dr.endsAt||null};let sv=old?.id?await sb.from('exam_submissions').update(pl).eq('id',old.id).select().single():await sb.from('exam_submissions').insert(pl).select().single();if(sv.error){_sub=false;return toast('e','فشل الحفظ: '+sv.error.message)}clearDraft('exam',EXAM.id);renderResult(score,false,passed,na,qs,log)};
+renderHW=async function(){
+  const items=getHW(),c=document.getElementById('cnt'); if(!items.length){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📌</span><div class="et">لا يوجد واجب</div></div>';return} _hwMain=(HOMEWORK||[])[0]||null;
+  if(_hwMain){let {data:qs}=await sb.from('homework_questions').select('*').eq('homework_id',_hwMain.id).order('sort_order');if(qs?.length){_hwQs=norQs(qs);return renderHWExam(false)}}
+  c.innerHTML=`<div class="hw-wrap"><div class="floating-id" id="hw-wm" style="left:10%;top:10%;--r:-8deg">${esc(studentDisplayId())}</div><div class="mat-grid">${items.map((ct,i)=>`<div class="mat-card"><span class="mat-ico">📌</span><div class="mat-title">${esc(ct.title||('واجب '+(i+1)))}</div>${ct.url?`<a href="${iS(ct.url)}" target="_blank" class="btn btn-g" style="margin-top:10px">فتح المرفق</a>`:''}${ct.body?`<div class="mat-body">${String(ct.body).replace(/\n/g,'<br>')}</div>`:''}</div>`).join('')}</div>${isStaff()?'':`<div class="hw-submit-box"><div class="hw-submit-title">${HOMEWORK_DONE?'✅ تم تسليم الواجب':'📤 تسليم الواجب'}</div>${!HOMEWORK_DONE?`<textarea class="hw-note" id="hw-note" placeholder="ملاحظة اختيارية"></textarea><button class="btn btn-p btn-lg" id="hw-submit-btn" onclick="submitHomeworkDone()">✅ خلصت الواجب</button>`:'<button class="btn btn-out" disabled>تم التسليم</button>'}</div>`}</div>`;startFloatingId('hw-wm')
+};
+function hwPass(){return Math.max(0,Math.min(100,Number(_hwMain?.pass_score??50)))}
+async function renderHWExam(startNow=false){let c=document.getElementById('cnt'),{data:sub}=await sb.from('homework_submissions').select('*').eq('lesson_id',LESSON.id).eq('student_id',ME.id).maybeSingle(),dr=getDraft('homework',LESSON.id);if(sub?.passed&&!startNow){HOMEWORK_DONE=true;return hwResult(sub.score,true,sub.attempt_count||1)}if(!startNow){let left=dLeft(dr)||(sub?.ends_at?new Date(sub.ends_at).getTime()-Date.now():0),resume=left>0;c.innerHTML=`<div class="hw-wrap"><div class="floating-id" id="hw-wm" style="left:10%;top:10%;--r:-8deg">${esc(studentDisplayId())}</div><div style="display:flex;align-items:center;justify-content:center;min-height:40vh"><div class="exam-intro"><span class="ei-ico">📌</span><div class="ei-title">${esc(_hwMain.title||'واجب الحصة')}</div><div class="ei-sub">الواجب زي الامتحان. لازم تنجح عشان يتسجل تسليم الواجب وتفتح الحصة التالية.</div>${resume?`<div class="resume-box" style="border:1px solid rgba(251,191,36,.28);background:rgba(251,191,36,.09);border-radius:16px;padding:14px;margin-bottom:14px">⚠️ عندك واجب مفتوح — المتبقي ${fmtTimer(left)}</div>`:''}<div class="ei-meta"><div class="ei-m">📋 ${_hwQs.length} سؤال</div>${_hwMain.duration_minutes?`<div class="ei-m">⏱️ ${_hwMain.duration_minutes} دقيقة</div>`:''}<div class="ei-m">🎯 نجاح ${hwPass()}%</div></div><button class="btn btn-p btn-lg" onclick="renderHWExam(true)">${resume?'▶️ كمل الواجب':'▶️ ابدأ الواجب'}</button></div></div></div>`;startFloatingId('hw-wm');return}let hasDur=!!_hwMain.duration_minutes,now=new Date(),dr2=getDraft('homework',LESSON.id);if(!dr2||dLeft(dr2)<=0){dr2={startedAt:now.toISOString(),endsAt:hasDur?new Date(now.getTime()+_hwMain.duration_minutes*60000).toISOString():new Date(now.getTime()+365*86400000).toISOString(),answers:{}};setDraft('homework',LESSON.id,dr2);sb.from('homework_submissions').upsert({lesson_id:LESSON.id,student_id:ME.id,status:'in_progress',started_at:dr2.startedAt,ends_at:dr2.endsAt,updated_at:new Date().toISOString()},{onConflict:'lesson_id,student_id'}).then(()=>{})}_hwAns=dr2.answers||{};_hwSub=false;c.innerHTML=`<div class="hw-wrap"><div class="floating-id" id="hw-wm" style="left:8%;top:12%;--r:-8deg">${esc(studentDisplayId())}</div><div class="exam-wrap">${hasDur?`<div class="etrow"><span style="font-size:.8rem;font-weight:700;color:var(--t2)">⏱️ الوقت المتبقي</span><div class="etbar"><div class="etf" id="etf"></div></div><div class="etv" id="etv">--:--</div></div>`:''}${_hwQs.map((q,i)=>`<div class="qc ${_hwAns[q.id]!==undefined?'ans':''}" id="hw-qc-${q.id}"><div class="qn"><div class="qdot"></div>سؤال ${i+1} من ${_hwQs.length}</div><div class="qt">${esc(q.question_text)}</div><div class="opts">${(q.options||[]).map((o,oi)=>`<div class="opt ${_hwAns[q.id]===oi?'sel':''}" id="hw-opt-${q.id}-${oi}" onclick="pickHW('${q.id}',${oi})"><div class="ol">${String.fromCharCode(65+oi)}</div><div class="ot">${esc(o.text)}</div></div>`).join('')}</div></div>`).join('')}</div><div class="ef"><div class="ep"><span id="hw-an-c">${Object.keys(_hwAns).length}</span>/${_hwQs.length} أجبت<div class="epb"><div class="epf" id="hw-an-f" style="width:${Math.round(Object.keys(_hwAns).length/_hwQs.length*100)}%"></div></div></div><button class="btn btn-p btn-lg" id="hw-submit-btn" onclick="submitHomeworkExam(false)" style="margin-right:auto">📤 تسليم الواجب</button></div></div>`;startFloatingId('hw-wm');if(hasDur)startET(_hwMain.duration_minutes*60,dr2.endsAt,'homework')}
+function pickHW(qId,idx){if(_hwSub)return;document.querySelectorAll(`[id^="hw-opt-${qId}-"]`).forEach(e=>e.classList.remove('sel'));document.getElementById(`hw-opt-${qId}-${idx}`)?.classList.add('sel');_hwAns[qId]=idx;let d=getDraft('homework',LESSON.id)||{};d.answers=_hwAns;setDraft('homework',LESSON.id,d);document.getElementById('hw-an-c').textContent=Object.keys(_hwAns).length;document.getElementById('hw-an-f').style.width=Math.round(Object.keys(_hwAns).length/_hwQs.length*100)+'%'}
+async function submitHomeworkExam(auto=false){if(!auto&&Object.keys(_hwAns).length<_hwQs.length)return toast('w','جاوب على كل أسئلة الواجب');if(!netOK('الواجب'))return;_hwSub=true;if(_eti)clearInterval(_eti);let cor=0,log=[];_hwQs.forEach(q=>{let si=_hwAns[q.id],opts=q.options||[];if(opts[si]?.is_correct)cor++;log.push({qId:q.id,idx:si})});let score=Math.round(cor/_hwQs.length*100),passed=score>=hwPass(),dr=getDraft('homework',LESSON.id)||{};let {data:old}=await sb.from('homework_submissions').select('attempt_count').eq('lesson_id',LESSON.id).eq('student_id',ME.id).maybeSingle();let na=(old?.attempt_count||0)+1;let {error}=await sb.from('homework_submissions').upsert({lesson_id:LESSON.id,student_id:ME.id,status:passed?'submitted':'in_progress',score,passed,answers:log,attempt_count:na,started_at:dr.startedAt||null,ends_at:dr.endsAt||null,submitted_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'lesson_id,student_id'});if(error)return toast('e',error.message.includes('score')?'شغّل SQL الجديد الأول':error.message);if(passed){HOMEWORK_DONE=true;clearDraft('homework',LESSON.id)}hwResult(score,passed,na)}
+function hwResult(score,passed,attempts){document.getElementById('cnt').innerHTML=`<div class="hw-wrap"><div class="floating-id" id="hw-wm" style="left:10%;top:10%;--r:-8deg">${esc(studentDisplayId())}</div><div class="sw"><div class="sb ${passed?'p':'f'}">${score}%</div><div class="si"><div class="sl">${passed?'✅ تم تسليم الواجب':'📖 لازم تعيد الواجب'}</div><div class="ss">درجة النجاح: ${hwPass()}% • محاولة رقم ${attempts}</div></div><div class="sa">${passed?`<button class="btn btn-g" onclick="sw('video')">🎥 الفيديو</button>`:`<button class="btn btn-p" onclick="renderHWExam(false)">🔄 حاول تاني</button>`}</div></div></div>`;startFloatingId('hw-wm')}
+
+const _oldSubmitHomeworkDone=submitHomeworkDone;submitHomeworkDone=async function(){if(!netOK('الواجب'))return;return _oldSubmitHomeworkDone();};
 /* ══ START ══ */
 (function(){setTheme(localStorage.getItem('kw-t')||'light');})();
 init();
