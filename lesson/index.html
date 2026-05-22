@@ -72,206 +72,88 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 @keyframes navGlow{0%,100%{box-shadow:0 2px 20px var(--glow)}50%{box-shadow:0 2px 32px rgba(139,92,246,.45)}}
 @keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes wf{0%,100%{opacity:.45;transform:rotate(var(--r,-9deg))}50%{opacity:.82;transform:rotate(var(--r,-9deg)) translateY(-5px)}}
+@keyframes expiredShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 
 /* ══════════ NAV ══════════ */
-.nav{
-  display:flex;align-items:center;padding:18px 4px 8px;gap:12px;
-  animation:slideDown .4s ease;
-}
-.nav-logo{
-  width:36px;height:36px;border-radius:10px;
-  background:linear-gradient(135deg,var(--p1),var(--p2));
-  display:grid;place-items:center;font-weight:900;font-size:.84rem;color:#fff;
-  box-shadow:0 3px 14px var(--glow);cursor:pointer;flex-shrink:0;
-  transition:.2s;animation:navGlow 3s ease-in-out infinite;
-}
+.nav{display:flex;align-items:center;padding:18px 4px 8px;gap:12px;animation:slideDown .4s ease;}
+.nav-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--p1),var(--p2));display:grid;place-items:center;font-weight:900;font-size:.84rem;color:#fff;box-shadow:0 3px 14px var(--glow);cursor:pointer;flex-shrink:0;transition:.2s;animation:navGlow 3s ease-in-out infinite;}
 .nav-logo:hover{transform:scale(1.08) rotate(-3deg)}
-.nav-brand{
-  font-weight:900;font-size:1.2rem;letter-spacing:-.02em;cursor:pointer;
-  background:linear-gradient(135deg,var(--p1),var(--p2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+.nav-brand{font-weight:900;font-size:1.2rem;letter-spacing:-.02em;cursor:pointer;background:linear-gradient(135deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .nav-brand em{font-style:normal;-webkit-text-fill-color:var(--p3)}
 .nav-sp{flex:1}
 .nav-ctrls{display:flex;align-items:center;gap:10px}
-
-/* theme toggle */
-.theme-pill{
-  display:flex;background:var(--input-bg);border:1px solid var(--bd);border-radius:99px;padding:3px;gap:2px;
-}
-.topt{
-  padding:5px 11px;border-radius:99px;border:none;background:transparent;
-  font-size:.73rem;font-weight:700;cursor:pointer;transition:.18s;color:var(--t3);
-}
+.theme-pill{display:flex;background:var(--input-bg);border:1px solid var(--bd);border-radius:99px;padding:3px;gap:2px;}
+.topt{padding:5px 11px;border-radius:99px;border:none;background:transparent;font-size:.73rem;font-weight:700;cursor:pointer;transition:.18s;color:var(--t3);}
 .topt.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 2px 8px var(--glow)}
-
-/* nav buttons */
-.nav-btn{
-  display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:99px;
-  border:1px solid var(--bd);background:var(--input-bg);color:var(--t2);
-  font-weight:700;font-size:.82rem;cursor:pointer;transition:.18s;font-family:'Tajawal',sans-serif;
-}
+.nav-btn{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:99px;border:1px solid var(--bd);background:var(--input-bg);color:var(--t2);font-weight:700;font-size:.82rem;cursor:pointer;transition:.18s;font-family:'Tajawal',sans-serif;}
 .nav-btn:hover{border-color:var(--p1);color:var(--p1)}
 
 /* ══════════ PAGE ══════════ */
-.page{
-  max-width:860px;margin:0 auto;
-  padding:0 20px 100px;
-  animation:fadeIn .5s ease;
-}
+.page{max-width:860px;margin:0 auto;padding:0 20px 100px;animation:fadeIn .5s ease;}
 
 /* ══════════ LESSON TITLE ══════════ */
-.lesson-title{
-  text-align:center;
-  font-size:clamp(1.3rem,3vw,1.75rem);
-  font-weight:900;color:var(--txt);
-  margin-bottom:22px;line-height:1.35;letter-spacing:-.01em;
-  animation:slideUp .5s ease;
-}
+.lesson-title{text-align:center;font-size:clamp(1.3rem,3vw,1.75rem);font-weight:900;color:var(--txt);margin-bottom:22px;line-height:1.35;letter-spacing:-.01em;animation:slideUp .5s ease;}
 
 /* ══════════ PILLS ══════════ */
 .pills{display:flex;gap:12px;margin-bottom:16px;animation:slideUp .55s ease}
-.pill{
-  flex:1;padding:12px 20px;border-radius:13px;font-weight:700;
-  font-size:.9rem;text-align:center;font-family:'Inter',monospace;
-  border:1px solid transparent;transition:.3s;
-}
+.pill{flex:1;padding:12px 20px;border-radius:13px;font-weight:700;font-size:.9rem;text-align:center;font-family:'Inter',monospace;border:1px solid transparent;transition:.3s;}
 .pill-blue{background:var(--pill-b-bg);color:var(--pill-b-c);border-color:rgba(74,126,199,.2)}
-.pill-red{
-  background:var(--pill-r-bg);color:var(--pill-r-c);border-color:rgba(220,38,38,.2);
-  font-weight:900;letter-spacing:.02em;animation:pulsePill 2s ease-in-out infinite;
-}
+.pill-red{background:var(--pill-r-bg);color:var(--pill-r-c);border-color:rgba(220,38,38,.2);font-weight:900;letter-spacing:.02em;animation:pulsePill 2s ease-in-out infinite;}
 
 /* ══════════ TABS ══════════ */
-.tabs{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  background:var(--card);border:1px solid var(--bd);border-radius:13px;
-  overflow:hidden;margin-bottom:24px;
-  box-shadow:var(--sh);animation:slideUp .6s ease;
-}
-.tab{
-  padding:13px 8px;border:none;background:var(--tab-off);
-  font-family:'Tajawal',sans-serif;font-weight:700;font-size:.9rem;
-  cursor:pointer;color:var(--tab-txt-off);
-  border-left:1px solid var(--bd);transition:.2s;
-  position:relative;overflow:hidden;
-}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--bd);border-radius:13px;overflow:hidden;margin-bottom:24px;box-shadow:var(--sh);animation:slideUp .6s ease;}
+.tab{padding:13px 8px;border:none;background:var(--tab-off);font-family:'Tajawal',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;color:var(--tab-txt-off);border-left:1px solid var(--bd);transition:.2s;position:relative;overflow:hidden;}
 .tab:last-child{border-left:none}
-.tab::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--p1),var(--p2));opacity:0;transition:.2s}
 .tab.on{color:var(--p1);font-weight:800}
 .tab.on::before{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--p1),var(--p3));border-radius:99px}
 .tab:hover:not(.on){background:rgba(139,92,246,.06);color:var(--p1)}
 
 /* ══════════ VIDEO CARDS ══════════ */
 .vid-list{display:flex;flex-direction:column;gap:13px}
-.vid-card{
-  background:var(--card);border-radius:16px;padding:22px 24px;
-  display:flex;align-items:center;justify-content:space-between;
-  box-shadow:var(--sh);gap:16px;border:1px solid var(--bd);
-  transition:.22s;cursor:default;
-  animation:cardIn .45s ease both;
-}
-.vid-card:nth-child(1){animation-delay:.05s}
-.vid-card:nth-child(2){animation-delay:.1s}
-.vid-card:nth-child(3){animation-delay:.15s}
-.vid-card:nth-child(4){animation-delay:.2s}
-.vid-card:nth-child(5){animation-delay:.25s}
+.vid-card{background:var(--card);border-radius:16px;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);gap:16px;border:1px solid var(--bd);transition:.22s;cursor:default;animation:cardIn .45s ease both;}
+.vid-card:nth-child(1){animation-delay:.05s}.vid-card:nth-child(2){animation-delay:.1s}.vid-card:nth-child(3){animation-delay:.15s}.vid-card:nth-child(4){animation-delay:.2s}.vid-card:nth-child(5){animation-delay:.25s}
 .vid-card:hover{box-shadow:var(--sh2);transform:translateY(-2px);border-color:var(--bd2)}
 .vc-right{display:flex;align-items:center;gap:14px}
 .vc-title{font-weight:700;font-size:1rem;color:var(--txt)}
-.vc-play{
-  width:46px;height:46px;border-radius:12px;background:var(--play-bg);border:none;
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  color:var(--play-c);font-size:1.1rem;flex-shrink:0;transition:.2s;
-}
+.vc-play{width:46px;height:46px;border-radius:12px;background:var(--play-bg);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--play-c);font-size:1.1rem;flex-shrink:0;transition:.2s;}
 .vc-play:hover{transform:scale(1.1);box-shadow:0 4px 14px var(--glow)}
 .vc-play.done{background:var(--play-done-bg);color:var(--play-done-c);font-size:1.2rem}
-.vc-watch{
-  background:var(--watch-bg);color:#fff;border:none;border-radius:11px;
-  padding:11px 22px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.9rem;
-  cursor:pointer;transition:.2s;flex-shrink:0;white-space:nowrap;
-  box-shadow:0 3px 12px rgba(26,107,95,.3);
-}
+.vc-watch{background:var(--watch-bg);color:#fff;border:none;border-radius:11px;padding:11px 22px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s;flex-shrink:0;white-space:nowrap;box-shadow:0 3px 12px rgba(26,107,95,.3);}
 .vc-watch:hover{background:var(--watch-hover);transform:translateY(-1px);box-shadow:0 5px 16px rgba(26,107,95,.35)}
-.vc-watch.done-btn{
-  background:transparent;color:var(--ok);
-  border:1.5px solid var(--ok);box-shadow:none;
-}
+.vc-watch.done-btn{background:transparent;color:var(--ok);border:1.5px solid var(--ok);box-shadow:none;}
 .vc-watch.done-btn:hover{background:rgba(16,185,129,.08)}
 
 /* ══════════ PLAYER VIEW ══════════ */
 .player-view{display:flex;flex-direction:column;gap:13px;animation:fadeIn .35s ease}
-.back-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:44px;height:44px;border-radius:12px;
-  background:var(--watch-bg);border:none;cursor:pointer;color:#fff;
-  font-size:1.1rem;transition:.2s;align-self:flex-end;
-  box-shadow:0 3px 12px rgba(26,107,95,.3);
-}
+.back-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:var(--watch-bg);border:none;cursor:pointer;color:#fff;font-size:1.1rem;transition:.2s;align-self:flex-end;box-shadow:0 3px 12px rgba(26,107,95,.3);}
 .back-btn:hover{background:var(--watch-hover);transform:scale(1.08)}
-.player-title-box{
-  border:1.5px solid rgba(139,92,246,.3);border-radius:14px;padding:14px 24px;
-  text-align:center;font-weight:800;font-size:1.1rem;color:var(--p1);
-  background:rgba(139,92,246,.06);animation:slideDown .3s ease;
-}
-.player-frame{
-  background:var(--player-bg);border-radius:16px;overflow:hidden;
-  box-shadow:0 8px 36px rgba(0,0,0,.3);position:relative;
-  animation:slideUp .4s ease;
-}
-/* Watermark */
+.player-title-box{border:1.5px solid rgba(139,92,246,.3);border-radius:14px;padding:14px 24px;text-align:center;font-weight:800;font-size:1.1rem;color:var(--p1);background:rgba(139,92,246,.06);animation:slideDown .3s ease;}
+.player-frame{background:var(--player-bg);border-radius:16px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,.3);position:relative;animation:slideUp .4s ease;}
 .wm{position:absolute;z-index:60;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;animation:wf 2.8s ease-in-out infinite}
 .wm-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);box-shadow:0 3px 12px rgba(124,58,237,.5);display:flex;align-items:center;justify-content:center}
 .wm-av svg{width:65%;height:65%}
 .wm-id{font-family:'Inter',monospace;font-size:11px;font-weight:900;color:#ff3333;text-shadow:0 1px 6px rgba(0,0,0,.95);background:rgba(0,0,0,.6);padding:2px 8px;border-radius:99px;border:1px solid rgba(255,40,40,.3);white-space:nowrap}
 
-/* ══════════ PLYR PURPLE ══════════ */
-.plyr{
-  --plyr-color-main:#8b5cf6;
-  --plyr-range-fill-background:#8b5cf6;
-  --plyr-video-controls-background:linear-gradient(transparent,rgba(5,2,8,.9));
-  --plyr-font-family:'Tajawal',sans-serif;
-  --plyr-font-size-base:13px;
-  border-radius:0!important;
-}
+/* ══════════ PLYR ══════════ */
+.plyr{--plyr-color-main:#8b5cf6;--plyr-range-fill-background:#8b5cf6;--plyr-video-controls-background:linear-gradient(transparent,rgba(5,2,8,.9));--plyr-font-family:'Tajawal',sans-serif;--plyr-font-size-base:13px;border-radius:0!important;}
 .plyr__control--overlaid{background:rgba(139,92,246,.88)!important;box-shadow:0 4px 20px var(--glow)!important}
 .plyr__control--overlaid:hover{background:#6d28d9!important}
 .plyr__video-embed{overflow:hidden!important}
-.plyr__video-embed iframe{
-  top:-5%!important;left:-5%!important;
-  width:110%!important;height:110%!important;
-  pointer-events:none!important;
-}
-.plyr__video-embed > div{pointer-events:none!important}
-.plyr__poster{background-size:cover}
+.plyr__video-embed iframe{top:-5%!important;left:-5%!important;width:110%!important;height:110%!important;pointer-events:none!important;}
+.plyr__video-embed>div{pointer-events:none!important}
 
 /* ══════════ ADBLOCK OVERLAY ══════════ */
-#adb-overlay{
-  display:none;position:fixed;inset:0;z-index:9000;
-  background:rgba(10,6,18,.97);backdrop-filter:blur(24px);
-  flex-direction:column;align-items:center;justify-content:center;
-  gap:18px;text-align:center;padding:32px;animation:fadeIn .3s ease;
-}
+#adb-overlay{display:none;position:fixed;inset:0;z-index:9000;background:rgba(10,6,18,.97);backdrop-filter:blur(24px);flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:32px;animation:fadeIn .3s ease;}
 #adb-overlay .ao-ico{font-size:4rem}
 #adb-overlay .ao-t{font-size:1.5rem;font-weight:900;color:#f87171}
 #adb-overlay .ao-s{font-size:.9rem;color:#aaa;line-height:1.9;max-width:400px}
 #adb-overlay .ao-s strong{color:#c4b5fd}
-#adb-overlay .ao-steps{
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;padding:16px 22px;text-align:right;font-size:.84rem;
-  color:#999;line-height:2.1;max-width:380px;width:100%;
-}
+#adb-overlay .ao-steps{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 22px;text-align:right;font-size:.84rem;color:#999;line-height:2.1;max-width:380px;width:100%;}
 #adb-overlay .ao-steps b{color:#f0ebff}
 
 /* ══════════ DEVTOOLS ══════════ */
-#dto{
-  display:none;position:fixed;inset:0;z-index:999999;
-  background:rgba(2,0,8,.98);backdrop-filter:blur(24px);
-  flex-direction:column;align-items:center;justify-content:center;
-  gap:16px;text-align:center;padding:30px;
-}
-#dto .di{font-size:4rem}
-#dto .dt{font-size:1.5rem;font-weight:900;color:#f87171}
+#dto{display:none;position:fixed;inset:0;z-index:999999;background:rgba(2,0,8,.98);backdrop-filter:blur(24px);flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:30px;}
+#dto .di{font-size:4rem}#dto .dt{font-size:1.5rem;font-weight:900;color:#f87171}
 #dto .ds{font-size:.88rem;color:#aaa;line-height:1.85;max-width:340px}
 
 /* ══════════ EXAM ══════════ */
@@ -327,7 +209,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 .mat-sub{font-size:.78rem;color:var(--t2);line-height:1.7;user-select:text}
 .mat-body{margin-top:9px;color:var(--t2);font-size:.85rem;line-height:1.9;user-select:text}
 
-/* ══════════ LOCK / RESULT ══════════ */
+/* ══════════ LOCK ══════════ */
 .lock-view{display:flex;align-items:center;justify-content:center;min-height:42vh;animation:fadeIn .35s ease}
 .lock-card{background:var(--card);border-radius:20px;padding:40px 32px;text-align:center;box-shadow:var(--sh);max-width:400px;width:100%;border:1px solid var(--bd)}
 .lock-ico{font-size:3rem;margin-bottom:14px;display:block}
@@ -335,52 +217,87 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 .lock-sub{font-size:.86rem;color:var(--t2);margin-bottom:22px;line-height:1.75}
 .lock-acts{display:flex;gap:10px;justify-content:center}
 
-/* ══════════ UTILS ══════════ */
-.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:46vh;gap:14px;color:var(--t3)}
-.spin{width:33px;height:33px;border:3px solid var(--bd);border-top-color:var(--p1);border-radius:50%;animation:spin .7s linear infinite}
-.emp{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40vh;gap:10px;color:var(--t3);text-align:center}
-.emp .et{font-weight:900;font-size:.97rem;color:var(--txt)}.emp .es{font-size:.82rem}
-
-.btn{border:none;border-radius:10px;padding:10px 20px;font-weight:700;cursor:pointer;font-size:.88rem;transition:.18s;display:inline-flex;align-items:center;gap:7px;font-family:'Tajawal',sans-serif}
-.btn-p{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 14px var(--glow)}
-.btn-p:hover{opacity:.9;transform:translateY(-1px)}.btn-p:disabled{opacity:.38;cursor:not-allowed;transform:none}
-.btn-g{background:var(--watch-bg);color:#fff;box-shadow:0 3px 12px rgba(26,107,95,.25)}
-.btn-g:hover{background:var(--watch-hover);transform:translateY(-1px)}
-.btn-g:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.btn-out{background:var(--input-bg);color:var(--t2);border:1.5px solid var(--bd)}
-.btn-out:hover{border-color:var(--p1);color:var(--p1)}
-.btn-lg{padding:13px 30px;font-size:.95rem;border-radius:12px}
-
-#toasts{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none}
-.toast{display:flex;gap:9px;align-items:center;background:var(--card);border-radius:12px;padding:10px 18px;box-shadow:var(--sh2);animation:tin .2s;pointer-events:all;white-space:nowrap;font-weight:700;font-size:.86rem;border:1.5px solid var(--bd)}
-.ts{border-color:rgba(16,185,129,.4)}.te{border-color:rgba(239,68,68,.4)}.tw{border-color:rgba(251,191,36,.4)}
-.tx{animation:tout .18s forwards}
-
-/* ══════════ WHATSAPP BUTTON ══════════ */
-.wa-btn{
-  position:fixed;bottom:24px;left:24px;z-index:900;
-  width:56px;height:56px;border-radius:50%;
-  background:#25d366;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 20px rgba(37,211,102,.45);
-  animation:bounce 2.2s ease-in-out infinite;
-  transition:.2s;text-decoration:none;
+/* ══════════ EXPIRED SCREEN ══════════ */
+.exp-full{
+  min-height:100vh;display:flex;align-items:center;
+  justify-content:center;padding:32px;animation:fadeIn .4s ease;
 }
-.wa-btn:hover{transform:scale(1.12);box-shadow:0 6px 28px rgba(37,211,102,.6);animation-play-state:paused}
-.wa-btn svg{width:30px;height:30px;fill:#fff}
+.exp-card{
+  background:var(--card);border-radius:22px;
+  padding:36px 28px;text-align:center;
+  max-width:420px;width:100%;
+  box-shadow:var(--sh2);border:1.5px solid rgba(239,68,68,.25);
+  animation:expiredShake .4s ease .1s;
+}
+.exp-icon{font-size:3.5rem;display:block;margin-bottom:16px}
+.exp-title{font-size:1.1rem;font-weight:900;margin-bottom:6px;color:var(--txt)}
+.exp-sub{font-size:.84rem;color:var(--t2);margin-bottom:24px;line-height:1.8}
 
-/* ══════════ ERROR / EXPIRED PAGE ══════════ */
-.err-full{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;animation:fadeIn .4s ease}
-.err-card{background:var(--card);border-radius:20px;padding:40px 28px;text-align:center;max-width:380px;width:100%;box-shadow:var(--sh);border:1px solid var(--bd)}
+/* Tabs inside expired card */
+.exp-tabs{
+  display:flex;gap:0;margin-bottom:18px;
+  background:var(--input-bg);border-radius:10px;padding:3px;
+  border:1px solid var(--bd);
+}
+.exp-tab{
+  flex:1;padding:8px;border:none;background:transparent;
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:.82rem;
+  cursor:pointer;color:var(--t3);border-radius:8px;transition:.18s;
+}
+.exp-tab.on{background:var(--card);color:var(--txt);box-shadow:0 1px 6px rgba(0,0,0,.1)}
 
-/* ══════════ CODE INPUT (expired screen) ══════════ */
+.exp-panel{display:none}.exp-panel.on{display:block;animation:fadeIn .2s ease}
+
+/* Code panel */
+.code-row-exp{display:flex;gap:8px;margin-bottom:10px}
 .code-inp-expired{
   flex:1;background:var(--input-bg);border:1.5px solid var(--bd);
   color:var(--txt);padding:10px 13px;border-radius:10px;outline:none;
   font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;
   font-weight:700;font-family:'Tajawal',sans-serif;transition:.18s;
 }
-.code-inp-expired:focus{border-color:var(--p1);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+.code-inp-expired:focus{border-color:var(--p1);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+
+/* Buy again panel */
+.buy-again-info{
+  background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.18);
+  border-radius:12px;padding:14px;margin-bottom:14px;text-align:right;
+}
+.ba-lesson-title{font-weight:800;font-size:.92rem;margin-bottom:4px;color:var(--txt)}
+.ba-lesson-sub{font-size:.78rem;color:var(--t3)}
+
+/* ══════════ UTILS ══════════ */
+.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:46vh;gap:14px;color:var(--t3)}
+.spin{width:33px;height:33px;border:3px solid var(--bd);border-top-color:var(--p1);border-radius:50%;animation:spin .7s linear infinite}
+.emp{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40vh;gap:10px;color:var(--t3);text-align:center}
+.emp .et{font-weight:900;font-size:.97rem;color:var(--txt)}.emp .es{font-size:.82rem}
+.btn{border:none;border-radius:10px;padding:10px 20px;font-weight:700;cursor:pointer;font-size:.88rem;transition:.18s;display:inline-flex;align-items:center;gap:7px;font-family:'Tajawal',sans-serif}
+.btn-p{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 14px var(--glow)}
+.btn-p:hover{opacity:.9;transform:translateY(-1px)}.btn-p:disabled{opacity:.38;cursor:not-allowed;transform:none}
+.btn-g{background:var(--watch-bg);color:#fff;box-shadow:0 3px 12px rgba(26,107,95,.25)}
+.btn-g:hover{background:var(--watch-hover);transform:translateY(-1px)}
+.btn-out{background:var(--input-bg);color:var(--t2);border:1.5px solid var(--bd)}
+.btn-out:hover{border-color:var(--p1);color:var(--p1)}
+.btn-danger{background:rgba(239,68,68,.1);color:var(--danger);border:1.5px solid rgba(239,68,68,.22)}
+.btn-danger:hover{background:rgba(239,68,68,.18)}
+.btn-lg{padding:13px 30px;font-size:.95rem;border-radius:12px}
+
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--t4);font-size:.78rem;font-weight:600}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bd)}
+
+#toasts{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none}
+.toast{display:flex;gap:9px;align-items:center;background:var(--card);border-radius:12px;padding:10px 18px;box-shadow:var(--sh2);animation:tin .2s;pointer-events:all;white-space:nowrap;font-weight:700;font-size:.86rem;border:1.5px solid var(--bd)}
+.ts{border-color:rgba(16,185,129,.4)}.te{border-color:rgba(239,68,68,.4)}.tw{border-color:rgba(251,191,36,.4)}
+.tx{animation:tout .18s forwards}
+
+/* ══════════ WHATSAPP ══════════ */
+.wa-btn{position:fixed;bottom:24px;left:24px;z-index:900;width:56px;height:56px;border-radius:50%;background:#25d366;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.45);animation:bounce 2.2s ease-in-out infinite;transition:.2s;text-decoration:none;}
+.wa-btn:hover{transform:scale(1.12);animation-play-state:paused}
+.wa-btn svg{width:30px;height:30px;fill:#fff}
+
+/* ══════════ ERR PAGE ══════════ */
+.err-full{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;animation:fadeIn .4s ease}
+.err-card{background:var(--card);border-radius:20px;padding:40px 28px;text-align:center;max-width:380px;width:100%;box-shadow:var(--sh);border:1px solid var(--bd)}
 
 /* ══════════ RESPONSIVE ══════════ */
 @media(max-width:580px){
@@ -392,8 +309,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
   .vc-watch{width:100%;justify-content:center}
   .sw{flex-direction:column}
   .sa{align-items:flex-start;width:100%}
-  .nav{padding:0 14px;gap:10px}
-  .nav-brand{font-size:1.1rem}
+  .code-row-exp{flex-direction:column}
 }
 </style>
 </head>
@@ -403,9 +319,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 <div id="adb-overlay">
   <div class="ao-ico">🛡️</div>
   <div class="ao-t">تم اكتشاف حاجب إعلانات</div>
-  <div class="ao-s">
-    الموقع بيحتاج تعطيل <strong>AdBlock</strong> أو <strong>Brave Shields</strong> عشان تشوف الفيديوهات
-  </div>
+  <div class="ao-s">الموقع بيحتاج تعطيل <strong>AdBlock</strong> أو <strong>Brave Shields</strong> عشان تشوف الفيديوهات</div>
   <div class="ao-steps">
     <b>Brave:</b> اضغط أيقونة الأسد 🦁 وحوّل Shields لـ Down<br>
     <b>uBlock / AdBlock:</b> اضغط الأيقونة ثم اضغط Power لتعطيلها<br>
@@ -446,7 +360,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
   </div>
 </div>
 
-<!-- ══ WHATSAPP BUTTON ══ -->
+<!-- ══ WHATSAPP ══ -->
 <a class="wa-btn" href="https://wa.me/" target="_blank" rel="noopener" id="wa-btn">
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.5 2.04 7.83L.5 31.5l7.87-2.06A15.44 15.44 0 0016 31.5C24.56 31.5 31.5 24.56 31.5 16S24.56.5 16 .5zm0 28.3a12.73 12.73 0 01-6.5-1.78l-.46-.28-4.67 1.22 1.25-4.56-.3-.47A12.8 12.8 0 1116 28.8zm7.04-9.57c-.38-.2-2.27-1.12-2.62-1.24-.36-.12-.62-.18-.87.18-.26.37-1 1.24-1.22 1.5-.23.25-.45.28-.83.09-.38-.19-1.6-.59-3.05-1.88a11.4 11.4 0 01-2.1-2.62c-.22-.38-.02-.58.17-.77.17-.17.38-.45.57-.67.19-.22.25-.38.38-.63.13-.26.06-.48-.03-.67-.1-.19-.87-2.1-1.2-2.87-.3-.73-.62-.63-.86-.64h-.74c-.25 0-.66.09-1 .48-.35.38-1.33 1.3-1.33 3.17s1.36 3.67 1.55 3.92c.19.26 2.68 4.1 6.5 5.74.9.4 1.62.63 2.17.8.91.29 1.74.25 2.4.15.73-.11 2.27-.93 2.59-1.82.32-.9.32-1.66.22-1.82-.1-.16-.35-.25-.74-.44z"/>
@@ -454,7 +368,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
 </a>
 
 <script>
-/* ══ SECURITY — DEVTOOLS ══ */
+/* ══ SECURITY ══ */
 (function(){
   let lk=false;
   window.lock=function(){
@@ -480,41 +394,22 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-
   (function d(){try{const s=performance.now();debugger;if(performance.now()-s>120)lock();}catch{}setTimeout(d,2600);})();
 })();
 
-/* ══ ADBLOCK / BRAVE DETECTION ══ */
-function showAdBlockOverlay(){
-  const o=document.getElementById('adb-overlay');
-  if(o)o.style.display='flex';
-}
-
+/* ══ ADBLOCK DETECTION ══ */
+function showAdBlockOverlay(){const o=document.getElementById('adb-overlay');if(o)o.style.display='flex';}
 async function runAdBlockCheck(){
   const bait=document.createElement('div');
-  bait.id='pub_300x250';
-  bait.className='ad-banner advertisement adsbox doubleclick pub_300x250m';
+  bait.id='pub_300x250';bait.className='ad-banner advertisement adsbox doubleclick pub_300x250m';
   bait.style.cssText='position:absolute;width:1px;height:1px;top:-9999px;left:-9999px;';
   document.body.appendChild(bait);
   await new Promise(r=>setTimeout(r,400));
   const cs=window.getComputedStyle(bait);
-  const baitBlocked=!bait.offsetParent||bait.offsetHeight===0||cs.display==='none'||cs.visibility==='hidden';
+  const blocked=!bait.offsetParent||bait.offsetHeight===0||cs.display==='none'||cs.visibility==='hidden';
   bait.remove();
-  if(baitBlocked){showAdBlockOverlay();return;}
-  try{
-    if(window.navigator.brave){
-      const isBrave=await window.navigator.brave.isBrave();
-      if(isBrave){
-        try{
-          await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',{mode:'no-cors',cache:'no-store'});
-        }catch(e){
-          showAdBlockOverlay();return;
-        }
-      }
-    }
-  }catch(e){}
+  if(blocked){showAdBlockOverlay();return;}
   try{
     const r=await fetch('https://securepubads.g.doubleclick.net/tag/js/gpt.js',{mode:'no-cors',cache:'no-store'});
-    if(!r){showAdBlockOverlay();return;}
-  }catch(e){
-    showAdBlockOverlay();return;
-  }
+    if(!r)showAdBlockOverlay();
+  }catch(e){showAdBlockOverlay();}
 }
 
 /* ══ SUPABASE ══ */
@@ -522,12 +417,7 @@ const SB_URL="https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON="sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb=window.supabase.createClient(SB_URL,SB_ANON);
 
-function iSrc(v){
-  if(!v)return'';v=String(v).trim();if(!v)return'';
-  if(v.startsWith('http')||v.startsWith('data:')||v.startsWith('blob:'))return v;
-  if(v.startsWith('/storage/'))return SB_URL+v;
-  return`${SB_URL}/storage/v1/object/public/kalawy/${v.replace(/^\/+/,'').replace(/^kalawy\//,'')}`;
-}
+function iSrc(v){if(!v)return'';v=String(v).trim();if(!v)return'';if(v.startsWith('http')||v.startsWith('data:')||v.startsWith('blob:'))return v;if(v.startsWith('/storage/'))return SB_URL+v;return`${SB_URL}/storage/v1/object/public/kalawy/${v.replace(/^\/+/,'').replace(/^kalawy\//,'')}`;}
 function iS(v){return iSrc(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function iE(el,ic='🖼️'){const p=el.parentElement;if(p)p.innerHTML=`<div style="display:grid;place-items:center;height:100%;font-size:1.5rem">${ic}</div>`;else el.remove();}
@@ -540,8 +430,7 @@ window._pl=null;let _wmt=null;
 
 /* ══ THEME ══ */
 function setTheme(th){
-  document.documentElement.setAttribute('data-theme',th);
-  localStorage.setItem('kw-t',th);
+  document.documentElement.setAttribute('data-theme',th);localStorage.setItem('kw-t',th);
   document.getElementById('n-lt').classList.toggle('on',th==='light');
   document.getElementById('n-dk').classList.toggle('on',th==='dark');
 }
@@ -560,10 +449,7 @@ function norOpts(q){
   let o=q?.options;if(typeof o==='string'){try{o=JSON.parse(o);}catch{o=null;}}
   if(!Array.isArray(o)||!o.length){o='abcdefgh'.split('').filter(k=>q&&q[`option_${k}`]).map(k=>({text:q[`option_${k}`],is_correct:String(q.correct_option||'').toLowerCase()===k}));}
   o=o.map(x=>typeof x==='string'?{text:x,is_correct:false}:{text:x?.text??x?.label??x?.value??'',is_correct:!!x?.is_correct}).filter(x=>String(x.text).trim());
-  if(o.length&&!o.some(x=>x.is_correct)){
-    const c=String(q?.correct_option||'').toLowerCase();let i='abcdefghij'.indexOf(c);
-    if(i<0&&!isNaN(+c))i=+c;if(i>=0&&o[i])o[i].is_correct=true;
-  }
+  if(o.length&&!o.some(x=>x.is_correct)){const c=String(q?.correct_option||'').toLowerCase();let i='abcdefghij'.indexOf(c);if(i<0&&!isNaN(+c))i=+c;if(i>=0&&o[i])o[i].is_correct=true;}
   return o;
 }
 function norQs(qs){return(qs||[]).map(q=>({...q,options:norOpts(q)}));}
@@ -596,57 +482,106 @@ function startTimer(){
     const left=ml();
     const el=document.getElementById('pill-timer');
     if(el)el.textContent=`صلاحية الفيديو ${fmtTimer(left)}`;
-    if(left!==null&&left<=0){
-      clearInterval(_aci);
-      try{window._pl?.pause();}catch{}
-      /* ══ بدل showErr — بنعرض شاشة إدخال كود جديد ══ */
-      showExpired();
-    }
+    if(left!==null&&left<=0){clearInterval(_aci);try{window._pl?.pause();}catch{}showExpired();}
   }
   upd();_aci=setInterval(upd,1000);
 }
 
-/* ══ EXPIRED SCREEN ══ */
+/* ══════════════════════════════════════
+   EXPIRED SCREEN — with tabs:
+   1. Enter new code  |  2. Buy again
+══════════════════════════════════════ */
 function showExpired(){
   document.getElementById('il')?.remove();
   try{window._pl?.pause();}catch{}
   if(_wmt){clearInterval(_wmt);_wmt=null;}
 
+  const lessonTitle=LESSON?.title||'الحصة';
+  const lessonId=new URLSearchParams(location.search).get('id')||'';
+  const lessonImg=LESSON?.image_url?iSrc(LESSON.image_url):'';
+
   document.getElementById('page').innerHTML=`
-  <div class="err-full">
-    <div class="err-card">
-      <span style="font-size:3.2rem;display:block;margin-bottom:14px">⏰</span>
-      <div style="font-size:1.05rem;font-weight:900;margin-bottom:6px;color:var(--txt)">
-        انتهى وقت الحصة
-      </div>
-      <div style="font-size:.84rem;color:var(--t2);margin-bottom:22px;line-height:1.75">
-        ادخل كود جديد عشان تكمل المشاهدة
+  <div class="exp-full">
+    <div class="exp-card">
+      <span class="exp-icon">⏰</span>
+      <div class="exp-title">انتهى وقت الحصة</div>
+      <div class="exp-sub">اختار طريقة للمتابعة</div>
+
+      <!-- TABS -->
+      <div class="exp-tabs">
+        <button class="exp-tab on" id="etab-code" onclick="switchExpTab('code')">🔑 عندي كود</button>
+        <button class="exp-tab" id="etab-buy" onclick="switchExpTab('buy')">🛒 اشتري مجدداً</button>
       </div>
 
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <input
-          id="new-code-inp"
-          class="code-inp-expired"
-          placeholder="كود الحصة..."
-          maxlength="24"
-          oninput="this.value=this.value.toUpperCase()"
-          onkeydown="if(event.key==='Enter')redeemNewCode()"
-        >
-        <button class="btn btn-p" onclick="redeemNewCode()" id="redeem-btn"
-          style="border-radius:10px;padding:10px 20px;font-size:.9rem;flex-shrink:0">
-          ✓ تفعيل
-        </button>
+      <!-- PANEL: Enter code -->
+      <div class="exp-panel on" id="epanel-code">
+        <div class="code-row-exp">
+          <input
+            id="new-code-inp"
+            class="code-inp-expired"
+            placeholder="ادخل الكود الجديد..."
+            maxlength="30"
+            oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')redeemNewCode()"
+            style="user-select:text;-webkit-user-select:text"
+          >
+          <button class="btn btn-p" onclick="redeemNewCode()" id="redeem-btn"
+            style="padding:10px 18px;border-radius:10px;flex-shrink:0">
+            ✓ تفعيل
+          </button>
+        </div>
+        <div style="font-size:.75rem;color:var(--t3);text-align:center;margin-top:4px">
+          ادخل كود جديد حصلت عليه من المدرس
+        </div>
       </div>
+
+      <!-- PANEL: Buy again -->
+      <div class="exp-panel" id="epanel-buy">
+        <div class="buy-again-info">
+          <div class="ba-lesson-title">📚 ${esc(lessonTitle)}</div>
+          <div class="ba-lesson-sub">ضيف الحصة للسلة وادخل كود جديد في صفحة الدفع</div>
+        </div>
+        <button class="btn btn-p" style="width:100%;justify-content:center;margin-bottom:10px"
+          onclick="addToCartAndCheckout('${lessonId}','${esc(lessonTitle)}','${esc(lessonImg)}')">
+          🛒 ضيف للسلة واشتري
+        </button>
+        <div style="font-size:.75rem;color:var(--t3);text-align:center;line-height:1.7">
+          هتتحول لصفحة الدفع عشان تدخل الكود الجديد
+        </div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div class="divider" style="margin-top:18px">أو</div>
 
       <button class="btn btn-out" onclick="goHome()"
-        style="width:100%;justify-content:center;margin-top:4px">
+        style="width:100%;justify-content:center">
         ← العودة للرئيسية
       </button>
     </div>
   </div>`;
 
-  /* focus على input تلقائياً */
   setTimeout(()=>document.getElementById('new-code-inp')?.focus(),200);
+}
+
+function switchExpTab(tab){
+  ['code','buy'].forEach(t=>{
+    document.getElementById(`etab-${t}`)?.classList.toggle('on',t===tab);
+    document.getElementById(`epanel-${t}`)?.classList.toggle('on',t===tab);
+  });
+  if(tab==='code')setTimeout(()=>document.getElementById('new-code-inp')?.focus(),100);
+}
+
+/* ══ ADD TO CART & GO CHECKOUT ══ */
+function addToCartAndCheckout(id,title,imgUrl){
+  if(!ME?.id){window.location.href='/login/';return;}
+  try{
+    let cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');
+    if(!cart.some(c=>c.id===id)){
+      cart.push({id,title,image_url:imgUrl,price:null});
+      localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(cart));
+    }
+  }catch(e){console.warn(e);}
+  window.location.href='/checkout/';
 }
 
 /* ══ REDEEM NEW CODE ══ */
@@ -660,37 +595,15 @@ async function redeemNewCode(){
   btn.innerHTML='<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>';
   btn.disabled=true;
 
-  /* تحقق من الكود */
-  const{data:row,error}=await sb.from('lesson_codes')
-    .select('id,lesson_id,used_by')
-    .eq('code',code)
-    .single();
+  const{data:row,error}=await sb.from('lesson_codes').select('id,lesson_id,used_by').eq('code',code).single();
+  if(error||!row){toast('e','الكود غلط أو غير موجود');btn.innerHTML='✓ تفعيل';btn.disabled=false;return;}
+  if(row.lesson_id!==lid){toast('e','الكود ده لحصة تانية');btn.innerHTML='✓ تفعيل';btn.disabled=false;return;}
+  if(row.used_by&&row.used_by!==ME.id){toast('e','الكود اتستخدم قبل كده');btn.innerHTML='✓ تفعيل';btn.disabled=false;return;}
 
-  if(error||!row){
-    toast('e','الكود غلط أو غير موجود');
-    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
-  }
-  if(row.lesson_id!==lid){
-    toast('e','الكود ده لحصة تانية');
-    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
-  }
-  /* لو الكود اتستخدم من حساب تاني */
-  if(row.used_by&&row.used_by!==ME.id){
-    toast('e','الكود اتستخدم قبل كده من حساب تاني');
-    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
-  }
+  const{error:upErr}=await sb.from('lesson_codes').update({used_by:ME.id,used_at:new Date().toISOString()}).eq('id',row.id);
+  if(upErr){toast('e','فشل التفعيل: '+upErr.message);btn.innerHTML='✓ تفعيل';btn.disabled=false;return;}
 
-  /* تفعيل الكود — نحدّث used_by و used_at */
-  const{error:upErr}=await sb.from('lesson_codes')
-    .update({used_by:ME.id,used_at:new Date().toISOString()})
-    .eq('id',row.id);
-
-  if(upErr){
-    toast('e','فشل التفعيل: '+upErr.message);
-    btn.innerHTML='✓ تفعيل';btn.disabled=false;return;
-  }
-
-  toast('s','🎉 تم تفعيل الكود! جاري إعادة تحميل الحصة...',2500);
+  toast('s','🎉 تم تفعيل الكود! جاري إعادة التحميل...',2500);
   setTimeout(()=>location.reload(),1400);
 }
 
@@ -727,7 +640,6 @@ async function loadLesson(lid){
   }
   if(ROLE!=='admin'&&ROLE!=='teacher'){
     if(!ls.is_active){showErr('الحصة مغلقة حالياً');return;}
-    /* ══ لو الوقت خلص — عرض شاشة إدخال كود جديد بدل رسالة خطأ ══ */
     const exp=ae();
     if(exp&&exp.getTime()<=Date.now()){showExpired();return;}
   }
@@ -796,19 +708,14 @@ async function openPlayer(idx){
     const{data:sub}=await sb.from('exam_submissions').select('id,passed').eq('exam_id',EXAM.id).eq('student_id',ME.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();
     if(!sub||!sub.passed){
       document.getElementById('cnt').innerHTML=`
-      <div class="lock-view">
-        <div class="lock-card">
-          <span class="lock-ico">🔒</span>
-          <div class="lock-title">الفيديو مقفول</div>
-          <div class="lock-sub">لازم تعدي الامتحان بدرجة ${ps()}% أو أكتر عشان الفيديو يتفتح</div>
-          <div class="lock-acts">
-            <button class="btn btn-p btn-lg" onclick="sw('exam')">📝 ابدأ الامتحان</button>
-          </div>
-        </div>
-      </div>`;
+      <div class="lock-view"><div class="lock-card">
+        <span class="lock-ico">🔒</span>
+        <div class="lock-title">الفيديو مقفول</div>
+        <div class="lock-sub">لازم تعدي الامتحان بدرجة ${ps()}% أو أكتر عشان الفيديو يتفتح</div>
+        <div class="lock-acts"><button class="btn btn-p btn-lg" onclick="sw('exam')">📝 ابدأ الامتحان</button></div>
+      </div></div>`;
       ['video','exam','homework','pdf'].forEach(t=>document.getElementById(`tab-${t}`)?.classList.remove('on'));
-      document.getElementById('tab-exam')?.classList.add('on');
-      return;
+      document.getElementById('tab-exam')?.classList.add('on');return;
     }
   }
   _cp=idx;renderPlayer(idx);
@@ -824,12 +731,7 @@ function renderPlayer(idx){
     <div class="player-frame" id="player-frame">
       <div id="plyr-el" data-plyr-provider="youtube" data-plyr-embed-id=""></div>
       <div class="wm" id="kwm" style="left:10%;top:12%;--r:-10deg">
-        <div class="wm-av">
-          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="20" cy="14" r="7.5" fill="rgba(255,255,255,.92)"/>
-            <ellipse cx="20" cy="33" rx="13.5" ry="9" fill="rgba(255,255,255,.92)"/>
-          </svg>
-        </div>
+        <div class="wm-av"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="14" r="7.5" fill="rgba(255,255,255,.92)"/><ellipse cx="20" cy="33" rx="13.5" ry="9" fill="rgba(255,255,255,.92)"/></svg></div>
         <div class="wm-id">${esc(uid)}</div>
       </div>
     </div>
@@ -854,23 +756,11 @@ function buildPlyr(videoId,idx){
   const el=document.getElementById('plyr-el');if(!el)return;
   el.setAttribute('data-plyr-embed-id',videoId);
   window._pl=new Plyr(el,{
-    youtube:{
-      noCookie:true,
-      rel:0,showinfo:0,iv_load_policy:3,
-      modestbranding:1,
-      controls:0,
-      disablekb:1,
-      fs:0,playsinline:1,cc_load_policy:0,
-      origin:location.origin,
-    },
+    youtube:{noCookie:true,rel:0,showinfo:0,iv_load_policy:3,modestbranding:1,controls:0,disablekb:1,fs:0,playsinline:1,cc_load_policy:0,origin:location.origin},
     controls:['play-large','play','rewind','fast-forward','progress','current-time','duration','mute','volume','settings','fullscreen'],
-    settings:['quality','speed'],
-    speed:{selected:1,options:[0.5,0.75,1,1.25,1.5,2]},
-    keyboard:{focused:false,global:false},
-    fullscreen:{enabled:true,fallback:true,iosNative:true},
-    tooltips:{controls:false},
-    disableContextMenu:true,
-    ratio:'16:9',
+    settings:['quality','speed'],speed:{selected:1,options:[0.5,0.75,1,1.25,1.5,2]},
+    keyboard:{focused:false,global:false},fullscreen:{enabled:true,fallback:true,iosNative:true},
+    tooltips:{controls:false},disableContextMenu:true,ratio:'16:9',
   });
   window._pl.on('ended',()=>markW(idx));
   window._pl.on('timeupdate',()=>{try{const p=window._pl;if(p.duration>0&&p.currentTime/p.duration>=0.85)markW(idx);}catch{}});
@@ -896,8 +786,7 @@ async function renderExam(startNow=false){
   if(!qs?.length){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📝</span><div class="et">لا توجد أسئلة</div></div>';return;}
   _eqs=norQs(qs);
   if(!startNow){
-    c.innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:center;min-height:40vh">
+    c.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:40vh">
       <div class="exam-intro">
         <span class="ei-ico">📝</span>
         <div class="ei-title">${esc(EXAM.title||'امتحان الحصة')}</div>
@@ -911,19 +800,13 @@ async function renderExam(startNow=false){
           <button class="btn btn-p btn-lg" onclick="renderExam(true)">▶️ ابدأ الامتحان</button>
           <button class="btn btn-out" onclick="sw('video')">🎥 الفيديو</button>
         </div>
-      </div>
-    </div>`;
-    return;
+      </div></div>`;return;
   }
   _ans={};_sub=false;
   const hasDur=!!EXAM.duration_minutes;
   c.innerHTML=`
   <div class="exam-wrap">
-    ${hasDur?`<div class="etrow">
-      <span style="font-size:.8rem;font-weight:700;color:var(--t2)">⏱️ الوقت المتبقي</span>
-      <div class="etbar"><div class="etf" id="etf" style="width:100%"></div></div>
-      <div class="etv" id="etv">--:--</div>
-    </div>`:''}
+    ${hasDur?`<div class="etrow"><span style="font-size:.8rem;font-weight:700;color:var(--t2)">⏱️ الوقت المتبقي</span><div class="etbar"><div class="etf" id="etf" style="width:100%"></div></div><div class="etv" id="etv">--:--</div></div>`:''}
     ${_eqs.map((q,i)=>`
       <div class="qc" id="qc-${q.id}">
         <div class="qn"><div class="qdot"></div>سؤال ${i+1} من ${_eqs.length}</div>
@@ -939,10 +822,7 @@ async function renderExam(startNow=false){
       </div>`).join('')}
   </div>
   <div class="ef">
-    <div class="ep">
-      <span id="an-c">0</span>/${_eqs.length} أجبت
-      <div class="epb"><div class="epf" id="an-f" style="width:0%"></div></div>
-    </div>
+    <div class="ep"><span id="an-c">0</span>/${_eqs.length} أجبت<div class="epb"><div class="epf" id="an-f" style="width:0%"></div></div></div>
     <button class="btn btn-p btn-lg" id="sub-btn" onclick="submitExam(false)" style="margin-right:auto">📤 تسليم الامتحان</button>
   </div>`;
   if(hasDur)startET(EXAM.duration_minutes*60);
@@ -1014,10 +894,7 @@ function renderResult(score,saved,passed,attempts,eqs,log){
     ${eqs.map((q,i)=>{
       const opts=q.options||[],si=am[q.id],isc=opts[si]?.is_correct;
       return`<div class="qc">
-        <div class="qn">
-          <div class="qdot" style="background:${si!==undefined?(isc?'#10b981':'#ef4444'):'#ccc'}"></div>
-          سؤال ${i+1} — ${si!==undefined?(isc?'✅ صحيحة':'❌ خاطئة'):'لم تجب'}
-        </div>
+        <div class="qn"><div class="qdot" style="background:${si!==undefined?(isc?'#10b981':'#ef4444'):'#ccc'}"></div>سؤال ${i+1} — ${si!==undefined?(isc?'✅ صحيحة':'❌ خاطئة'):'لم تجب'}</div>
         ${q.image_url?`<img class="qi" src="${iS(q.image_url)}" onerror="iE(this,'🖼️')" loading="lazy">`:''}
         <div class="qt">${esc(q.question_text)}</div>
         <div class="opts">
@@ -1059,20 +936,15 @@ function renderPDF(){
 function showErr(msg){
   document.getElementById('il')?.remove();
   document.getElementById('page').innerHTML=`
-  <div class="err-full">
-    <div class="err-card">
-      <span style="font-size:3rem;display:block;margin-bottom:12px">🔒</span>
-      <div style="font-size:1rem;font-weight:900;margin-bottom:18px;color:var(--txt)">${esc(msg)}</div>
-      <button class="btn btn-p btn-lg" onclick="goHome()">← العودة للرئيسية</button>
-    </div>
-  </div>`;
+  <div class="err-full"><div class="err-card">
+    <span style="font-size:3rem;display:block;margin-bottom:12px">🔒</span>
+    <div style="font-size:1rem;font-weight:900;margin-bottom:18px;color:var(--txt)">${esc(msg)}</div>
+    <button class="btn btn-p btn-lg" onclick="goHome()">← العودة للرئيسية</button>
+  </div></div>`;
 }
 
 /* ══ START ══ */
-(function(){
-  const th=localStorage.getItem('kw-t')||'light';
-  setTheme(th);
-})();
+(function(){setTheme(localStorage.getItem('kw-t')||'light');})();
 init();
 </script>
 </body>
