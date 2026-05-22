@@ -1709,6 +1709,161 @@ function showErr(msg){
 /* ═══════════ NETWORK ═══════════ */
 window.addEventListener('offline',()=>toast('w','النت قطع. الإجابات محفوظة محلياً.',5500));
 window.addEventListener('online',()=>toast('s','النت رجع ✅ كمل وسلم دلوقتي',3500));
+
+
+/* ─────────────────────────────────────────────
+   PATCH: explicit homework video gate + question images
+───────────────────────────────────────────── */
+function kwQImg(q){return q?.image_url||q?.question_image_url||q?.image||q?.img_url||q?.question_img||q?.photo_url||'';}
+
+getHomeworkDone=async function(lessonId){
+  if(isStaff()||!ME?.id) return true;
+  const {data,error}=await sb.from('homework_submissions')
+    .select('id,status,passed,score')
+    .eq('lesson_id',lessonId)
+    .eq('student_id',ME.id)
+    .order('updated_at',{ascending:false});
+  if(error) return false;
+  return (data||[]).some(r=>r.passed===true || (r.passed!==false && ['submitted','done','accepted'].includes(String(r.status||'submitted'))));
+};
+const _kwOldNorQs = norQs;
+norQs=function(qs){
+  return(qs||[]).map(q=>({...q,image_url:kwQImg(q),options:norOpts(q)}));
+};
+
+async function kwFindGateForLesson(ls){
+  if(isStaff()||!ls?.id) return null;
+  let {data:explicit,error}=await sb.from('homework').select('id,lesson_id,title,unlock_lesson_id,video_url').eq('unlock_lesson_id',ls.id).limit(1);
+  if(!error && explicit?.length){
+    const h=explicit[0];
+    const done=await getHomeworkDone(h.lesson_id);
+    return {required:true,done,prevId:h.lesson_id,prevTitle:h.title||'واجب الحصة',homeworkId:h.id,explicit:true};
+  }
+  /* fallback للترتيب القديم لو مفيش اختيار صريح */
+  if(!ls.chapter_id) return null;
+  const{data:all}=await sb.from('lessons').select('id,title,created_at').eq('chapter_id',ls.chapter_id).order('created_at',{ascending:true});
+  const idx=(all||[]).findIndex(x=>x.id===ls.id);
+  if(idx<=0) return null;
+  const prev=all[idx-1];
+  const [{data:hws},{data:cnt}]=await Promise.all([
+    sb.from('homework').select('id,lesson_id,title,video_url').eq('lesson_id',prev.id).limit(1),
+    sb.from('lesson_content').select('id,type,title,body').eq('lesson_id',prev.id)
+  ]);
+  function hwTypeMatch2(c){const t=String(c?.type||'').toLowerCase(),tx=`${c?.title||''} ${c?.body||''}`.toLowerCase();return['homework','assignment','hw','واجب'].includes(t)||tx.includes('واجب')||tx.includes('homework');}
+  const hasHW=!!((hws||[]).length||(cnt||[]).some(hwTypeMatch2));
+  if(!hasHW) return null;
+  const done=await getHomeworkDone(prev.id);
+  return {required:true,done,prevId:prev.id,prevTitle:hws?.[0]?.title||prev.title||'الحصة السابقة',homeworkId:hws?.[0]?.id||null,explicit:false};
+}
+
+checkPrevHomeworkGate=async function(ls){
+  PREV_GATE={required:false,done:true,prevId:null,prevTitle:''};
+  const gate=await kwFindGateForLesson(ls);
+  if(gate) PREV_GATE=gate;
+  /* الصفحة تفتح عادي، لكن الفيديو يتقفل فقط */
+  return true;
+};
+
+function kwVideoGateCard(){
+  return `<div class="lock-view"><div class="lock-card" style="animation:shake .35s ease .1s">
+    <span class="lock-icon">🔒</span>
+    <div class="lock-title">فيديو الحصة مقفول</div>
+    <div class="lock-sub">لازم تفتح <b>${esc(PREV_GATE.prevTitle||'الواجب')}</b>، تشاهد فيديو الواجب وتحل الواجب بنجاح عشان فيديو الحصة دي يتفتح.</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-p btn-lg" onclick="location.href='/lesson/?id=${PREV_GATE.prevId}'">📌 افتح واجب الفتح</button>
+      <button class="btn btn-out" onclick="goHome()">← لوحة التحكم</button>
+    </div>
+  </div></div>`;
+}
+
+renderVideoList=function(){
+  const c=document.getElementById('cnt');
+  if(PREV_GATE.required&&!PREV_GATE.done){c.innerHTML=kwVideoGateCard();return;}
+  const watched=getWatched();
+  if(!VIDEOS.length){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📭</span><div class="et">لا يوجد فيديو</div><div class="es">المدرس لسه ما أضافش فيديوهات</div></div>';return;}
+  c.innerHTML=`<div class="vid-list">${VIDEOS.map((v,i)=>{
+    const done=watched.includes(i);
+    return`<div class="vid-card" id="vc-${i}" style="animation-delay:${i*.06}s;animation:up .35s ease ${i*.06}s both">
+      <div class="vc-index">${String(i+1).padStart(2,'0')}</div>
+      <div class="vc-title">${esc(v.title||('فيديو '+(i+1)))}</div>
+      <div class="vc-actions"><div class="vc-done${done?'':' pending'}">${done?'✓':'○'}</div><button class="watch-btn${done?' rewatched':''}" onclick="openPlayer(${i})">${done?'شاهد مجدداً':'▶ شاهد الفيديو'}</button></div>
+    </div>`;
+  }).join('')}</div>`;
+};
+
+openPlayer=async function(idx){
+  if(PREV_GATE.required&&!PREV_GATE.done){document.getElementById('cnt').innerHTML=kwVideoGateCard();return;}
+  if(EXAM){
+    const{data:sub}=await sb.from('exam_submissions').select('id,passed').eq('exam_id',EXAM.id).eq('student_id',ME.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();
+    if(!sub||!sub.passed){
+      document.getElementById('cnt').innerHTML=`<div class="lock-view"><div class="lock-card"><span class="lock-icon">🔒</span><div class="lock-title">الفيديو مقفول</div><div class="lock-sub">لازم تعدي الامتحان بدرجة ${ps()}% أو أكتر عشان الفيديو يتفتح</div><button class="btn btn-p btn-lg" onclick="sw('exam')">📝 ابدأ الامتحان</button></div></div>`;
+      ['video','exam','homework','pdf'].forEach(t=>document.getElementById(`tab-${t}`)?.classList.remove('on'));document.getElementById('tab-exam')?.classList.add('on');return;
+    }
+  }
+  renderPlayer(idx);
+};
+
+function kwHomeworkVideoBox(hw){
+  if(!hw?.video_url) return '';
+  return `<div class="hw-card" style="border-color:rgba(99,102,241,.24)">
+    <div class="hw-title">🎥 فيديو الواجب</div>
+    <div class="hw-body">شاهد فيديو الواجب الأول، وبعدها حل الأسئلة أو سلّم الواجب عشان الحصة المختارة تتفتح.</div>
+    <button class="btn btn-p" style="margin-top:10px" onclick="renderHomeworkVideo('${hw.id}')">▶ شاهد فيديو الواجب</button>
+  </div>`;
+}
+
+function renderHomeworkVideo(hwId){
+  const hw=(HOMEWORK||[]).find(h=>h.id===hwId)||_hwMain;
+  if(!hw?.video_url) return toast('w','لا يوجد فيديو واجب');
+  const id=ytId(hw.video_url);
+  const uid=studentDisplayId();
+  const c=document.getElementById('cnt');
+  c.innerHTML=`<div class="player-view">
+    <button class="player-back" onclick="renderHW()">← رجوع للواجب</button>
+    <div class="player-label">🎥 ${esc(hw.title||'فيديو الواجب')}</div>
+    <div class="player-shell" style="position:relative">
+      ${id?`<iframe src="https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&controls=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>`:`<div style="position:absolute;inset:0;display:grid;place-items:center;color:#888">رابط الفيديو غير صحيح</div>`}
+      <div class="wm" id="kwm" style="left:12%;top:18%;--fx:12%;--fy:18%"><div class="wm-avatar"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="14" r="7.5"/><ellipse cx="20" cy="33" rx="13.5" ry="9"/></svg></div><div class="wm-id">${esc(uid)}</div></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-p" onclick="renderHW()">✅ كملت مشاهدة — حل الواجب</button></div>
+  </div>`;
+  startWatermark();
+}
+
+renderHW=async function(){
+  const items=getHW(),c=document.getElementById('cnt');
+  if(!items.length){c.innerHTML='<div class="emp"><span style="font-size:2.5rem">📌</span><div class="et">لا يوجد واجب</div><div class="es">المدرس لسه ما أضافش واجب</div></div>';return;}
+  const hwMain=(HOMEWORK||[])[0]||null; _hwMain=hwMain;
+  if(hwMain){
+    const{data:qs}=await sb.from('homework_questions').select('*').eq('homework_id',hwMain.id).order('sort_order');
+    if(qs?.length){_hwQs=norQs(qs);return renderHWExam(false);}
+  }
+  const submitBox=isStaff()?'':`<div class="submit-box"><div class="sub-title">${HOMEWORK_DONE?'✅ تم تسليم الواجب':'📤 تسليم الواجب'}</div><div class="sub-desc">بعد ما تشاهد فيديو الواجب وتخلص المطلوب، دوس تسليم عشان الحصة المختارة تتفتح.</div>${!HOMEWORK_DONE?`<textarea class="hw-note" id="hw-note" placeholder="ملاحظة للمدرس (اختياري)"></textarea><button class="btn btn-p btn-lg" id="hw-submit-btn" onclick="submitHomeworkDone()">✅ خلصت الواجب</button>`:`<button class="btn btn-out" disabled>✅ تم التسليم بالفعل</button>`}</div>`;
+  c.innerHTML=`<div class="hw-wrap">${kwHomeworkVideoBox(hwMain)}<div class="mat-grid">${items.map((ct,i)=>`<div class="hw-card"><div class="hw-title">📌 ${esc(ct.title||('واجب '+(i+1)))}</div>${ct.due_date?`<div class="mat-sub">📅 آخر موعد: ${new Date(ct.due_date).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'})}</div>`:''}${ct.body?`<div class="hw-body">${String(ct.body).replace(/\n/g,'<br>')}</div>`:''}${ct.url?`<a href="${iS(ct.url)}" target="_blank" class="btn btn-g" style="margin-top:10px;font-size:.8rem">فتح المرفق ←</a>`:''}</div>`).join('')}</div>${submitBox}</div>`;
+};
+
+renderHWExam=async function(startNow=false){
+  const c=document.getElementById('cnt');
+  const{data:sub}=await sb.from('homework_submissions').select('*').eq('lesson_id',LESSON.id).eq('student_id',ME.id).maybeSingle();
+  const dr=getDraft('homework',LESSON.id);
+  if(sub?.passed&&!startNow){HOMEWORK_DONE=true;return hwResult(sub.score,true,sub.attempt_count||1);}
+  if(!startNow){
+    const left=dLeft(dr)||(sub?.ends_at?new Date(sub.ends_at).getTime()-Date.now():0),resume=left>0;
+    c.innerHTML=`<div class="hw-wrap">${kwHomeworkVideoBox(_hwMain)}<div style="display:flex;align-items:center;justify-content:center;min-height:34vh"><div class="exam-intro-card"><span class="ei-ico">📌</span><div class="ei-title">${esc(_hwMain.title||'واجب الحصة')}</div><div class="ei-sub">شاهد فيديو الواجب، وبعدها حل الأسئلة. لازم تنجح عشان يتسجل التسليم ويتفتح فيديو الحصة المختارة.</div>${resume?`<div style="border:1px solid rgba(245,158,11,.3);background:rgba(245,158,11,.08);border-radius:12px;padding:12px;margin-bottom:14px;font-size:.84rem">⚠️ عندك واجب مفتوح — المتبقي ${fmtTimer(left)}</div>`:''}<div class="ei-meta"><div class="ei-m">📋 ${_hwQs.length} سؤال</div>${_hwMain.duration_minutes?`<div class="ei-m">⏱️ ${_hwMain.duration_minutes} دقيقة</div>`:''}<div class="ei-m">🎯 نجاح ${hwPass()}%</div></div><button class="btn btn-p btn-lg" onclick="renderHWExam(true)">${resume?'▶ كمل الواجب':'▶ ابدأ الواجب'}</button></div></div></div>`;return;
+  }
+  const hasDur=!!_hwMain.duration_minutes,now=new Date();
+  let dr2=getDraft('homework',LESSON.id);
+  if(!dr2||dLeft(dr2)<=0){dr2={startedAt:now.toISOString(),endsAt:hasDur?new Date(now.getTime()+_hwMain.duration_minutes*60000).toISOString():new Date(now.getTime()+365*86400000).toISOString(),answers:{}};setDraft('homework',LESSON.id,dr2);sb.from('homework_submissions').upsert({lesson_id:LESSON.id,student_id:ME.id,status:'in_progress',started_at:dr2.startedAt,ends_at:dr2.endsAt,updated_at:new Date().toISOString()},{onConflict:'lesson_id,student_id'}).then(()=>{});}
+  _hwAns=dr2.answers||{};_hwSub=false;
+  c.innerHTML=`<div class="exam-wrap">${hasDur?`<div class="timer-row"><span style="font-size:.8rem;font-weight:700;color:var(--t3)">⏱️ الوقت</span><div class="timer-bar"><div class="timer-fill" id="etf"></div></div><div class="timer-val" id="etv">--:--</div></div>`:''}${_hwQs.map((q,i)=>`<div class="qcard ${_hwAns[q.id]!==undefined?'answered':''}" id="hw-qc-${q.id}"><div class="q-header"><div class="q-dot"></div>سؤال ${i+1} من ${_hwQs.length}</div>${q.image_url?`<img class="q-img" src="${iS(q.image_url)}" onerror="this.remove()" loading="lazy">`:''}<div class="q-text">${esc(q.question_text)}</div><div class="opts">${(q.options||[]).map((o,oi)=>`<div class="opt ${_hwAns[q.id]===oi?'sel':''}" id="hw-opt-${q.id}-${oi}" onclick="pickHW('${q.id}',${oi})"><div class="opt-letter">${String.fromCharCode(65+oi)}</div><div class="opt-text">${esc(o.text)}</div></div>`).join('')}</div></div>`).join('')}</div><div class="exam-footer"><div class="ep-count"><span id="hw-an-c">${Object.keys(_hwAns).length}</span>/${_hwQs.length} أجبت<div class="ep-bar"><div class="ep-fill" id="hw-an-f" style="width:${Math.round(Object.keys(_hwAns).length/_hwQs.length*100)}%"></div></div></div><button class="btn btn-p btn-lg" id="hw-submit-btn" onclick="submitHWExam(false)" style="margin-right:auto">📤 تسليم الواجب</button></div>`;
+  if(hasDur)startET(_hwMain.duration_minutes*60,dr2.endsAt);
+};
+
+hwResult=function(score,passed,attempts){
+  const target=_hwMain?.unlock_lesson_id;
+  document.getElementById('cnt').innerHTML=`<div class="result-card"><div class="score-big ${passed?'pass':'fail'}">${score}%</div><div class="result-info"><div class="result-title">${passed?'✅ تم تسليم الواجب':'📖 لازم تعيد الواجب'}</div><div class="result-sub">درجة النجاح: ${hwPass()}% • محاولة رقم ${attempts}${passed&&target?' • الحصة المختارة اتفتحت ✅':''}</div></div><div class="result-acts">${passed&&target?`<button class="btn btn-g" onclick="location.href='/lesson/?id=${target}'">▶ افتح الحصة اللي اتفتحت</button>`:''}${passed&&!target?`<button class="btn btn-g" onclick="sw('video')">▶ شاهد الفيديو</button>`:''}${!passed?`<button class="btn btn-p" onclick="renderHWExam(true)">🔄 حاول مرة تانية</button>`:''}</div></div>`;
+};
+
 </script>
 </body>
 </html>
