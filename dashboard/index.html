@@ -343,7 +343,7 @@ img{display:block}
   <div class="nav-links">
     <button class="nl-btn active-nav" onclick="resetAll()" id="nl-home">🏠 الرئيسية</button>
     <button class="nl-btn" onclick="goPage('mylessons')" id="nl-my">📚 حصصي</button>
-    <button class="nl-btn cart-btn" onclick="goPage('cart')" id="nl-cart">
+    <button class="nl-btn cart-btn" onclick="window.location.href='/checkout/'" id="nl-cart">
       🛒 <span id="nl-cart-lbl">سلة الشراء</span>
       <span class="badge hidden" id="cart-badge">0</span>
     </button>
@@ -489,7 +489,7 @@ img{display:block}
       <div class="footer-links">
         <span class="footer-link" onclick="resetAll()" id="ft-browse">📚 المواد الدراسية</span>
         <span class="footer-link" onclick="goPage('mylessons')" id="ft-myless">🎬 حصصي</span>
-        <span class="footer-link" onclick="goPage('cart')" id="ft-cart">🛒 السلة</span>
+        <span class="footer-link" onclick="window.location.href='/checkout/'" id="ft-cart">🛒 السلة</span>
         <span class="footer-link" onclick="goPage('profile')" id="ft-prof">👤 حسابي</span>
       </div>
     </div>
@@ -653,7 +653,7 @@ function goPage(page){
   const navMap={mylessons:'nl-my',cart:'nl-cart',browse:'nl-home'};
   if(navMap[page])document.getElementById(navMap[page])?.classList.add('active-nav');
   if(page==='mylessons')loadMyLessons();
-  if(page==='cart')renderCart();
+  if(page==='cart'){window.location.href='/checkout/';return;}
   if(page==='profile')loadProfileForm();
 }
 function showStep(s){['sub','tch','ch','ls'].forEach(x=>{const el=document.getElementById(`s-${x}`);if(el)el.classList.toggle('hidden',x!==s)});updateBc();}
@@ -769,14 +769,16 @@ async function selChapter(id,title){
     .select('id,title,description,is_active,scheduled_at,image_url,price')
     .eq('chapter_id',id).order('created_at');
 
-  /* RLS Fallback: لو الطالب عنده enrollments بس RLS مخليهاش تظهر */
+  /* RLS Fallback: جيب الحصص المشترك فيها بدون فلتر chapter — هنفلتر client-side */
   if(!data?.length){
     const allEnrolledIds=[..._unlockedLessons,..._expiredLessons];
     if(allEnrolledIds.length){
       const {data:fb}=await sb.from('lessons')
-        .select('id,title,description,is_active,scheduled_at,image_url,price')
-        .in('id',allEnrolledIds).eq('chapter_id',id).order('created_at');
-      if(fb?.length) data=fb;
+        .select('id,title,description,is_active,scheduled_at,image_url,price,chapter_id')
+        .in('id',allEnrolledIds);
+      /* فلتر client-side عشان نتجنب RLS المرتبط بـ chapter_id */
+      const filtered=(fb||[]).filter(l=>l.chapter_id===id);
+      if(filtered.length) data=filtered;
     }
   }
 
