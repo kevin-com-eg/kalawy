@@ -759,16 +759,32 @@ async function selTch(id,name){
 }
 
 /* ══════════════════════════════════════
-   LESSONS — with price + expired renew
+   LESSONS — with price + expired renew + RLS fallback
 ══════════════════════════════════════ */
 async function selChapter(id,title){
   _sel.ch={id,title}; showStep('ls'); skeletonCards(4,'ls-grid'); await loadEnrollments();
-  const {data}=await sb.from('lessons')
+
+  /* Primary query */
+  let {data}=await sb.from('lessons')
     .select('id,title,description,is_active,scheduled_at,image_url,price')
     .eq('chapter_id',id).order('created_at');
 
+  /* RLS Fallback: لو الطالب عنده enrollments بس RLS مخليهاش تظهر */
+  if(!data?.length){
+    const allEnrolledIds=[..._unlockedLessons,..._expiredLessons];
+    if(allEnrolledIds.length){
+      const {data:fb}=await sb.from('lessons')
+        .select('id,title,description,is_active,scheduled_at,image_url,price')
+        .in('id',allEnrolledIds).eq('chapter_id',id).order('created_at');
+      if(fb?.length) data=fb;
+    }
+  }
+
   const g=document.getElementById('ls-grid');
-  if(!data?.length){g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-txt">${t('noLessons')}</div></div>`;return;}
+  if(!data?.length){
+    g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
+    return;
+  }
 
   const now=new Date();
   g.innerHTML=data.map((l,i)=>{
@@ -779,30 +795,36 @@ async function selChapter(id,title){
     const inCart=_cart.some(c=>c.id===l.id);
     const canOpen=l.is_active&&!future&&unlocked;
 
+    /* Price badge */
     const price=l.price!=null?Number(l.price):null;
-    let priceBadge='';
-    if(!unlocked&&!expired){
-      if(price===0||price===null){
-        priceBadge=`<div class="price-badge price-free">🎁 ${t('free')}</div>`;
-      } else {
-        priceBadge=`<div class="price-badge">💰 ${price} ${t('priceEGP')}</div>`;
-      }
-    }
+    const priceBadge=(!unlocked&&!expired&&!inCart)
+      ?(price===0||price===null
+        ?`<div class="price-badge price-free">🎁 ${t('free')}</div>`
+        :`<div class="price-badge">💰 ${price} ${t('priceEGP')}</div>`)
+      :'';
 
+    /* Thumbnail */
     const thumbImg=l.image_url
-      ?`<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover;${expired?'filter:grayscale(1) opacity(0.75)':''}" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`
+      ?`<img src="${imgSafe(l.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover;${expired?'filter:grayscale(1) opacity(.7)':''}" onerror="this.parentElement.innerHTML='🎬'" loading="lazy">`
       :(future?'⏰':(unlocked?'🎬':(expired?'⏳':'🔑')));
-    const thumb=`<div class="ls-thumb">${thumbImg}</div>`;
 
     const lData=JSON.stringify({id:l.id,title:l.title,description:l.description||'',image_url:l.image_url||'',chapter_id:id,chapter_title:title}).replace(/"/g,'&quot;');
 
+    /* Status dot */
+    const dot=unlocked
+      ?`<div style="position:absolute;top:14px;inset-inline-end:14px;width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px var(--ok)"></div>`
+      :expired
+      ?`<div style="position:absolute;top:14px;inset-inline-end:14px;width:9px;height:9px;border-radius:50%;background:var(--danger);box-shadow:0 0 6px var(--danger)"></div>`
+      :'';
+
+    /* Action */
     let action='';
     if(!l.is_active){
       action=`<span class="chip ck-muted">${t('unavailable')}</span>`;
     } else if(future){
       action=`<span class="chip ck-muted">⏰ ${sched.toLocaleString(LANG==='ar'?'ar-EG':'en-US',{dateStyle:'short',timeStyle:'short'})}</span>`;
     } else if(unlocked){
-      action=`<span class="chip ck-ok" style="cursor:pointer" onclick="goLesson('${l.id}')">✅ ${t('unlocked')}</span>`;
+      action=`<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="event.stopPropagation();goLesson('${l.id}')">▶ ${t('unlocked')}</button>`;
     } else if(expired){
       action=`<div class="renew-box">
         <div class="renew-label">${t('expiredLabel')}</div>
@@ -813,25 +835,32 @@ async function selChapter(id,title){
         </div>
       </div>`;
     } else if(inCart){
-      action=`<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();goPage('cart')">${t('goToCart')}</button>`;
+      action=`<button class="btn btn-gold btn-sm" style="width:100%;justify-content:center" onclick="event.stopPropagation();goPage('cart')">🛒 ${t('goToCart')}</button>`;
     } else {
-      action=`${priceBadge}<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addCart(${lData})">${t('addCart')}</button>`;
+      action=`<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">
+        ${priceBadge}
+        <button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="event.stopPropagation();addCart(${lData})">
+          🛒 ${t('addCart')}
+        </button>
+      </div>`;
     }
 
-    let cardClass='ls-card';
-    if(canOpen) cardClass+=' clickable';
-    else if(expired) cardClass+=' expired';
-    else if(!l.is_active||future) cardClass+=' locked';
+    let cls='ls-card';
+    if(canOpen) cls+=' clickable';
+    else if(expired) cls+=' expired';
+    else if(!l.is_active||future) cls+=' locked';
 
-    return `<div class="${cardClass}" style="animation-delay:${i*.07}s" ${canOpen?`onclick="goLesson('${l.id}')"`:''}>`
-      +thumb
-      +`<div class="ls-num">${t('lesson')} ${i+1}</div>`
-      +`<div class="ls-title">${l.title}</div>`
-      +(l.description?`<div class="ls-desc">${l.description}</div>`:'')
-      +`<div class="ls-action">${action}</div>`
-      +`</div>`;
+    return `<div class="${cls}" style="animation-delay:${i*.07}s;position:relative" ${canOpen?`onclick="goLesson('${l.id}')"`:''}>
+      ${dot}
+      <div class="ls-thumb">${thumbImg}</div>
+      <div class="ls-num">${t('lesson')} ${i+1}</div>
+      <div class="ls-title">${l.title}</div>
+      ${l.description?`<div class="ls-desc">${l.description}</div>`:''}
+      <div class="ls-action">${action}</div>
+    </div>`;
   }).join('');
 }
+
 
 /* ══════ RENEW — from chapter view ══════ */
 async function renewLesson(lessonId){
