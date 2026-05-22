@@ -423,7 +423,7 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function iE(el,ic='🖼️'){const p=el.parentElement;if(p)p.innerHTML=`<div style="display:grid;place-items:center;height:100%;font-size:1.5rem">${ic}</div>`;else el.remove();}
 
 /* ══ STATE ══ */
-let ME=null,ROLE='',LESSON=null,EXAM=null,VIDEOS=[],CONTENT=[],ACCESS=null;
+let ME=null,ROLE='',LESSON=null,EXAM=null,VIDEOS=[],CONTENT=[],ACCESS=null,ACCESS_ROWS=[];
 let _ans={},_sub=false,_eqs=[],_cp=0;
 let _eti=null,_aci=null;
 window._pl=null;let _wmt=null;
@@ -469,7 +469,24 @@ function markW(idx){
 
 /* ══ ACCESS TIMER ══ */
 function ah(){return Math.max(1,Number(LESSON?.access_hours??24));}
-function ae(){if(!ACCESS?.used_at)return null;return new Date(new Date(ACCESS.used_at).getTime()+ah()*3600000);}
+function accessExpiry(row){
+  if(!row)return null;
+  const usedMs=row.used_at?new Date(row.used_at).getTime()+ah()*3600000:0;
+  const expMs=row.expires_at?new Date(row.expires_at).getTime():0;
+  const mx=Math.max(usedMs||0,expMs||0);
+  return mx?new Date(mx):null;
+}
+function pickAccessRow(rows){
+  const list=(rows||[]).filter(Boolean);
+  if(!list.length)return null;
+  const now=Date.now();
+  const valid=list.find(r=>{
+    const e=accessExpiry(r);
+    return !e || e.getTime()>now;
+  });
+  return valid||list[0];
+}
+function ae(){return accessExpiry(ACCESS);}
 function ml(){const e=ae();return e?e.getTime()-Date.now():null;}
 function fmtTimer(ms){
   if(ms==null||ms<0)return'00:00:00';
@@ -618,9 +635,16 @@ async function init(){
   const{data:pr}=await sb.from('profiles').select('role,phone').eq('id',session.user.id).single();
   ROLE=pr?.role||'student';ME={id:session.user.id,phone:pr?.phone||''};
   if(ROLE!=='admin'&&ROLE!=='teacher'){
-    const{data:acc}=await sb.from('lesson_codes').select('id,used_at,expires_at').eq('lesson_id',lid).eq('used_by',session.user.id).maybeSingle();
-    if(!acc){showErr('لازم تضيف الحصة للسلة وتدخل كود الحصة');return;}
-    ACCESS=acc;
+    const{data:accRows,error:accErr}=await sb.from('lesson_codes')
+      .select('id,used_at,expires_at,created_at')
+      .eq('lesson_id',lid)
+      .eq('used_by',session.user.id)
+      .order('used_at',{ascending:false});
+
+    if(accErr){showErr('مشكلة في التحقق من الكود: '+accErr.message);return;}
+    ACCESS_ROWS=accRows||[];
+    if(!ACCESS_ROWS.length){showErr('لازم تضيف الحصة للسلة وتدخل كود الحصة');return;}
+    ACCESS=ACCESS_ROWS[0];
   }
   await loadLesson(lid);
 }
@@ -634,6 +658,9 @@ async function loadLesson(lid){
   ]);
   if(!ls){showErr('الحصة غير موجودة');return;}
   LESSON=ls;VIDEOS=vids||[];CONTENT=cnt||[];EXAM=exs?.[0]||null;
+  if(ROLE!=='admin'&&ROLE!=='teacher'&&ACCESS_ROWS.length){
+    ACCESS=pickAccessRow(ACCESS_ROWS);
+  }
   if(ls.scheduled_at&&new Date(ls.scheduled_at)>new Date()){
     const t=new Date(ls.scheduled_at).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'});
     showErr(`الحصة هتفتح في ${t}`);return;
