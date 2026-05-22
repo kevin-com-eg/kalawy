@@ -125,6 +125,7 @@ img{display:block}
 .pw{padding-top:calc(var(--nav-h) + var(--bc-h));background:var(--bg);min-height:100vh;position:relative;z-index:1}
 .pg{display:none;max-width:1320px;margin:0 auto;padding:0 clamp(12px,3vw,36px) 40px}
 .pg.on{display:block;animation:fadeIn .3s ease}
+.pg:not(.on){display:none!important}
 
 /* ══════ SEC HERO ══════ */
 .sec-hero{text-align:center;padding:28px 20px 20px}
@@ -612,7 +613,11 @@ function setLang(lg){
   localStorage.setItem('kw-lang',lg);
   ['n-ar','n-en'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id.endsWith(lg));});
   applyI18n();
-  if(ME){updateBc(); if(_sel.ch) selChapter(_sel.ch.id,_sel.ch.title);}
+  if(ME){
+    updateBc();
+    const browseOn=document.getElementById('pg-browse')?.classList.contains('on');
+    if(browseOn && _sel.ch) selChapter(_sel.ch.id,_sel.ch.title);
+  }
 }
 function applyI18n(){
   const set=(id,k)=>{const el=document.getElementById(id);if(el)el.textContent=t(k);};
@@ -649,6 +654,14 @@ function skeletonCards(count=6,gridId){const g=document.getElementById(gridId);i
 function goPage(page){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.getElementById(`pg-${page}`)?.classList.add('on');
+
+  /* امنع ظهور نتيجة قديمة من صفحة الشابتر تحت My Lessons */
+  if(page !== 'browse'){
+    document.getElementById('s-ls')?.classList.add('hidden');
+    const lg=document.getElementById('ls-grid');
+    if(lg) lg.innerHTML='';
+  }
+
   ['nl-home','nl-my','nl-cart'].forEach(id=>document.getElementById(id)?.classList.remove('active-nav'));
   const navMap={mylessons:'nl-my',cart:'nl-cart',browse:'nl-home'};
   if(navMap[page])document.getElementById(navMap[page])?.classList.add('active-nav');
@@ -682,7 +695,11 @@ async function loadEnrollments(){
 
   /* جيب access_hours لكل حصة — نفس منطق ملف lesson.html */
   const lessonIds=[...new Set(codes.map(c=>c.lesson_id).filter(Boolean))];
-  const {data:lsRows}=await sb.from('lessons').select('id,access_hours').in('id',lessonIds);
+  let {data:lsRows,error:ahErr}=await sb.from('lesson_cards').select('id,access_hours').in('id',lessonIds);
+  if(ahErr){
+    const res=await sb.from('lessons').select('id,access_hours').in('id',lessonIds);
+    lsRows=res.data;
+  }
   const ahMap={};
   (lsRows||[]).forEach(l=>{ ahMap[l.id]=Math.max(1,Number(l.access_hours??24)); });
 
@@ -764,18 +781,36 @@ async function selTch(id,name){
 async function selChapter(id,title){
   _sel.ch={id,title}; showStep('ls'); skeletonCards(4,'ls-grid'); await loadEnrollments();
 
-  /* Primary query */
-  let {data}=await sb.from('lessons')
-    .select('id,title,description,is_active,scheduled_at,image_url,price')
+  /* Primary query: جرّب lesson_cards الأول لو عامل View آمن، ولو مش موجود يرجع للـ lessons */
+  let {data,error}=await sb.from('lesson_cards')
+    .select('id,chapter_id,title,description,is_active,scheduled_at,image_url,price')
     .eq('chapter_id',id).order('created_at');
+
+  if(error){
+    const res=await sb.from('lessons')
+      .select('id,chapter_id,title,description,is_active,scheduled_at,image_url,price')
+      .eq('chapter_id',id).order('created_at');
+    data=res.data; error=res.error;
+  }
+  if(error){
+    console.error('lessons load error:', error);
+    toast('e','مشكلة في تحميل الحصص: '+error.message);
+    data=[];
+  }
 
   /* RLS Fallback: جيب الحصص المشترك فيها بدون فلتر chapter — هنفلتر client-side */
   if(!data?.length){
     const allEnrolledIds=[..._unlockedLessons,..._expiredLessons];
     if(allEnrolledIds.length){
-      const {data:fb}=await sb.from('lessons')
+      let {data:fb,error:fbErr}=await sb.from('lesson_cards')
         .select('id,title,description,is_active,scheduled_at,image_url,price,chapter_id')
         .in('id',allEnrolledIds);
+      if(fbErr){
+        const res=await sb.from('lessons')
+          .select('id,title,description,is_active,scheduled_at,image_url,price,chapter_id')
+          .in('id',allEnrolledIds);
+        fb=res.data;
+      }
       /* فلتر client-side عشان نتجنب RLS المرتبط بـ chapter_id */
       const filtered=(fb||[]).filter(l=>l.chapter_id===id);
       if(filtered.length) data=filtered;
@@ -784,7 +819,8 @@ async function selChapter(id,title){
 
   const g=document.getElementById('ls-grid');
   if(!data?.length){
-    g.innerHTML=`<div class="empty-st" style="grid-column:1/-1"><div class="empty-ico">🎬</div><div class="empty-txt">${t('noLessons')}</div></div>`;
+    /* شيلنا كارت No lessons عشان ميبقاش ظاهر تحت الصفحة */
+    g.innerHTML='';
     return;
   }
 
@@ -967,7 +1003,22 @@ async function loadMyLessons(){
 
   // Fetch both unlocked + expired lessons together
   const allIds=[..._unlockedLessons,..._expiredLessons];
-  const {data}=await sb.from('lessons').select('id,title,image_url').in('id',allIds);
+  let {data,error}=await sb.from('lesson_cards').select('id,title,image_url').in('id',allIds);
+  if(error){
+    const res=await sb.from('lessons').select('id,title,image_url').in('id',allIds);
+    data=res.data; error=res.error;
+  }
+  if(error){
+    console.error('my lessons load error:', error);
+    el.innerHTML='';
+    toast('e','مشكلة في تحميل حصصي: '+error.message);
+    return;
+  }
+
+  if(!data?.length){
+    el.innerHTML='';
+    return;
+  }
 
   el.innerHTML=(data||[]).map((ls,i)=>{
     const isExpired=_expiredLessons.has(ls.id);
