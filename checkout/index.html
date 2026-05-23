@@ -3,298 +3,306 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kalawy — الدفع</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Kalawy — الدفع والتفعيل</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-:root{
-  --p1:#8b5cf6;--p2:#7c3aed;--p3:#a78bfa;
-  --glow:rgba(139,92,246,.28);
-  --ok:#10b981;--danger:#ef4444;--gold:#f59e0b;
-  --r:12px;--r-lg:18px;--r-xl:24px;
-  --nav-h:64px;
-}
-[data-theme="light"]{
-  --bg:#f3f0fb;--bg2:#eae6f8;
-  --card:#ffffff;--card2:#faf8ff;
-  --bd:rgba(139,92,246,.15);--bd2:rgba(139,92,246,.3);
-  --txt:#1a0533;--t2:#4c2d7a;--t3:#9880bb;
-  --sh:0 2px 16px rgba(80,40,160,.08);
-  --sh2:0 8px 32px rgba(80,40,160,.15);
-  --inp:#f3f0fb;
-}
-[data-theme="dark"]{
-  --bg:#060112;--bg2:#0b0620;
-  --card:rgba(20,10,50,.85);--card2:rgba(30,16,70,.9);
-  --bd:rgba(139,92,246,.18);--bd2:rgba(139,92,246,.4);
-  --txt:#f0eaff;--t2:#a594c8;--t3:#5b4d7a;
-  --sh:0 2px 16px rgba(0,0,0,.4);
-  --sh2:0 8px 32px rgba(0,0,0,.6);
-  --inp:rgba(20,10,50,.6);
+:root {
+  /* Modern Color Palette */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --success: #10b981;
+  --success-bg: #d1fae5;
+  --danger: #ef4444;
+  --danger-bg: #fee2e2;
+  --warning: #f59e0b;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --nav-h: 70px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
-a{text-decoration:none;color:inherit}
-img{display:block}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--p2);border-radius:99px}
-
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes tout{to{opacity:0;transform:translateY(8px)}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--glow)}50%{box-shadow:0 0 0 8px transparent}}
-
-/* NAV */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  height:var(--nav-h);
-  background:linear-gradient(135deg,#08011e,#150840);
-  border-bottom:1px solid rgba(139,92,246,.22);
-  display:flex;align-items:center;
-  padding:0 clamp(14px,4vw,40px);gap:14px;
-  box-shadow:0 4px 24px rgba(0,0,0,.3);
-  direction:ltr;
-}
-.nav-logo{
-  display:flex;align-items:center;gap:10px;cursor:pointer;
-}
-.nav-mark{
-  width:38px;height:38px;border-radius:11px;
-  background:linear-gradient(135deg,#7c3cff,#00d879 58%,#ff4fd8);
-  display:grid;place-items:center;
-  font-weight:900;font-size:.88rem;color:#fff;
-  font-family:'Outfit',sans-serif;
-  box-shadow:0 4px 16px rgba(0,216,121,.3);
-  animation:pulse 3s ease-in-out infinite;
-}
-.nav-brand{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.1rem;color:#fff}
-.nav-brand em{font-style:normal;color:#a78bfa}
-.nav-sp{flex:1}
-.nav-ctrls{display:flex;align-items:center;gap:10px}
-.ctrl-pill{
-  display:flex;background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);border-radius:99px;padding:3px;gap:2px;
-}
-.topt{
-  padding:5px 11px;border-radius:99px;border:none;
-  background:transparent;font-size:.72rem;font-weight:700;
-  cursor:pointer;color:rgba(255,255,255,.5);transition:.18s;
-}
-.topt.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
-.nav-back{
-  display:flex;align-items:center;gap:7px;
-  padding:7px 16px;border-radius:99px;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.08);
-  color:rgba(255,255,255,.7);font-weight:700;font-size:.82rem;
-  cursor:pointer;transition:.18s;font-family:'Cairo',sans-serif;
-}
-.nav-back:hover{border-color:rgba(139,92,246,.5);color:#fff}
-
-/* PAGE */
-.page{
-  max-width:720px;margin:0 auto;
-  padding:calc(var(--nav-h) + 32px) 20px 60px;
-  animation:fadeIn .4s ease;
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --input-bg: #f8fafc;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --glass: rgba(255, 255, 255, 0.8);
 }
 
-/* HEADER */
-.co-header{
-  text-align:center;margin-bottom:32px;animation:slideUp .4s ease;
-}
-.co-title{
-  font-size:clamp(1.4rem,3vw,1.9rem);
-  font-weight:900;letter-spacing:-.03em;margin-bottom:6px;
-  font-family:'Outfit',sans-serif;
-  background:linear-gradient(135deg,var(--p1),var(--p3));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.co-sub{font-size:.88rem;color:var(--t3);font-weight:600}
-
-/* CART ITEMS */
-.cart-list{display:flex;flex-direction:column;gap:16px}
-
-.co-item{
-  background:var(--card);border:1px solid var(--bd);
-  border-radius:var(--r-xl);padding:20px;
-  box-shadow:var(--sh);
-  animation:slideUp .4s ease both;
-  transition:border-color .2s,box-shadow .2s;
-  position:relative;overflow:hidden;
-}
-.co-item::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 60%);
-  pointer-events:none;
-}
-.co-item.done{
-  border-color:rgba(16,185,129,.3);
-  background:linear-gradient(135deg,rgba(16,185,129,.04),var(--card));
-}
-.co-item:hover{border-color:var(--bd2);box-shadow:var(--sh2)}
-
-.item-top{
-  display:flex;align-items:center;gap:14px;margin-bottom:16px;
-}
-.item-thumb{
-  width:64px;height:52px;border-radius:10px;flex-shrink:0;
-  background:rgba(139,92,246,.1);border:1px solid var(--bd);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;overflow:hidden;
-}
-.item-thumb img{width:100%;height:100%;object-fit:cover}
-.item-info{flex:1;min-width:0}
-.item-title{font-weight:800;font-size:.96rem;margin-bottom:3px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item-price{
-  font-size:.78rem;font-weight:700;color:var(--gold);
-  display:flex;align-items:center;gap:4px;
-}
-.item-remove{
-  width:32px;height:32px;border-radius:8px;border:none;
-  background:rgba(244,63,94,.08);color:var(--danger);
-  cursor:pointer;font-size:.85rem;transition:.18s;flex-shrink:0;
-  display:grid;place-items:center;
-}
-.item-remove:hover{background:rgba(244,63,94,.16)}
-
-/* CODE INPUT AREA */
-.code-row{display:flex;gap:8px;align-items:center}
-.code-inp{
-  flex:1;padding:11px 14px;border-radius:10px;
-  border:1.5px solid var(--bd);background:var(--inp);color:var(--txt);
-  font-size:.9rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  outline:none;transition:.2s;font-family:'Cairo',sans-serif;
-}
-.code-inp:focus{border-color:var(--p1);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
-.code-inp:disabled{opacity:.5;cursor:not-allowed}
-.unlock-btn{
-  padding:11px 20px;border-radius:10px;border:none;
-  background:linear-gradient(135deg,var(--p1),var(--p2));
-  color:#fff;font-weight:800;font-size:.88rem;
-  cursor:pointer;transition:.2s;flex-shrink:0;
-  font-family:'Cairo',sans-serif;
-  box-shadow:0 4px 14px var(--glow);
-}
-.unlock-btn:hover{opacity:.88;transform:translateY(-1px)}
-.unlock-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
-
-/* SUCCESS STATE */
-.item-success{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;border-radius:10px;
-  background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.22);
-  color:var(--ok);font-weight:700;font-size:.88rem;
-  margin-top:0;
-}
-.success-go{
-  margin-right:auto;padding:6px 14px;border-radius:8px;border:none;
-  background:var(--ok);color:#fff;font-weight:700;font-size:.8rem;
-  cursor:pointer;transition:.18s;font-family:'Cairo',sans-serif;
-}
-.success-go:hover{opacity:.85}
-
-/* EMPTY CART */
-.empty-cart{
-  text-align:center;padding:60px 20px;
-  animation:slideUp .5s ease;
-}
-.empty-ico{font-size:3.5rem;display:block;margin-bottom:16px}
-.empty-title{font-size:1.1rem;font-weight:900;margin-bottom:8px}
-.empty-sub{font-size:.86rem;color:var(--t3);margin-bottom:28px;line-height:1.7}
-
-/* SUMMARY BAR */
-.co-summary{
-  background:var(--card);border:1px solid var(--bd);
-  border-radius:var(--r-xl);padding:18px 20px;
-  margin-top:20px;display:flex;align-items:center;
-  gap:12px;flex-wrap:wrap;box-shadow:var(--sh);
-  animation:slideUp .5s ease .1s both;
-}
-.sum-txt{flex:1;font-size:.86rem;color:var(--t2);font-weight:600}
-.sum-count{
-  font-size:1.1rem;font-weight:900;color:var(--p1);
-  background:rgba(139,92,246,.08);padding:4px 12px;
-  border-radius:99px;border:1px solid var(--bd);
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --border: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --input-bg: #0f172a;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --danger-bg: rgba(239, 68, 68, 0.15);
+  --glass: rgba(30, 41, 59, 0.8);
 }
 
-/* LOADING */
-.ld{display:flex;flex-direction:column;align-items:center;
-  justify-content:center;min-height:50vh;gap:14px;color:var(--t3)}
-.spin{width:32px;height:32px;border:3px solid var(--bd);
-  border-top-color:var(--p1);border-radius:50%;animation:spin .7s linear infinite}
-
-/* BUTTONS */
-.btn{
-  border:none;border-radius:10px;padding:11px 22px;
-  font-weight:800;cursor:pointer;font-size:.9rem;
-  transition:.2s;display:inline-flex;align-items:center;gap:7px;
-  font-family:'Cairo',sans-serif;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease;
 }
-.btn-p{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 14px var(--glow)}
-.btn-p:hover{opacity:.88;transform:translateY(-1px)}
-.btn-out{background:var(--inp);color:var(--t2);border:1.5px solid var(--bd)}
-.btn-out:hover{border-color:var(--p1);color:var(--p1)}
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; }
 
-/* TOAST */
-#toasts{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  z-index:9999;display:flex;flex-direction:column;gap:7px;
-  align-items:center;pointer-events:none}
-.toast{display:flex;gap:9px;align-items:center;background:var(--card);
-  border-radius:12px;padding:10px 18px;box-shadow:var(--sh2);
-  animation:tin .2s;pointer-events:all;white-space:nowrap;
-  font-weight:700;font-size:.86rem;border:1.5px solid var(--bd)}
-.ts{border-color:rgba(16,185,129,.4)}.te{border-color:rgba(244,63,94,.4)}.tw{border-color:rgba(251,191,36,.4)}
-.tx{animation:tout .18s forwards}
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-/* RESPONSIVE */
-@media(max-width:480px){
-  .code-row{flex-direction:column}
-  .unlock-btn{width:100%;justify-content:center}
+/* Navbar */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-h);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(16px, 5vw, 48px);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+}
+.nav-mark {
+  width: 40px; height: 40px;
+  background: var(--primary);
+  border-radius: var(--radius-md);
+  display: grid; place-items: center;
+  color: white; font-weight: 800; font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+.nav-brand { font-weight: 800; font-size: 1.2rem; color: var(--text-main); }
+.nav-brand span { color: var(--primary); }
+
+.nav-actions { display: flex; align-items: center; gap: 16px; }
+.theme-toggle {
+  background: var(--surface-hover); border: 1px solid var(--border);
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  font-size: 1.2rem; transition: var(--transition);
+  color: var(--text-main);
+}
+.theme-toggle:hover { background: var(--border); }
+.btn-back {
+  display: flex; align-items: center; gap: 8px;
+  background: transparent; border: 1px solid var(--border);
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; transition: var(--transition);
+}
+.btn-back:hover { background: var(--surface-hover); border-color: var(--text-muted); }
+
+/* Main Container */
+.container {
+  max-width: 680px; margin: 0 auto;
+  padding: calc(var(--nav-h) + 40px) 20px 80px;
+}
+
+/* Header */
+.page-header { text-align: center; margin-bottom: 40px; animation: fadeIn 0.4s ease; }
+.page-title { font-size: clamp(1.7rem, 4vw, 2.2rem); font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+.page-desc { color: var(--text-muted); font-size: 1rem; font-weight: 500; }
+
+/* Cart Items */
+.cart-list { display: flex; flex-direction: column; gap: 20px; }
+.cart-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  animation: fadeIn 0.5s ease backwards;
+}
+.cart-item:hover { box-shadow: var(--shadow-md); border-color: var(--primary); }
+.cart-item.unlocked {
+  border-color: var(--success);
+  background: var(--success-bg);
+}
+
+.item-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.item-img {
+  width: 70px; height: 70px; border-radius: var(--radius-md);
+  background: var(--surface-hover); border: 1px solid var(--border);
+  display: grid; place-items: center; font-size: 1.8rem; overflow: hidden;
+  flex-shrink: 0;
+}
+.item-img img { width: 100%; height: 100%; object-fit: cover; }
+.item-details { flex: 1; min-width: 0; }
+.item-title { font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-price { font-weight: 600; color: var(--text-muted); font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
+.item-price.free { color: var(--success); }
+
+.btn-remove {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: var(--danger-bg); color: var(--danger);
+  display: grid; place-items: center; cursor: pointer; transition: var(--transition);
+  flex-shrink: 0;
+}
+.btn-remove:hover { background: var(--danger); color: white; transform: scale(1.05); }
+
+/* Input Group */
+.input-group {
+  display: flex; gap: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.input-group:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
+.code-input {
+  flex: 1; padding: 14px 16px; border: none; background: var(--input-bg);
+  color: var(--text-main); font-weight: 700; font-size: 1rem;
+  letter-spacing: 2px; text-transform: uppercase; outline: none;
+  font-family: monospace;
+}
+.btn-unlock {
+  padding: 0 24px; border: none; background: var(--primary);
+  color: white; font-weight: 700; font-size: 1rem; cursor: pointer;
+  transition: var(--transition); display: flex; align-items: center; gap: 8px;
+}
+.btn-unlock:hover { background: var(--primary-hover); }
+.btn-unlock:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+
+/* Success State */
+.success-state {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-sm);
+  color: var(--success); font-weight: 700; font-size: 0.95rem;
+}
+.btn-watch {
+  background: var(--success); color: white; border: none;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: var(--transition);
+}
+.btn-watch:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* Summary Bottom Bar */
+.summary-bar {
+  margin-top: 32px; padding: 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: space-between;
+  box-shadow: var(--shadow-sm); animation: fadeIn 0.6s ease;
+}
+.summary-text { font-weight: 600; color: var(--text-muted); }
+.summary-count {
+  background: var(--primary); color: white;
+  padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
+}
+
+/* Empty State */
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; display: block; }
+.empty-title { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; }
+.empty-desc { color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; }
+.btn-primary {
+  background: var(--primary); color: white; border: none;
+  padding: 14px 28px; border-radius: var(--radius-sm);
+  font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+/* Loading Spinner */
+.loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; color: var(--text-muted); font-weight: 600; }
+.spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.btn-spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
+
+/* Toasts */
+#toasts { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.toast {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface); color: var(--text-main);
+  padding: 12px 20px; border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md); border: 1px solid var(--border);
+  font-weight: 600; font-size: 0.9rem; pointer-events: auto;
+  animation: slideInRight 0.3s ease;
+}
+.toast.success { border-right: 4px solid var(--success); }
+.toast.error { border-right: 4px solid var(--danger); }
+.toast.warning { border-right: 4px solid var(--warning); }
+.toast-out { opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+
+@media (max-width: 500px) {
+  .input-group { flex-direction: column; gap: 8px; border: none; }
+  .input-group:focus-within { box-shadow: none; }
+  .code-input, .btn-unlock { width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+  .code-input:focus { border-color: var(--primary); }
+  .btn-unlock { padding: 14px; justify-content: center; border: none; }
+  .summary-bar { flex-direction: column; gap: 16px; text-align: center; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- Navbar -->
 <nav class="nav">
   <div class="nav-logo" onclick="window.location.href='/dashboard/'">
     <div class="nav-mark">KW</div>
-    <span class="nav-brand">kala<em>wy</em></span>
+    <div class="nav-brand">Kala<span>wy</span></div>
   </div>
-  <div class="nav-sp"></div>
-  <div class="nav-ctrls">
-    <div class="ctrl-pill">
-      <button class="topt on" id="n-lt" onclick="setTheme('light')">☀️</button>
-      <button class="topt"    id="n-dk" onclick="setTheme('dark')">🌙</button>
-    </div>
-    <button class="nav-back" onclick="window.location.href='/dashboard/'">← لوحة التحكم</button>
+  
+  <div class="nav-actions">
+    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
+    <button class="btn-back" onclick="window.location.href='/dashboard/'">
+      العودة للوحة <span>👋</span>
+    </button>
   </div>
 </nav>
 
 <div id="toasts"></div>
 
-<!-- PAGE -->
-<div class="page" id="page">
-  <div class="ld"><div class="spin"></div><div style="font-size:.88rem">جاري التحميل...</div></div>
-</div>
+<!-- Main Content -->
+<main class="container" id="page">
+  <div class="loader-container">
+    <div class="spinner"></div>
+    <div>جاري تجهيز السلة...</div>
+  </div>
+</main>
 
 <script>
+// نفس إعدادات قاعدة البيانات الخاصة بك
 const SB_URL="https://xzjxmfgymbvordumrush.supabase.co";
 const SB_ANON="sb_publishable_yDrrS95uLq4ch8pu0OwZ0w_6UiBx22e";
 const sb=window.supabase.createClient(SB_URL,SB_ANON,{auth:{persistSession:true,autoRefreshToken:true}});
 
-let ME=null,_cart=[];
+let ME=null, _cart=[];
 
 /* ══ THEME ══ */
-function setTheme(th){
-  document.documentElement.setAttribute('data-theme',th);
-  localStorage.setItem('kw-theme',th);
-  document.getElementById('n-lt').classList.toggle('on',th==='light');
-  document.getElementById('n-dk').classList.toggle('on',th==='dark');
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('kw-theme', next);
+  document.getElementById('theme-btn').textContent = next === 'light' ? '🌙' : '☀️';
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('kw-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('theme-btn').textContent = saved === 'light' ? '🌙' : '☀️';
 }
 
 /* ══ UTILS ══ */
@@ -305,167 +313,190 @@ function imgSrc(v){
   if(v.startsWith('/storage/'))return SB_URL+v;
   return`${SB_URL}/storage/v1/object/public/kalawy/${v.replace(/^\/+/,'').replace(/^kalawy\//,'')}`;
 }
-function toast(type,msg){
-  const ic={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'},cl={s:'ts',e:'te',w:'tw',i:''};
-  const wrap=document.getElementById('toasts'),el=document.createElement('div');
-  el.className=`toast ${cl[type]||''}`;
-  el.innerHTML=`<span>${ic[type]}</span><span>${msg}</span>`;
+
+function toast(type, msg) {
+  const types = { s: 'success', e: 'error', w: 'warning', i: 'info' };
+  const icons = { s: '✅', e: '❌', w: '⚠️', i: 'ℹ️' };
+  const wrap = document.getElementById('toasts');
+  const el = document.createElement('div');
+  
+  el.className = `toast ${types[type] || ''}`;
+  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
   wrap.appendChild(el);
-  setTimeout(()=>{el.classList.add('tx');setTimeout(()=>el.remove(),200);},3500);
+  
+  setTimeout(() => {
+    el.classList.add('toast-out');
+    setTimeout(() => el.remove(), 300);
+  }, 3500);
 }
+
 function saveCart(){
-  localStorage.setItem(`kw-cart-${ME.id}`,JSON.stringify(_cart));
+  localStorage.setItem(`kw-cart-${ME.id}`, JSON.stringify(_cart));
 }
+
 function removeItem(lessonId){
-  _cart=_cart.filter(c=>c.id!==lessonId);
+  _cart = _cart.filter(c => c.id !== lessonId);
   saveCart();
   render();
 }
 
 /* ══ UNLOCK ══ */
 async function unlockLesson(lessonId){
-  const inp=document.getElementById(`ci-${lessonId}`);
-  const btn=document.getElementById(`ub-${lessonId}`);
-  const code=(inp?.value||'').trim().toUpperCase();
-  if(!code){toast('w','ادخل الكود أولاً');return;}
+  const inp = document.getElementById(`ci-${lessonId}`);
+  const btn = document.getElementById(`ub-${lessonId}`);
+  const code = (inp?.value || '').trim().toUpperCase();
+  
+  if(!code){ toast('w', 'يرجى إدخال كود التفعيل أولاً'); return; }
 
-  btn.disabled=true;
-  btn.innerHTML=`<span style="display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>`;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="btn-spinner"></span>`;
 
-  const{data:row,error}=await sb.from('lesson_codes')
+  const {data: row, error} = await sb.from('lesson_codes')
     .select('id,lesson_id,used_by')
-    .eq('code',code).single();
+    .eq('code', code).single();
 
-  if(error||!row){
-    toast('e','الكود غلط أو غير موجود');
-    btn.disabled=false;btn.innerHTML='تفعيل ✓';return;
+  if(error || !row){
+    toast('e', 'الكود غير صحيح أو غير موجود');
+    btn.disabled = false; btn.innerHTML = 'تفعيل الحصة'; return;
   }
-  if(row.lesson_id!==lessonId){
-    toast('e','الكود ده لحصة تانية');
-    btn.disabled=false;btn.innerHTML='تفعيل ✓';return;
+  if(row.lesson_id !== lessonId){
+    toast('e', 'هذا الكود مخصص لحصة أخرى');
+    btn.disabled = false; btn.innerHTML = 'تفعيل الحصة'; return;
   }
-  if(row.used_by&&row.used_by!==ME.id){
-    toast('e','الكود اتستخدم من حساب تاني');
-    btn.disabled=false;btn.innerHTML='تفعيل ✓';return;
+  if(row.used_by && row.used_by !== ME.id){
+    toast('e', 'هذا الكود تم استخدامه مسبقاً');
+    btn.disabled = false; btn.innerHTML = 'تفعيل الحصة'; return;
   }
 
-  const{error:upErr}=await sb.from('lesson_codes')
-    .update({used_by:ME.id,used_at:new Date().toISOString()})
-    .eq('id',row.id);
+  const {error: upErr} = await sb.from('lesson_codes')
+    .update({used_by: ME.id, used_at: new Date().toISOString()})
+    .eq('id', row.id);
 
   if(upErr){
-    toast('e','فشل التفعيل: '+upErr.message);
-    btn.disabled=false;btn.innerHTML='تفعيل ✓';return;
+    toast('e', 'حدث خطأ أثناء التفعيل: ' + upErr.message);
+    btn.disabled = false; btn.innerHTML = 'تفعيل الحصة'; return;
   }
 
-  toast('s','🎉 تم تفعيل الحصة!');
+  toast('s', 'تم تفعيل الحصة بنجاح! 🎉');
 
-  /* Mark as done in UI */
-  const item=document.getElementById(`item-${lessonId}`);
+  /* Update UI to Success State */
+  const item = document.getElementById(`item-${lessonId}`);
   if(item){
-    item.classList.add('done');
-    const codeArea=item.querySelector('.code-row');
+    item.classList.add('unlocked');
+    const codeArea = item.querySelector('.code-area');
     if(codeArea){
-      codeArea.innerHTML=`<div class="item-success">
-        <span>🎉</span>
-        <span>تم تفعيل الحصة بنجاح</span>
-        <button class="success-go" onclick="window.location.href='/lesson/?id=${lessonId}'">شاهد الآن ←</button>
-      </div>`;
+      codeArea.innerHTML = `
+        <div class="success-state">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            تم تفعيل الحصة، جاهزة للمشاهدة
+          </span>
+          <button class="btn-watch" onclick="window.location.href='/lesson/?id=${lessonId}'">شاهد الآن</button>
+        </div>`;
     }
   }
 
   /* Remove from cart after short delay */
   setTimeout(()=>{
-    _cart=_cart.filter(c=>c.id!==lessonId);
+    _cart = _cart.filter(c => c.id !== lessonId);
     saveCart();
     updateSummary();
-  },1200);
+  }, 2000);
 }
 
 /* ══ UPDATE SUMMARY ══ */
 function updateSummary(){
-  const el=document.getElementById('sum-count');
-  if(el) el.textContent=`${_cart.length} حصة متبقية`;
-  if(_cart.length===0){
-    setTimeout(()=>{
-      const el=document.getElementById('sum-bar');
-      if(el) el.style.display='none';
-    },2000);
+  const countEl = document.getElementById('sum-count');
+  if(countEl) countEl.textContent = `${_cart.length} حصص`;
+  
+  if(_cart.length === 0){
+    setTimeout(() => render(), 500); // Re-render to show empty state
   }
 }
 
 /* ══ RENDER ══ */
 function render(){
-  const page=document.getElementById('page');
+  const page = document.getElementById('page');
 
   if(!_cart.length){
-    page.innerHTML=`
-    <div class="co-header">
-      <div class="co-title">🛒 الدفع وتفعيل الحصص</div>
-    </div>
-    <div class="empty-cart">
-      <span class="empty-ico">🛒</span>
-      <div class="empty-title">السلة فارغة</div>
-      <div class="empty-sub">ما عندكش حصص في السلة حالياً<br>اضغط تصفح عشان تضيف حصص</div>
-      <button class="btn btn-p" onclick="window.location.href='/dashboard/'">📚 تصفح الحصص</button>
-    </div>`;
+    page.innerHTML = `
+      <div class="empty-state">
+        <span class="empty-icon">🛍️</span>
+        <h2 class="empty-title">سلة المشتريات فارغة</h2>
+        <p class="empty-desc">لم تقم بإضافة أي حصص إلى سلتك حتى الآن. تصفح الحصص المتاحة وابدأ التعلم.</p>
+        <button class="btn-primary" onclick="window.location.href='/dashboard/'">
+          تصفح الحصص الآن
+        </button>
+      </div>`;
     return;
   }
 
-  page.innerHTML=`
-  <div class="co-header">
-    <div class="co-title">🛒 الدفع وتفعيل الحصص</div>
-    <div class="co-sub">ادخل كود كل حصة عشان تفتحها</div>
-  </div>
-  <div class="cart-list" id="cart-list">
-    ${_cart.map((ls,i)=>{
-      const thumb=ls.image_url
-        ?`<img src="${imgSrc(ls.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🎬'">`
-        :'🎬';
-      const price=ls.price!=null&&Number(ls.price)>0
-        ?`<span>💰 ${Number(ls.price)} جنيه</span>`
-        :`<span style="color:var(--ok)">🎁 مجاناً</span>`;
-      return `
-      <div class="co-item" id="item-${ls.id}" style="animation-delay:${i*.07}s">
-        <div class="item-top">
-          <div class="item-thumb">${thumb}</div>
-          <div class="item-info">
-            <div class="item-title">${esc(ls.title)}</div>
-            <div class="item-price">${price}</div>
+  page.innerHTML = `
+    <div class="page-header">
+      <h1 class="page-title">تفعيل الحصص</h1>
+      <p class="page-desc">قم بإدخال كود التفعيل الخاص بكل حصة للبدء في المشاهدة</p>
+    </div>
+
+    <div class="cart-list" id="cart-list">
+      ${_cart.map((ls, i) => {
+        const thumb = ls.image_url 
+          ? `<img src="${imgSrc(ls.image_url)}" alt="${esc(ls.title)}" onerror="this.parentElement.innerHTML='🎓'">` 
+          : '🎓';
+          
+        const price = ls.price != null && Number(ls.price) > 0
+          ? `الرسوم: ${Number(ls.price)} ج.م`
+          : `<span class="item-price free">محتوى مجاني 🎁</span>`;
+
+        return `
+        <div class="cart-item" id="item-${ls.id}" style="animation-delay: ${i * 0.1}s">
+          <div class="item-header">
+            <div class="item-img">${thumb}</div>
+            <div class="item-details">
+              <h3 class="item-title" title="${esc(ls.title)}">${esc(ls.title)}</h3>
+              <div class="item-price">${price}</div>
+            </div>
+            <button class="btn-remove" onclick="removeItem('${ls.id}')" title="حذف من السلة">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
           </div>
-          <button class="item-remove" onclick="removeItem('${ls.id}')" title="إزالة من السلة">✕</button>
-        </div>
-        <div class="code-row" id="cr-${ls.id}">
-          <input
-            class="code-inp" id="ci-${ls.id}"
-            placeholder="XXXX-XXXX-XXXX"
-            maxlength="30"
-            oninput="this.value=this.value.toUpperCase()"
-            onkeydown="if(event.key==='Enter')unlockLesson('${ls.id}')"
-          >
-          <button class="unlock-btn" id="ub-${ls.id}" onclick="unlockLesson('${ls.id}')">
-            تفعيل ✓
-          </button>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>
-  <div class="co-summary" id="sum-bar">
-    <div class="sum-txt">ادخل كود كل حصة عشان تفعّلها</div>
-    <div class="sum-count" id="sum-count">${_cart.length} حصة</div>
-    <button class="btn btn-out" onclick="window.location.href='/dashboard/'">← تصفح أكتر</button>
-  </div>`;
+          
+          <div class="code-area" id="cr-${ls.id}">
+            <div class="input-group">
+              <input 
+                type="text" 
+                class="code-input" 
+                id="ci-${ls.id}"
+                placeholder="أدخل الكود هنا (مثال: KWL-1234)"
+                maxlength="30"
+                autocomplete="off"
+                oninput="this.value=this.value.toUpperCase()"
+                onkeydown="if(event.key==='Enter') unlockLesson('${ls.id}')"
+              >
+              <button class="btn-unlock" id="ub-${ls.id}" onclick="unlockLesson('${ls.id}')">
+                تفعيل الحصة
+              </button>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="summary-bar" id="sum-bar">
+      <div class="summary-text">إجمالي الحصص في السلة المعلقة:</div>
+      <div class="summary-count" id="sum-count">${_cart.length} حصص</div>
+    </div>`;
 }
 
 /* ══ INIT ══ */
 async function init(){
-  setTheme(localStorage.getItem('kw-theme')||'light');
+  initTheme();
 
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='/login/';return;}
-  ME={id:session.user.id};
+  const {data: {session}} = await sb.auth.getSession();
+  if(!session){ window.location.href = '/login/'; return; }
+  ME = { id: session.user.id };
 
-  try{_cart=JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`)||'[]');}catch{_cart=[];}
+  try { _cart = JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`) || '[]'); } 
+  catch { _cart = []; }
 
   render();
 }
