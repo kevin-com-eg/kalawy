@@ -8,7 +8,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root {
-  /* Modern Color Palette */
+  /* Purple brand palette (matches dashboard) */
+  --purple: #2a1a5e;
+  --purple2: #3b2478;
   --primary: #4f46e5;
   --primary-hover: #4338ca;
   --success: #10b981;
@@ -16,43 +18,46 @@
   --danger: #ef4444;
   --danger-bg: #fee2e2;
   --warning: #f59e0b;
-  
+  --gold: #f59e0b;
+
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --nav-h: 70px;
+  --radius-xl: 20px;
+  --nav-h: 74px;
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="light"] {
-  --bg: #f8fafc;
+  --bg: #f4f5fa;
   --surface: #ffffff;
-  --surface-hover: #f1f5f9;
-  --border: #e2e8f0;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --input-bg: #f8fafc;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --glass: rgba(255, 255, 255, 0.8);
+  --surface-hover: #f1f0fb;
+  --border: #e7e5f5;
+  --text-main: #161327;
+  --text-muted: #5b5875;
+  --input-bg: #f8f9fd;
+  --shadow-sm: 0 1px 2px 0 rgb(20 20 60 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(20 20 60 / 0.08), 0 2px 4px -2px rgb(20 20 60 / 0.06);
+  --glass: rgba(255, 255, 255, 0.86);
 }
 
 [data-theme="dark"] {
-  --bg: #0f172a;
-  --surface: #1e293b;
-  --surface-hover: #334155;
-  --border: #334155;
-  --text-main: #f8fafc;
+  --bg: #0c1220;
+  --surface: #131d2e;
+  --surface-hover: #172035;
+  --border: rgba(255,255,255,.08);
+  --text-main: #e2e8f0;
   --text-muted: #94a3b8;
   --input-bg: #0f172a;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
   --success-bg: rgba(16, 185, 129, 0.15);
   --danger-bg: rgba(239, 68, 68, 0.15);
-  --glass: rgba(30, 41, 59, 0.8);
+  --glass: rgba(19, 29, 46, 0.86);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html{scroll-behavior:smooth}
 body {
   font-family: 'Cairo', sans-serif;
   background-color: var(--bg);
@@ -60,7 +65,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color .3s ease;
+  display:flex;flex-direction:column;
 }
 a { text-decoration: none; color: inherit; }
 button { font-family: inherit; }
@@ -69,58 +75,65 @@ button { font-family: inherit; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pop { 0%{transform:scale(.9);opacity:0} 100%{transform:scale(1);opacity:1} }
 
-/* Navbar */
+/* ══ NAVBAR (purple, matches dashboard) ══ */
 .nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: sticky; top: 0; z-index: 100;
   height: var(--nav-h);
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple2) 100%);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 clamp(16px, 5vw, 48px);
+  box-shadow: 0 4px 20px rgba(20,10,60,.18);
 }
 .nav-logo {
   display: flex; align-items: center; gap: 12px; cursor: pointer;
 }
 .nav-mark {
-  width: 40px; height: 40px;
-  background: var(--primary);
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg,#ec4899,#8b5cf6,#3b82f6);
   border-radius: var(--radius-md);
   display: grid; place-items: center;
-  color: white; font-weight: 800; font-size: 1.1rem;
+  color: white; font-weight: 800; font-size: 1.05rem;
   letter-spacing: 1px;
+  flex-shrink:0;
 }
-.nav-brand { font-weight: 800; font-size: 1.2rem; color: var(--text-main); }
-.nav-brand span { color: var(--primary); }
+.nav-brand { font-weight: 800; font-size: 1.2rem; color: #fff; }
+.nav-brand span { color: #c4b5fd; }
 
-.nav-actions { display: flex; align-items: center; gap: 16px; }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
 .theme-toggle {
-  background: var(--surface-hover); border: 1px solid var(--border);
+  background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16);
   width: 40px; height: 40px; border-radius: 50%;
   display: grid; place-items: center; cursor: pointer;
-  font-size: 1.2rem; transition: var(--transition);
-  color: var(--text-main);
+  font-size: 1.1rem; transition: var(--transition);
+  color: #fff;
 }
-.theme-toggle:hover { background: var(--border); }
+.theme-toggle:hover { background: rgba(255,255,255,.18); }
 .btn-back {
   display: flex; align-items: center; gap: 8px;
-  background: transparent; border: 1px solid var(--border);
-  padding: 8px 16px; border-radius: var(--radius-sm);
-  color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+  background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16);
+  padding: 9px 16px; border-radius: 99px;
+  color: #fff; font-weight: 700; font-size: 0.85rem;
   cursor: pointer; transition: var(--transition);
 }
-.btn-back:hover { background: var(--surface-hover); border-color: var(--text-muted); }
+.btn-back:hover { background: rgba(255,255,255,.18); }
 
 /* Main Container */
+main.container-wrap{flex:1}
 .container {
   max-width: 680px; margin: 0 auto;
-  padding: calc(var(--nav-h) + 40px) 20px 80px;
+  padding: 40px 20px 60px;
 }
 
 /* Header */
-.page-header { text-align: center; margin-bottom: 40px; animation: fadeIn 0.4s ease; }
+.page-header { text-align: center; margin-bottom: 36px; animation: fadeIn 0.4s ease; }
+.page-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(79,70,229,.1);color:var(--primary);
+  padding:6px 14px;border-radius:99px;font-weight:800;font-size:.76rem;
+  margin-bottom:14px;border:1px solid rgba(79,70,229,.18);
+}
 .page-title { font-size: clamp(1.7rem, 4vw, 2.2rem); font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
 .page-desc { color: var(--text-muted); font-size: 1rem; font-weight: 500; }
 
@@ -151,8 +164,11 @@ button { font-family: inherit; }
 .item-img img { width: 100%; height: 100%; object-fit: cover; }
 .item-details { flex: 1; min-width: 0; }
 .item-title { font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.item-price { font-weight: 600; color: var(--text-muted); font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
+.item-price { font-weight: 700; color: var(--text-muted); font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
 .item-price.free { color: var(--success); }
+.item-price.paid{ color: var(--gold); }
+.item-price .skel-price{display:inline-block;width:64px;height:14px;border-radius:4px;background:linear-gradient(90deg,var(--border) 25%,var(--surface-hover) 50%,var(--border) 75%);background-size:300px 100%;animation:shimmer 1.3s ease-in-out infinite}
+@keyframes shimmer{0%{background-position:-300px 0}100%{background-position:300px 0}}
 
 .btn-remove {
   width: 36px; height: 36px; border-radius: 50%;
@@ -178,19 +194,21 @@ button { font-family: inherit; }
   font-family: monospace;
 }
 .btn-unlock {
-  padding: 0 24px; border: none; background: var(--primary);
+  padding: 0 24px; border: none;
+  background: linear-gradient(135deg,var(--purple),var(--primary));
   color: white; font-weight: 700; font-size: 1rem; cursor: pointer;
   transition: var(--transition); display: flex; align-items: center; gap: 8px;
 }
-.btn-unlock:hover { background: var(--primary-hover); }
+.btn-unlock:hover { filter:brightness(1.08); }
 .btn-unlock:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
 
 /* Success State */
 .success-state {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap:wrap; gap:10px;
   padding: 14px 16px; background: rgba(16, 185, 129, 0.1);
   border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-sm);
   color: var(--success); font-weight: 700; font-size: 0.95rem;
+  animation: pop .25s ease;
 }
 .btn-watch {
   background: var(--success); color: white; border: none;
@@ -204,13 +222,15 @@ button { font-family: inherit; }
   margin-top: 32px; padding: 20px;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: space-between;
-  box-shadow: var(--shadow-sm); animation: fadeIn 0.6s ease;
+  box-shadow: var(--shadow-sm); animation: fadeIn 0.6s ease; flex-wrap:wrap; gap:12px;
 }
 .summary-text { font-weight: 600; color: var(--text-muted); }
 .summary-count {
-  background: var(--primary); color: white;
+  background: linear-gradient(135deg,var(--purple),var(--primary)); color: white;
   padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
 }
+.summary-total{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--text-main)}
+.summary-total .amt{color:var(--gold);font-size:1.05rem}
 
 /* Empty State */
 .empty-state { text-align: center; padding: 60px 20px; }
@@ -218,15 +238,15 @@ button { font-family: inherit; }
 .empty-title { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; }
 .empty-desc { color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; }
 .btn-primary {
-  background: var(--primary); color: white; border: none;
+  background: linear-gradient(135deg,var(--purple),var(--primary)); color: white; border: none;
   padding: 14px 28px; border-radius: var(--radius-sm);
   font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition);
   display: inline-flex; align-items: center; gap: 8px;
 }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-primary:hover { filter:brightness(1.08); transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
 /* Loading Spinner */
-.loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; color: var(--text-muted); font-weight: 600; }
+.loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; gap: 16px; color: var(--text-muted); font-weight: 600; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
 .btn-spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
 
@@ -245,6 +265,54 @@ button { font-family: inherit; }
 .toast.warning { border-right: 4px solid var(--warning); }
 .toast-out { opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
 
+/* ══ FOOTER (with terms of use) ══ */
+footer.site-footer{
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:36px 20px 22px;
+  margin-top:auto;
+}
+.footer-inner{
+  max-width:1000px;margin:0 auto;
+  display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:32px;
+}
+.footer-col h4{font-size:.86rem;font-weight:800;color:var(--text-main);margin-bottom:14px}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.footer-brand .nav-mark{width:36px;height:36px;font-size:.9rem}
+.footer-brand-name{font-weight:800;font-size:1.05rem;color:var(--text-main)}
+.footer-brand-name span{color:var(--primary)}
+.footer-desc{color:var(--text-muted);font-size:.82rem;line-height:1.9;max-width:320px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:9px}
+.footer-links a{color:var(--text-muted);font-size:.84rem;font-weight:600;transition:var(--transition);cursor:pointer}
+.footer-links a:hover{color:var(--primary)}
+.footer-bottom{
+  max-width:1000px;margin:26px auto 0;padding-top:18px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  color:var(--text-muted);font-size:.78rem;font-weight:600;
+}
+
+/* ══ TERMS MODAL ══ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,15,35,.55);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(3px);
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);
+  max-width:560px;width:100%;max-height:80vh;overflow-y:auto;padding:28px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);animation:pop .22s ease;
+}
+.modal-box h3{font-size:1.15rem;font-weight:900;margin-bottom:16px;color:var(--text-main);display:flex;align-items:center;justify-content:space-between}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface-hover);color:var(--text-main);cursor:pointer;font-size:1rem;display:grid;place-items:center}
+.modal-box section{margin-bottom:18px}
+.modal-box section h4{font-size:.9rem;font-weight:800;color:var(--primary);margin-bottom:7px}
+.modal-box section p, .modal-box section li{color:var(--text-muted);font-size:.83rem;line-height:1.9}
+.modal-box section ul{padding-right:18px}
+
+@media (max-width: 700px){
+  .footer-inner{grid-template-columns:1fr}
+}
 @media (max-width: 500px) {
   .input-group { flex-direction: column; gap: 8px; border: none; }
   .input-group:focus-within { box-shadow: none; }
@@ -252,6 +320,7 @@ button { font-family: inherit; }
   .code-input:focus { border-color: var(--primary); }
   .btn-unlock { padding: 14px; justify-content: center; border: none; }
   .summary-bar { flex-direction: column; gap: 16px; text-align: center; }
+  .btn-back span.txt{display:none}
 }
 </style>
 </head>
@@ -267,7 +336,7 @@ button { font-family: inherit; }
   <div class="nav-actions">
     <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
     <button class="btn-back" onclick="window.location.href='/dashboard/'">
-      العودة للوحة <span>👋</span>
+      <span class="txt">العودة للوحة</span> <span>👋</span>
     </button>
   </div>
 </nav>
@@ -275,12 +344,70 @@ button { font-family: inherit; }
 <div id="toasts"></div>
 
 <!-- Main Content -->
-<main class="container" id="page">
-  <div class="loader-container">
-    <div class="spinner"></div>
-    <div>جاري تجهيز السلة...</div>
+<main class="container-wrap">
+  <div class="container" id="page">
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <div>جاري تجهيز السلة...</div>
+    </div>
   </div>
 </main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <div class="nav-mark" style="background:linear-gradient(135deg,#ec4899,#8b5cf6,#3b82f6)">KW</div>
+        <span class="footer-brand-name">Kala<span>wy</span></span>
+      </div>
+      <p class="footer-desc">منصة تعليمية إلكترونية متخصصة للطلاب المصريين، بتوفر حصص دراسية عالية الجودة من أفضل المدرسين في مصر.</p>
+    </div>
+    <div class="footer-col">
+      <h4>روابط سريعة</h4>
+      <ul class="footer-links">
+        <li><a onclick="window.location.href='/dashboard/'">الرئيسية</a></li>
+        <li><a onclick="window.location.href='/dashboard/'">حصصي</a></li>
+        <li><a onclick="window.location.href='/dashboard/'">محفظتي</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>الدعم والسياسات</h4>
+      <ul class="footer-links">
+        <li><a onclick="openTerms()">📄 سياسة الاستخدام</a></li>
+        <li><a onclick="window.location.href='mailto:support@kalawy.com'">📧 support@kalawy.com</a></li>
+        <li><a onclick="toast('i','واتساب: متاح 24/7')">💬 الدعم الفني</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 kalawy. جميع الحقوق محفوظة.</span>
+    <span onclick="openTerms()" style="cursor:pointer;color:var(--primary);font-weight:700">شروط الاستخدام</span>
+  </div>
+</footer>
+
+<!-- Terms modal -->
+<div class="modal-overlay" id="termsModal" onclick="if(event.target===this)closeTerms()">
+  <div class="modal-box">
+    <h3>📄 شروط الاستخدام <button class="modal-close" onclick="closeTerms()">✕</button></h3>
+    <section>
+      <h4>1. القبول بالشروط</h4>
+      <p>باستخدامك لمنصة kalawy، فأنت توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على أي من هذه الشروط، يرجى عدم استخدام المنصة.</p>
+    </section>
+    <section>
+      <h4>2. أكواد الحصص</h4>
+      <ul>
+        <li>كل كود صالح للاستخدام مرة واحدة فقط.</li>
+        <li>الكود شخصي ولا يجوز بيعه أو مشاركته مع الغير.</li>
+        <li>لا يحق استرداد المبالغ بعد استخدام الكود.</li>
+      </ul>
+    </section>
+    <section>
+      <h4>3. الخصوصية</h4>
+      <p>نحن نحترم خصوصيتك ولا نشارك بياناتك الشخصية مع أي طرف ثالث.</p>
+    </section>
+  </div>
+</div>
 
 <script>
 // نفس إعدادات قاعدة البيانات الخاصة بك
@@ -304,6 +431,10 @@ function initTheme() {
   document.documentElement.setAttribute('data-theme', saved);
   document.getElementById('theme-btn').textContent = saved === 'light' ? '🌙' : '☀️';
 }
+
+/* ══ TERMS MODAL ══ */
+function openTerms(){ document.getElementById('termsModal').classList.add('open'); }
+function closeTerms(){ document.getElementById('termsModal').classList.remove('open'); }
 
 /* ══ UTILS ══ */
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
@@ -338,6 +469,35 @@ function removeItem(lessonId){
   _cart = _cart.filter(c => c.id !== lessonId);
   saveCart();
   render();
+}
+
+/* ══ FETCH REAL PRICES FROM DB ══
+   BUG FIX: the cart stored in localStorage (added from the dashboard) only
+   keeps {id,title,description,image_url,chapter_id,chapter_title} — it never
+   stores the price. That made every item look "free" here regardless of its
+   real price. We now fetch price/is_active fresh from Supabase for every
+   lesson in the cart before rendering. */
+async function hydrateCartPrices(){
+  if(!_cart.length) return;
+  const ids = _cart.map(c=>c.id);
+  let {data, error} = await sb.from('lesson_cards').select('id,price,image_url,title').in('id', ids);
+  if(error || !data?.length){
+    const r = await sb.from('lessons').select('id,price,image_url,title').in('id', ids);
+    data = r.data;
+  }
+  const map = {};
+  (data||[]).forEach(row=>{ map[row.id] = row; });
+  _cart = _cart.map(item=>{
+    const fresh = map[item.id];
+    if(!fresh) return item; // lesson deleted / not found — keep as-is, will show unknown price
+    return {
+      ...item,
+      price: fresh.price != null ? Number(fresh.price) : item.price ?? null,
+      image_url: fresh.image_url || item.image_url,
+      title: fresh.title || item.title,
+      _priceKnown: true
+    };
+  });
 }
 
 /* ══ UNLOCK ══ */
@@ -408,10 +568,17 @@ async function unlockLesson(lessonId){
 function updateSummary(){
   const countEl = document.getElementById('sum-count');
   if(countEl) countEl.textContent = `${_cart.length} حصص`;
-  
+  const totalEl = document.getElementById('sum-total');
+  if(totalEl) totalEl.textContent = cartTotalLabel();
+
   if(_cart.length === 0){
     setTimeout(() => render(), 500); // Re-render to show empty state
   }
+}
+
+function cartTotalLabel(){
+  const total = _cart.reduce((sum,c)=> sum + (c.price!=null && c.price>0 ? Number(c.price) : 0), 0);
+  return total > 0 ? `${total} ج.م` : 'مجاني بالكامل 🎁';
 }
 
 /* ══ RENDER ══ */
@@ -433,6 +600,7 @@ function render(){
 
   page.innerHTML = `
     <div class="page-header">
+      <div class="page-badge">🔐 خطوة أخيرة</div>
       <h1 class="page-title">تفعيل الحصص</h1>
       <p class="page-desc">قم بإدخال كود التفعيل الخاص بكل حصة للبدء في المشاهدة</p>
     </div>
@@ -442,10 +610,12 @@ function render(){
         const thumb = ls.image_url 
           ? `<img src="${imgSrc(ls.image_url)}" alt="${esc(ls.title)}" onerror="this.parentElement.innerHTML='🎓'">` 
           : '🎓';
-          
-        const price = ls.price != null && Number(ls.price) > 0
-          ? `الرسوم: ${Number(ls.price)} ج.م`
-          : `<span class="item-price free">محتوى مجاني 🎁</span>`;
+
+        const priceHtml = !ls._priceKnown
+          ? `<span class="skel-price"></span>`
+          : (ls.price != null && Number(ls.price) > 0
+              ? `<span class="item-price paid">💰 الرسوم: ${Number(ls.price)} ج.م</span>`
+              : `<span class="item-price free">🎁 محتوى مجاني</span>`);
 
         return `
         <div class="cart-item" id="item-${ls.id}" style="animation-delay: ${i * 0.1}s">
@@ -453,7 +623,7 @@ function render(){
             <div class="item-img">${thumb}</div>
             <div class="item-details">
               <h3 class="item-title" title="${esc(ls.title)}">${esc(ls.title)}</h3>
-              <div class="item-price">${price}</div>
+              <div class="item-price" id="price-${ls.id}">${priceHtml}</div>
             </div>
             <button class="btn-remove" onclick="removeItem('${ls.id}')" title="حذف من السلة">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
@@ -483,7 +653,10 @@ function render(){
 
     <div class="summary-bar" id="sum-bar">
       <div class="summary-text">إجمالي الحصص في السلة المعلقة:</div>
-      <div class="summary-count" id="sum-count">${_cart.length} حصص</div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="summary-total">الإجمالي: <span class="amt" id="sum-total">${cartTotalLabel()}</span></div>
+        <div class="summary-count" id="sum-count">${_cart.length} حصص</div>
+      </div>
     </div>`;
 }
 
@@ -498,6 +671,10 @@ async function init(){
   try { _cart = JSON.parse(localStorage.getItem(`kw-cart-${ME.id}`) || '[]'); } 
   catch { _cart = []; }
 
+  // Render immediately with skeleton prices, then hydrate real prices from DB
+  render();
+  await hydrateCartPrices();
+  saveCart();
   render();
 }
 
