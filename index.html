@@ -1,1763 +1,559 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Kalawy | منصتك التعليمية</title>
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --primary: #4b9bd4;
-      --primary-dark: #3284be;
-      --primary-light: #e8f4fc;
-
-      --text: #14202b;
-      --muted: #647585;
-
-      --border: #d9e7f1;
-
-      --white: #ffffff;
-      --page: #f8fbfe;
-
-      --footer: #102533;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: "Cairo", Arial, sans-serif;
-      background: var(--white);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    /* =========================
-       NAVBAR
-    ========================= */
-
-    .navbar {
-      height: 88px;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      padding: 0 5%;
-
-      background: rgba(255, 255, 255, 0.82);
-
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-
-      border-bottom: 1px solid rgba(217, 231, 241, 0.8);
-
-      position: sticky;
-      top: 0;
-      z-index: 999;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-icon {
-      width: 38px;
-      height: 38px;
-
-      border-radius: 12px;
-
-      background:
-        linear-gradient(135deg, #ffb3cf, #4b9bd4);
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      color: white;
-      font-size: 20px;
-      font-weight: 900;
-
-      box-shadow:
-        0 8px 20px rgba(75, 155, 212, 0.18);
-    }
-
-    .brand-name {
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: -1px;
-      color: #20384b;
-    }
-
-    .nav-center {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .nav-link {
-      padding: 11px 20px;
-
-      color: #5d6e7e;
-
-      font-size: 14px;
-      font-weight: 700;
-
-      border-radius: 11px;
-
-      transition: 0.2s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    .nav-link.active {
-      color: var(--primary);
-      background: #e8f3fb;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .nav-outline {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      min-height: 44px;
-
-      padding: 0 18px;
-
-      border: 1px solid #8ec5eb;
-      border-radius: 11px;
-
-      color: var(--primary);
-
-      font-size: 14px;
-      font-weight: 800;
-
-      transition: 0.2s ease;
-    }
-
-    .nav-outline:hover {
-      background: #eef8ff;
-      transform: translateY(-1px);
-    }
-
-    .nav-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      min-height: 44px;
-
-      padding: 0 20px;
-
-      border-radius: 11px;
-
-      background: var(--primary);
-      color: white;
-
-      font-size: 14px;
-      font-weight: 800;
-
-      box-shadow: 0 8px 20px rgba(75, 155, 212, 0.16);
-
-      transition: 0.2s ease;
-    }
-
-    .nav-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-
-    .lang-btn,
-    .theme-btn {
-      width: 46px;
-      height: 44px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border: 1px solid #cfe4f2;
-
-      border-radius: 11px;
-
-      background: transparent;
-
-      color: #4b6275;
-
-      font-weight: 700;
-
-      cursor: pointer;
-
-      transition: 0.2s ease;
-    }
-
-    .lang-btn:hover,
-    .theme-btn:hover {
-      background: #eef8ff;
-      color: var(--primary);
-    }
-
-    /* =========================
-       HERO
-    ========================= */
-
-    .hero {
-      min-height: 660px;
-
-      display: flex;
-      align-items: center;
-
-      padding: 70px 7% 60px;
-
-      background:
-        radial-gradient(
-          circle at 80% 20%,
-          rgba(75, 155, 212, 0.18),
-          transparent 32%
-        ),
-        radial-gradient(
-          circle at 15% 75%,
-          rgba(164, 216, 250, 0.18),
-          transparent 28%
-        ),
-        linear-gradient(
-          135deg,
-          #f8fbfe,
-          #edf7fd
-        );
-    }
-
-    .hero-grid {
-      width: 100%;
-      max-width: 1400px;
-
-      margin: auto;
-
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-
-      align-items: center;
-
-      gap: 60px;
-    }
-
-    .hero-content {
-      text-align: right;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-
-      padding: 8px 15px;
-
-      margin-bottom: 20px;
-
-      border: 1px solid #c8e4f6;
-      border-radius: 999px;
-
-      background: rgba(255, 255, 255, 0.72);
-
-      color: var(--primary);
-
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .hero-title {
-      font-size: clamp(52px, 6vw, 88px);
-
-      line-height: 1.15;
-
-      font-weight: 900;
-
-      letter-spacing: -3px;
-
-      margin-bottom: 20px;
-    }
-
-    .hero-title .blue {
-      color: #4b9bd4;
-    }
-
-    .hero-title .pink {
-      color: #a43770;
-    }
-
-    .hero-text {
-      max-width: 620px;
-
-      color: #617386;
-
-      font-size: 18px;
-
-      line-height: 2;
-
-      margin-bottom: 28px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      justify-content: flex-start;
-
-      gap: 12px;
-
-      margin-bottom: 35px;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-      min-height: 52px;
-
-      padding: 0 26px;
-
-      border-radius: 12px;
-
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 15px;
-      font-weight: 800;
-
-      transition: 0.22s ease;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-
-      box-shadow:
-        0 12px 30px rgba(75, 155, 212, 0.2);
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      color: var(--primary);
-      background: white;
-
-      border: 1px solid #91c6e9;
-    }
-
-    .btn-secondary:hover {
-      background: #f3faff;
-      transform: translateY(-2px);
-    }
-
-    .stats {
-      display: flex;
-      align-items: center;
-
-      gap: 28px;
-    }
-
-    .stat {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .stat strong {
-      font-size: 20px;
-      font-weight: 900;
-      color: #172532;
-    }
-
-    .stat span {
-      color: #6d7e8d;
-      font-size: 12px;
-    }
-
-    .stat-divider {
-      width: 1px;
-      height: 45px;
-
-      background: #cfdde6;
-    }
-
-    /* HERO VISUAL */
-
-    .hero-visual {
-      min-height: 500px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      position: relative;
-    }
-
-    .visual-glow {
-      position: absolute;
-
-      width: 380px;
-      height: 380px;
-
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          circle,
-          rgba(141, 207, 243, 0.42),
-          rgba(141, 207, 243, 0)
-        );
-
-      filter: blur(10px);
-    }
-
-    .mockup {
-      width: min(520px, 100%);
-
-      aspect-ratio: 1 / 0.82;
-
-      border-radius: 28px;
-
-      padding: 16px;
-
-      background: rgba(255, 255, 255, 0.78);
-
-      border: 1px solid rgba(196, 220, 235, 0.9);
-
-      box-shadow:
-        0 35px 80px rgba(48, 93, 120, 0.13);
-
-      position: relative;
-
-      z-index: 1;
-    }
-
-    .mockup-screen {
-      width: 100%;
-      height: 100%;
-
-      border-radius: 20px;
-
-      overflow: hidden;
-
-      background:
-        linear-gradient(
-          180deg,
-          #edf8ff 0%,
-          #ffffff 45%,
-          #f7fbfd 100%
-        );
-
-      border: 1px solid #d9eaf5;
-
-      padding: 22px;
-    }
-
-    .mockup-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      margin-bottom: 18px;
-    }
-
-    .mockup-logo {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-
-      font-size: 17px;
-      font-weight: 900;
-      color: #345067;
-    }
-
-    .mockup-avatar {
-      width: 34px;
-      height: 34px;
-
-      border-radius: 50%;
-
-      background:
-        linear-gradient(
-          135deg,
-          #7cb7e1,
-          #d8ecfb
-        );
-    }
-
-    .mockup-welcome {
-      background: white;
-
-      border: 1px solid #dfedf6;
-
-      border-radius: 15px;
-
-      padding: 16px;
-
-      margin-bottom: 14px;
-    }
-
-    .mockup-welcome small {
-      color: #7890a1;
-      font-size: 11px;
-    }
-
-    .mockup-welcome strong {
-      display: block;
-
-      margin-top: 4px;
-
-      font-size: 20px;
-      color: #263e50;
-    }
-
-    .mockup-course-grid {
-      display: grid;
-
-      grid-template-columns: repeat(2, 1fr);
-
-      gap: 11px;
-    }
-
-    .mockup-course {
-      padding: 12px;
-
-      min-height: 110px;
-
-      background: white;
-
-      border: 1px solid #e0edf4;
-
-      border-radius: 14px;
-    }
-
-    .course-color {
-      width: 34px;
-      height: 34px;
-
-      border-radius: 10px;
-
-      margin-bottom: 10px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #86c3ea,
-          #d9effd
-        );
-    }
-
-    .mockup-course:nth-child(2) .course-color {
-      background:
-        linear-gradient(
-          135deg,
-          #d78ab0,
-          #f3d2e3
-        );
-    }
-
-    .mockup-course strong {
-      display: block;
-
-      font-size: 12px;
-      margin-bottom: 3px;
-    }
-
-    .mockup-course span {
-      color: #8699a8;
-      font-size: 10px;
-    }
-
-    /* =========================
-       TEACHERS
-    ========================= */
-
-    .section {
-      padding: 90px 7%;
-    }
-
-    .section-header {
-      max-width: 1100px;
-
-      margin: 0 auto 35px;
-
-      text-align: center;
-    }
-
-    .section-badge {
-      display: inline-flex;
-
-      padding: 7px 14px;
-
-      background: #eef7fd;
-      color: var(--primary);
-
-      border-radius: 999px;
-
-      font-size: 12px;
-      font-weight: 800;
-
-      margin-bottom: 13px;
-    }
-
-    .section-header h2 {
-      font-size: clamp(32px, 4vw, 48px);
-
-      font-weight: 900;
-
-      margin-bottom: 10px;
-    }
-
-    .section-header p {
-      color: #708191;
-
-      font-size: 15px;
-    }
-
-    .search-box {
-      max-width: 550px;
-
-      margin: 20px auto 26px;
-
-      position: relative;
-    }
-
-    .search-box input {
-      width: 100%;
-
-      height: 52px;
-
-      padding: 0 20px;
-
-      border: 1px solid #dbe8f0;
-
-      background: white;
-
-      border-radius: 14px;
-
-      outline: none;
-
-      font-size: 14px;
-
-      box-shadow:
-        0 8px 30px rgba(22, 63, 90, 0.04);
-    }
-
-    .categories {
-      max-width: 1050px;
-
-      margin: 0 auto 35px;
-
-      display: flex;
-
-      gap: 10px;
-
-      flex-wrap: wrap;
-
-      justify-content: center;
-    }
-
-    .category {
-      border: 1px solid #dce9f1;
-
-      background: white;
-
-      color: #536a7b;
-
-      padding: 9px 15px;
-
-      border-radius: 999px;
-
-      font-size: 12px;
-
-      font-weight: 700;
-
-      cursor: pointer;
-
-      transition: 0.2s ease;
-    }
-
-    .category:hover,
-    .category.active {
-      color: white;
-
-      background: var(--primary);
-
-      border-color: var(--primary);
-    }
-
-    .teachers-grid {
-      max-width: 1120px;
-
-      margin: auto;
-
-      display: grid;
-
-      grid-template-columns: repeat(3, 1fr);
-
-      gap: 16px;
-    }
-
-    .teacher-card {
-      padding: 14px;
-
-      border: 1px solid #dce8ef;
-
-      border-radius: 17px;
-
-      background: white;
-
-      transition: 0.25s ease;
-    }
-
-    .teacher-card:hover {
-      transform: translateY(-4px);
-
-      box-shadow:
-        0 18px 40px rgba(24, 74, 104, 0.08);
-    }
-
-    .teacher-top {
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      gap: 10px;
-    }
-
-    .teacher-avatar {
-      width: 58px;
-      height: 58px;
-
-      flex-shrink: 0;
-
-      border-radius: 15px;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      background:
-        linear-gradient(
-          135deg,
-          #a7d6f2,
-          #eaf6fd
-        );
-
-      color: #4b9bd4;
-
-      font-size: 20px;
-
-      font-weight: 900;
-    }
-
-    .teacher-info {
-      flex: 1;
-    }
-
-    .teacher-info h3 {
-      font-size: 14px;
-
-      margin-bottom: 4px;
-    }
-
-    .teacher-info span {
-      color: var(--primary);
-
-      font-size: 11px;
-
-      font-weight: 700;
-    }
-
-    .teacher-btn {
-      width: 100%;
-
-      height: 40px;
-
-      margin-top: 14px;
-
-      border: 0;
-
-      border-radius: 10px;
-
-      background: #eaf5fc;
-
-      color: var(--primary);
-
-      font-size: 12px;
-
-      font-weight: 800;
-
-      cursor: pointer;
-
-      transition: 0.2s ease;
-    }
-
-    .teacher-btn:hover {
-      background: #dceffb;
-    }
-
-    .show-more {
-      display: flex;
-
-      justify-content: center;
-
-      margin-top: 30px;
-    }
-
-    /* =========================
-       CTA
-    ========================= */
-
-    .cta-wrapper {
-      padding: 20px 7% 90px;
-    }
-
-    .cta {
-      max-width: 1100px;
-
-      margin: auto;
-
-      background:
-        linear-gradient(
-          135deg,
-          #e8f5fd,
-          #dbeef9
-        );
-
-      border-radius: 24px;
-
-      padding: 60px 30px;
-
-      text-align: center;
-
-      border: 1px solid #d0e5f2;
-    }
-
-    .cta-badge {
-      display: inline-block;
-
-      padding: 7px 14px;
-
-      border-radius: 999px;
-
-      background: rgba(255, 255, 255, 0.75);
-
-      color: #b46932;
-
-      font-size: 12px;
-
-      margin-bottom: 15px;
-    }
-
-    .cta h2 {
-      font-size: clamp(32px, 5vw, 52px);
-
-      margin-bottom: 10px;
-
-      font-weight: 900;
-    }
-
-    .cta p {
-      color: #607483;
-
-      margin-bottom: 24px;
-
-      font-size: 15px;
-    }
-
-    /* =========================
-       FOOTER
-    ========================= */
-
-    footer {
-      background: var(--footer);
-
-      color: #d4e1e8;
-
-      padding: 70px 7% 20px;
-    }
-
-    .footer-grid {
-      max-width: 1200px;
-
-      margin: auto;
-
-      display: grid;
-
-      grid-template-columns: 1.6fr 1fr 1fr;
-
-      gap: 60px;
-    }
-
-    .footer-brand {
-      max-width: 450px;
-    }
-
-    .footer-brand .brand-name {
-      color: white;
-
-      display: inline-block;
-
-      margin-bottom: 16px;
-    }
-
-    .footer-brand p {
-      color: #91a8b7;
-
-      font-size: 13px;
-
-      line-height: 2;
-    }
-
-    .footer-col h4 {
-      color: white;
-
-      margin-bottom: 18px;
-
-      font-size: 14px;
-    }
-
-    .footer-col a {
-      display: block;
-
-      color: #8da5b4;
-
-      font-size: 12px;
-
-      margin-bottom: 12px;
-
-      transition: 0.2s ease;
-    }
-
-    .footer-col a:hover {
-      color: white;
-    }
-
-    .footer-bottom {
-      max-width: 1200px;
-
-      margin: 45px auto 0;
-
-      padding-top: 18px;
-
-      border-top: 1px solid rgba(255, 255, 255, 0.09);
-
-      display: flex;
-
-      justify-content: space-between;
-
-      gap: 15px;
-
-      color: #718997;
-
-      font-size: 11px;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 1050px) {
-
-      .nav-center {
-        display: none;
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-
-        text-align: center;
-      }
-
-      .hero-content {
-        text-align: center;
-      }
-
-      .hero-buttons {
-        justify-content: center;
-      }
-
-      .stats {
-        justify-content: center;
-      }
-
-      .hero-visual {
-        min-height: 400px;
-      }
-
-      .teachers-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 700px) {
-
-      .navbar {
-        height: 74px;
-
-        padding: 0 18px;
-      }
-
-      .nav-left .nav-outline {
-        display: none;
-      }
-
-      .nav-primary {
-        min-height: 40px;
-
-        padding: 0 13px;
-      }
-
-      .theme-btn {
-        width: 40px;
-        height: 40px;
-      }
-
-      .hero {
-        padding: 55px 18px 45px;
-      }
-
-      .hero-title {
-        font-size: 48px;
-
-        letter-spacing: -2px;
-      }
-
-      .hero-text {
-        font-size: 15px;
-      }
-
-      .hero-buttons {
-        flex-direction: column;
-      }
-
-      .btn-primary,
-      .btn-secondary {
-        width: 100%;
-      }
-
-      .stats {
-        gap: 16px;
-      }
-
-      .stat strong {
-        font-size: 16px;
-      }
-
-      .teachers-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-bottom {
-        flex-direction: column;
-      }
-    }
-
-    @media (max-width: 450px) {
-
-      .brand-name {
-        font-size: 21px;
-      }
-
-      .brand-icon {
-        width: 34px;
-        height: 34px;
-      }
-
-      .lang-btn {
-        display: none;
-      }
-
-      .hero-title {
-        font-size: 42px;
-      }
-
-      .stats {
-        flex-wrap: wrap;
-      }
-
-      .stat-divider {
-        display: none;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قلاوي | منصتك للثانوية العامة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8FC;
+    --bg-soft:#F2ECFB;
+    --surface:#FFFFFF;
+    --purple-900:#2E1065;
+    --purple-800:#3E1D82;
+    --purple-700:#5B21B6;
+    --purple-600:#7C3AED;
+    --purple-500:#9353F0;
+    --purple-100:#EDE4FC;
+    --purple-50:#F6F1FD;
+    --gold:#F5A524;
+    --gold-soft:#FEF1DC;
+    --text:#241B3A;
+    --text-muted:#736C88;
+    --border:#E6DDF6;
+    --shadow:0 20px 45px -20px rgba(91,33,182,0.28);
+    --radius-lg:22px;
+    --radius-md:16px;
+    --radius-sm:10px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Cairo', sans-serif;
+    line-height:1.7;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{
+    font-family:'Baloo Bhaijaan 2', 'Cairo', sans-serif;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+  ::selection{background:var(--purple-100); color:var(--purple-900);}
+  :focus-visible{outline:3px solid var(--purple-500); outline-offset:2px;}
+
+  /* ---------- Top utility strip ---------- */
+  .topbar{
+    background:var(--purple-900);
+    color:#EADCFF;
+    font-size:13px;
+  }
+  .topbar .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:8px; padding-bottom:8px;
+    gap:12px;
+  }
+  .topbar .countdown{display:flex; align-items:center; gap:8px; font-weight:600;}
+  .topbar .countdown b{color:var(--gold); font-weight:800;}
+  .topbar .links{display:flex; gap:18px; opacity:.85;}
+  .topbar .links a:hover{opacity:1; text-decoration:underline;}
+
+  /* ---------- Navbar ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(250,248,252,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav .wrap{display:flex; align-items:center; justify-content:space-between; height:72px; gap:24px;}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:800; font-size:22px; color:var(--purple-800);}
+  .logo .mark{
+    width:36px; height:36px; border-radius:10px;
+    background:linear-gradient(140deg, var(--purple-600), var(--purple-900));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Baloo Bhaijaan 2'; font-weight:700; font-size:18px;
+    box-shadow:0 8px 16px -6px rgba(91,33,182,.55);
+  }
+  .nav-links{display:flex; align-items:center; gap:6px;}
+  .nav-links a{
+    padding:10px 16px; border-radius:999px; font-weight:600; font-size:15px;
+    color:var(--text-muted); transition:.2s;
+  }
+  .nav-links a:hover{color:var(--purple-700); background:var(--purple-50);}
+  .nav-links a.active{color:var(--purple-800); background:var(--purple-100);}
+  .nav-actions{display:flex; align-items:center; gap:10px;}
+  .icon-btn{
+    width:38px; height:38px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--text-muted); transition:.2s; font-size:13px; font-weight:700;
+  }
+  .icon-btn:hover{border-color:var(--purple-500); color:var(--purple-700);}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 22px; border-radius:999px; font-weight:700; font-size:14.5px;
+    cursor:pointer; border:1.5px solid transparent; transition:.2s; white-space:nowrap;
+  }
+  .btn-outline{border-color:var(--purple-200,#D9C7F7); color:var(--purple-700); background:transparent; border-color:var(--purple-500);}
+  .btn-outline:hover{background:var(--purple-50);}
+  .btn-solid{background:var(--purple-700); color:#fff; box-shadow:0 10px 20px -8px rgba(91,33,182,.55);}
+  .btn-solid:hover{background:var(--purple-800); transform:translateY(-1px);}
+  .btn-gold{background:var(--gold); color:#3A2400; box-shadow:0 10px 20px -8px rgba(245,165,36,.55);}
+  .btn-gold:hover{filter:brightness(1.04); transform:translateY(-1px);}
+  .menu-toggle{display:none;}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative; padding:76px 0 60px; overflow:hidden;}
+  .hero::before{
+    content:''; position:absolute; inset:-20% -10% auto -10%; height:520px;
+    background:radial-gradient(60% 60% at 30% 20%, var(--purple-100) 0%, transparent 70%);
+    z-index:0;
+  }
+  .hero .wrap{position:relative; z-index:1; display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; padding:7px 14px;
+    background:var(--purple-100); color:var(--purple-800); font-weight:700; font-size:13px;
+    border-radius:999px; margin-bottom:20px;
+  }
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--gold);}
+  .hero h1{font-size:44px; line-height:1.35; font-weight:800; color:var(--purple-900); max-width:560px;}
+  .hero h1 span{color:var(--purple-600); position:relative;}
+  .hero p.lead{margin-top:18px; font-size:17px; color:var(--text-muted); max-width:480px;}
+  .hero-ctas{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  .trust-row{display:flex; align-items:center; gap:22px; margin-top:40px; flex-wrap:wrap;}
+  .trust-stat b{display:block; font-size:22px; font-weight:800; color:var(--purple-800); font-family:'Baloo Bhaijaan 2';}
+  .trust-stat span{font-size:13px; color:var(--text-muted);}
+
+  /* ---------- Hero visual: subject progress stack ---------- */
+  .hero-visual{position:relative; height:460px;}
+  .stage-card{
+    position:absolute; width:250px; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:18px 20px; box-shadow:var(--shadow);
+  }
+  .stage-card .row{display:flex; align-items:center; gap:12px;}
+  .ring{
+    --p:70; width:50px; height:50px; border-radius:50%; flex:none;
+    background:conic-gradient(var(--purple-600) calc(var(--p)*1%), var(--purple-100) 0);
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; color:var(--purple-800);
+  }
+  .ring::before{content:attr(data-p) '%'; width:38px; height:38px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;}
+  .stage-card .title{font-weight:700; font-size:15px; color:var(--text);}
+  .stage-card .sub{font-size:12.5px; color:var(--text-muted); margin-top:2px;}
+  .stage-card.c1{top:0; right:20px;}
+  .stage-card.c2{top:150px; right:110px; z-index:2;}
+  .stage-card.c3{top:305px; right:10px;}
+  .lock-pill{
+    position:absolute; display:flex; align-items:center; gap:6px;
+    background:var(--gold-soft); color:#8A5B04; font-size:11.5px; font-weight:700;
+    padding:5px 10px; border-radius:999px; top:255px; right:250px; box-shadow:var(--shadow);
+  }
+
+  /* ---------- Section shell ---------- */
+  section{padding:84px 0;}
+  .section-head{max-width:600px; margin:0 auto 48px; text-align:center;}
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{font-size:32px; font-weight:800; color:var(--purple-900);}
+  .section-head p{margin-top:12px; color:var(--text-muted); font-size:15.5px;}
+
+  /* ---------- Features ---------- */
+  .features{background:var(--bg-soft);}
+  .feature-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .feature-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:26px 22px; transition:.25s;
+  }
+  .feature-card:hover{transform:translateY(-4px); box-shadow:var(--shadow); border-color:var(--purple-500);}
+  .feature-icon{
+    width:46px; height:46px; border-radius:12px; background:var(--purple-100); color:var(--purple-700);
+    display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:16px; font-weight:800;
+  }
+  .feature-card h3{font-size:16.5px; font-weight:700; margin-bottom:8px;}
+  .feature-card p{font-size:13.8px; color:var(--text-muted);}
+
+  /* ---------- How it works ---------- */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; counter-reset:step;}
+  .step{position:relative; padding:30px 24px 24px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);}
+  .step .num{
+    width:34px; height:34px; border-radius:10px; background:var(--purple-900); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-family:'Baloo Bhaijaan 2';
+    margin-bottom:16px;
+  }
+  .step h3{font-size:16px; font-weight:700; margin-bottom:8px;}
+  .step p{font-size:13.8px; color:var(--text-muted);}
+  .step-connector{position:absolute; top:47px; left:-24px; width:24px; height:2px; background:var(--border);}
+  .step:first-child .step-connector{display:none;}
+
+  /* ---------- Teachers ---------- */
+  .teacher-row{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .teacher-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:22px; text-align:center; transition:.2s;
+  }
+  .teacher-card:hover{border-color:var(--purple-500); box-shadow:var(--shadow);}
+  .avatar{
+    width:72px; height:72px; border-radius:50%; margin:0 auto 14px; font-family:'Baloo Bhaijaan 2';
+    background:linear-gradient(150deg, var(--purple-500), var(--purple-800)); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700;
+  }
+  .teacher-card h3{font-size:15.5px; font-weight:700;}
+  .teacher-card span{font-size:12.5px; color:var(--purple-600); font-weight:700;}
+  .teacher-card p{font-size:12.5px; color:var(--text-muted); margin-top:8px;}
+
+  /* ---------- CTA banner ---------- */
+  .cta-banner{
+    margin:0 auto; max-width:1180px; border-radius:28px;
+    background:linear-gradient(120deg, var(--purple-800), var(--purple-600));
+    padding:56px 48px; display:flex; align-items:center; justify-content:space-between; gap:32px;
+    color:#fff; position:relative; overflow:hidden;
+  }
+  .cta-banner::after{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(40% 80% at 90% 0%, rgba(255,255,255,.14), transparent 60%);
+  }
+  .cta-banner h2{font-size:28px; font-weight:800; position:relative;}
+  .cta-banner p{color:#E4D6FA; margin-top:8px; font-size:14.5px; position:relative;}
+  .cta-banner .actions{position:relative; display:flex; gap:12px; flex:none;}
+  .cta-banner .btn-outline{color:#fff; border-color:rgba(255,255,255,.5);}
+  .cta-banner .btn-outline:hover{background:rgba(255,255,255,.12);}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--purple-900); color:#CBB8ED; padding:56px 0 24px; margin-top:40px;}
+  .foot-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px; padding-bottom:36px; border-bottom:1px solid rgba(255,255,255,.1);}
+  .foot-grid .logo{color:#fff;}
+  .foot-grid p{font-size:13.5px; margin-top:14px; color:#B49FDB; max-width:280px;}
+  .foot-col h4{font-size:14.5px; color:#fff; font-weight:700; margin-bottom:14px;}
+  .foot-col a{display:block; font-size:13.5px; color:#B49FDB; padding:6px 0; transition:.2s;}
+  .foot-col a:hover{color:#fff;}
+  .foot-bottom{display:flex; justify-content:space-between; align-items:center; padding-top:20px; font-size:12.5px; color:#8E76BE; flex-wrap:wrap; gap:12px;}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:980px){
+    .nav-links{display:none;}
+    .menu-toggle{display:flex;}
+    .hero .wrap{grid-template-columns:1fr; text-align:center;}
+    .hero h1, .hero p.lead{margin-inline:auto;}
+    .hero-ctas, .trust-row{justify-content:center;}
+    .hero-visual{display:none;}
+    .feature-grid, .steps, .teacher-row{grid-template-columns:repeat(2,1fr);}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .step-connector{display:none;}
+    .cta-banner{flex-direction:column; text-align:center;}
+  }
+  @media (max-width:560px){
+    .hero h1{font-size:32px;}
+    .feature-grid, .steps, .teacher-row{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr;}
+    .topbar .links{display:none;}
+    .cta-banner{padding:36px 24px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important; animation:none !important;}
+  }
+</style>
 </head>
-
 <body>
 
-  <!-- =========================
-       NAVBAR
-  ========================= -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="countdown">⏳ متبقي على امتحانات الثانوية العامة <b id="examCountdown">— يوم</b></div>
+    <div class="links">
+      <a href="#">مركز المساعدة</a>
+      <a href="#">تواصل معنا</a>
+    </div>
+  </div>
+</div>
 
-  <header class="navbar">
+<header class="nav">
+  <div class="wrap">
+    <a href="/home.html" class="logo"><span class="mark">ق</span> قلاوي</a>
 
-    <a href="#" class="brand">
-
-      <span class="brand-icon">
-        K
-      </span>
-
-      <span class="brand-name">
-        KALAWY
-      </span>
-
-    </a>
-
-
-    <nav class="nav-center">
-
-      <a href="#" class="nav-link active">
-        الرئيسية
-      </a>
-
-      <a href="#teachers" class="nav-link">
-        المدرسين
-      </a>
-
-      <a href="#" class="nav-link">
-        المحاضرات
-      </a>
-
-      <a href="#" class="nav-link">
-        الملازم
-      </a>
-
-      <a href="#" class="nav-link">
-        الحجوزات
-      </a>
-
+    <nav class="nav-links">
+      <a href="/home.html" class="active">الرئيسية</a>
+      <a href="/teachers.html">المدرسين</a>
+      <a href="/lectures.html">المحاضرات</a>
+      <a href="/materials.html">الملازم</a>
+      <a href="/bookings.html">الحجوزات</a>
     </nav>
 
-
-    <div class="nav-left">
-
-      <a href="login.html" class="nav-outline">
-        تسجيل الدخول
-      </a>
-
-      <a href="signup.html" class="nav-primary">
-        اعمل حساب جديد
-      </a>
-
-      <button class="lang-btn">
-        🌐 EN
-      </button>
-
-      <button class="theme-btn">
-        ☾
-      </button>
-
+    <div class="nav-actions">
+      <button class="icon-btn" id="langToggle" title="English">EN</button>
+      <button class="icon-btn" id="themeToggle" title="الوضع الليلي">🌙</button>
+      <div id="authArea" style="display:flex; gap:10px;">
+        <a href="/login.html" class="btn btn-outline">تسجيل الدخول</a>
+        <a href="/signup.html" class="btn btn-solid">اعمل حساب جديد</a>
+      </div>
     </div>
+  </div>
+</header>
 
-  </header>
-
-
-  <!-- =========================
-       HERO
-  ========================= -->
-
-  <main>
-
-    <section class="hero">
-
-      <div class="hero-grid">
-
-
-        <div class="hero-content">
-
-          <div class="hero-badge">
-            🎓 منصتك التعليمية الجديدة
-          </div>
-
-          <h1 class="hero-title">
-
-            رحلتك.
-            <span class="blue">طريقك.</span>
-            <span class="pink">مستقبلك.</span>
-
-          </h1>
-
-          <p class="hero-text">
-            اتعلم مع أفضل المدرسين في مصر،
-            تابع محاضراتك، نظم دراستك،
-            وابدأ رحلة النجاح من مكان واحد.
-          </p>
-
-
-          <div class="hero-buttons">
-
-            <a href="signup.html" class="btn-primary">
-              ابدأ التعلم
-            </a>
-
-            <a href="#app" class="btn-secondary">
-              حمل التطبيق
-            </a>
-
-          </div>
-
-
-          <div class="stats">
-
-            <div class="stat">
-              <strong>300K+</strong>
-              <span>طالب</span>
-            </div>
-
-            <div class="stat-divider"></div>
-
-            <div class="stat">
-              <strong>200+</strong>
-              <span>مدرس</span>
-            </div>
-
-            <div class="stat-divider"></div>
-
-            <div class="stat">
-              <strong>4.9 ★</strong>
-              <span>تقييم الطلاب</span>
-            </div>
-
-          </div>
-
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> منصة الثانوية العامة رقم 1 في مصر</span>
+        <h1>ذاكر صح، وخد <span>درجاتك كاملة</span> في الثانوية العامة</h1>
+        <p class="lead">محاضرات مسجّلة بالخطوة، امتحانات بعد كل درس عشان تتأكد إنك فاهم صح، وحجز حصص مباشرة مع أفضل المدرسين — كل ده من مكان واحد.</p>
+        <div class="hero-ctas">
+          <a href="/signup.html" class="btn btn-solid">ابدأ المذاكرة مجانًا</a>
+          <a href="/lectures.html" class="btn btn-outline">تصفح المحاضرات</a>
         </div>
-
-
-        <div class="hero-visual">
-
-          <div class="visual-glow"></div>
-
-          <div class="mockup">
-
-            <div class="mockup-screen">
-
-              <div class="mockup-top">
-
-                <div class="mockup-logo">
-
-                  <span class="brand-icon"
-                    style="width:30px;height:30px;border-radius:9px;font-size:14px;">
-                    K
-                  </span>
-
-                  KALAWY
-
-                </div>
-
-                <div class="mockup-avatar"></div>
-
-              </div>
-
-
-              <div class="mockup-welcome">
-
-                <small>
-                  صباح الخير 👋
-                </small>
-
-                <strong>
-                  جاهز تكمل رحلتك؟
-                </strong>
-
-              </div>
-
-
-              <div class="mockup-course-grid">
-
-                <div class="mockup-course">
-
-                  <div class="course-color"></div>
-
-                  <strong>
-                    الرياضيات
-                  </strong>
-
-                  <span>
-                    12 محاضرة
-                  </span>
-
-                </div>
-
-
-                <div class="mockup-course">
-
-                  <div class="course-color"></div>
-
-                  <strong>
-                    الكيمياء
-                  </strong>
-
-                  <span>
-                    18 محاضرة
-                  </span>
-
-                </div>
-
-
-                <div class="mockup-course">
-
-                  <div class="course-color"></div>
-
-                  <strong>
-                    الفيزياء
-                  </strong>
-
-                  <span>
-                    15 محاضرة
-                  </span>
-
-                </div>
-
-
-                <div class="mockup-course">
-
-                  <div class="course-color"></div>
-
-                  <strong>
-                    Biology
-                  </strong>
-
-                  <span>
-                    10 محاضرات
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
+        <div class="trust-row">
+          <div class="trust-stat"><b>+40,000</b><span>طالب وطالبة</span></div>
+          <div class="trust-stat"><b>+120</b><span>مدرس متخصص</span></div>
+          <div class="trust-stat"><b>96%</b><span>نسبة النجاح</span></div>
         </div>
-
       </div>
 
-    </section>
-
-
-    <!-- =========================
-         TEACHERS
-    ========================= -->
-
-    <section class="section" id="teachers">
-
-      <div class="section-header">
-
-        <div class="section-badge">
-          🎓 نخبة مدرسينا
+      <div class="hero-visual" aria-hidden="true">
+        <div class="stage-card c1">
+          <div class="row">
+            <div class="ring" data-p="78" style="--p:78"></div>
+            <div>
+              <div class="title">الفيزياء</div>
+              <div class="sub">6 من 8 دروس مكتملة</div>
+            </div>
+          </div>
         </div>
-
-        <h2>
-          تعلم من أفضل الخبراء المصريين
-        </h2>
-
-        <p>
-          مدرسين معتمدين وشركاء في رحلة نجاحك
-        </p>
-
-      </div>
-
-
-      <div class="search-box">
-
-        <input
-          type="text"
-          placeholder="دور على مدرس..."
-        >
-
-      </div>
-
-
-      <div class="categories">
-
-        <button class="category active">
-          الكل
-        </button>
-
-        <button class="category">
-          Chemistry
-        </button>
-
-        <button class="category">
-          Physics
-        </button>
-
-        <button class="category">
-          Biology
-        </button>
-
-        <button class="category">
-          Mathematics
-        </button>
-
-        <button class="category">
-          English
-        </button>
-
-        <button class="category">
-          Science
-        </button>
-
-        <button class="category">
-          Programming
-        </button>
-
-      </div>
-
-
-      <div class="teachers-grid">
-
-
-        <article class="teacher-card">
-
-          <div class="teacher-top">
-
-            <div class="teacher-info">
-
-              <h3>
-                Dr. Ahmed Mohamed
-              </h3>
-
-              <span>
-                Chemistry
-              </span>
-
+        <div class="stage-card c2">
+          <div class="row">
+            <div class="ring" data-p="45" style="--p:45"></div>
+            <div>
+              <div class="title">الكيمياء</div>
+              <div class="sub">امتحان الدرس القادم مقفول</div>
             </div>
-
-            <div class="teacher-avatar">
-              A
-            </div>
-
           </div>
-
-          <button class="teacher-btn">
-            شوف الملف الشخصي
-          </button>
-
-        </article>
-
-
-        <article class="teacher-card">
-
-          <div class="teacher-top">
-
-            <div class="teacher-info">
-
-              <h3>
-                Dr. Mohamed Ali
-              </h3>
-
-              <span>
-                Biology
-              </span>
-
-            </div>
-
-            <div class="teacher-avatar">
-              M
-            </div>
-
-          </div>
-
-          <button class="teacher-btn">
-            شوف الملف الشخصي
-          </button>
-
-        </article>
-
-
-        <article class="teacher-card">
-
-          <div class="teacher-top">
-
-            <div class="teacher-info">
-
-              <h3>
-                Eng. Ahmed Samir
-              </h3>
-
-              <span>
-                Programming
-              </span>
-
-            </div>
-
-            <div class="teacher-avatar">
-              A
-            </div>
-
-          </div>
-
-          <button class="teacher-btn">
-            شوف الملف الشخصي
-          </button>
-
-        </article>
-
-
-        <article class="teacher-card">
-
-          <div class="teacher-top">
-
-            <div class="teacher-info">
-
-              <h3>
-                Mr. Sameh
-              </h3>
-
-              <span>
-                Physics
-              </span>
-
-            </div>
-
-            <div class="teacher-avatar">
-              S
-            </div>
-
-          </div>
-
-          <button class="teacher-btn">
-            شوف الملف الشخصي
-          </button>
-
-        </article>
-
-
-        <article class="teacher-card">
-
-          <div class="teacher-top">
-
-            <div class="teacher-info">
-
-              <h3>
-                Ali Salah
-              </h3>
-
-              <span>
-                Mathematics
-              </span>
-
-            </div>
-
-            <div class="teacher-avatar">
-              A
-            </div>
-
-          </div>
-
-          <button class="teacher-btn">
-            شوف الملف الشخصي
-          </button>
-
-        </article>
-
-
-        <article class="teacher-card">
-
-          <div class="teacher-top">
-
-            <div class="teacher-info">
-
-              <h3>
-                Mohamed Hassan
-              </h3>
-
-              <span>
-                English
-              </span>
-
-            </div>
-
-            <div class="teacher-avatar">
-              M
-            </div>
-
-          </div>
-
-          <button class="teacher-btn">
-            شوف الملف الشخصي
-          </button>
-
-        </article>
-
-      </div>
-
-
-      <div class="show-more">
-
-        <a href="#" class="btn-secondary">
-          شوف كل المدرسين
-        </a>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         CTA
-    ========================= -->
-
-    <section class="cta-wrapper" id="app">
-
-      <div class="cta">
-
-        <div class="cta-badge">
-          🎓 انضم لآلاف الطلاب
         </div>
-
-        <h2>
-          جاهز تبدأ تعلم؟
-        </h2>
-
-        <p>
-          اعمل حساب دلوقتي وابدأ شوف المدرسين والمحتوى التعليمي.
-        </p>
-
-        <a href="signup.html" class="btn-primary">
-          ابدأ التعلم
-        </a>
-
+        <div class="stage-card c3">
+          <div class="row">
+            <div class="ring" data-p="100" style="--p:100"></div>
+            <div>
+              <div class="title">الأحياء</div>
+              <div class="sub">تم اجتياز كل الامتحانات 🎉</div>
+            </div>
+          </div>
+        </div>
+        <div class="lock-pill">🔒 يفتح بعد اجتياز الامتحان</div>
       </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- =========================
-       FOOTER
-  ========================= -->
-
-  <footer>
-
-    <div class="footer-grid">
-
-
-      <div class="footer-brand">
-
-        <a href="#" class="brand-name">
-          KALAWY
-        </a>
-
-        <p>
-          منصة تعليمية مصرية تساعد الطلاب على التعلم
-          مع أفضل المدرسين والوصول لكل احتياجاتهم التعليمية
-          في مكان واحد.
-        </p>
-
-      </div>
-
-
-      <div class="footer-col">
-
-        <h4>
-          المنصة
-        </h4>
-
-        <a href="#teachers">
-          المدرسين
-        </a>
-
-        <a href="#">
-          المحاضرات
-        </a>
-
-        <a href="#">
-          الملازم
-        </a>
-
-        <a href="#">
-          الحجوزات
-        </a>
-
-      </div>
-
-
-      <div class="footer-col">
-
-        <h4>
-          الشركة
-        </h4>
-
-        <a href="#">
-          عن Kalawy
-        </a>
-
-        <a href="#">
-          الأسئلة الشائعة
-        </a>
-
-        <a href="#">
-          سياسة الخصوصية
-        </a>
-
-        <a href="#">
-          شروط الخدمة
-        </a>
-
-      </div>
-
     </div>
+  </section>
 
-
-    <div class="footer-bottom">
-
-      <span>
-        © 2026 Kalawy
-      </span>
-
-      <span>
-        جميع الحقوق محفوظة
-      </span>
-
+  <section class="features">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><span class="dot"></span> ليه قلاوي</span>
+        <h2>كل حاجة محتاجها عشان تذاكر بأمان وبنظام</h2>
+        <p>مش مجرد فيديوهات — نظام مذاكرة متكامل بيتابع تقدمك خطوة بخطوة.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎥</div>
+          <h3>فيديو محمي بعلامة مائية</h3>
+          <p>كل محاضرة تتفتح باسمك، وميقدرش حد ينزّلها أو يسرقها.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>امتحان بعد كل درس</h3>
+          <p>مش هتقدر تفوت للدرس اللي بعده غير لما تثبت إنك فاهم اللي فات.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔑</div>
+          <h3>كود دخول لكل فصل</h3>
+          <p>تجدد اشتراكك بكود واحد بسيط، من غير تعقيد في الدفع.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3>حجز حصص مباشرة</h3>
+          <p>احجز معاد مع مدرسك المفضل واسأل في أي نقطة مش فاهمها.</p>
+        </div>
+      </div>
     </div>
+  </section>
 
-  </footer>
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><span class="dot"></span> ابدأ في 3 خطوات</span>
+        <h2>من التسجيل لأول امتحان في 5 دقائق</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>اعمل حسابك</h3>
+          <p>سجّل ببياناتك وصفك الدراسي، وهنجهزلك المواد المناسبة ليك.</p>
+        </div>
+        <div class="step"><div class="step-connector"></div>
+          <div class="num">2</div>
+          <h3>اشترِ كود الفصل</h3>
+          <p>كود واحد لكل فصل دراسي بيفتحلك كل محاضرات المادة.</p>
+        </div>
+        <div class="step"><div class="step-connector"></div>
+          <div class="num">3</div>
+          <h3>ذاكر وامتحن نفسك</h3>
+          <p>اتفرج، حل الامتحان، وكمّل للدرس اللي بعده بثقة.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><span class="dot"></span> نخبة المدرسين</span>
+        <h2>ذاكر مع أساتذة متخصصين في منهج الثانوية</h2>
+      </div>
+      <div class="teacher-row">
+        <div class="teacher-card">
+          <div class="avatar">أح</div>
+          <h3>أ. أحمد حسين</h3>
+          <span>فيزياء</span>
+          <p>خبرة 12 سنة في تدريس الصف الثالث الثانوي</p>
+        </div>
+        <div class="teacher-card">
+          <div class="avatar">من</div>
+          <h3>أ. منى الشريف</h3>
+          <span>كيمياء</span>
+          <p>متخصصة في تبسيط أصعب أجزاء المنهج</p>
+        </div>
+        <div class="teacher-card">
+          <div class="avatar">كر</div>
+          <h3>أ. كريم عادل</h3>
+          <span>أحياء</span>
+          <p>مؤلف مذكرة الأحياء الأكثر مبيعًا</p>
+        </div>
+        <div class="teacher-card">
+          <div class="avatar">سا</div>
+          <h3>أ. سارة يوسف</h3>
+          <span>لغة عربية</span>
+          <p>خبيرة في تدريب الطلاب على نماذج الامتحانات</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="cta-banner wrap">
+      <div>
+        <h2>جاهز تبدأ رحلتك مع قلاوي؟</h2>
+        <p>سجّل النهارده واحصل على أول محاضرة مجانًا في أي مادة.</p>
+      </div>
+      <div class="actions">
+        <a href="/signup.html" class="btn btn-gold">اعمل حساب جديد</a>
+        <a href="/lectures.html" class="btn btn-outline">شوف المحاضرات</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="/home.html" class="logo"><span class="mark">ق</span> قلاوي</a>
+        <p>منصة تعليمية لطلاب الثانوية العامة في مصر — محاضرات، امتحانات، وحجز حصص في مكان واحد.</p>
+      </div>
+      <div class="foot-col">
+        <h4>المنصة</h4>
+        <a href="/lectures.html">المحاضرات</a>
+        <a href="/materials.html">الملازم</a>
+        <a href="/teachers.html">المدرسين</a>
+        <a href="/bookings.html">الحجوزات</a>
+      </div>
+      <div class="foot-col">
+        <h4>الحساب</h4>
+        <a href="/login.html">تسجيل الدخول</a>
+        <a href="/signup.html">اعمل حساب جديد</a>
+        <a href="/profile.html">الملف الشخصي</a>
+      </div>
+      <div class="foot-col">
+        <h4>الدعم</h4>
+        <a href="#">الأسئلة الشائعة</a>
+        <a href="#">تواصل معنا</a>
+        <a href="#">الشروط والأحكام</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 قلاوي. جميع الحقوق محفوظة.</span>
+      <span>صُنع بـ 💜 لطلاب الثانوية العامة</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  // ------------------------------------------------------------------
+  // Supabase session check — fills in real user state on the navbar.
+  // Replace the URL / anon key below with your project's values
+  // (same project used across the site: xzjxmfgymbvordumrush.supabase.co).
+  // ------------------------------------------------------------------
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://xzjxmfgymbvordumrush.supabase.co';
+  const SUPABASE_ANON_KEY = 'PUT_YOUR_ANON_KEY_HERE';
+
+  const authArea = document.getElementById('authArea');
+
+  async function renderAuthState(){
+    try{
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if(!session){ return; } // keep default login/signup buttons
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, role')
+        .eq('id', session.user.id)
+        .single();
+
+      const name = profile?.full_name?.split(' ')[0] || 'حسابي';
+      const dashboardHref = profile?.role === 'admin' || profile?.role === 'teacher'
+        ? '/dashboard.html'
+        : '/student.html';
+
+      authArea.innerHTML = `
+        <a href="${dashboardHref}" class="btn btn-outline">مرحبًا، ${name}</a>
+        <a href="${dashboardHref}" class="btn btn-solid">لوحة التحكم</a>
+      `;
+    }catch(err){
+      // If Supabase isn't configured yet (placeholder key), fail silently
+      // and keep the default logged-out navbar.
+      console.warn('Supabase auth check skipped:', err.message);
+    }
+  }
+
+  renderAuthState();
+
+  // ------------------------------------------------------------------
+  // Exam countdown — set the real Thanawya Amma start date here.
+  // ------------------------------------------------------------------
+  const EXAM_DATE = new Date('2027-06-01T00:00:00');
+  const countdownEl = document.getElementById('examCountdown');
+  function updateCountdown(){
+    const days = Math.max(0, Math.ceil((EXAM_DATE - new Date()) / 86400000));
+    countdownEl.textContent = `${days} يوم`;
+  }
+  updateCountdown();
+
+  // ------------------------------------------------------------------
+  // Language toggle placeholder — hook this to your i18n routing.
+  // ------------------------------------------------------------------
+  document.getElementById('langToggle').addEventListener('click', () => {
+    window.location.href = '/en/home.html';
+  });
+
+  // ------------------------------------------------------------------
+  // Theme toggle placeholder — page ships light-mode only for now;
+  // wire this to a `data-theme="dark"` attribute + a dark CSS block
+  // when you're ready to add night mode.
+  // ------------------------------------------------------------------
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    alert('الوضع الليلي قريبًا 🌙');
+  });
+</script>
 
 </body>
 </html>
