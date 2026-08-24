@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول | kalawy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="/home.html" class="logo"><span class="mark">K</span>kalawy</a>
+    <nav class="nav-links">
+      <a href="/home.html">الرئيسية</a>
+      <a href="/teachers.html">المدرسين</a>
+      <a href="/lectures.html">المحاضرات</a>
+      <a href="/materials.html">الملازم</a>
+      <a href="/bookings.html">الحجوزات</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="/login.html" class="btn btn-outline" style="pointer-events:none; opacity:.6;">تسجيل الدخول</a>
+      <a href="/signup.html" class="btn btn-solid">اعمل حساب جديد</a>
+    </div>
+  </div>
+</header>
+
+<div class="auth-shell">
+  <aside class="auth-brand">
+    <a href="/home.html" class="logo"><span class="mark">K</span>kalawy</a>
+    <div class="pitch">
+      <h2>وحشتنا! يلا كمّل مذاكرتك من حيث ما وقفت.</h2>
+      <p>كل محاضراتك، امتحاناتك، وتقدمك محفوظين وجاهزين.</p>
+      <ul class="auth-perks">
+        <li><span class="check">✓</span> فيديو محمي وميتفتحش غير باسمك</li>
+        <li><span class="check">✓</span> امتحان بعد كل درس يثبت فهمك</li>
+        <li><span class="check">✓</span> حجز حصص مباشرة مع مدرسينك</li>
+      </ul>
+      <div class="auth-quote">
+        “من ساعة ما بادئت أذاكر على kalawy وأنا حاسس إني ماشي صح في المنهج.”
+        <b>— سارة، الصف الثالث الثانوي</b>
+      </div>
+    </div>
+  </aside>
+
+  <div class="auth-form-wrap">
+    <div class="auth-card">
+      <a href="/home.html" class="back-link">→ الرجوع للصفحة الرئيسية</a>
+      <h1>تسجيل الدخول</h1>
+      <p class="sub">ادخل بياناتك عشان تكمل مذاكرتك.</p>
+
+      <div class="form-alert error" id="formError"></div>
+      <div class="form-alert success" id="formSuccess"></div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">البريد الإلكتروني</label>
+          <input type="email" id="email" name="email" placeholder="example@email.com" required autocomplete="email">
+        </div>
+
+        <div class="field password-field">
+          <label for="password">كلمة السر</label>
+          <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+          <button type="button" class="password-toggle" data-target="password" aria-label="إظهار كلمة السر">👁</button>
+        </div>
+
+        <div class="row-between">
+          <label style="display:flex; align-items:center; gap:8px; font-weight:600; color:var(--text-muted);">
+            <input type="checkbox" style="width:16px;height:16px;accent-color:var(--purple-600);"> تذكرني
+          </label>
+          <a href="#" id="forgotLink">نسيت كلمة السر؟</a>
+        </div>
+
+        <button type="submit" class="btn btn-solid btn-block" id="submitBtn">
+          <span class="spinner"></span>
+          <span class="btn-label">تسجيل الدخول</span>
+        </button>
+      </form>
+
+      <p class="switch-line">مالكش حساب؟ <a href="/signup.html">اعمل واحد دلوقتي</a></p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer-minimal">
+  <div class="wrap">
+    <span>© 2026 kalawy. جميع الحقوق محفوظة.</span>
+    <span>صُنع بـ 💜 لطلاب الثانوية العامة</span>
+  </div>
+</footer>
+
+<script type="module">
+  // ------------------------------------------------------------------
+  // Shared Supabase client — lives in js/supabase.js (already in your repo).
+  // This assumes that file does: export const supabase = createClient(...)
+  // ------------------------------------------------------------------
+  import { supabase } from './js/supabase.js';
+
+  const form = document.getElementById('loginForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const errorBox = document.getElementById('formError');
+  const successBox = document.getElementById('formSuccess');
+
+  function showError(msg){
+    errorBox.textContent = msg;
+    errorBox.classList.add('show');
+    successBox.classList.remove('show');
+  }
+  function showSuccess(msg){
+    successBox.textContent = msg;
+    successBox.classList.add('show');
+    errorBox.classList.remove('show');
+  }
+  function setLoading(loading){
+    submitBtn.disabled = loading;
+    submitBtn.classList.toggle('is-loading', loading);
+  }
+
+  // Password show/hide
+  document.querySelectorAll('.password-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁';
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // If a signup happened while email confirmation was pending, the
+  // profile row couldn't be inserted yet (no session = no auth.uid()).
+  // We stash it in sessionStorage and finish the insert on first login.
+  // ------------------------------------------------------------------
+  async function completePendingProfileIfAny(userId){
+    const raw = sessionStorage.getItem('kalawy_pending_profile');
+    if(!raw) return;
+    try{
+      const pending = JSON.parse(raw);
+      if(pending.id !== userId) return;
+      const { error } = await supabase.from('profiles').insert(pending);
+      if(!error) sessionStorage.removeItem('kalawy_pending_profile');
+    }catch(err){
+      console.warn('Could not finish pending profile:', err.message);
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.classList.remove('show');
+    successBox.classList.remove('show');
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    setLoading(true);
+    try{
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if(error){
+        showError('البريد الإلكتروني أو كلمة السر غلط. جرب تاني.');
+        return;
+      }
+
+      await completePendingProfileIfAny(data.user.id);
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      const dashboardHref = (profile?.role === 'admin' || profile?.role === 'teacher')
+        ? '/dashboard.html'
+        : '/student.html';
+
+      showSuccess('تم تسجيل الدخول، جاري تحويلك...');
+      window.location.href = dashboardHref;
+    }catch(err){
+      showError('حصل خطأ غير متوقع، حاول تاني.');
+      console.error(err);
+    }finally{
+      setLoading(false);
+    }
+  });
+
+  document.getElementById('forgotLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    if(!email){
+      showError('اكتب بريدك الإلكتروني الأول عشان نبعتلك رابط إعادة التعيين.');
+      return;
+    }
+    try{
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if(error){ showError('مقدرناش نبعت رابط إعادة التعيين، تأكد من البريد.'); return; }
+      showSuccess('بعتنالك رابط إعادة تعيين كلمة السر على بريدك.');
+    }catch(err){
+      showError('حصل خطأ غير متوقع، حاول تاني.');
+    }
+  });
+</script>
+
+</body>
+</html>
